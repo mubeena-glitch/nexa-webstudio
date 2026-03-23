@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NEXA Templates</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--a:#9354FF;--a2:#E9DDFF;--bg:#f5f5f8;--bd:rgba(0,0,0,.08);--tx:#16162a;--mu:#6e6e88;--r:14px}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+.hd{background:#fff;border-bottom:1px solid var(--bd);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.hd-left{display:flex;align-items:center;gap:10px}
+.hd-left img{height:28px}
+.hd-left span{font-size:11px;color:var(--mu);border-left:1px solid var(--bd);padding-left:10px;margin-left:2px}
+.hd-right{display:flex;gap:8px}
+.hd-btn{padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:#fff;color:var(--tx);font-family:inherit}
+.hd-btn.pri{background:var(--a);color:#fff;border-color:var(--a)}
+
+/* Type toggle */
+.type-toggle{display:flex;background:#fff;border-bottom:1px solid var(--bd);padding:14px 32px;gap:8px}
+.tt-btn{padding:10px 22px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:2px solid var(--bd);background:#fff;color:var(--mu);transition:.18s;font-family:inherit;display:flex;align-items:center;gap:8px}
+.tt-btn:hover{border-color:var(--a);color:var(--a)}
+.tt-btn.ac{border-color:var(--a);background:#f5f0ff;color:var(--a)}
+.tt-btn .tt-ico{font-size:18px}
+.tt-count{font-size:10px;background:var(--a2);color:var(--a);padding:2px 7px;border-radius:10px;font-weight:700}
+
+/* Filters */
+.filters{padding:16px 32px 8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.f-pill{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1.5px solid var(--bd);background:#fff;color:var(--mu);transition:.15s;font-family:inherit}
+.f-pill:hover{border-color:var(--a);color:var(--a)}
+.f-pill.ac{background:var(--a);color:#fff;border-color:var(--a)}
+.f-search{padding:7px 14px 7px 32px;border:1.5px solid var(--bd);border-radius:8px;font-size:11px;outline:none;width:180px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236e6e88' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 10px center no-repeat;font-family:inherit;transition:border .2s}
+.f-search:focus{border-color:var(--a)}
+
+/* Grid */
+.tpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:16px 32px 40px}
+.tpl-card{background:#fff;border:2px solid var(--bd);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .22s;position:relative}
+.tpl-card:hover{border-color:var(--a);transform:translateY(-4px);box-shadow:0 16px 40px rgba(147,84,255,.12)}
+.tpl-thumb{height:310px;overflow:hidden;position:relative}
+.tpl-thumb .tpl-page{transform-origin:top left;pointer-events:none;position:absolute;top:0;left:0}
+.tpl-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.55));opacity:0;transition:opacity .2s;display:flex;align-items:flex-end;justify-content:center;padding:20px}
+.tpl-card:hover .tpl-overlay{opacity:1}
+.tpl-preview-btn{padding:10px 24px;background:#fff;border-radius:8px;font-size:12px;font-weight:600;color:var(--tx)}
+.tpl-info{padding:14px 16px}
+.tpl-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.tpl-desc-short{font-size:11px;color:var(--mu);line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tpl-meta{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mu);flex-wrap:wrap}
+.tpl-tag{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.tpl-type-badge{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.tpl-pages-badge{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:#e8f4ff;color:#2563eb}
+.tpl-conv{display:flex;align-items:center;gap:3px;color:#16a34a;font-weight:600}
+.tpl-badge{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;z-index:2;backdrop-filter:blur(4px)}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(6,6,20,.7);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:30px 20px;overflow-y:auto;backdrop-filter:blur(4px)}
+.modal-bg.vis{display:flex}
+.modal{background:#fff;border-radius:20px;max-width:1000px;width:100%;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.25);position:relative}
+.modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;backdrop-filter:blur(4px)}
+.modal-hero{height:440px;overflow:hidden;position:relative}
+.modal-hero .tpl-page{transform-origin:top center;pointer-events:none;position:absolute;top:0}
+.modal-body{padding:24px 32px 28px}
+.modal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:16px}
+.modal-title{font-size:22px;font-weight:800;margin-bottom:4px;letter-spacing:-.3px}
+.modal-desc{font-size:13px;color:var(--mu);line-height:1.6;max-width:520px}
+.modal-cta{padding:12px 28px;background:var(--a);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.modal-cta:hover{opacity:.88}
+.modal-sections{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.modal-sec{padding:5px 10px;background:var(--bg);border-radius:6px;font-size:11px;font-weight:500;color:var(--mu);display:flex;align-items:center;gap:4px}
+/* Website modal: page list */
+.modal-pages{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.modal-pg{padding:5px 12px;background:var(--bg);border-radius:6px;font-size:11px;font-weight:500;color:var(--mu);border:1px solid var(--bd)}
+.modal-pg.home{background:var(--a2);color:var(--a);border-color:var(--a2);font-weight:600}
+.modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--bd)}
+.modal-stat{text-align:center}
+.modal-stat .val{font-size:20px;font-weight:800;color:var(--a)}
+.modal-stat .lbl{font-size:11px;color:var(--mu)}
+
+/* Mini LP/Website renderers */
+.lp,.ws{font-family:'Poppins',sans-serif}
+.lp-nav,.ws-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 40px}
+.lp-nav-logo,.ws-nav-logo{font-size:16px;font-weight:800;letter-spacing:-.4px}
+.lp-nav-links,.ws-nav-links{display:flex;gap:16px;font-size:12px;opacity:.4}
+.lp-nav-btn,.ws-nav-btn{padding:7px 18px;border-radius:6px;font-size:11px;font-weight:600;color:#fff}
+.lp-hero,.ws-hero{display:flex;align-items:center;padding:40px;gap:40px}
+.lp-hero-left,.ws-hero-left{flex:1}
+.lp-hero-left h1,.ws-hero-left h1{font-size:34px;font-weight:900;line-height:1.15;letter-spacing:-.7px;margin-bottom:10px}
+.lp-hero-left p,.ws-hero-left p{font-size:14px;line-height:1.7;opacity:.55;margin-bottom:16px}
+.lp-hero-left ul{list-style:none;padding:0;margin-bottom:20px}
+.lp-hero-left ul li{font-size:12px;padding:3px 0;display:flex;align-items:center;gap:6px;opacity:.6}
+.lp-form-box{padding:24px;border-radius:12px;width:340px;flex-shrink:0}
+.lp-form-box h3{font-size:15px;font-weight:700;margin-bottom:12px}
+.lp-ff{width:100%;height:38px;border-radius:7px;margin-bottom:8px;padding:0 12px;font-size:12px;border:1.5px solid rgba(0,0,0,.08);background:rgba(255,255,255,.7);outline:none;font-family:inherit}
+.lp-fbtn{width:100%;height:42px;border:none;border-radius:7px;font-size:13px;font-weight:700;color:#fff;font-family:inherit;letter-spacing:.3px}
+.ws-hero-img{width:400px;height:240px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;opacity:.3}
+.ws-hero-btns{display:flex;gap:10px}
+.ws-hero-btns span{padding:10px 24px;border-radius:8px;font-size:12px;font-weight:600}
+.lp-trust,.ws-trust{display:flex;align-items:center;justify-content:center;gap:36px;padding:18px 40px}
+.lp-trust span,.ws-trust span{width:70px;height:26px;border-radius:5px;opacity:.1}
+.m-section{padding:40px}
+.m-section h2{font-size:24px;font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:-.3px}
+.m-section .sub{font-size:13px;text-align:center;opacity:.45;margin-bottom:28px}
+.m-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.m-card{border-radius:10px;padding:20px 16px;text-align:center}
+.m-card .ico{width:42px;height:42px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.m-card h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.m-card p{font-size:11px;opacity:.5;line-height:1.5}
+.m-reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.m-review{border-radius:10px;padding:18px 16px}
+.m-review .stars{font-size:12px;margin-bottom:6px;letter-spacing:2px}
+.m-review p{font-size:11px;line-height:1.6;opacity:.6;margin-bottom:8px;font-style:italic}
+.m-review .author{font-size:10px;font-weight:600;opacity:.45}
+.m-cta{padding:40px;text-align:center}
+.m-cta h2{font-size:24px;font-weight:800;margin-bottom:6px}
+.m-cta p{font-size:13px;opacity:.45;margin-bottom:16px}
+.m-footer{padding:16px 40px;display:flex;justify-content:space-between;font-size:10px;opacity:.25}
+/* Website-specific sections */
+.ws-services{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.ws-srv{border-radius:10px;padding:18px 14px}
+.ws-srv .sico{width:36px;height:36px;border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.ws-srv h4{font-size:12px;font-weight:700;margin-bottom:2px}
+.ws-srv p{font-size:10px;opacity:.45;line-height:1.4}
+.ws-blog{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ws-blog-card{border-radius:10px;overflow:hidden}
+.ws-blog-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:10px;opacity:.25}
+.ws-blog-body{padding:12px 14px}
+.ws-blog-body h4{font-size:11px;font-weight:700;margin-bottom:3px}
+.ws-blog-body p{font-size:10px;opacity:.45;line-height:1.4}
+
+@media(max-width:900px){.tpl-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.tpl-grid{grid-template-columns:1fr}.modal-stats{grid-template-columns:repeat(2,1fr)}.modal-top{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="hd">
+  <div class="hd-left"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQDIrcT_zWeHX-8WAYX8x9b_MveprKSWGEgQ&s" alt="NEXA"><span>Template Library</span></div>
+  <div class="hd-right"><button class="hd-btn">Build from Scratch</button><button class="hd-btn pri">My Projects</button></div>
+</div>
+
+<div class="type-toggle">
+  <button class="tt-btn ac" onclick="filterType('all',this)"><span class="tt-ico">&#128444;</span> All Templates <span class="tt-count" id="cAll">12</span></button>
+  <button class="tt-btn" onclick="filterType('website',this)"><span class="tt-ico">&#127760;</span> Website <span class="tt-count" id="cWs">6</span></button>
+  <button class="tt-btn" onclick="filterType('landing',this)"><span class="tt-ico">&#127919;</span> Landing Page <span class="tt-count" id="cLp">6</span></button>
+</div>
+
+<div class="filters">
+  <div class="f-pill ac" onclick="filterInd('all',this)">All Industries</div>
+  <div class="f-pill" onclick="filterInd('Real Estate',this)">Real Estate</div>
+  <div class="f-pill" onclick="filterInd('Healthcare',this)">Healthcare</div>
+  <div class="f-pill" onclick="filterInd('Technology',this)">SaaS / Tech</div>
+  <div class="f-pill" onclick="filterInd('Finance',this)">Finance</div>
+  <div class="f-pill" onclick="filterInd('Education',this)">Education</div>
+  <div class="f-pill" onclick="filterInd('Restaurant',this)">F&amp;B</div>
+  <div class="f-pill" onclick="filterInd('Hospitality',this)">Hospitality</div>
+  <input class="f-search" placeholder="Search templates..." oninput="searchTpl(this.value)"/>
+</div>
+
+<div class="tpl-grid" id="tplGrid"></div>
+
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+var curType='all',curInd='all',curSearch='';
+
+var TEMPLATES=[
+  // ── LANDING PAGES ──
+  {id:'luxe-realty-lp',name:'Luxe Realty',type:'landing',goal:'Lead Generation',industry:'Real Estate',
+    desc:'Premium off-plan property lead capture. Dark luxury aesthetic with gold accents. Hero form captures investor inquiries with social proof from real transactions.',
+    sections:['Hero + Lead Form','Trust Logos','3 Benefits','Social Proof','Stats','FAQ','Final CTA'],
+    conv:'4.8%',leads:'2,340',deployed:'156',score:'9.2',
+    colors:{bg:'#0a0a12',nav:'#0a0a12',hero:'#0e0e1a',acc:'#c9a96e',tx:'#eee8d8',card:'#141420',div:'#1e1e2e',form:'rgba(201,169,110,.08)'},mode:'dark'},
+  {id:'wellness-lp',name:'Wellness Booking',type:'landing',goal:'Consultation',industry:'Healthcare',
+    desc:'Clean, trust-forward design for medical consultations. Light mode with calming teal. Emphasizes credentials and patient reviews.',
+    sections:['Hero + Form','Trust Bar','How It Works','Benefits','Reviews','Guarantee','Final CTA'],
+    conv:'5.2%',leads:'1,890',deployed:'98',score:'9.5',
+    colors:{bg:'#f8faf9',nav:'#fff',hero:'#edf5f2',acc:'#1d9e75',tx:'#1a2e24',card:'#fff',div:'#dceee6',form:'rgba(29,158,117,.06)'},mode:'light'},
+  {id:'saas-trial-lp',name:'SaaS Free Trial',type:'landing',goal:'Free Trial / Demo',industry:'Technology',
+    desc:'Conversion-optimised for software signups. Dark tech aesthetic with electric blue. Comparison table and feature grid.',
+    sections:['Hero + Form','Logo Bar','Benefits Grid','Video Demo','Comparison','Social Proof','Final CTA'],
+    conv:'6.1%',leads:'4,120',deployed:'234',score:'9.7',
+    colors:{bg:'#0c1018',nav:'#0c1018',hero:'#0f1520',acc:'#38bdf8',tx:'#e0eef8',card:'#141d28',div:'#1c2836',form:'rgba(56,189,248,.06)'},mode:'dark'},
+  {id:'webinar-lp',name:'Webinar Pro',type:'landing',goal:'Webinar / Event',industry:'B2B / Corporate',
+    desc:'Event registration page with countdown timer and speaker bios. Navy corporate feel builds authority.',
+    sections:['Hero + Form','Countdown','Speakers','Agenda','Social Proof','FAQ','Final CTA'],
+    conv:'7.3%',leads:'3,560',deployed:'189',score:'9.4',
+    colors:{bg:'#f2f4f8',nav:'#1a2d5a',hero:'#e8edf8',acc:'#2563eb',tx:'#1a2440',card:'#fff',div:'#dce4f0',form:'rgba(37,99,235,.05)'},mode:'light'},
+  {id:'app-launch-lp',name:'App Launch',type:'landing',goal:'App Download',industry:'Technology',
+    desc:'Bold launch page with app mockup hero and download CTAs. Feature showcase with beta user testimonials.',
+    sections:['Hero + Download','Trust Bar','Features','How It Works','Reviews','Stats','Final CTA'],
+    conv:'5.8%',leads:'6,780',deployed:'312',score:'9.1',
+    colors:{bg:'#faf8ff',nav:'#fff',hero:'#f0ebff',acc:'#9354FF',tx:'#1a1630',card:'#fff',div:'#e8e0f8',form:'rgba(147,84,255,.05)'},mode:'light'},
+  {id:'dining-lp',name:'Fine Dining Reserve',type:'landing',goal:'Consultation',industry:'Restaurant',
+    desc:'Elegant reservation page for premium restaurants. Dark with warm coral accents. Menu preview and chef story.',
+    sections:['Hero + Form','Trust Bar','Menu Preview','Chef Story','Gallery','Reviews','Final CTA'],
+    conv:'4.2%',leads:'890',deployed:'45',score:'8.9',
+    colors:{bg:'#0e0c08',nav:'#0a0906',hero:'#16120e',acc:'#e55d3c',tx:'#f0ece0',card:'#1a1610',div:'#2a2218',form:'rgba(229,93,60,.06)'},mode:'dark'},
+
+  // ── WEBSITES ──
+  {id:'realty-ws',name:'Premium Properties',type:'website',industry:'Real Estate',
+    desc:'Full real estate website with property listings, off-plan section, agent profiles, and blog. Gold luxury aesthetic with dark navigation.',
+    pages:['Home','Properties','Property Detail','Off-Plan','About Us','Blog','Contact'],
+    sections:['Hero','Services Grid','Featured Listings','Testimonials','Stats','Blog Preview','CTA','Footer'],
+    conv:'3.2%',leads:'5,400',deployed:'89',score:'9.3',
+    colors:{bg:'#faf8f3',nav:'#0a0a18',hero:'#f0ebe0',acc:'#c9a96e',tx:'#1e1a14',card:'#ffffff',div:'#e8e0d0',form:'rgba(201,169,110,.06)'},mode:'light'},
+  {id:'clinic-ws',name:'Modern Clinic',type:'website',industry:'Healthcare',
+    desc:'Healthcare website with doctor profiles, service listings, patient resources, and appointment booking. Clean teal with trust-building design.',
+    pages:['Home','Services','Our Doctors','Patient Info','Book Appointment','Blog','Contact'],
+    sections:['Hero','Services','Doctor Cards','Testimonials','Stats','FAQ','Appointment Form','Footer'],
+    conv:'4.1%',leads:'3,200',deployed:'67',score:'9.0',
+    colors:{bg:'#f8faf9',nav:'#ffffff',hero:'#edf5f2',acc:'#1d9e75',tx:'#1a2e24',card:'#ffffff',div:'#dceee6',form:'rgba(29,158,117,.06)'},mode:'light'},
+  {id:'saas-ws',name:'SaaS Platform',type:'website',industry:'Technology',
+    desc:'Product-led SaaS website with features, pricing, documentation, and blog. Dark tech aesthetic with electric blue accents.',
+    pages:['Home','Product','Features','Pricing','Docs','Blog','Contact'],
+    sections:['Hero','Logo Bar','Features Grid','How It Works','Pricing Table','Testimonials','CTA','Footer'],
+    conv:'5.4%',leads:'8,900',deployed:'178',score:'9.6',
+    colors:{bg:'#0c1018',nav:'#0c1018',hero:'#0f1520',acc:'#38bdf8',tx:'#e0eef8',card:'#141d28',div:'#1c2836',form:'rgba(56,189,248,.06)'},mode:'dark'},
+  {id:'corp-ws',name:'Corporate Authority',type:'website',industry:'B2B / Corporate',
+    desc:'B2B corporate website with case studies, team section, and thought leadership blog. Navy authority with structured grid.',
+    pages:['Home','Services','Case Studies','About Us','Team','Blog','Contact'],
+    sections:['Hero','Services','Case Studies','Team','Stats','Blog Preview','CTA','Footer'],
+    conv:'2.8%',leads:'2,100',deployed:'56',score:'8.8',
+    colors:{bg:'#f2f4f8',nav:'#1a2d5a',hero:'#e8edf8',acc:'#2563eb',tx:'#1a2440',card:'#ffffff',div:'#dce4f0',form:'rgba(37,99,235,.05)'},mode:'light'},
+  {id:'hotel-ws',name:'Boutique Hotel',type:'website',industry:'Hospitality',
+    desc:'Luxury hospitality website with rooms, dining, experiences, and booking. Warm desert tones with immersive imagery.',
+    pages:['Home','Rooms & Suites','Dining','Experiences','Gallery','Offers','Book Now'],
+    sections:['Hero Video','Room Cards','Dining Feature','Gallery Masonry','Testimonials','Booking CTA','Footer'],
+    conv:'3.5%',leads:'1,650',deployed:'34',score:'9.1',
+    colors:{bg:'#faf2e8',nav:'#faf2e8',hero:'#f0e4cc',acc:'#d4652a',tx:'#2c1a0a',card:'#ffffff',div:'#e8d8b8',form:'rgba(212,101,42,.05)'},mode:'light'},
+  {id:'edu-ws',name:'Academy Portal',type:'website',industry:'Education',
+    desc:'Education website with programme listings, admissions flow, campus life showcase, and faculty profiles. Modern purple with clean structure.',
+    pages:['Home','Programmes','Admissions','Campus Life','Faculty','News & Events','Contact'],
+    sections:['Hero','Programme Cards','Admissions Steps','Campus Gallery','Faculty Grid','News Feed','CTA','Footer'],
+    conv:'3.9%',leads:'4,300',deployed:'72',score:'9.2',
+    colors:{bg:'#faf8ff',nav:'#ffffff',hero:'#f0ebff',acc:'#9354FF',tx:'#1a1630',card:'#ffffff',div:'#e8e0f8',form:'rgba(147,84,255,.05)'},mode:'light'}
+];
+
+function filterType(t,el){curType=t;document.querySelectorAll('.tt-btn').forEach(function(b){b.classList.remove('ac');});el.classList.add('ac');render();}
+function filterInd(ind,el){curInd=ind;document.querySelectorAll('.f-pill').forEach(function(b){b.classList.remove('ac');});el.classList.add('ac');render();}
+function searchTpl(v){curSearch=v.toLowerCase();render();}
+
+function render(){
+  var filtered=TEMPLATES.filter(function(t){
+    if(curType!=='all'&&t.type!==curType)return false;
+    if(curInd!=='all'&&t.industry!==curInd)return false;
+    if(curSearch&&t.name.toLowerCase().indexOf(curSearch)===-1&&t.industry.toLowerCase().indexOf(curSearch)===-1&&t.desc.toLowerCase().indexOf(curSearch)===-1)return false;
+    return true;
+  });
+  var ws=TEMPLATES.filter(function(t){return t.type==='website';}).length;
+  var lp=TEMPLATES.filter(function(t){return t.type==='landing';}).length;
+  document.getElementById('cAll').textContent=TEMPLATES.length;
+  document.getElementById('cWs').textContent=ws;
+  document.getElementById('cLp').textContent=lp;
+
+  var h='';
+  filtered.forEach(function(t){
+    var isWs=t.type==='website';
+    h+='<div class="tpl-card" onclick="openModal(\''+t.id+'\')">';
+    h+='<div class="tpl-badge" style="background:'+(t.mode==='dark'?'rgba(0,0,0,.6);color:#ccc':'rgba(255,255,255,.85);color:#555')+'">'+(isWs?'&#127760; Website':'&#127919; '+t.goal)+'</div>';
+    h+='<div class="tpl-thumb"><div class="tpl-page" style="width:1200px;transform:scale(0.48)">'+(isWs?buildWS(t):buildLP(t))+'</div></div>';
+    h+='<div class="tpl-overlay"><div class="tpl-preview-btn">Preview Template</div></div>';
+    h+='<div class="tpl-info"><div class="tpl-name">'+t.name+'</div>';
+    h+='<div class="tpl-desc-short">'+t.desc+'</div>';
+    h+='<div class="tpl-meta"><span class="tpl-tag" style="background:'+t.colors.acc+'18;color:'+t.colors.acc+'">'+t.industry+'</span>';
+    if(isWs) h+='<span class="tpl-pages-badge">'+t.pages.length+' pages</span>';
+    h+='<span class="tpl-conv">&#9650; '+t.conv+'</span>';
+    h+='</div></div></div>';
+  });
+  if(!filtered.length) h='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--mu)"><p style="font-size:16px;font-weight:600;margin-bottom:4px">No templates found</p><p style="font-size:13px">Try a different filter or search term</p></div>';
+  document.getElementById('tplGrid').innerHTML=h;
+}
+
+function buildLP(t){
+  var c=t.colors,isDark=t.mode==='dark',txS=isDark?'rgba(255,255,255,.4)':'rgba(0,0,0,.35)',cBrd=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
+  var h='<div class="lp" style="background:'+c.bg+';color:'+c.tx+'">';
+  h+='<div class="lp-nav" style="background:'+c.nav+'"><div class="lp-nav-logo">'+t.name+'</div><div class="lp-nav-links"><span>Features</span><span>Reviews</span><span>FAQ</span></div><div class="lp-nav-btn" style="background:'+c.acc+'">Get Started</div></div>';
+  h+='<div class="lp-hero" style="background:'+c.hero+'"><div class="lp-hero-left"><h1>Transform Your<br>'+t.industry+' Results</h1><p style="color:'+txS+'">Join hundreds of businesses that trust us to deliver growth.</p><ul><li>Industry-leading expertise</li><li>Proven UAE track record</li><li>Results within 30 days</li></ul></div>';
+  h+='<div class="lp-form-box" style="background:'+c.form+';border:1px solid '+cBrd+'"><h3>Get Your Free Consultation</h3><input class="lp-ff" placeholder="Full Name" style="border-color:'+cBrd+'"/><input class="lp-ff" placeholder="Email Address" style="border-color:'+cBrd+'"/><input class="lp-ff" placeholder="Phone Number" style="border-color:'+cBrd+'"/><div class="lp-fbtn" style="background:'+c.acc+'">Book My Free Session</div></div></div>';
+  h+='<div class="lp-trust" style="background:'+c.div+'">';for(var i=0;i<5;i++) h+='<span style="background:'+c.tx+'"></span>';h+='</div>';
+  h+='<div class="m-section" style="background:'+c.bg+'"><h2>Why Choose Us</h2><div class="sub" style="color:'+txS+'">Data-driven strategy meets excellence</div><div class="m-grid3">';
+  ['Dedicated Manager','Transparent Reports','ROI-Focused'].forEach(function(b){h+='<div class="m-card" style="background:'+c.card+';border:1px solid '+cBrd+'"><div class="ico" style="background:'+c.acc+'18;color:'+c.acc+'">&#10024;</div><h4>'+b+'</h4><p>Lorem ipsum dolor sit amet consectetur.</p></div>';});
+  h+='</div></div>';
+  h+='<div class="m-section" style="background:'+c.card+'"><h2>What Clients Say</h2><div class="m-reviews">';
+  [{q:'Best decision we made.',a:'Sarah K.'},{q:'3x more leads in 60 days.',a:'Ahmed R.'},{q:'Professional and fast.',a:'Maria L.'}].forEach(function(r){h+='<div class="m-review" style="background:'+c.bg+';border:1px solid '+cBrd+'"><div class="stars" style="color:'+c.acc+'">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>&ldquo;'+r.q+'&rdquo;</p><div class="author">'+r.a+'</div></div>';});
+  h+='</div></div>';
+  h+='<div class="m-cta" style="background:'+c.hero+'"><h2>Ready to Start?</h2><p style="color:'+txS+'">Join 500+ UAE businesses</p><div class="lp-fbtn" style="background:'+c.acc+';display:inline-block;padding:12px 32px;border-radius:8px">Get Started</div></div>';
+  h+='<div class="m-footer" style="background:'+c.nav+';color:'+c.tx+'"><span>&copy; 2026 NEXA</span><span>Privacy &middot; Terms</span></div></div>';
+  return h;
+}
+
+function buildWS(t){
+  var c=t.colors,isDark=t.mode==='dark',txS=isDark?'rgba(255,255,255,.4)':'rgba(0,0,0,.35)',cBrd=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
+  var h='<div class="ws" style="background:'+c.bg+';color:'+c.tx+'">';
+  // Nav with page links
+  h+='<div class="ws-nav" style="background:'+c.nav+'"><div class="ws-nav-logo">'+t.name+'</div><div class="ws-nav-links">';
+  t.pages.slice(1,5).forEach(function(p){h+='<span>'+p+'</span>';});
+  h+='</div><div class="ws-nav-btn" style="background:'+c.acc+'">Contact Us</div></div>';
+  // Hero with image placeholder
+  h+='<div class="ws-hero" style="background:'+c.hero+'"><div class="ws-hero-left"><h1>Leading '+t.industry+'<br>Excellence in UAE</h1><p style="color:'+txS+'">Trusted by hundreds of businesses across the Middle East. We deliver results that matter.</p><div class="ws-hero-btns"><span style="background:'+c.acc+';color:#fff">Get Started</span><span style="border:1.5px solid '+c.acc+';color:'+c.acc+'">Learn More</span></div></div>';
+  h+='<div class="ws-hero-img" style="background:'+c.card+';border:1px solid '+cBrd+'">Hero Image / Video</div></div>';
+  // Trust bar
+  h+='<div class="ws-trust" style="background:'+c.div+'">';for(var i=0;i<5;i++) h+='<span style="background:'+c.tx+'"></span>';h+='</div>';
+  // Services grid (4 col)
+  h+='<div class="m-section" style="background:'+c.bg+'"><h2>Our Services</h2><div class="sub" style="color:'+txS+'">Comprehensive solutions for your business</div><div class="ws-services">';
+  ['Strategy','Development','Marketing','Analytics'].forEach(function(s){
+    h+='<div class="ws-srv" style="background:'+c.card+';border:1px solid '+cBrd+'"><div class="sico" style="background:'+c.acc+'15;color:'+c.acc+'">&#9881;</div><h4>'+s+'</h4><p>Expert solutions tailored to your needs.</p></div>';
+  });
+  h+='</div></div>';
+  // Testimonials
+  h+='<div class="m-section" style="background:'+c.card+'"><h2>Client Success Stories</h2><div class="sub" style="color:'+txS+'">Real results from real businesses</div><div class="m-reviews">';
+  [{q:'Outstanding results every quarter.',a:'CEO, Dubai Properties'},{q:'Transformed our digital presence.',a:'CMO, Tech Startup'},{q:'Best agency in the region.',a:'Director, Finance Corp'}].forEach(function(r){
+    h+='<div class="m-review" style="background:'+c.bg+';border:1px solid '+cBrd+'"><div class="stars" style="color:'+c.acc+'">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>&ldquo;'+r.q+'&rdquo;</p><div class="author">'+r.a+'</div></div>';
+  });
+  h+='</div></div>';
+  // Blog preview
+  h+='<div class="m-section" style="background:'+c.bg+'"><h2>Latest Insights</h2><div class="sub" style="color:'+txS+'">Thought leadership from our team</div><div class="ws-blog">';
+  ['Digital Strategy Trends 2026','Maximising ROI in the UAE','Building Brand Authority'].forEach(function(title){
+    h+='<div class="ws-blog-card" style="background:'+c.card+';border:1px solid '+cBrd+'"><div class="ws-blog-img" style="background:'+c.div+'">Article Image</div><div class="ws-blog-body"><h4>'+title+'</h4><p>Insights and strategies for business growth in the Middle East market.</p></div></div>';
+  });
+  h+='</div></div>';
+  // CTA
+  h+='<div class="m-cta" style="background:'+c.hero+'"><h2>Let\'s Build Something Great</h2><p style="color:'+txS+'">Get in touch with our team today</p><div class="lp-fbtn" style="background:'+c.acc+';display:inline-block;padding:12px 32px;border-radius:8px">Contact Us</div></div>';
+  // Footer
+  h+='<div class="m-footer" style="background:'+c.nav+';color:'+c.tx+'"><span>&copy; 2026 '+t.name+'</span><span>Privacy &middot; Terms &middot; Careers</span></div></div>';
+  return h;
+}
+
+function openModal(id){
+  var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;
+  var c=t.colors;var isWs=t.type==='website';
+  var h='<button class="modal-close" onclick="closeModal()">&#10005;</button>';
+  h+='<div class="modal-hero"><div class="tpl-page" style="width:1200px;transform:scale(0.82);transform-origin:top center;left:50%;margin-left:-600px">'+(isWs?buildWS(t):buildLP(t))+'</div></div>';
+  h+='<div class="modal-body"><div class="modal-top"><div><div class="modal-title">'+t.name+' <span style="font-size:12px;font-weight:500;color:var(--mu);margin-left:6px">'+(isWs?'&#127760; Website':'&#127919; Landing Page')+'</span></div><div class="modal-desc">'+t.desc+'</div>';
+  if(isWs){
+    h+='<div class="modal-pages">';
+    t.pages.forEach(function(p,i){h+='<div class="modal-pg'+(i===0?' home':'')+'">'+p+'</div>';});
+    h+='</div>';
+  }
+  h+='<div class="modal-sections" style="margin-top:10px">';
+  t.sections.forEach(function(s){h+='<div class="modal-sec"><span style="color:'+c.acc+'">&#9679;</span> '+s+'</div>';});
+  h+='</div></div><button class="modal-cta">Use This Template</button></div>';
+  h+='<div class="modal-stats"><div class="modal-stat"><div class="val">'+t.conv+'</div><div class="lbl">Avg. conversion</div></div><div class="modal-stat"><div class="val">'+t.leads+'</div><div class="lbl">Leads captured</div></div><div class="modal-stat"><div class="val">'+t.deployed+'</div><div class="lbl">Times deployed</div></div><div class="modal-stat"><div class="val">'+t.score+'/10</div><div class="lbl">Quality score</div></div></div></div>';
+  document.getElementById('modalContent').innerHTML=h;
+  document.getElementById('modalBg').classList.add('vis');
+}
+function closeModal(){document.getElementById('modalBg').classList.remove('vis');}
+
+render();
+</script>
+</body>
+</html>
