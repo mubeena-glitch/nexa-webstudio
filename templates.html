@@ -202,7 +202,7 @@ function openModal(id){
   h+='<div class="modal-meta"><span class="modal-chip">'+t.industry+'</span><span class="modal-chip">'+t.goal+'</span></div>';
   h+='</div><div class="modal-actions">';
   h+='<a class="modal-cta" href="'+f+'" target="_blank" rel="noopener">Open Full Template &#8599;</a>';
-  h+='<a class="modal-cta ghost" href="studio.html" >Edit in Studio</a>';
+  h+='<a class="modal-cta ghost" href="editor.html?t='+encodeURIComponent(t.id)+'&name='+encodeURIComponent(t.name)+'">Edit in Studio</a>';
   h+='</div></div></div>';
   document.getElementById('modalContent').innerHTML=h;
   document.getElementById('modalBg').classList.add('vis');
