@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verdant — Sustainability &amp; Impact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
+<style>
+/* ============ TOKENS — mirror theme.json 1:1 ============ */
+:root{
+  /* color (rgb triples) */
+  --bg: 244 241 230;
+  --surface: 237 232 217;
+  --ink: 31 51 32;
+  --muted: 94 106 86;
+  --line: 210 203 182;
+  --primary: 74 124 63;
+  --onPrimary: 244 241 230;
+  --accent: 217 154 63;
+  --accent2: 138 168 122;
+
+  /* type */
+  --display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --body: 'General Sans', ui-sans-serif, system-ui, sans-serif;
+  --scaleRatio: 1.26;
+  --w-display: 400;
+  --w-displayBold: 500;
+  --w-body: 400;
+  --w-label: 600;
+  --w-bold: 600;
+  --displayTracking: -0.01em;
+
+  /* space */
+  --base: 8px;
+  --section: clamp(84px, 11vw, 156px);
+  --gutter: clamp(20px, 5vw, 64px);
+
+  /* radius */
+  --r-card: 20px;
+  --r-button: 999px;
+  --r-input: 12px;
+  --r-pill: 999px;
+
+  /* shadow */
+  --sh-card: 0 24px 50px -30px rgb(31 51 32 / 0.42);
+  --sh-elevated: 0 44px 84px -38px rgb(31 51 32 / 0.50);
+
+  /* motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 680ms;
+
+  /* imagery */
+  --img-filter: saturate(1.04) contrast(1.02);
+
+  /* type scale (1.26) */
+  --t-xs: 0.79rem;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-md: 1.26rem;
+  --t-lg: 1.59rem;
+  --t-xl: 2rem;
+  --t-2xl: 2.52rem;
+  --t-3xl: 3.18rem;
+  --t-4xl: clamp(2.6rem, 6vw, 4.4rem);
+  --t-5xl: clamp(3.4rem, 8vw, 6rem);
+  --t-6xl: clamp(4rem, 12vw, 9.5rem);
+
+  --maxw: 1240px;
+}
+
+/* ============ RESET / BASE ============ */
+*{ box-sizing: border-box; margin: 0; padding: 0; }
+html{ scroll-behavior: smooth; }
+body{
+  font-family: var(--body);
+  font-weight: var(--w-body);
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+h1,h2,h3,h4{ font-family: var(--display); font-weight: var(--w-display); letter-spacing: var(--displayTracking); line-height: 1.08; }
+img{ display: block; max-width: 100%; }
+a{ color: inherit; text-decoration: none; }
+button{ font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+:focus-visible{ outline: 3px solid rgb(var(--accent)); outline-offset: 3px; border-radius: 4px; }
+
+.wrap{ width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+.section{ padding-block: var(--section); }
+
+.eyebrow{
+  font-family: var(--body);
+  font-weight: var(--w-label);
+  font-size: var(--t-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--primary));
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.eyebrow::before{ content: ""; width: 26px; height: 1px; background: rgb(var(--primary)); display: inline-block; }
+
+/* ============ BUTTONS (recipe: solid-pill) ============ */
+.btn{
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--body); font-weight: var(--w-label);
+  font-size: var(--t-sm); letter-spacing: 0.01em;
+  padding: 14px 26px; border-radius: var(--r-button);
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  will-change: transform;
+}
+.btn svg{ width: 16px; height: 16px; }
+.btn-donate{ background: rgb(var(--accent)); color: rgb(var(--ink)); }
+.btn-donate:hover{ transform: translateY(-3px); box-shadow: 0 16px 30px -14px rgb(var(--accent) / 0.6); }
+.btn-primary{ background: rgb(var(--primary)); color: rgb(var(--onPrimary)); }
+.btn-primary:hover{ transform: translateY(-3px); box-shadow: 0 16px 30px -14px rgb(var(--primary) / 0.55); }
+.btn-ghost{ background: transparent; color: rgb(var(--ink)); border: 1px solid rgb(var(--line)); }
+.btn-ghost:hover{ background: rgb(var(--surface)); transform: translateY(-3px); }
+
+/* ============ NAV (recipe: split-donate) ============ */
+.nav{
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px var(--gutter);
+  transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), padding var(--dur) var(--ease);
+}
+.nav.scrolled{
+  background: rgb(var(--bg) / 0.86);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgb(var(--line) / 0.8);
+  padding-block: 12px;
+}
+.logo{ display: flex; align-items: center; gap: 11px; font-family: var(--display); font-size: var(--t-lg); font-weight: var(--w-displayBold); }
+.logo .mark{
+  width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
+  background: rgb(var(--primary)); position: relative; transform: rotate(-45deg);
+  display: grid; place-items: center; flex: none;
+}
+.logo .mark::after{ content: ""; width: 2px; height: 14px; background: rgb(var(--bg)); border-radius: 2px; transform: rotate(45deg); }
+.nav-links{ display: flex; align-items: center; gap: 30px; }
+.nav-links a{ font-size: var(--t-sm); font-weight: 500; color: rgb(var(--muted)); transition: color var(--dur) var(--ease); position: relative; }
+.nav-links a::after{ content:""; position:absolute; left:0; bottom:-5px; width:0; height:2px; background: rgb(var(--primary)); transition: width var(--dur) var(--ease); }
+.nav-links a:hover{ color: rgb(var(--ink)); }
+.nav-links a:hover::after{ width: 100%; }
+.nav-right{ display: flex; align-items: center; gap: 18px; }
+.nav-toggle{ display: none; }
+
+/* ============ HERO — editorial big-number impact ============ */
+.hero{ padding-top: clamp(120px, 16vh, 168px); position: relative; }
+/* asymmetric editorial grid: 12 cols */
+.hero-grid{
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: clamp(20px, 4vw, 56px);
+  row-gap: clamp(34px, 5vw, 60px);
+  align-items: start;
+}
+/* top row: eyebrow left, oversized serif headline spanning wide */
+.hero-eyebrow{ grid-column: 1 / 13; }
+.hero-title{ grid-column: 1 / 11; }     /* span 10 */
+.hero-title h1{ font-size: var(--t-6xl); line-height: 0.94; letter-spacing: -0.02em; }
+.hero-title h1 em{ font-style: italic; color: rgb(var(--primary)); }
+.hero-title .lede{ font-size: var(--t-md); color: rgb(var(--muted)); max-width: 42ch; margin-top: 28px; }
+.hero-title .hero-cta{ display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+
+/* media block — tall portrait nature image, right-anchored */
+.hero-media{ grid-column: 9 / 13; align-self: stretch; position: relative; }
+.hero-media .frame{ overflow: hidden; border-radius: var(--r-card); box-shadow: var(--sh-elevated); height: 100%; min-height: clamp(320px, 42vh, 520px); }
+.hero-media img{ width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); will-change: transform; }
+
+/* impact numbers — asymmetric editorial placement, NOT a tidy band */
+.hero-impact{ grid-column: 1 / 9; display: grid; grid-template-columns: repeat(8, 1fr); column-gap: clamp(20px, 4vw, 56px); row-gap: 40px; align-items: end; }
+.hero-stat{ position: relative; }
+.hero-stat.s1{ grid-column: 1 / 4; }   /* span 3 */
+.hero-stat.s2{ grid-column: 4 / 7; }   /* span 3 */
+.hero-stat.s3{ grid-column: 7 / 9; }   /* span 2 -> total 8 */
+.hero-stat .big{
+  font-family: var(--display); font-weight: var(--w-displayBold);
+  font-size: clamp(2.6rem, 5.5vw, 4.6rem); line-height: 0.92; letter-spacing: -0.02em;
+  color: rgb(var(--ink)); display: flex; align-items: baseline; gap: 4px;
+}
+.hero-stat .big .suf{ font-size: 0.5em; color: rgb(var(--accent)); }
+.hero-stat .lbl{
+  font-family: var(--body); font-weight: var(--w-label); font-size: var(--t-xs);
+  letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--muted));
+  margin-top: 14px; padding-top: 13px; border-top: 1px solid rgb(var(--line));
+}
+.hero-stat.s3 .big{ color: rgb(var(--primary)); }
+.hero-rule{ grid-column: 1 / 13; height: 1px; background: rgb(var(--line)); margin-top: 8px; }
+
+/* ============ MANIFESTO (editorial-statement) ============ */
+.manifesto{ text-align: center; }
+.manifesto .eyebrow{ margin-bottom: 30px; }
+.manifesto p.statement{
+  font-family: var(--display); font-size: clamp(1.7rem, 3.6vw, 3rem);
+  line-height: 1.22; max-width: 24ch; margin-inline: auto; color: rgb(var(--ink));
+}
+.manifesto p.statement em{ font-style: italic; color: rgb(var(--primary)); }
+.manifesto .sign{ margin-top: 36px; font-size: var(--t-sm); color: rgb(var(--muted)); }
+.manifesto .sign strong{ color: rgb(var(--ink)); font-weight: 600; }
+
+/* ============ PROGRAMS (photo-card-grid) ============ */
+.programs-head{ display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 50px; }
+.programs-head h2{ font-size: var(--t-3xl); max-width: 16ch; }
+.programs-head p{ color: rgb(var(--muted)); max-width: 36ch; }
+.programs-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.pcard{
+  background: rgb(var(--surface)); border-radius: var(--r-card); overflow: hidden;
+  box-shadow: var(--sh-card); display: flex; flex-direction: column;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.pcard:hover{ transform: translateY(-7px); box-shadow: var(--sh-elevated); }
+.pcard .ph{ overflow: hidden; aspect-ratio: 4/3; }
+.pcard .ph img{ width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); transition: transform var(--dur) var(--ease); }
+.pcard:hover .ph img{ transform: scale(1.06); }
+.pcard .body{ padding: 26px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.pcard .tag{ font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--accent)); }
+.pcard h3{ font-size: var(--t-lg); }
+.pcard p{ font-size: var(--t-sm); color: rgb(var(--muted)); flex: 1; }
+.pcard .more{ font-size: var(--t-sm); font-weight: 600; color: rgb(var(--primary)); display: inline-flex; align-items: center; gap: 7px; }
+.pcard .more svg{ width: 15px; height: 15px; transition: transform var(--dur) var(--ease); }
+.pcard:hover .more svg{ transform: translateX(5px); }
+
+/* ============ STORY SPLIT (image-split-pullquote) ============ */
+.story{ background: rgb(var(--surface)); }
+.story-grid{ display: grid; grid-template-columns: 0.95fr 1.05fr; gap: clamp(28px, 5vw, 70px); align-items: center; }
+.story-media{ position: relative; }
+.story-media .frame{ overflow: hidden; border-radius: var(--r-card); box-shadow: var(--sh-card); }
+.story-media img{ width: 100%; height: clamp(380px, 50vh, 560px); object-fit: cover; filter: var(--img-filter); will-change: transform; }
+.story-media .credit{ position: absolute; bottom: 16px; left: 16px; background: rgb(var(--bg) / 0.9); padding: 6px 14px; border-radius: var(--r-pill); font-size: var(--t-xs); color: rgb(var(--muted)); }
+.story-copy .eyebrow{ margin-bottom: 22px; }
+.story-copy h2{ font-size: var(--t-2xl); margin-bottom: 22px; }
+.story-quote{ font-family: var(--display); font-style: italic; font-size: var(--t-lg); line-height: 1.4; color: rgb(var(--primary)); border-left: 3px solid rgb(var(--accent)); padding-left: 22px; margin: 26px 0; }
+.story-copy p{ color: rgb(var(--muted)); margin-bottom: 16px; }
+.story-by{ font-size: var(--t-sm); }
+.story-by strong{ color: rgb(var(--ink)); font-weight: 600; }
+
+/* ============ WAYS TO HELP (three-path-blocks) ============ */
+.ways-head{ text-align: center; margin-bottom: 52px; }
+.ways-head h2{ font-size: var(--t-3xl); margin-top: 16px; }
+.ways-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.way{
+  border-radius: var(--r-card); padding: 38px 32px; display: flex; flex-direction: column; gap: 16px;
+  min-height: 320px; transition: transform var(--dur) var(--ease);
+}
+.way:hover{ transform: translateY(-6px); }
+.way .ic{ width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; }
+.way .ic svg{ width: 26px; height: 26px; }
+.way h3{ font-size: var(--t-xl); }
+.way p{ font-size: var(--t-sm); flex: 1; }
+.way-donate{ background: rgb(var(--primary)); color: rgb(var(--onPrimary)); }
+.way-donate .ic{ background: rgb(var(--onPrimary) / 0.16); color: rgb(var(--onPrimary)); }
+.way-donate p{ color: rgb(var(--onPrimary) / 0.82); }
+.way-volunteer{ background: rgb(var(--surface)); color: rgb(var(--ink)); }
+.way-volunteer .ic{ background: rgb(var(--accent2) / 0.3); color: rgb(var(--primary)); }
+.way-volunteer p{ color: rgb(var(--muted)); }
+.way-partner{ background: rgb(var(--ink)); color: rgb(var(--bg)); }
+.way-partner .ic{ background: rgb(var(--accent) / 0.22); color: rgb(var(--accent)); }
+.way-partner p{ color: rgb(var(--bg) / 0.78); }
+.way a{ font-size: var(--t-sm); font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+.way a svg{ width: 15px; height: 15px; }
+
+/* ============ PROGRESS (goal-bar-fill) ============ */
+.progress{ background: rgb(var(--surface)); }
+.progress-card{
+  background: rgb(var(--bg)); border-radius: var(--r-card); padding: clamp(32px, 5vw, 60px);
+  box-shadow: var(--sh-card); max-width: 900px; margin-inline: auto;
+}
+.progress-card .eyebrow{ margin-bottom: 18px; }
+.progress-card h2{ font-size: var(--t-2xl); margin-bottom: 30px; max-width: 20ch; }
+.progress-amts{ display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.progress-amts .raised{ font-family: var(--display); font-size: var(--t-3xl); font-weight: var(--w-displayBold); color: rgb(var(--primary)); }
+.progress-amts .goal{ font-size: var(--t-md); color: rgb(var(--muted)); }
+.bar{ height: 16px; border-radius: var(--r-pill); background: rgb(var(--line)); overflow: hidden; }
+.bar-fill{ height: 100%; width: 0; border-radius: var(--r-pill); background: linear-gradient(90deg, rgb(var(--primary)), rgb(var(--accent))); }
+.progress-meta{ display: flex; justify-content: space-between; margin-top: 14px; font-size: var(--t-sm); color: rgb(var(--muted)); flex-wrap: wrap; gap: 10px; }
+.progress-meta strong{ color: rgb(var(--ink)); font-weight: 600; }
+.progress-card .btn{ margin-top: 28px; }
+
+/* ============ VOICES (quote-photo-cards) ============ */
+.voices-head{ margin-bottom: 50px; max-width: 22ch; }
+.voices-head h2{ font-size: var(--t-3xl); margin-top: 16px; }
+.voices-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.voice{ background: rgb(var(--surface)); border-radius: var(--r-card); padding: 30px; display: flex; flex-direction: column; gap: 20px; box-shadow: var(--sh-card); }
+.voice .q{ font-family: var(--display); font-size: var(--t-md); line-height: 1.4; color: rgb(var(--ink)); flex: 1; }
+.voice .q::before{ content: "“"; font-size: var(--t-3xl); color: rgb(var(--accent)); line-height: 0.3; display: block; }
+.voice .who{ display: flex; align-items: center; gap: 13px; }
+.voice .who img{ width: 48px; height: 48px; border-radius: 50%; object-fit: cover; filter: var(--img-filter); }
+.voice .who .nm{ font-weight: 600; font-size: var(--t-sm); }
+.voice .who .role{ font-size: var(--t-xs); color: rgb(var(--muted)); }
+
+/* ============ PARTNERS (wordmark-row) ============ */
+.partners{ background: rgb(var(--surface)); padding-block: clamp(48px, 7vw, 80px); }
+.partners p.cap{ text-align: center; font-size: var(--t-sm); color: rgb(var(--muted)); margin-bottom: 36px; }
+.marquee{ overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee-track{ display: flex; gap: 64px; width: max-content; animation: scroll 32s linear infinite; }
+.wordmark{ font-family: var(--display); font-size: var(--t-lg); font-weight: var(--w-displayBold); color: rgb(var(--muted)); white-space: nowrap; opacity: 0.78; display: flex; align-items: center; gap: 9px; }
+.wordmark::before{ content:""; width: 9px; height: 9px; border-radius: 50%; background: rgb(var(--accent2)); }
+@keyframes scroll{ to{ transform: translateX(-50%); } }
+
+/* ============ DONATE CTA (image-band-donate) ============ */
+.donate-cta{ position: relative; color: rgb(var(--bg)); text-align: center; overflow: hidden; }
+.donate-cta img.bgimg{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.donate-cta .scrim{ position: absolute; inset: 0; background: linear-gradient(rgb(var(--ink) / 0.55), rgb(var(--ink) / 0.78)); z-index: 1; }
+.donate-cta .wrap{ position: relative; z-index: 2; }
+.donate-cta .eyebrow{ color: rgb(var(--accent)); }
+.donate-cta .eyebrow::before{ background: rgb(var(--accent)); }
+.donate-cta h2{ font-size: var(--t-4xl); margin: 22px auto 18px; max-width: 18ch; }
+.donate-cta h2 em{ font-style: italic; color: rgb(var(--accent)); }
+.donate-cta p{ color: rgb(var(--bg) / 0.85); max-width: 44ch; margin: 0 auto 32px; }
+
+/* ============ FOOTER (multi-column-newsletter) ============ */
+.footer{ background: rgb(var(--ink)); color: rgb(var(--bg)); padding-block: clamp(56px, 8vw, 92px) 36px; }
+.footer-top{ display: grid; grid-template-columns: 1.4fr repeat(3, 0.8fr); gap: 40px; padding-bottom: 48px; border-bottom: 1px solid rgb(var(--bg) / 0.16); }
+.footer .logo{ color: rgb(var(--bg)); margin-bottom: 18px; }
+.footer-brand p{ color: rgb(var(--bg) / 0.7); font-size: var(--t-sm); max-width: 32ch; }
+.footer-col h4{ font-family: var(--body); font-size: var(--t-xs); letter-spacing: 0.14em; text-transform: uppercase; color: rgb(var(--accent)); font-weight: 600; margin-bottom: 18px; }
+.footer-col a{ display: block; color: rgb(var(--bg) / 0.74); font-size: var(--t-sm); margin-bottom: 11px; transition: color var(--dur) var(--ease); }
+.footer-col a:hover{ color: rgb(var(--bg)); }
+.newsletter{ margin-top: 44px; }
+.newsletter h4{ font-family: var(--display); font-size: var(--t-lg); color: rgb(var(--bg)); margin-bottom: 6px; font-weight: var(--w-displayBold); }
+.newsletter p{ font-size: var(--t-sm); color: rgb(var(--bg) / 0.66); margin-bottom: 16px; }
+.newsletter form{ display: flex; gap: 10px; max-width: 420px; flex-wrap: wrap; }
+.newsletter input{
+  flex: 1; min-width: 200px; padding: 13px 18px; border-radius: var(--r-input);
+  border: 1px solid rgb(var(--bg) / 0.22); background: rgb(var(--bg) / 0.06); color: rgb(var(--bg));
+  font-family: var(--body); font-size: var(--t-sm);
+}
+.newsletter input::placeholder{ color: rgb(var(--bg) / 0.5); }
+.footer-bottom{ display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 36px; font-size: var(--t-xs); color: rgb(var(--bg) / 0.6); }
+.footer-bottom .links{ display: flex; gap: 22px; flex-wrap: wrap; }
+.footer-bottom a:hover{ color: rgb(var(--bg)); }
+
+/* ============ RIBBON ============ */
+.ribbon{
+  position: fixed; right: 14px; bottom: 14px; z-index: 200;
+  background: rgb(var(--ink)); color: rgb(var(--bg));
+  font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+  padding: 8px 14px; border-radius: var(--r-pill); box-shadow: var(--sh-card);
+  display: flex; align-items: center; gap: 8px;
+}
+.ribbon .dot{ width: 7px; height: 7px; border-radius: 50%; background: rgb(var(--accent)); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1040px){
+  .hero-title{ grid-column: 1 / 9; }
+  .hero-media{ grid-column: 9 / 13; }
+  .hero-impact{ grid-column: 1 / 13; }
+}
+@media (max-width: 860px){
+  .hero-title{ grid-column: 1 / 13; }
+  .hero-media{ grid-column: 1 / 13; }
+  .hero-media .frame{ min-height: 320px; }
+  .hero-impact{ grid-template-columns: repeat(6, 1fr); }
+  .hero-stat.s1{ grid-column: 1 / 4; }   /* span 3 */
+  .hero-stat.s2{ grid-column: 4 / 7; }   /* span 3 -> row complete (6) */
+  .hero-stat.s3{ grid-column: 1 / 7; }   /* span 6 -> own full row */
+  .story-grid{ grid-template-columns: 1fr; }
+  .programs-grid, .ways-grid, .voices-grid{ grid-template-columns: 1fr 1fr; }
+  .footer-top{ grid-template-columns: 1fr 1fr; }
+  .nav-links{
+    position: fixed; inset: 0 0 0 auto; width: min(78vw, 320px);
+    background: rgb(var(--bg)); flex-direction: column; align-items: flex-start; justify-content: center;
+    padding: 40px; gap: 22px; transform: translateX(100%); transition: transform var(--dur) var(--ease);
+    box-shadow: var(--sh-elevated);
+  }
+  .nav-links.open{ transform: none; }
+  .nav-toggle{ display: grid; gap: 5px; padding: 8px; }
+  .nav-toggle span{ width: 24px; height: 2px; background: rgb(var(--ink)); display: block; transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease); }
+  .nav-toggle.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2){ opacity: 0; }
+  .nav-toggle.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+}
+@media (max-width: 620px){
+  .hero-impact{ grid-template-columns: 1fr; }
+  .hero-stat.s1, .hero-stat.s2, .hero-stat.s3{ grid-column: 1 / 2; }  /* one per row */
+  .programs-grid, .ways-grid, .voices-grid, .footer-top{ grid-template-columns: 1fr; }
+}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .marquee-track{ animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="nav" id="nav" aria-label="Primary">
+  <a class="logo" href="#" aria-label="Verdant home">
+    <span class="mark" aria-hidden="true"></span> Verdant
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="#mission">Mission</a>
+    <a href="#programs">Programs</a>
+    <a href="#story">Impact</a>
+    <a href="#ways">Get involved</a>
+    <a href="#voices">Voices</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn btn-donate" href="#donate">Donate
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.4 5 6 5c2 0 3.2 1.2 4 2.4C10.8 6.2 12 5 14 5c3.6 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z" stroke-linejoin="round"/></svg>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO — editorial big-number impact ===== -->
+<header class="hero section wrap">
+  <div class="hero-grid">
+    <span class="eyebrow hero-eyebrow" data-hero>A living planet, restored</span>
+
+    <div class="hero-title" data-hero>
+      <h1>We grow the <em>conditions</em><br>for nature to return.</h1>
+      <p class="lede">Verdant partners with rural communities to restore forests, protect watersheds, and build a climate-resilient future — one rooted seedling at a time.</p>
+      <div class="hero-cta">
+        <a class="btn btn-donate" href="#donate">Donate today</a>
+        <a class="btn btn-ghost" href="#ways">Get involved
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-media" data-hero>
+      <div class="frame">
+        <img id="heroImg" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1100&q=80&auto=format&fit=crop" alt="Sunlight filtering through a dense green forest canopy" />
+      </div>
+    </div>
+
+    <div class="hero-impact">
+      <div class="hero-stat s1" data-hero>
+        <div class="big"><span class="count" data-target="4200000">0</span></div>
+        <div class="lbl">Native trees planted</div>
+      </div>
+      <div class="hero-stat s2" data-hero>
+        <div class="big"><span class="count" data-target="128000">0</span></div>
+        <div class="lbl">People reached with clean water</div>
+      </div>
+      <div class="hero-stat s3" data-hero>
+        <div class="big"><span class="count" data-target="71">0</span><span class="suf">%</span></div>
+        <div class="lbl">Toward our 2026 goal</div>
+      </div>
+    </div>
+
+    <div class="hero-rule" aria-hidden="true"></div>
+  </div>
+</header>
+
+<!-- ===== MANIFESTO ===== -->
+<section class="manifesto section wrap" id="mission">
+  <span class="eyebrow" data-reveal>Our belief</span>
+  <p class="statement" data-reveal>When people and land thrive together, restoration becomes <em>permanent</em> — not a project, but a way of living.</p>
+  <p class="sign" data-reveal>— <strong>Amara Okonkwo</strong>, Founder &amp; Executive Director</p>
+</section>
+
+<!-- ===== PROGRAMS ===== -->
+<section class="section wrap" id="programs">
+  <div class="programs-head" data-reveal>
+    <h2>Programs that put roots down.</h2>
+    <p>We work where need and opportunity meet — backing local leadership with science, funding, and patience.</p>
+  </div>
+  <div class="programs-grid">
+    <article class="pcard" data-batch>
+      <div class="ph"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=720&q=80&auto=format&fit=crop" alt="Misty green mountain valley at dawn" /></div>
+      <div class="body">
+        <span class="tag">Reforestation</span>
+        <h3>Living Forests</h3>
+        <p>Community-grown nurseries raise native species, then steward them through the critical first five years.</p>
+        <a class="more" href="#">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </article>
+    <article class="pcard" data-batch>
+      <div class="ph"><img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=720&q=80&auto=format&fit=crop" alt="Clear stream running through green wetland" /></div>
+      <div class="body">
+        <span class="tag">Clean Water</span>
+        <h3>Source to Tap</h3>
+        <p>We protect upstream watersheds and build village-scale filtration, reaching households that water never reached before.</p>
+        <a class="more" href="#">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </article>
+    <article class="pcard" data-batch>
+      <div class="ph"><img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=720&q=80&auto=format&fit=crop" alt="Rolling green farmland under a soft sky" /></div>
+      <div class="body">
+        <span class="tag">Education</span>
+        <h3>Roots &amp; Reading</h3>
+        <p>Field schools teach regenerative farming and ecology, equipping a new generation of community stewards.</p>
+        <a class="more" href="#">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===== STORY SPLIT ===== -->
+<section class="story section" id="story">
+  <div class="wrap story-grid">
+    <div class="story-media" data-reveal>
+      <div class="frame"><img id="storyImg" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=820&q=80&auto=format&fit=crop" alt="Golden field of grass swaying at sunset" /></div>
+      <span class="credit">Tambala Valley, harvest season</span>
+    </div>
+    <div class="story-copy" data-reveal>
+      <span class="eyebrow">Meet Esi</span>
+      <h2>The grandmother who reforested a hillside.</h2>
+      <p>When the rains stopped coming, Esi planted forty seedlings behind her home. Today that hillside is a 12-hectare forest, and forty other families have followed her lead.</p>
+      <blockquote class="story-quote">“I won't see these trees grow tall. But my granddaughter will sit in their shade.”</blockquote>
+      <p class="story-by"><strong>Esi Mensah</strong> — Community lead, Tambala Valley</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WAYS TO HELP ===== -->
+<section class="section wrap" id="ways">
+  <div class="ways-head" data-reveal>
+    <span class="eyebrow">Three ways to help</span>
+    <h2>Plant your part in this.</h2>
+  </div>
+  <div class="ways-grid">
+    <div class="way way-donate" data-batch>
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.4 5 6 5c2 0 3.2 1.2 4 2.4C10.8 6.2 12 5 14 5c3.6 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z" stroke-linejoin="round"/></svg></div>
+      <h3>Donate</h3>
+      <p>$25 plants and protects a grove of native seedlings for a full year. Give once or give monthly.</p>
+      <a href="#donate">Give now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="way way-volunteer" data-batch>
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h3>Volunteer</h3>
+      <p>Join a planting season on the ground, or lend remote skills in mapping, design, and storytelling.</p>
+      <a href="#">Find a role <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="way way-partner" data-batch>
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7h-9M14 17H5M5 7l3-3M19 17l-3 3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="17" r="2"/></svg></div>
+      <h3>Partner</h3>
+      <p>Align your organization's climate goals with verified, community-led restoration at scale.</p>
+      <a href="#">Talk to us <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROGRESS ===== -->
+<section class="progress section">
+  <div class="wrap">
+    <div class="progress-card" data-reveal>
+      <span class="eyebrow">2026 Restoration Fund</span>
+      <h2>Help us reach 1 million new trees this year.</h2>
+      <div class="progress-amts">
+        <span class="raised">$1.42M</span>
+        <span class="goal">raised of $2M goal</span>
+      </div>
+      <div class="bar" role="progressbar" aria-valuenow="71" aria-valuemin="0" aria-valuemax="100" aria-label="Fundraising progress">
+        <div class="bar-fill" id="barFill" data-fill="71"></div>
+      </div>
+      <div class="progress-meta">
+        <span><strong>71%</strong> funded</span>
+        <span><strong>4,180</strong> supporters &middot; <strong>62 days</strong> left</span>
+      </div>
+      <a class="btn btn-primary" href="#donate">Add your gift</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VOICES ===== -->
+<section class="section wrap" id="voices">
+  <div class="voices-head" data-reveal>
+    <span class="eyebrow">Voices from the field</span>
+    <h2>The change, in their words.</h2>
+  </div>
+  <div class="voices-grid">
+    <figure class="voice" data-batch>
+      <blockquote class="q">The river behind our school runs clear now. My students learn ecology by walking out the door.</blockquote>
+      <figcaption class="who">
+        <img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=120&q=80&auto=format&fit=crop" alt="Portrait of teacher Kofi smiling" />
+        <span><span class="nm">Kofi Adjei</span><br><span class="role">Teacher, Roots &amp; Reading</span></span>
+      </figcaption>
+    </figure>
+    <figure class="voice" data-batch>
+      <blockquote class="q">We gave one weekend a month. A year later there's a forest where the slope used to slide away.</blockquote>
+      <figcaption class="who">
+        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=120&q=80&auto=format&fit=crop" alt="Portrait of volunteer Lena outdoors" />
+        <span><span class="nm">Lena Brandt</span><br><span class="role">Volunteer since 2021</span></span>
+      </figcaption>
+    </figure>
+    <figure class="voice" data-batch>
+      <blockquote class="q">Verdant counts every tree and every household. That honesty is why we fund them year after year.</blockquote>
+      <figcaption class="who">
+        <img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=120&q=80&auto=format&fit=crop" alt="Portrait of partner Marisol" />
+        <span><span class="nm">Marisol Vega</span><br><span class="role">Partner, Aurora Climate Fund</span></span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== PARTNERS ===== -->
+<section class="partners" aria-label="Our supporters">
+  <p class="cap">Supported by foundations, companies, and communities who believe in patient restoration</p>
+  <div class="marquee">
+    <div class="marquee-track" id="marquee">
+      <span class="wordmark">Aurora Climate Fund</span>
+      <span class="wordmark">Greenhaven Trust</span>
+      <span class="wordmark">Terra Collective</span>
+      <span class="wordmark">Riverstone Foundation</span>
+      <span class="wordmark">Cedar &amp; Co.</span>
+      <span class="wordmark">Wildroot Alliance</span>
+      <span class="wordmark">Aurora Climate Fund</span>
+      <span class="wordmark">Greenhaven Trust</span>
+      <span class="wordmark">Terra Collective</span>
+      <span class="wordmark">Riverstone Foundation</span>
+      <span class="wordmark">Cedar &amp; Co.</span>
+      <span class="wordmark">Wildroot Alliance</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DONATE CTA ===== -->
+<section class="donate-cta section" id="donate">
+  <img class="bgimg" src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=1600&q=80&auto=format&fit=crop" alt="" aria-hidden="true" />
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="eyebrow" data-reveal>Give today</span>
+    <h2 data-reveal>Your gift <em>plants</em> the future.</h2>
+    <p data-reveal>Restoration takes decades, but it begins with a single decision. Stand with the communities turning bare ground back into living forest.</p>
+    <a class="btn btn-donate" href="#" data-reveal>Donate now
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.4 5 6 5c2 0 3.2 1.2 4 2.4C10.8 6.2 12 5 14 5c3.6 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="#"><span class="mark" aria-hidden="true"></span> Verdant</a>
+        <p>A nonprofit restoring forests and watersheds in partnership with the communities who call them home.</p>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <a href="#">Our story</a>
+        <a href="#">Team &amp; board</a>
+        <a href="#">Annual reports</a>
+        <a href="#">Financials</a>
+      </div>
+      <div class="footer-col">
+        <h4>Programs</h4>
+        <a href="#programs">Reforestation</a>
+        <a href="#programs">Clean water</a>
+        <a href="#programs">Education</a>
+        <a href="#story">Impact stories</a>
+      </div>
+      <div class="footer-col">
+        <h4>Get involved</h4>
+        <a href="#donate">Donate</a>
+        <a href="#ways">Volunteer</a>
+        <a href="#ways">Partner with us</a>
+        <a href="#">Careers</a>
+      </div>
+    </div>
+    <div class="newsletter">
+      <h4>Field notes, monthly</h4>
+      <p>Stories from the ground, sent once a month. No noise, just roots.</p>
+      <form id="newsletterForm">
+        <label for="nlEmail" class="sr-only" style="position:absolute;left:-9999px;">Email address</label>
+        <input id="nlEmail" type="email" name="email" placeholder="you@email.com" aria-label="Email address" required />
+        <button class="btn btn-donate" type="submit">Subscribe</button>
+      </form>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Verdant Foundation. Registered charity No. 1184502.</span>
+      <span class="links">
+        <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a><a href="#">Accessibility</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon" aria-hidden="true"><span class="dot"></span>NEXA Theme · Verdant · nonprofit</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  /* ---------- UI behavior (always runs, motion-independent) ---------- */
+  var nav = document.getElementById('nav');
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 30); }
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+  var toggle = document.getElementById('navToggle');
+  var links = document.getElementById('navLinks');
+  toggle.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    toggle.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ links.classList.remove('open'); toggle.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); });
+  });
+
+  document.getElementById('newsletterForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = this.querySelector('button');
+    btn.textContent = 'Welcome aboard ✓';
+    this.querySelector('input').value = '';
+  });
+
+  /* ---------- helpers ---------- */
+  function fmt(n){
+    if (n >= 1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
+    if (n >= 1000) return Math.round(n/1000) + 'K';
+    return String(n);
+  }
+  function setFinalCounts(){
+    document.querySelectorAll('.count').forEach(function(el){ el.textContent = fmt(+el.getAttribute('data-target')); });
+  }
+  function setBarFinal(){
+    var bar = document.getElementById('barFill');
+    if (bar) bar.style.width = bar.getAttribute('data-fill') + '%';
+  }
+
+  /* ---------- GSAP guarded enhancement ---------- */
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (window.gsap && !reduced){
+    gsap.registerPlugin(ScrollTrigger);
+    var EASE = 'power3.out';
+
+    var mm = gsap.matchMedia();
+
+    // Full-motion branch: only animate when motion is allowed.
+    mm.add('(prefers-reduced-motion: no-preference)', function(){
+
+      // Set initial hidden states ONLY inside guard (never via CSS).
+      gsap.set('[data-hero]', { opacity: 0, y: 34 });
+      gsap.set('[data-reveal]', { opacity: 0, y: 28 });
+      gsap.set('[data-batch]', { opacity: 0, y: 30 });
+
+      // Hero entrance — staggered editorial reveal.
+      gsap.to('[data-hero]', {
+        opacity: 1, y: 0, duration: 1.05, ease: EASE, stagger: 0.12, delay: 0.1
+      });
+
+      // Count-up impact numbers (hero) — fires after entrance.
+      document.querySelectorAll('.count').forEach(function(el, i){
+        var target = +el.getAttribute('data-target');
+        var obj = { v: 0 };
+        gsap.to(obj, {
+          v: target, duration: 1.8, ease: 'power2.out', delay: 0.5 + i * 0.12,
+          onUpdate: function(){ el.textContent = fmt(Math.round(obj.v)); },
+          onComplete: function(){ el.textContent = fmt(target); }
+        });
+      });
+
+      // Generic single-element reveals on scroll.
+      gsap.utils.toArray('[data-reveal]').forEach(function(el){
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 0.9, ease: EASE,
+          scrollTrigger: { trigger: el, start: 'top 85%' }
+        });
+      });
+
+      // Batched staggered reveals for card grids.
+      ScrollTrigger.batch('[data-batch]', {
+        start: 'top 88%',
+        onEnter: function(els){
+          gsap.to(els, { opacity: 1, y: 0, duration: 0.85, ease: EASE, stagger: 0.12, overwrite: true });
+        }
+      });
+
+      // Progress-to-goal bar fill on view.
+      var bar = document.getElementById('barFill');
+      if (bar){
+        gsap.fromTo(bar, { width: '0%' }, {
+          width: bar.getAttribute('data-fill') + '%', duration: 1.6, ease: EASE,
+          scrollTrigger: { trigger: bar, start: 'top 90%' }
+        });
+      }
+
+      // Image parallax (hero + story).
+      ['#heroImg', '#storyImg'].forEach(function(sel){
+        var img = document.querySelector(sel);
+        if (!img) return;
+        gsap.fromTo(img, { yPercent: -8 }, {
+          yPercent: 8, ease: 'none',
+          scrollTrigger: { trigger: img, start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+      });
+
+      // Cleanup when leaving this media context.
+      return function(){
+        gsap.set('[data-hero], [data-reveal], [data-batch]', { clearProps: 'all' });
+        setFinalCounts();
+        setBarFinal();
+      };
+    });
+
+    // Reduced-motion branch: ensure final states, no animation.
+    mm.add('(prefers-reduced-motion: reduce)', function(){
+      setFinalCounts();
+      setBarFinal();
+    });
+
+  } else {
+    // GSAP absent OR reduced motion: render everything fully, no hidden state.
+    setFinalCounts();
+    setBarFinal();
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>

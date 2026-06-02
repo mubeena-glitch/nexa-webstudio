@@ -1,0 +1,52 @@
+{
+  "id": "voltage",
+  "name": "Voltage",
+  "family": "bold",
+  "sector": "Creative agency",
+  "tags": ["maximalist", "kinetic", "high-contrast", "editorial", "agency", "grid-breaking", "loud"],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "17 17 17",
+      "surface": "26 26 26",
+      "surface-2": "34 34 34",
+      "ink": "245 245 240",
+      "muted": "158 158 150",
+      "line": "54 54 52",
+      "primary": "245 255 77",
+      "onPrimary": "17 17 17",
+      "accent": "245 255 77",
+      "accent2": "255 77 61"
+    },
+    "type": {
+      "display": "'Bricolage Grotesque', 'Arial Black', sans-serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'General Sans', ui-monospace, monospace",
+      "scaleRatio": 1.5,
+      "weights": { "display": 700, "displayBold": 800, "body": 400, "label": 600, "bold": 700 },
+      "displayCase": "upper",
+      "displayTracking": "-0.03em"
+    },
+    "space": { "base": 8, "section": "clamp(96px, 12vw, 180px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "balanced" },
+    "radius": { "card": "4px", "button": "999px", "input": "4px", "pill": "999px" },
+    "shadow": {
+      "card": "0 0 0 0 rgb(0 0 0 / 0)",
+      "elevated": "0 40px 90px -50px rgb(0 0 0 / 0.8)",
+      "philosophy": "none"
+    },
+    "motion": { "ease": "cubic-bezier(0.2, 0.9, 0.1, 1)", "duration": "560ms", "character": "energetic" },
+    "imagery": { "treatment": "full-bleed", "ratio": "4:5", "filter": "saturate" }
+  },
+  "recipes": { "button": "solid", "card": "borderless", "nav": "split" },
+  "preferredLayouts": {
+    "hero": "kinetic-headline-marquee",
+    "marquee": "oversized-scroll",
+    "work": "pinned-horizontal-showcase",
+    "manifesto": "giant-statement-block",
+    "services": "numbered-bigtype-list",
+    "awards": "recognition-row",
+    "stats": "punchy-countup",
+    "cta": "fullbleed-colorblock",
+    "footer": "bold-wordmark"
+  }
+}

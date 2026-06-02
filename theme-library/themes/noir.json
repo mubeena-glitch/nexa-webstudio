@@ -1,0 +1,49 @@
+{
+  "id": "noir",
+  "name": "Noir",
+  "family": "luxury",
+  "sector": "Luxury fashion",
+  "tags": ["dark", "editorial", "luxury", "monochrome", "champagne-accent", "fashion", "high-contrast"],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "8 8 8",
+      "surface": "18 18 18",
+      "surface-2": "26 26 26",
+      "ink": "244 241 234",
+      "muted": "163 158 148",
+      "line": "42 41 38",
+      "primary": "200 169 106",
+      "onPrimary": "12 11 9",
+      "accent": "200 169 106",
+      "accent2": "150 124 78"
+    },
+    "type": {
+      "display": "'Bodoni Moda', 'Playfair Display', Georgia, serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'General Sans', ui-monospace, monospace",
+      "scaleRatio": 1.4,
+      "weights": { "display": 500, "displayBold": 700, "body": 400, "label": 500, "bold": 600 },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": { "base": 8, "section": "clamp(104px, 13vw, 192px)", "gutter": "clamp(22px, 5vw, 72px)", "density": "airy" },
+    "radius": { "card": "2px", "button": "0px", "input": "0px", "pill": "999px" },
+    "shadow": {
+      "card": "0 1px 0 0 rgb(0 0 0 / 0.4)",
+      "elevated": "0 30px 80px -50px rgb(0 0 0 / 0.85)",
+      "philosophy": "hairline"
+    },
+    "motion": { "ease": "cubic-bezier(0.16, 1, 0.3, 1)", "duration": "900ms", "character": "fluid" },
+    "imagery": { "treatment": "framed", "ratio": "4:5", "filter": "grayscale" }
+  },
+  "recipes": { "button": "ghost-underline", "card": "hairline", "nav": "centered" },
+  "preferredLayouts": {
+    "hero": "editorial-campaign-frame",
+    "trusted": "press-row",
+    "lookbook": "pinned-horizontal-scroll",
+    "features": "editorial-bento",
+    "stats": "band-countup",
+    "cta": "appointment-band"
+  }
+}

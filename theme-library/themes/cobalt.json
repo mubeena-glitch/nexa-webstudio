@@ -1,0 +1,53 @@
+{
+  "id": "cobalt",
+  "name": "Cobalt",
+  "family": "corporate",
+  "sector": "Healthcare / medical",
+  "tags": ["clinical", "trustworthy", "accessible", "calm", "image-rich", "healthcare"],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "243 248 251",
+      "surface": "255 255 255",
+      "ink": "13 42 63",
+      "muted": "92 116 134",
+      "line": "215 228 238",
+      "primary": "31 143 214",
+      "onPrimary": "255 255 255",
+      "accent": "39 194 160",
+      "accent2": "13 42 63"
+    },
+    "type": {
+      "display": "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "scaleRatio": 1.24,
+      "weights": { "display": 600, "displayBold": 700, "body": 400, "label": 600, "bold": 700 },
+      "displayCase": "none",
+      "displayTracking": "-0.02em"
+    },
+    "space": { "base": 8, "section": "clamp(72px, 9vw, 132px)", "gutter": "clamp(20px, 5vw, 56px)", "density": "airy" },
+    "radius": { "card": "16px", "button": "14px", "input": "12px", "pill": "999px" },
+    "shadow": {
+      "card": "0 18px 40px -28px rgb(13 42 63 / 0.28)",
+      "elevated": "0 34px 70px -34px rgb(13 42 63 / 0.34)",
+      "philosophy": "soft"
+    },
+    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "560ms", "character": "calm" },
+    "imagery": { "treatment": "rounded", "ratio": "4:3", "filter": "saturate(1.02) brightness(1.02)" }
+  },
+  "recipes": { "button": "solid-rounded", "card": "soft-elevated", "nav": "split-utility" },
+  "preferredLayouts": {
+    "utility": "phone-portal-bar",
+    "nav": "split-logo-book",
+    "hero": "reassuring-asymmetric-floating-cards",
+    "quickaccess": "icon-wayfinding-row",
+    "specialties": "specialty-icon-grid",
+    "steps": "care-path-connected-line",
+    "doctors": "doctor-profile-cards",
+    "stats": "trust-band-countup",
+    "insurance": "insurer-wordmark-grid",
+    "testimonials": "patient-quote-soft",
+    "cta": "calm-appointment-band",
+    "footer": "locations-hours-newsletter"
+  }
+}

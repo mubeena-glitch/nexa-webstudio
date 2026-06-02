@@ -1,0 +1,53 @@
+{
+  "id": "quanta",
+  "name": "Quanta",
+  "family": "vibrant",
+  "sector": "Crypto / Web3",
+  "tags": ["web3", "crypto", "defi", "neon", "futuristic", "glassmorphism", "dark", "protocol"],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "7 8 15",
+      "surface": "11 14 26",
+      "surface-2": "17 21 38",
+      "ink": "233 236 248",
+      "muted": "143 150 178",
+      "line": "38 44 72",
+      "primary": "124 92 255",
+      "onPrimary": "247 248 255",
+      "accent": "35 224 200",
+      "accent2": "255 92 158"
+    },
+    "type": {
+      "display": "'Sora', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Geist', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace",
+      "scaleRatio": 1.333,
+      "weights": { "display": 700, "displayBold": 800, "body": 400, "label": 600, "bold": 700 },
+      "displayCase": "none",
+      "displayTracking": "-0.025em"
+    },
+    "space": { "base": 8, "section": "clamp(88px, 11vw, 168px)", "gutter": "clamp(20px, 5vw, 56px)", "density": "balanced" },
+    "radius": { "card": "20px", "button": "12px", "input": "12px", "pill": "999px" },
+    "shadow": {
+      "card": "0 24px 60px -30px rgb(0 0 0 / 0.7)",
+      "elevated": "0 0 0 1px rgb(124 92 255 / 0.35), 0 30px 80px -40px rgb(124 92 255 / 0.5)",
+      "philosophy": "glow"
+    },
+    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "560ms", "character": "energetic" },
+    "imagery": { "treatment": "masked", "ratio": "1:1", "filter": "saturate" }
+  },
+  "recipes": { "button": "solid", "card": "glass", "nav": "split" },
+  "preferredLayouts": {
+    "hero": "centered-immersive-glass",
+    "market": "live-ticker-grid",
+    "features": "glass-glow-bento",
+    "howItWorks": "pinned-horizontal-tour",
+    "tokenomics": "animated-donut-legend",
+    "security": "audit-badge-row",
+    "roadmap": "glowing-node-timeline",
+    "ecosystem": "glow-logo-grid",
+    "cta": "glow-band",
+    "footer": "dark-newsletter"
+  }
+}

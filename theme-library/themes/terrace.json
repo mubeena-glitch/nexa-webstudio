@@ -1,0 +1,53 @@
+{
+  "id": "terrace",
+  "name": "Terrace",
+  "family": "minimal",
+  "sector": "Real estate / architecture",
+  "tags": ["real-estate", "architecture", "property", "gridded", "neutral", "image-rich", "refined"],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "242 239 233",
+      "surface": "255 255 255",
+      "surface-2": "236 232 224",
+      "ink": "43 40 36",
+      "muted": "122 116 106",
+      "line": "221 215 205",
+      "primary": "154 132 102",
+      "onPrimary": "255 253 249",
+      "accent": "63 74 79",
+      "accent2": "176 158 130"
+    },
+    "type": {
+      "display": "'Marcellus', 'Times New Roman', serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, monospace",
+      "scaleRatio": 1.28,
+      "weights": { "display": 400, "displayBold": 400, "body": 400, "label": 500, "bold": 600 },
+      "displayCase": "none",
+      "displayTracking": "0.01em"
+    },
+    "space": { "base": 8, "section": "clamp(80px, 10vw, 152px)", "gutter": "clamp(20px, 5vw, 60px)", "density": "airy" },
+    "radius": { "card": "10px", "button": "6px", "input": "6px", "pill": "999px" },
+    "shadow": {
+      "card": "0 18px 44px -32px rgb(43 40 36 / 0.32)",
+      "elevated": "0 34px 70px -38px rgb(43 40 36 / 0.42)",
+      "philosophy": "soft"
+    },
+    "motion": { "ease": "cubic-bezier(0.22, 0.8, 0.2, 1)", "duration": "560ms", "character": "calm" },
+    "imagery": { "treatment": "framed", "ratio": "4:3", "filter": "none" }
+  },
+  "recipes": { "button": "solid", "card": "hairline", "nav": "split" },
+  "preferredLayouts": {
+    "hero": "editorial-residence-framed-image",
+    "editorial-stats": "scattered-oversized-serif-numbers",
+    "listings": "spec-row-property-cards",
+    "neighborhoods": "image-tiles-counts",
+    "process": "value-props-with-image",
+    "stats": "neutral-countup-band",
+    "agent": "agent-profile-card",
+    "testimonials": "client-quote-cards",
+    "cta": "schedule-viewing-form",
+    "footer": "directory-newsletter"
+  }
+}

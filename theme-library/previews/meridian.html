@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Meridian — NEXA Theme Preview (Private Banking / Fintech)</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     MERIDIAN — design tokens (mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 13 15 14;
+    --color-surface: 23 26 24;
+    --color-surface-2: 31 35 32;
+    --color-ink: 243 246 240;
+    --color-muted: 151 160 154;
+    --color-line: 39 44 40;
+    --color-primary: 202 242 77;
+    --color-on-primary: 15 19 11;
+    --color-accent: 202 242 77;
+    --color-accent2: 57 196 110;
+
+    --font-display: "Clash Display", "Sora", ui-sans-serif, sans-serif;
+    --font-body: "General Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    --display-tracking: -0.02em;
+
+    --space-section: clamp(96px, 12vw, 168px);
+    --gutter: clamp(20px, 5vw, 64px);
+
+    --radius-card: 22px;
+    --radius-button: 999px;
+    --radius-input: 14px;
+
+    --shadow-card: 0 20px 50px -30px rgb(0 0 0 / 0.6);
+    --shadow-elevated: 0 40px 90px -40px rgb(0 0 0 / 0.7);
+    --glow: 0 0 60px -10px rgb(var(--color-primary) / 0.45);
+
+    --glass-bg: rgb(var(--color-surface) / .55);
+    --glass-border: rgb(255 255 255 / .07);
+    --glass-highlight: inset 0 1px 0 0 rgb(255 255 255 / .06);
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 600ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  /* subtle film grain */
+  body::after {
+    content:""; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .035; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ============================================================
+     BACKGROUND FX — animated gradient mesh + grid + aurora
+     ============================================================ */
+  .bg-fx { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .bg-fx .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgb(var(--color-line) / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--color-line) / 0.4) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(120% 80% at 70% 0%, #000 0%, transparent 70%);
+    mask-image: radial-gradient(120% 80% at 70% 0%, #000 0%, transparent 70%);
+    opacity: .5;
+  }
+  /* gradient-mesh aurora blobs (CSS-driven; GSAP enhances drift) */
+  .bg-fx .glow { position: absolute; border-radius: 999px; filter: blur(90px); opacity: .5; will-change: transform; }
+  .bg-fx .g1 { width: 620px; height: 620px; background: rgb(var(--color-accent2) / .35); top: -200px; right: -120px; animation: drift1 18s var(--ease) infinite alternate; }
+  .bg-fx .g2 { width: 520px; height: 520px; background: rgb(var(--color-primary) / .18); top: 280px; left: -160px; animation: drift2 22s var(--ease) infinite alternate; }
+  .bg-fx .g3 { width: 460px; height: 460px; background: rgb(var(--color-accent2) / .14); bottom: -160px; left: 30%; animation: drift1 26s var(--ease) infinite alternate-reverse; }
+  @keyframes drift1 { to { transform: translate(-80px, 120px) scale(1.15); } }
+  @keyframes drift2 { to { transform: translate(120px, -60px) scale(1.1); } }
+
+  /* hero-local mesh sits behind the hero content */
+  .hero-mesh { position: absolute; inset: -10% -5% auto -5%; height: 130%; z-index: -1; pointer-events: none; opacity: .9;
+    background:
+      radial-gradient(40% 50% at 78% 28%, rgb(var(--color-accent2) / .30), transparent 70%),
+      radial-gradient(38% 46% at 22% 52%, rgb(var(--color-primary) / .14), transparent 72%),
+      radial-gradient(30% 40% at 60% 78%, rgb(var(--color-accent2) / .12), transparent 70%);
+    filter: blur(20px); will-change: transform;
+  }
+
+  /* scroll progress bar */
+  #progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 80; transform-origin: left; background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); box-shadow: var(--glow); }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 4px; }
+
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--color-primary)); display: inline-flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: rgb(var(--color-primary)); }
+  .disp { font-family: var(--font-display); font-weight: 600; letter-spacing: var(--display-tracking); line-height: 1.02; }
+  .shimmer { background: linear-gradient(100deg, rgb(var(--color-primary)) 20%, rgb(var(--color-accent2)) 40%, rgb(var(--color-primary)) 60%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shim 5s linear infinite; }
+  @keyframes shim { to { background-position: 200% center; } }
+
+  /* ---------- buttons (recipe: pill-solid) ---------- */
+  .btn { position: relative; display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-body); font-weight: 600; font-size: 15px; padding: 14px 26px; border-radius: var(--radius-button); border: 1px solid transparent; cursor: pointer; white-space: nowrap; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); box-shadow: var(--glass-highlight); }
+  .btn-primary:hover { box-shadow: var(--glow); }
+  .btn-ghost { border-color: rgb(var(--color-line)); color: rgb(var(--color-ink)); background: rgb(var(--color-surface) / .5); backdrop-filter: blur(6px); }
+  .btn-ghost:hover { border-color: rgb(var(--color-ink) / .5); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+  .btn .play { width: 26px; height: 26px; border-radius: 999px; background: rgb(var(--color-on-primary) / .12); display: grid; place-items: center; }
+
+  /* ============================ NAV ============================ */
+  header { position: sticky; top: 0; z-index: 50; transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease); border-bottom: 1px solid transparent; }
+  header.stuck { background: rgb(var(--color-bg) / .72); backdrop-filter: blur(14px); border-bottom-color: rgb(var(--color-line)); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 80px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: -0.01em; }
+  .brand .mark { width: 30px; height: 30px; border-radius: 9px; background: rgb(var(--color-primary)); display: grid; place-items: center; color: rgb(var(--color-on-primary)); transition: transform var(--dur) var(--ease); }
+  .brand:hover .mark { transform: rotate(-8deg) scale(1.05); }
+  .nav-pill { display: flex; gap: 4px; align-items: center; background: rgb(var(--color-surface) / .6); border: 1px solid rgb(var(--color-line)); padding: 6px; border-radius: var(--radius-button); }
+  .nav-pill a { font-size: 14px; color: rgb(var(--color-muted)); padding: 9px 16px; border-radius: var(--radius-button); transition: color var(--dur) var(--ease), background var(--dur) var(--ease); }
+  .nav-pill a:hover, .nav-pill a.active { color: rgb(var(--color-ink)); background: rgb(var(--color-surface-2)); }
+  @media (max-width: 980px) { .nav-pill { display: none; } }
+
+  /* ============================ HERO ============================ */
+  .hero { padding-top: clamp(40px, 6vw, 84px); padding-bottom: clamp(48px, 7vw, 96px); position: relative; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; position: relative; }
+  @media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; gap: 56px; } }
+  .badge-row { display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
+  .badge { display:inline-flex; align-items:center; gap:8px; font-size:12px; font-family:var(--font-mono); letter-spacing:.06em; color:rgb(var(--color-ink)/.85); background:rgb(var(--color-surface)/.7); border:1px solid rgb(var(--color-line)); padding:7px 12px; border-radius:999px; }
+  .badge .star { color: rgb(var(--color-primary)); }
+  .hero h1 { font-size: clamp(46px, 6.6vw, 92px); margin: 24px 0 0; }
+  .lede { font-size: 18px; color: rgb(var(--color-muted)); max-width: 32em; margin-top: 24px; }
+  .hero-actions { display: flex; gap: 14px; margin-top: 36px; flex-wrap: wrap; align-items: center; }
+  .hero-actions .meta-note { font-size: 13px; color: rgb(var(--color-muted)); display: flex; align-items: center; gap: 8px; }
+  .hero-actions .dot { width: 7px; height: 7px; border-radius: 999px; background: rgb(var(--color-accent2)); box-shadow: 0 0 0 0 rgb(var(--color-accent2)/.6); animation: ping 2.2s infinite; }
+  @keyframes ping { 70% { box-shadow: 0 0 0 8px rgb(var(--color-accent2)/0);} 100%{ box-shadow: 0 0 0 0 rgb(var(--color-accent2)/0);} }
+
+  .stage { position: relative; aspect-ratio: 1 / 1; perspective: 1400px; }
+  .stage .halo { position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle at 50% 45%, rgb(var(--color-accent2)/.55), transparent 62%); filter: blur(40px); animation: halo 6s var(--ease) infinite alternate; }
+  @keyframes halo { to { transform: scale(1.08); opacity:.8; } }
+  /* parallax layer wrapper — GSAP moves these by depth */
+  .plx { position: absolute; inset: 0; will-change: transform; }
+  .card3d { position: absolute; width: 70%; aspect-ratio: 1.586 / 1; border-radius: 20px;
+    background: linear-gradient(135deg, rgb(36 41 33 / .92) 0%, rgb(15 18 13 / .96) 100%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-elevated), var(--glass-highlight);
+    backdrop-filter: blur(10px);
+    padding: 22px; color: rgb(var(--color-ink)); transform-style: preserve-3d; overflow: hidden; will-change: transform; }
+  /* soft inner highlight sheen */
+  .card3d::before { content:""; position:absolute; inset:0; border-radius: inherit; background: radial-gradient(120% 80% at 18% 6%, rgb(255 255 255 / .10), transparent 46%); pointer-events:none; }
+  .card3d::after { content:""; position:absolute; inset:0; background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / .07) 50%, transparent 60%); }
+  .card-front { top: 26%; left: 6%; z-index: 3; animation: floatA 7s var(--ease) infinite alternate; }
+  .card-back  { top: 8%;  right: 4%; z-index: 2; width: 60%; background: linear-gradient(135deg, rgb(var(--color-primary)) 0%, rgb(var(--color-accent2)) 100%); color: rgb(var(--color-on-primary)); border-color: transparent; animation: floatB 8s var(--ease) infinite alternate; }
+  @keyframes floatA { to { transform: translateY(-16px) rotateX(4deg) rotateY(-6deg); } }
+  @keyframes floatB { to { transform: translateY(14px) rotateX(-3deg) rotateY(7deg); } }
+  .card3d .ct { position: relative; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+  .card3d .chip { position: relative; width: 38px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, #d8c98a, #9a8a4f); margin: 26px 0 18px; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .18); }
+  .card-back .chip { background: rgb(var(--color-on-primary)/.18); }
+  .card3d .pan { position: relative; font-family: var(--font-mono); font-size: 15px; letter-spacing: .12em; }
+  .card3d .cb { position: relative; display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; }
+  .card3d .cb small { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; opacity: .7; display:block; text-transform: uppercase; }
+  .card3d .cb span { font-family: var(--font-display); font-weight: 500; font-size: 14px; }
+  .card3d .brandmark { font-family: var(--font-display); font-weight: 700; font-style: italic; font-size: 18px; }
+  .float-chip { position: absolute; z-index: 4; bottom: 16%; right: 2%;
+    background: rgb(var(--color-surface) / .82); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px 16px;
+    box-shadow: var(--shadow-card), var(--glass-highlight); animation: floatC 5.5s var(--ease) infinite alternate; }
+  @keyframes floatC { to { transform: translateY(-12px); } }
+  .float-chip .lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .float-chip .amt { font-family: var(--font-display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .float-chip .up { color: rgb(var(--color-primary)); font-family: var(--font-mono); font-size: 12px; }
+  /* second floating micro-chip for added depth */
+  .float-chip.mini { bottom: auto; top: 14%; left: -2%; right: auto; padding: 11px 14px; }
+  .float-chip.mini .dot { display:inline-block; width:7px; height:7px; border-radius:999px; background: rgb(var(--color-accent2)); margin-right:7px; box-shadow: 0 0 8px rgb(var(--color-accent2)/.8); }
+  .float-chip.mini .row { display:flex; align-items:center; font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-ink)/.9); }
+
+  /* ============================ LIVE TICKER ============================ */
+  .ticker { border-block: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface)/.35); overflow: hidden; }
+  .ticker .track { display: flex; gap: 56px; width: max-content; padding: 14px 0; animation: scroll 40s linear infinite; }
+  .ticker .item { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; color: rgb(var(--color-muted)); white-space: nowrap; }
+  .ticker .item b { color: rgb(var(--color-ink)); font-weight: 500; }
+  .ticker .item .pos { color: rgb(var(--color-primary)); }
+  .ticker .item .neg { color: #ef8a5c; }
+
+  /* ============================ PARTNERS ============================ */
+  .partners { padding-block: clamp(56px,8vw,96px); }
+  .partners .cap { text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .pay-row { display: flex; gap: 44px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 26px; opacity: .85; }
+  .pay-row span { font-family: var(--font-display); font-weight: 600; font-size: 22px; color: rgb(var(--color-ink) / .8); transition: color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .pay-row span:hover { color: rgb(var(--color-primary)); transform: translateY(-3px); }
+  .pay-row span em { font-style: normal; color: rgb(var(--color-primary)); }
+
+  /* ============================ SECTION HEADS ============================ */
+  section.block { padding-block: var(--space-section); }
+  .sec-head { max-width: 46em; margin: 0 auto; text-align: center; }
+  .sec-head .eyebrow { justify-content: center; }
+  .sec-head h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(32px, 4.6vw, 58px); letter-spacing: -0.02em; line-height: 1.04; margin-top: 20px; }
+  .sec-head p { color: rgb(var(--color-muted)); font-size: 18px; margin-top: 18px; }
+
+  /* ============================ BENTO ============================ */
+  .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 232px; gap: 18px; margin-top: 64px; }
+  @media (max-width: 900px) { .bento { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .bento { grid-template-columns: 1fr; } }
+  .cell { position: relative; display:flex; flex-direction: column; overflow: hidden; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: var(--glass-bg); backdrop-filter: blur(6px); box-shadow: var(--glass-highlight); padding: 26px; transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .cell::before { content:""; position:absolute; inset:0; background: radial-gradient(180px circle at var(--mx,50%) var(--my,50%), rgb(var(--color-primary)/.14), transparent 60%); opacity:0; transition: opacity var(--dur) var(--ease); }
+  .cell:hover { border-color: rgb(var(--color-primary)/.4); transform: translateY(-4px); }
+  .cell:hover::before { opacity: 1; }
+  .cell h3 { font-family: var(--font-display); font-weight: 600; font-size: 20px; }
+  .cell p { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 8px; }
+  .cell .ic { width: 46px; height: 46px; border-radius: 13px; background: rgb(var(--color-primary)/.12); color: rgb(var(--color-primary)); display:grid; place-items:center; margin-bottom: 16px; }
+  .c-wide { grid-column: span 2; }
+  @media (max-width: 560px) { .c-wide { grid-column: span 1; } }
+  .cell .big { font-family: var(--font-display); font-weight: 600; font-size: clamp(34px,4vw,52px); letter-spacing:-.02em; }
+  .cell .rings { position:absolute; right:-30px; bottom:-30px; width:160px; height:160px; border-radius:999px; border:1px solid rgb(var(--color-primary)/.25); }
+  .cell .rings::after { content:""; position:absolute; inset:24px; border-radius:999px; border:1px solid rgb(var(--color-primary)/.18); }
+  .mini-spark { position:absolute; left:26px; right:26px; bottom:24px; }
+  .mini-spark svg { width:100%; height:54px; }
+  .mini-spark polyline { stroke-dasharray: 1; stroke-dashoffset: 0; }
+
+  /* ============================ HOW IT WORKS ============================ */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 70px; position: relative; }
+  @media (max-width: 820px) { .steps { grid-template-columns: 1fr; } }
+  .connector { position:absolute; top: 36px; left: 16%; right: 16%; height: 2px; background: repeating-linear-gradient(90deg, rgb(var(--color-primary)/.5) 0 10px, transparent 10px 20px); transform-origin: left; transform: scaleX(0); transition: transform 1.4s var(--ease); }
+  .connector.in { transform: scaleX(1); }
+  @media (max-width: 820px) { .connector { display:none; } }
+  .step { text-align:center; }
+  .step .num { width: 72px; height: 72px; margin: 0 auto; border-radius: 999px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-line)); display:grid; place-items:center; font-family: var(--font-display); font-weight: 600; font-size: 24px; color: rgb(var(--color-primary)); position: relative; z-index:1; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+  .step:hover .num { transform: translateY(-4px); box-shadow: var(--glow); }
+  .step h3 { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin-top: 22px; }
+  .step p { color: rgb(var(--color-muted)); font-size: 15px; margin-top: 8px; max-width: 24em; margin-inline: auto; }
+
+  /* ============================ STATS ============================ */
+  .band { background: rgb(var(--color-surface) / .5); border-block: 1px solid rgb(var(--color-line)); }
+  .band .grid { display: grid; grid-template-columns: repeat(4, 1fr); padding-block: 72px; gap: 24px; }
+  @media (max-width: 760px) { .band .grid { grid-template-columns: repeat(2,1fr); gap: 48px 24px; } }
+  .stat { text-align: center; }
+  .stat .n { font-family: var(--font-display); font-weight: 600; font-size: clamp(40px, 5.5vw, 64px); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .stat .n .u { color: rgb(var(--color-primary)); }
+  .stat .l { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 10px; }
+
+  /* ============================ SHOWCASE ============================ */
+  .showcase { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  @media (max-width: 900px) { .showcase { grid-template-columns: 1fr; gap: 40px; } }
+  .showcase .panel { background: rgb(var(--color-surface)); border: 1px solid var(--glass-border); border-radius: var(--radius-card); padding: 26px; box-shadow: var(--shadow-elevated), var(--glass-highlight); position: relative; overflow: hidden; }
+  .showcase .panel .glowdot { position:absolute; top:-30%; left:-10%; width:50%; height:60%; background: radial-gradient(circle, rgb(var(--color-accent2)/.25), transparent 70%); filter: blur(30px); }
+  .bars { display:flex; align-items:flex-end; gap:14px; height: 200px; padding-top: 20px; }
+  .bars .bar { flex:1; border-radius: 8px 8px 0 0; background: rgb(var(--color-line)); position: relative; height: 0%; }
+  .bars .bar.lit { background: linear-gradient(180deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); }
+  .ck { list-style:none; margin-top: 28px; display:grid; gap: 16px; }
+  .ck li { display:flex; gap:13px; font-size: 16px; }
+  .ck svg { flex:none; color: rgb(var(--color-primary)); margin-top: 3px; }
+
+  /* ============================ PRICING ============================ */
+  .price-grid { display:grid; grid-template-columns: repeat(3,1fr); gap: 22px; margin-top: 64px; align-items: stretch; }
+  @media (max-width: 860px) { .price-grid { grid-template-columns: 1fr; } }
+  .plan { display:flex; flex-direction: column; border:1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: var(--glass-bg); backdrop-filter: blur(6px); box-shadow: var(--glass-highlight); padding: 32px 28px; transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .plan:hover { transform: translateY(-6px); border-color: rgb(var(--color-primary)/.4); }
+  .plan.feat-plan { background: linear-gradient(180deg, rgb(var(--color-primary)/.12), rgb(var(--color-surface)/.5)); border-color: rgb(var(--color-primary)/.5); position: relative; }
+  .plan .tag { font-family: var(--font-mono); font-size: 11px; letter-spacing:.12em; text-transform:uppercase; color: rgb(var(--color-muted)); }
+  .plan.feat-plan .tag { color: rgb(var(--color-primary)); }
+  .plan .price { font-family: var(--font-display); font-weight: 600; font-size: 48px; letter-spacing:-.02em; margin: 14px 0 2px; }
+  .plan .price span { font-size: 16px; color: rgb(var(--color-muted)); font-family: var(--font-body); }
+  .plan .plan-note { color:rgb(var(--color-muted)); font-size:14px; min-height: 1.4em; }
+  .plan .pl { list-style:none; margin: 22px 0 26px; display:grid; gap: 12px; }
+  .plan .pl li { display:flex; gap: 10px; font-size: 14px; color: rgb(var(--color-ink)/.85); }
+  .plan .pl svg { flex:none; color: rgb(var(--color-primary)); margin-top:3px; }
+  .plan .btn { width: 100%; justify-content: center; margin-top: auto; }
+  .ribbon-pop { position:absolute; top:-12px; right:24px; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); font-family: var(--font-mono); font-size: 11px; letter-spacing:.08em; padding: 5px 12px; border-radius: 999px; }
+
+  /* ============================ TESTIMONIALS ============================ */
+  .tmarquee { margin-top: 60px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .tmarquee .track { display:flex; gap: 20px; width: max-content; animation: scroll 48s linear infinite; }
+  .tmarquee .track:hover { animation-play-state: paused; }
+  .tcard { width: 380px; border:1px solid var(--glass-border); border-radius: var(--radius-card); background: rgb(var(--color-surface)/.6); backdrop-filter: blur(6px); box-shadow: var(--glass-highlight); padding: 26px; }
+  .tcard .stars { color: rgb(var(--color-primary)); letter-spacing: 2px; font-size: 14px; }
+  .tcard p { font-size: 15.5px; margin-top: 14px; line-height: 1.55; }
+  .tcard .who { display:flex; align-items:center; gap: 12px; margin-top: 20px; }
+  .tcard .av { width: 40px; height: 40px; border-radius: 999px; background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); display:grid; place-items:center; color: rgb(var(--color-on-primary)); font-family: var(--font-display); font-weight: 600; }
+  .tcard .who b { font-weight: 600; font-size: 14px; }
+  .tcard .who span { display:block; font-size: 12px; color: rgb(var(--color-muted)); }
+
+  /* ============================ FAQ ============================ */
+  .faq { max-width: 760px; margin: 56px auto 0; }
+  .qa { border-bottom: 1px solid rgb(var(--color-line)); }
+  .qa button { width:100%; display:flex; justify-content:space-between; align-items:center; gap: 20px; background:none; border:none; color:inherit; cursor:pointer; text-align:left; padding: 24px 4px; font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+  .qa .ico { flex:none; width: 30px; height: 30px; border-radius: 999px; border:1px solid rgb(var(--color-line)); display:grid; place-items:center; transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .qa.open .ico { transform: rotate(45deg); background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); border-color: transparent; }
+  .qa .ans { overflow: hidden; max-height: 0; transition: max-height var(--dur) var(--ease); }
+  .qa .ans p { color: rgb(var(--color-muted)); font-size: 15.5px; padding: 0 4px 26px; }
+
+  /* ============================ CTA ============================ */
+  .cta .box { position: relative; overflow: hidden; text-align: center; border: 1px solid var(--glass-border); border-radius: 32px; background: rgb(var(--color-surface) / .6); backdrop-filter: blur(8px); box-shadow: var(--glass-highlight); padding: clamp(52px, 8vw, 100px) var(--gutter); }
+  .cta .box .cglow { position:absolute; bottom:-60%; left:50%; transform:translateX(-50%); width:90%; height:120%; background: radial-gradient(circle, rgb(var(--color-primary)/.22), transparent 60%); filter: blur(50px); }
+  .cta h2 { position: relative; font-family: var(--font-display); font-weight: 600; font-size: clamp(34px, 5.5vw, 66px); letter-spacing: -0.02em; line-height: 1.02; }
+  .cta p { position: relative; color: rgb(var(--color-muted)); font-size: 18px; margin: 20px auto 0; max-width: 34em; }
+  .cta .acts { position: relative; display:flex; gap:14px; justify-content:center; margin-top: 36px; flex-wrap: wrap; }
+
+  /* ============================ FOOTER ============================ */
+  footer { border-top: 1px solid rgb(var(--color-line)); padding-block: 60px 40px; }
+  .news { display:grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items:center; padding-bottom: 48px; margin-bottom: 48px; border-bottom: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 760px) { .news { grid-template-columns: 1fr; gap: 20px; } }
+  .news h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(24px,3vw,34px); letter-spacing:-.02em; }
+  .news form { display:flex; gap: 10px; }
+  .news input { flex:1; background: rgb(var(--color-surface)); border:1px solid rgb(var(--color-line)); color: rgb(var(--color-ink)); border-radius: var(--radius-input); padding: 14px 18px; font-family: var(--font-body); font-size: 15px; outline: none; transition: border-color var(--dur) var(--ease); }
+  .news input:focus { border-color: rgb(var(--color-primary)/.6); }
+  .foot { display:grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 32px; }
+  @media (max-width: 760px) { .foot { grid-template-columns: 1fr 1fr; gap: 40px 24px; } }
+  .foot h4 { font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 16px; }
+  .foot a { display:block; font-size: 14px; color: rgb(var(--color-muted)); padding: 6px 0; transition: color var(--dur) var(--ease); }
+  .foot a:hover { color: rgb(var(--color-ink)); }
+  .foot .blurb { font-size: 14px; color: rgb(var(--color-muted)); max-width: 26em; margin-top: 14px; }
+  .legal { display:flex; justify-content:space-between; margin-top: 50px; padding-top: 26px; border-top: 1px solid rgb(var(--color-line)); font-size: 13px; color: rgb(var(--color-muted)); flex-wrap: wrap; gap: 12px; }
+
+  .ribbon { position: fixed; bottom: 0; right: 0; z-index: 60; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; padding: 8px 14px; border-top-left-radius: 14px; }
+
+  /* ---------- reveal animation (CSS fallback; GSAP takes over when present) ---------- */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity 800ms var(--ease), transform 800ms var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  /* When GSAP is driving, it controls visibility via gsap.set/anim; flag class avoids double work */
+  html.gsap-on .reveal { transition: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1 !important; transform: none !important; }
+    *, *::before, *::after { animation: none !important; }
+    html { scroll-behavior: auto; }
+  }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+</style>
+</head>
+<body>
+  <div id="progress"></div>
+  <div class="bg-fx"><div class="grid"></div><div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div></div>
+  <div class="ribbon">NEXA THEME · MERIDIAN · private banking</div>
+
+  <!-- NAV -->
+  <header id="hdr">
+    <div class="wrap nav">
+      <a href="#" class="brand" aria-label="Meridian home"><span class="mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 18V8l8-4 8 4v10"/><path d="M4 13h16"/></svg></span>Meridian</a>
+      <nav class="nav-pill" aria-label="Primary">
+        <a href="#" class="active">Home</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="#">Contact</a>
+      </nav>
+      <a href="#" class="btn btn-primary magnetic">Open account <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-mesh" id="heroMesh" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <div class="badge-row reveal"><span class="badge"><span class="star" aria-hidden="true">★</span> 4.9/5 · 12,000 reviews</span><span class="badge">FCA regulated</span></div>
+        <h1 class="disp reveal" style="margin-top:18px;">Private banking for the <span class="shimmer">next</span> generation of wealth.</h1>
+        <p class="lede reveal">Consolidate accounts, automate your strategy, and grow with AI-driven insights, instant transfers, and bank-grade security — in one quiet, exacting platform.</p>
+        <div class="hero-actions reveal">
+          <a href="#" class="btn btn-primary magnetic">Open an account <span class="arrow" aria-hidden="true">→</span></a>
+          <a href="#" class="btn btn-ghost"><span class="play" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span> Watch demo</a>
+          <span class="meta-note"><span class="dot" aria-hidden="true"></span> No minimum balance</span>
+        </div>
+      </div>
+      <div class="stage reveal" id="stage" aria-hidden="true">
+        <div class="halo"></div>
+        <div class="plx" data-depth="14">
+          <div class="card3d card-back" data-card>
+            <div class="ct"><span>Meridian</span><span class="brandmark">M</span></div>
+            <div class="chip"></div>
+            <div class="pan">•••• •••• •••• 2847</div>
+            <div class="cb"><div><small>Card holder</small><span>S. Adel</span></div><div><small>Valid</small><span>04/30</span></div></div>
+          </div>
+        </div>
+        <div class="plx" data-depth="26">
+          <div class="card3d card-front" data-card>
+            <div class="ct"><span>Private account</span><span class="brandmark" style="color:rgb(var(--color-primary))">M</span></div>
+            <div class="chip"></div>
+            <div class="pan">5789 •••• •••• 2847</div>
+            <div class="cb"><div><small>Card holder</small><span>Sandra A.</span></div><div><small>Balance</small><span>$48.20K</span></div></div>
+          </div>
+        </div>
+        <div class="plx" data-depth="38">
+          <div class="float-chip" data-chip>
+            <div class="lbl">Saved this month</div>
+            <div class="amt" data-count="2847" data-prefix="$">$0</div>
+            <div class="up">▲ +18.4%</div>
+          </div>
+        </div>
+        <div class="plx" data-depth="46">
+          <div class="float-chip mini" data-chip>
+            <div class="row"><span class="dot"></span> Transfer settled · 0.4s</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="track" id="ticker">
+      <span class="item">Portfolio <b>+$87,140</b> <span class="pos">▲ 1.84%</span></span>
+      <span class="item">Cash APY <b>3.92%</b></span>
+      <span class="item">Transfer <b>£2,400 → EUR</b> <span class="pos">settled 0.4s</span></span>
+      <span class="item">S&amp;P 500 <b>5,318.4</b> <span class="pos">▲ 0.62%</span></span>
+      <span class="item">Gold <b>$2,341</b> <span class="neg">▼ 0.21%</span></span>
+      <span class="item">Round-ups <b>+$18.20</b></span>
+      <span class="item">BTC <b>$71,204</b> <span class="pos">▲ 2.1%</span></span>
+    </div>
+  </div>
+
+  <!-- PARTNERS -->
+  <div class="partners">
+    <div class="wrap">
+      <p class="cap reveal">Trusted rails &amp; esteemed partners</p>
+      <div class="pay-row reveal">
+        <span>stripe</span><span>master<em>card</em></span><span>Pay<em>Pal</em></span><span>Skrill</span><span>Pay<em>oneer</em></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BENTO -->
+  <section class="block" id="features" style="padding-top:0;">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">One platform</span>
+        <h2>Everything your money needs,<br>in one place.</h2>
+        <p>A complete private-banking toolkit — accounts, cards, investing, and automation, beautifully unified.</p>
+      </div>
+      <div class="bento">
+        <!-- Row 1: wide(2) + 1 + 1 = 4 -->
+        <div class="cell c-wide reveal" data-spot data-batch>
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 17l5-5 4 3 7-8"/><path d="M21 7v4h-4"/></svg></div>
+          <h3>AI wealth insights</h3>
+          <p>Forecast cash flow and surface opportunities before you ask.</p>
+          <div class="mini-spark"><svg viewBox="0 0 320 54" preserveAspectRatio="none" fill="none"><polyline points="0,44 40,38 80,42 120,26 160,30 200,16 240,20 280,8 320,12" stroke="rgb(202 242 77)" stroke-width="2"/></svg></div>
+        </div>
+        <div class="cell reveal" data-spot data-batch>
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></div>
+          <h3>Metal cards</h3>
+          <p>Physical &amp; virtual, issued instantly.</p>
+          <div class="rings"></div>
+        </div>
+        <div class="cell reveal" data-spot data-batch>
+          <div class="big" data-count="3.92" data-dec="2">0</div>
+          <p>% cash APY, variable</p>
+        </div>
+        <!-- Row 2: 1 + wide(2) + 1 = 4 -->
+        <div class="cell reveal" data-spot data-batch>
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg></div>
+          <h3>Instant transfers</h3>
+          <p>Borderless, in seconds.</p>
+        </div>
+        <div class="cell c-wide reveal" data-spot data-batch>
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Bank-grade security</h3>
+          <p>Segregated custody, encryption, and biometric access — assets protected end to end.</p>
+        </div>
+        <div class="cell reveal" data-spot data-batch>
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h3>24/7 concierge</h3>
+          <p>Real humans, any hour.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="block" style="padding-top:0;">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">How it works</span>
+        <h2>Open in minutes. Grow for years.</h2>
+      </div>
+      <div class="steps">
+        <div class="connector" id="connector"></div>
+        <div class="step reveal" data-batch><div class="num">1</div><h3>Create your account</h3><p>Sign up in under three minutes — no paperwork, no branch visit.</p></div>
+        <div class="step reveal" data-batch><div class="num">2</div><h3>Fund &amp; connect</h3><p>Link existing accounts and consolidate your whole financial picture.</p></div>
+        <div class="step reveal" data-batch><div class="num">3</div><h3>Automate &amp; grow</h3><p>Set rules once and let Meridian save, invest, and rebalance for you.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE -->
+  <section class="block" style="padding-top:0;">
+    <div class="wrap showcase">
+      <div class="panel reveal">
+        <div class="glowdot"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--color-muted))">Monthly growth</div><div class="disp" style="font-size:30px;margin-top:6px;">+$87,140</div></div>
+          <span class="mono" style="font-size:12px;color:rgb(var(--color-primary))">▲ 18.4%</span>
+        </div>
+        <div class="bars" id="bars">
+          <div class="bar" data-h="42"></div><div class="bar" data-h="64"></div><div class="bar" data-h="38"></div>
+          <div class="bar" data-h="78"></div><div class="bar lit" data-h="96"></div><div class="bar" data-h="58"></div>
+          <div class="bar" data-h="70"></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <span class="eyebrow">Automation</span>
+        <h2 class="disp" style="font-size:clamp(28px,3.8vw,46px);margin-top:16px;line-height:1.06;">Put your money on autopilot.</h2>
+        <ul class="ck">
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Smart rules that split, save, and invest every paycheck.</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Round-ups and goals that grow without you noticing.</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Real-time alerts the moment anything looks off.</li>
+        </ul>
+        <a href="#" class="btn btn-primary magnetic" style="margin-top:32px;">Explore automation <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="band">
+    <div class="wrap grid">
+      <div class="stat reveal" data-batch><div class="n"><span data-count="4000">0</span><span class="u">+</span></div><div class="l">Members onboard</div></div>
+      <div class="stat reveal" data-batch><div class="n"><span class="u">$</span><span data-count="28">0</span><span class="u">B</span></div><div class="l">Assets under guidance</div></div>
+      <div class="stat reveal" data-batch><div class="n"><span data-count="14">0</span><span class="u">ms</span></div><div class="l">Median transfer</div></div>
+      <div class="stat reveal" data-batch><div class="n"><span data-count="99.9" data-dec="1">0</span><span class="u">%</span></div><div class="l">Uptime SLA</div></div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <section class="block" id="pricing">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Membership</span>
+        <h2>Choose your tier.</h2>
+        <p>Transparent pricing, no hidden fees. Upgrade or cancel any time.</p>
+      </div>
+      <div class="price-grid">
+        <div class="plan reveal" data-batch>
+          <div class="tag">Essential</div>
+          <div class="price">$0<span>/mo</span></div>
+          <p class="plan-note">For everyday banking.</p>
+          <ul class="pl">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Current account &amp; virtual card</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Instant transfers</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Basic insights</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Get started</a>
+        </div>
+        <div class="plan feat-plan reveal" data-batch>
+          <div class="ribbon-pop">Most popular</div>
+          <div class="tag">Private</div>
+          <div class="price">$24<span>/mo</span></div>
+          <p class="plan-note">For building wealth.</p>
+          <ul class="pl">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Everything in Essential</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Metal card &amp; 3.92% APY</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> AI insights &amp; automation</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Priority concierge</li>
+          </ul>
+          <a href="#" class="btn btn-primary magnetic">Open account</a>
+        </div>
+        <div class="plan reveal" data-batch>
+          <div class="tag">Family office</div>
+          <div class="price">$96<span>/mo</span></div>
+          <p class="plan-note">For complex wealth.</p>
+          <ul class="pl">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Everything in Private</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Dedicated advisor</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Multi-entity &amp; custody</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Talk to us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="block" style="padding-top:0;">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Loved by members</span>
+        <h2>Quiet, exact, and never in your way.</h2>
+      </div>
+    </div>
+    <div class="tmarquee" aria-hidden="true">
+      <div class="track">
+        <div class="tcard"><div class="stars">★★★★★</div><p>“It reads like a private banker's ledger. I finally trust one number for my whole financial life.”</p><div class="who"><span class="av">EV</span><div><b>Eleanor Voss</b><span>Principal, Voss Family Office</span></div></div></div>
+        <div class="tcard"><div class="stars">★★★★★</div><p>“Transfers settle before I've put my phone down. The automation alone pays for itself.”</p><div class="who"><span class="av">MR</span><div><b>Marcus Reed</b><span>Founder, Northwind</span></div></div></div>
+        <div class="tcard"><div class="stars">★★★★★</div><p>“The insights caught a subscription leak I'd missed for two years. Genuinely smarter banking.”</p><div class="who"><span class="av">AK</span><div><b>Aisha Khan</b><span>Designer</span></div></div></div>
+        <div class="tcard"><div class="stars">★★★★★</div><p>“We moved the whole company's treasury over. Custody and reporting are best in class.”</p><div class="who"><span class="av">JT</span><div><b>James Tan</b><span>CFO, Lumen</span></div></div></div>
+        <!-- duplicate for seamless loop -->
+        <div class="tcard"><div class="stars">★★★★★</div><p>“It reads like a private banker's ledger. I finally trust one number for my whole financial life.”</p><div class="who"><span class="av">EV</span><div><b>Eleanor Voss</b><span>Principal, Voss Family Office</span></div></div></div>
+        <div class="tcard"><div class="stars">★★★★★</div><p>“Transfers settle before I've put my phone down. The automation alone pays for itself.”</p><div class="who"><span class="av">MR</span><div><b>Marcus Reed</b><span>Founder, Northwind</span></div></div></div>
+        <div class="tcard"><div class="stars">★★★★★</div><p>“The insights caught a subscription leak I'd missed for two years. Genuinely smarter banking.”</p><div class="who"><span class="av">AK</span><div><b>Aisha Khan</b><span>Designer</span></div></div></div>
+        <div class="tcard"><div class="stars">★★★★★</div><p>“We moved the whole company's treasury over. Custody and reporting are best in class.”</p><div class="who"><span class="av">JT</span><div><b>James Tan</b><span>CFO, Lumen</span></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="block" id="faq" style="padding-top:0;">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Questions</span>
+        <h2>Everything you need to know.</h2>
+      </div>
+      <div class="faq">
+        <div class="qa reveal" data-batch><button aria-expanded="false">Is my money protected? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Yes. Deposits are held with tier-one custodians, segregated, and protected up to regulatory limits. All access is biometric and encrypted end to end.</p></div></div>
+        <div class="qa reveal" data-batch><button aria-expanded="false">How long does it take to open an account? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Most members are fully onboarded in under three minutes — no paperwork or branch visit required.</p></div></div>
+        <div class="qa reveal" data-batch><button aria-expanded="false">Can I move my existing accounts over? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Absolutely. Connect external accounts to consolidate your full financial picture, and use our switch service to move direct debits automatically.</p></div></div>
+        <div class="qa reveal" data-batch><button aria-expanded="false">What does the APY actually mean? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>The 3.92% variable APY is paid on eligible cash balances on Private and Family Office tiers, calculated daily and paid monthly.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="block cta" style="padding-top:0;">
+    <div class="wrap">
+      <div class="box reveal">
+        <div class="cglow"></div>
+        <span class="eyebrow" style="justify-content:center;position:relative;">Get started</span>
+        <h2 style="margin-top:20px;">Hold your whole financial<br>life to one standard.</h2>
+        <p>Open a free account in minutes. No paperwork, no minimum balance — just effortless private banking.</p>
+        <div class="acts">
+          <a href="#" class="btn btn-primary magnetic">Open an account <span class="arrow" aria-hidden="true">→</span></a>
+          <a href="#" class="btn btn-ghost">Talk to an advisor</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="news">
+        <h3 class="reveal">Get the Meridian brief — markets &amp; money, weekly.</h3>
+        <form class="reveal" onsubmit="return false">
+          <input type="email" placeholder="you@example.com" aria-label="Email address" />
+          <button class="btn btn-primary magnetic">Subscribe</button>
+        </form>
+      </div>
+      <div class="foot">
+        <div>
+          <div class="brand"><span class="mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 18V8l8-4 8 4v10"/><path d="M4 13h16"/></svg></span>Meridian</div>
+          <p class="blurb">A modern private-banking platform for individuals and family offices.</p>
+        </div>
+        <div><h4>Product</h4><a href="#">Accounts</a><a href="#">Cards</a><a href="#">Transfers</a><a href="#">Insights</a></div>
+        <div><h4>Company</h4><a href="#">About</a><a href="#">Security</a><a href="#">Careers</a><a href="#">Press</a></div>
+        <div><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Disclosures</a><a href="#">Cookies</a></div>
+      </div>
+      <div class="legal">
+        <span class="mono">© 2026 MERIDIAN FINANCIAL · ALL RIGHTS RESERVED</span>
+        <span class="mono">Built with NEXA Web Studio</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+  /* ============================================================
+     Always-on UI (no GSAP dependency): nav, progress, FAQ
+     ============================================================ */
+  const hdr = document.getElementById('hdr');
+  const prog = document.getElementById('progress');
+  const onScroll = () => {
+    hdr.classList.toggle('stuck', window.scrollY > 20);
+    const h = document.documentElement;
+    prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  };
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+  // FAQ accordion (works regardless of GSAP)
+  document.querySelectorAll('.qa button').forEach(b => {
+    b.addEventListener('click', () => {
+      const qa = b.parentElement, ans = qa.querySelector('.ans'), open = qa.classList.contains('open');
+      document.querySelectorAll('.qa').forEach(o => { o.classList.remove('open'); o.querySelector('.ans').style.maxHeight = null; o.querySelector('button').setAttribute('aria-expanded','false'); });
+      if (!open) { qa.classList.add('open'); ans.style.maxHeight = ans.scrollHeight + 'px'; b.setAttribute('aria-expanded','true'); }
+    });
+  });
+
+  /* ============================================================
+     Count-up helper (used by both GSAP and fallback paths)
+     ============================================================ */
+  function countUp(el) {
+    if (el.dataset.counted) return; el.dataset.counted = '1';
+    const target = parseFloat(el.dataset.count), dec = parseInt(el.dataset.dec || '0', 10), prefix = el.dataset.prefix || '';
+    const dur = 1400, t0 = performance.now();
+    (function tick(now){
+      const p = Math.min((now - t0)/dur, 1), eased = 1 - Math.pow(1-p, 3), val = target*eased;
+      el.textContent = prefix + (dec ? val.toFixed(dec) : Math.round(val).toLocaleString());
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
+
+  /* ============================================================
+     GSAP — guarded. If GSAP is absent OR reduced-motion is set,
+     none of this runs and the CSS fallback shows the full page.
+     ============================================================ */
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (window.gsap && !prefersReduced) {
+    document.documentElement.classList.add('gsap-on');
+    gsap.registerPlugin(ScrollTrigger);
+
+    // hide reveal items only now that GSAP is confirmed present
+    gsap.set('.reveal', { opacity: 0, y: 26 });
+
+    const mm = gsap.matchMedia();
+
+    // ---- Full motion (motion allowed) ----
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+
+      /* HERO entrance timeline: headline, lede, actions, cards, chips stagger */
+      const heroReveals = gsap.utils.toArray('.hero .reveal').filter(el => el.id !== 'stage');
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.set('.reveal', { opacity: 0, y: 26 });
+      tl.to(heroReveals, { opacity: 1, y: 0, duration: 0.8, stagger: 0.12 }, 0.1);
+      // stage container in
+      tl.to('#stage', { opacity: 1, y: 0, duration: 0.8 }, 0.2);
+      // cards + chips pop with depth stagger
+      tl.from('#stage [data-card]', { opacity: 0, y: 40, rotateX: -12, scale: 0.94, duration: 0.9, stagger: 0.14 }, 0.35);
+      tl.from('#stage [data-chip]', { opacity: 0, y: 18, scale: 0.85, duration: 0.7, stagger: 0.12 }, 0.7);
+
+      /* Aurora / glow drift (augments CSS) */
+      gsap.to('.bg-fx .g1', { xPercent: 8, yPercent: 10, duration: 16, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      gsap.to('.bg-fx .g2', { xPercent: -10, yPercent: -6, duration: 20, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      gsap.to('.bg-fx .g3', { xPercent: 6, yPercent: -8, duration: 24, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+
+      /* Hero mesh subtle parallax on scroll */
+      gsap.to('#heroMesh', { yPercent: 18, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+      /* Pointer 3D parallax on hero cards (pointer:fine only) */
+      const stage = document.getElementById('stage');
+      if (stage && window.matchMedia('(pointer:fine)').matches) {
+        const layers = gsap.utils.toArray('#stage .plx');
+        const qx = layers.map(l => gsap.quickTo(l, 'x', { duration: 0.6, ease: 'power3' }));
+        const qy = layers.map(l => gsap.quickTo(l, 'y', { duration: 0.6, ease: 'power3' }));
+        const qrx = gsap.quickTo('#stage .plx', 'rotateY', { duration: 0.6, ease: 'power3' });
+        stage.addEventListener('pointermove', (ev) => {
+          const r = stage.getBoundingClientRect();
+          const dx = (ev.clientX - r.left) / r.width - 0.5;
+          const dy = (ev.clientY - r.top) / r.height - 0.5;
+          layers.forEach((l, i) => {
+            const depth = parseFloat(l.dataset.depth || '16');
+            qx[i](dx * depth);
+            qy[i](dy * depth);
+          });
+          qrx(dx * 8);
+        });
+        stage.addEventListener('pointerleave', () => {
+          layers.forEach((l, i) => { qx[i](0); qy[i](0); });
+          qrx(0);
+        });
+      }
+
+      /* ScrollTrigger.batch — staggered reveals (replaces IntersectionObserver) */
+      const scrollReveals = gsap.utils.toArray('.reveal').filter(el => !el.closest('.hero'));
+      ScrollTrigger.batch(scrollReveals, {
+        start: 'top 86%',
+        onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.7, stagger: 0.09, ease: 'power3.out', overwrite: true })
+      });
+
+      /* Connector line draw */
+      const connector = document.getElementById('connector');
+      if (connector) ScrollTrigger.create({ trigger: connector, start: 'top 80%', once: true, onEnter: () => connector.classList.add('in') });
+
+      /* Count-up on scroll */
+      ScrollTrigger.batch('[data-count]', {
+        start: 'top 88%',
+        onEnter: (els) => els.forEach(countUp)
+      });
+
+      /* Bar chart draw on scroll */
+      const barWrap = document.getElementById('bars');
+      if (barWrap) {
+        ScrollTrigger.create({
+          trigger: barWrap, start: 'top 80%', once: true,
+          onEnter: () => gsap.to(barWrap.querySelectorAll('.bar'), { height: (i, t) => t.dataset.h + '%', duration: 1.1, stagger: 0.08, ease: 'power3.out' })
+        });
+      }
+
+      /* Sparkline draw */
+      const spark = document.querySelector('.mini-spark polyline');
+      if (spark) {
+        const len = spark.getTotalLength();
+        gsap.set(spark, { strokeDasharray: len, strokeDashoffset: len });
+        ScrollTrigger.create({ trigger: '.mini-spark', start: 'top 85%', once: true,
+          onEnter: () => gsap.to(spark, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.out' }) });
+      }
+
+      /* Magnetic buttons */
+      gsap.utils.toArray('.magnetic').forEach(btn => {
+        const qbx = gsap.quickTo(btn, 'x', { duration: 0.4, ease: 'power3' });
+        const qby = gsap.quickTo(btn, 'y', { duration: 0.4, ease: 'power3' });
+        btn.addEventListener('pointermove', (ev) => {
+          const r = btn.getBoundingClientRect();
+          qbx((ev.clientX - r.left - r.width / 2) * 0.25);
+          qby((ev.clientY - r.top - r.height / 2) * 0.35);
+        });
+        btn.addEventListener('pointerleave', () => { qbx(0); qby(0); });
+      });
+
+      // cleanup for matchMedia revert
+      return () => {
+        gsap.set('.reveal', { clearProps: 'all' });
+      };
+    });
+
+    // ---- Reduced motion (if it flips on at runtime): reveal everything, no motion ----
+    mm.add('(prefers-reduced-motion: reduce)', () => {
+      gsap.set('.reveal', { clearProps: 'all', opacity: 1, y: 0 });
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const dec = parseInt(el.dataset.dec || '0', 10), prefix = el.dataset.prefix || '';
+        const target = parseFloat(el.dataset.count);
+        el.textContent = prefix + (dec ? target.toFixed(dec) : Math.round(target).toLocaleString());
+      });
+      document.querySelectorAll('#bars .bar').forEach(b => b.style.height = b.dataset.h + '%');
+      const c = document.getElementById('connector'); if (c) c.classList.add('in');
+    });
+
+    ScrollTrigger.refresh();
+
+  } else {
+    /* ----- FALLBACK: no GSAP or reduced motion -----
+       Reveal items are visible via CSS (.reveal default + reduced-motion rule).
+       Still wire up the lightweight non-motion behaviours so content is complete. */
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+
+    // count-ups: just show final value immediately
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const dec = parseInt(el.dataset.dec || '0', 10), prefix = el.dataset.prefix || '';
+      const target = parseFloat(el.dataset.count);
+      el.textContent = prefix + (dec ? target.toFixed(dec) : Math.round(target).toLocaleString());
+    });
+    // bars: show final heights
+    document.querySelectorAll('#bars .bar').forEach(b => b.style.height = b.dataset.h + '%');
+    // connector
+    const c = document.getElementById('connector'); if (c) c.classList.add('in');
+
+    // bento spotlight still nice to have (pointer only, cheap)
+    if (matchMedia('(pointer:fine)').matches) {
+      document.querySelectorAll('[data-spot]').forEach(card => {
+        card.addEventListener('pointermove', (ev) => {
+          const r = card.getBoundingClientRect();
+          card.style.setProperty('--mx', (ev.clientX - r.left) + 'px');
+          card.style.setProperty('--my', (ev.clientY - r.top) + 'px');
+        });
+      });
+    }
+  }
+
+  /* bento spotlight (works in both paths, pointer only) */
+  if (window.gsap && !prefersReduced && matchMedia('(pointer:fine)').matches) {
+    document.querySelectorAll('[data-spot]').forEach(card => {
+      card.addEventListener('pointermove', (ev) => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (ev.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (ev.clientY - r.top) + 'px');
+      });
+    });
+  }
+  </script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>

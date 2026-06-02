@@ -1,0 +1,53 @@
+{
+  "id": "spark",
+  "name": "Spark",
+  "family": "vibrant",
+  "sector": "E-commerce / retail",
+  "tags": ["ecommerce", "retail", "vibrant", "conversion", "product-led", "energetic", "shop"],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "255 245 247",
+      "surface": "255 255 255",
+      "surface-2": "255 236 241",
+      "ink": "26 20 48",
+      "muted": "118 108 140",
+      "line": "240 219 226",
+      "primary": "255 59 107",
+      "onPrimary": "255 255 255",
+      "accent": "255 176 46",
+      "accent2": "120 84 255"
+    },
+    "type": {
+      "display": "'Unbounded', 'Arial Black', sans-serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'General Sans', ui-monospace, monospace",
+      "scaleRatio": 1.333,
+      "weights": { "display": 600, "displayBold": 700, "body": 400, "label": 600, "bold": 700 },
+      "displayCase": "none",
+      "displayTracking": "-0.02em"
+    },
+    "space": { "base": 8, "section": "clamp(72px, 9vw, 132px)", "gutter": "clamp(20px, 5vw, 56px)", "density": "balanced" },
+    "radius": { "card": "18px", "button": "999px", "input": "14px", "pill": "999px" },
+    "shadow": {
+      "card": "0 10px 30px -16px rgb(26 20 48 / 0.22)",
+      "elevated": "0 30px 70px -30px rgb(255 59 107 / 0.35)",
+      "philosophy": "soft"
+    },
+    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "520ms", "character": "energetic" },
+    "imagery": { "treatment": "rounded", "ratio": "4:5", "filter": "saturate" }
+  },
+  "recipes": { "button": "solid", "card": "elevated", "nav": "split" },
+  "preferredLayouts": {
+    "promobar": "scrolling-offer-strip",
+    "hero": "gradient-mesh-product-hero",
+    "categories": "colorful-image-tiles",
+    "products": "bestseller-card-grid",
+    "promo": "fullbleed-sale-band",
+    "arrivals": "horizontal-scroller",
+    "valueprops": "icon-feature-row",
+    "reviews": "customer-photo-cards",
+    "newsletter": "offer-email-capture",
+    "footer": "shop-mega-footer"
+  }
+}

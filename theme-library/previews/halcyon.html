@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Halcyon — NEXA Theme Preview (Wellness / Spa)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     HALCYON — design tokens (mirror of theme.json -> CSS vars)
+     wellness / spa · light · calm & organic · image-led
+     ============================================================ */
+  :root {
+    --color-bg: 243 239 231;
+    --color-surface: 250 247 241;
+    --color-surface-2: 236 230 219;
+    --color-ink: 47 60 53;
+    --color-muted: 94 105 96;
+    --color-line: 224 216 203;
+    --color-primary: 78 110 84;
+    --color-on-primary: 250 247 241;
+    --color-accent: 126 155 122;
+    --color-accent2: 201 138 107;
+
+    --font-display: "Fraunces", "Georgia", ui-serif, serif;
+    --font-body: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --display-tracking: -0.018em;
+
+    --space-section: clamp(96px, 12vw, 176px);
+    --gutter: clamp(20px, 5vw, 64px);
+    --maxw: 1180px;
+
+    --radius-card: 26px;
+    --radius-image: 28px;
+    --radius-button: 999px;
+    --radius-input: 16px;
+
+    --shadow-card: 0 24px 50px -34px rgb(72 84 70 / 0.32);
+    --shadow-elevated: 0 44px 90px -46px rgb(72 84 70 / 0.40);
+
+    --ease: cubic-bezier(0.33, 1, 0.68, 1);
+    --dur: 820ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.64;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  /* faint paper grain */
+  body::after {
+    content:""; position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .035; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* soft drifting blobs */
+  .bg-fx { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+  .bg-fx .blob { position: absolute; border-radius: 46% 54% 60% 40% / 52% 44% 56% 48%; filter: blur(90px); opacity: .5; }
+  .bg-fx .b1 { width: 620px; height: 580px; background: rgb(var(--color-accent) / .38); top: -160px; right: -120px; animation: drift1 30s var(--ease) infinite alternate; }
+  .bg-fx .b2 { width: 520px; height: 500px; background: rgb(var(--color-accent2) / .22); top: 50%; left: -180px; animation: drift2 36s var(--ease) infinite alternate; }
+  @keyframes drift1 { to { transform: translate(-60px, 80px) rotate(10deg) scale(1.1); } }
+  @keyframes drift2 { to { transform: translate(80px, -50px) rotate(-8deg) scale(1.08); } }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 8px; }
+
+  .eyebrow { font-family: var(--font-body); font-weight: 600; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(var(--color-primary)); display: inline-flex; align-items: center; gap: 11px; }
+  .eyebrow::before { content: ""; width: 22px; height: 1px; background: rgb(var(--color-accent2)); }
+  .disp { font-family: var(--font-display); font-weight: 500; letter-spacing: var(--display-tracking); line-height: 1.05; }
+  .ital { font-style: italic; font-weight: 400; color: rgb(var(--color-accent2)); }
+
+  /* ---------- buttons (recipe: pill-solid) ---------- */
+  .btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body); font-weight: 600; font-size: 15px; padding: 14px 28px; border-radius: var(--radius-button); border: 1px solid transparent; cursor: pointer; white-space: nowrap; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); box-shadow: 0 16px 30px -18px rgb(var(--color-primary) / .85); }
+  .btn-primary:hover { box-shadow: 0 24px 44px -20px rgb(var(--color-primary) / .9); transform: translateY(-2px); }
+  .btn-ghost { border-color: rgb(var(--color-line)); color: rgb(var(--color-ink)); background: rgb(var(--color-surface) / .7); }
+  .btn-ghost:hover { border-color: rgb(var(--color-primary) / .5); background: rgb(var(--color-surface)); transform: translateY(-2px); }
+  .btn-on-image { background: rgb(var(--color-surface) / .92); color: rgb(var(--color-ink)); backdrop-filter: blur(6px); }
+  .btn-on-image:hover { background: rgb(var(--color-surface)); transform: translateY(-2px); }
+  .btn-soft { background: rgb(var(--color-surface) / .85); color: rgb(var(--color-ink)); border-color: rgb(var(--color-line)); backdrop-filter: blur(8px); }
+  .btn-soft:hover { background: rgb(var(--color-surface)); border-color: rgb(var(--color-primary)/.4); transform: translateY(-2px); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============================ NAV (slim, airy) ============================ */
+  header { position: sticky; top: 0; z-index: 50; transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease); border-bottom: 1px solid transparent; }
+  header.stuck { background: rgb(var(--color-bg) / .8); backdrop-filter: blur(14px); border-bottom-color: rgb(var(--color-line)); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 84px; gap: 24px; }
+  .brand { display: flex; align-items: center; gap: 11px; font-family: var(--font-display); font-weight: 600; font-size: 23px; letter-spacing: -0.01em; }
+  .brand .mark { width: 34px; height: 34px; border-radius: 50% 50% 50% 12px; background: rgb(var(--color-primary)); display: grid; place-items: center; color: rgb(var(--color-on-primary)); transition: transform var(--dur) var(--ease); }
+  .brand:hover .mark { transform: rotate(-10deg) scale(1.06); }
+  .nav-links { display: flex; gap: 30px; align-items: center; }
+  .nav-links a { font-size: 14.5px; font-weight: 500; color: rgb(var(--color-muted)); transition: color var(--dur) var(--ease); position: relative; }
+  .nav-links a::after { content:""; position:absolute; left:0; right:0; bottom:-6px; height:1.5px; background: rgb(var(--color-primary)); transform: scaleX(0); transform-origin: left; transition: transform var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  @media (max-width: 900px) { .nav-links { display: none; } }
+
+  /* ============================ HERO — calm full-bleed editorial ============================ */
+  .hero { position: relative; min-height: clamp(640px, 92vh, 940px); display: flex; align-items: center; overflow: hidden; }
+  .hero .hero-bg { position: absolute; inset: 0; z-index: 0; }
+  .hero .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 62% center; transform: scale(1.08); will-change: transform; }
+  /* gentle light wash — keeps text AA over photo, reads calm not heavy */
+  .hero .wash { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      linear-gradient(95deg, rgb(var(--color-bg)/.94) 0%, rgb(var(--color-bg)/.82) 34%, rgb(var(--color-bg)/.40) 58%, rgb(var(--color-ink)/.10) 100%),
+      linear-gradient(0deg, rgb(var(--color-ink)/.14), transparent 40%);
+  }
+  .hero .wrap { position: relative; z-index: 2; width: 100%; }
+  /* asymmetric placement: content sits in the left ~62%, lots of negative space right */
+  .hero-content { max-width: 620px; padding-block: clamp(60px, 10vh, 120px); }
+  .hero .reassure { display:inline-flex; align-items:center; gap: 9px; font-size: 12.5px; font-weight: 500; letter-spacing: .03em; color: rgb(var(--color-ink)); background: rgb(var(--color-surface) / .82); border: 1px solid rgb(var(--color-line)); padding: 8px 15px; border-radius: 999px; backdrop-filter: blur(6px); }
+  .hero .reassure .star { color: rgb(var(--color-accent2)); }
+  .hero h1 { font-size: clamp(46px, 7.2vw, 104px); margin: 28px 0 0; font-weight: 500; line-height: 1.0; }
+  .hero h1 .l2 { margin-left: clamp(0px, 6vw, 96px); display: inline-block; }
+  .hero .lede { font-size: clamp(17px, 1.4vw, 20px); color: rgb(var(--color-muted)); max-width: 30em; margin-top: 28px; }
+  .hero-actions { display: flex; gap: 14px; margin-top: 38px; flex-wrap: wrap; align-items: center; }
+  .hero .note { display:flex; align-items:center; gap: 9px; font-size: 13px; color: rgb(var(--color-muted)); margin-top: 28px; }
+  .hero .note .dot { width: 8px; height: 8px; border-radius: 999px; background: rgb(var(--color-accent)); box-shadow: 0 0 0 0 rgb(var(--color-accent)/.6); animation: ping 3.2s infinite; }
+  @keyframes ping { 70% { box-shadow: 0 0 0 9px rgb(var(--color-accent)/0);} 100%{ box-shadow: 0 0 0 0 rgb(var(--color-accent)/0);} }
+
+  /* small floating "calm" detail — bottom-right, over the open photo space */
+  .hero .calm-detail { position: absolute; z-index: 3; right: clamp(16px, 4vw, 64px); bottom: clamp(28px, 6vh, 64px);
+    display: flex; gap: 14px; align-items: center; max-width: 290px;
+    background: rgb(var(--color-surface) / .9); backdrop-filter: blur(10px); border: 1px solid rgb(var(--color-line));
+    border-radius: 22px; padding: 16px 20px; box-shadow: var(--shadow-card); will-change: transform; }
+  .hero .calm-detail .ring { flex:none; width: 44px; height: 44px; border-radius: 50% 50% 50% 14px; background: rgb(var(--color-accent)/.18); color: rgb(var(--color-primary)); display:grid; place-items:center; }
+  .hero .calm-detail b { font-family: var(--font-display); font-weight: 500; font-size: 15.5px; display:block; }
+  .hero .calm-detail span { font-size: 12.5px; color: rgb(var(--color-muted)); }
+  @media (max-width: 720px) {
+    .hero .hero-bg img { object-position: 70% center; }
+    .hero .wash { background: linear-gradient(180deg, rgb(var(--color-bg)/.86), rgb(var(--color-bg)/.78) 55%, rgb(var(--color-ink)/.16)); }
+    .hero h1 .l2 { margin-left: 0; }
+    .hero .calm-detail { position: static; margin-top: 34px; max-width: none; }
+  }
+
+  /* ============================ INTENTION BAND ============================ */
+  .intention { padding-block: clamp(80px, 12vw, 150px); text-align: center; }
+  .intention .mark-leaf { color: rgb(var(--color-accent2)); font-size: 22px; }
+  .intention p { font-family: var(--font-display); font-weight: 400; font-size: clamp(24px, 3.8vw, 42px); line-height: 1.38; letter-spacing: -0.01em; max-width: 18em; margin: 22px auto 0; }
+  .intention p .ital { font-style: italic; }
+  .intention .sig { font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 30px; }
+
+  /* ============================ TREATMENT MENU ============================ */
+  section.block { padding-block: var(--space-section); }
+  .menu-head { display:grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; }
+  @media (max-width: 760px) { .menu-head { grid-template-columns: 1fr; } }
+  .menu-head h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(32px, 4.6vw, 56px); letter-spacing: -0.02em; line-height: 1.05; margin-top: 18px; }
+  .menu-head .aside { color: rgb(var(--color-muted)); font-size: 15px; max-width: 22em; }
+  .menu { margin-top: clamp(48px, 7vw, 84px); display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(40px, 6vw, 84px); }
+  @media (max-width: 860px) { .menu { grid-template-columns: 1fr; } }
+  .menu-group h3 { font-family: var(--font-display); font-weight: 500; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: rgb(var(--color-primary)); padding-bottom: 18px; border-bottom: 1px solid rgb(var(--color-line)); display:flex; align-items:center; gap: 10px; }
+  .menu-group h3::before { content:"❋"; color: rgb(var(--color-accent2)); font-size: 12px; }
+  .treat { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: baseline; padding: 22px 0; border-bottom: 1px dotted rgb(var(--color-line)); transition: padding-left var(--dur) var(--ease); }
+  .treat:hover { padding-left: 8px; }
+  .treat .t-name { font-family: var(--font-display); font-weight: 500; font-size: 19px; }
+  .treat .t-desc { font-size: 14px; color: rgb(var(--color-muted)); margin-top: 5px; max-width: 26em; }
+  .treat .t-meta { text-align: right; white-space: nowrap; }
+  .treat .t-dur { font-size: 12px; letter-spacing: .04em; color: rgb(var(--color-muted)); display:block; }
+  .treat .t-price { font-family: var(--font-display); font-weight: 500; font-size: 20px; color: rgb(var(--color-ink)); margin-top: 3px; }
+
+  /* ============================ SANCTUARY SPLIT ============================ */
+  .sanctuary { background: rgb(var(--color-surface) / .55); border-block: 1px solid rgb(var(--color-line)); }
+  .sanctuary-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(40px, 6vw, 80px); align-items: center; }
+  @media (max-width: 920px) { .sanctuary-grid { grid-template-columns: 1fr; gap: 48px; } }
+  .sanctuary .imgwrap { position: relative; }
+  .sanctuary .imgwrap .blob-img { position: relative; border-radius: 48% 52% 56% 44% / 54% 46% 54% 46%; overflow: hidden; aspect-ratio: 1 / 1.04; box-shadow: var(--shadow-elevated); }
+  .sanctuary .imgwrap .blob-img img { width:100%; height:100%; object-fit: cover; transform: scale(1.08); will-change: transform; }
+  .sanctuary .imgwrap .ring-deco { position:absolute; inset: -18px; border-radius: 48% 52% 56% 44% / 54% 46% 54% 46%; border: 1px solid rgb(var(--color-accent)/.4); animation: morph 16s var(--ease) infinite alternate; }
+  @keyframes morph { to { border-radius: 56% 44% 48% 52% / 46% 54% 46% 54%; transform: rotate(6deg); } }
+  .sanctuary h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(30px, 4.2vw, 50px); letter-spacing: -0.02em; line-height: 1.08; margin-top: 18px; }
+  .sanctuary .body { color: rgb(var(--color-muted)); font-size: 17px; margin-top: 20px; max-width: 30em; }
+  .sanctuary .points { list-style:none; margin-top: 30px; display:grid; gap: 16px; }
+  .sanctuary .points li { display:flex; gap: 13px; font-size: 16px; align-items: flex-start; }
+  .sanctuary .points .tick { flex:none; width: 26px; height: 26px; border-radius: 999px; background: rgb(var(--color-accent)/.18); color: rgb(var(--color-primary)); display:grid; place-items:center; margin-top: 1px; }
+
+  /* ============================ GALLERY ============================ */
+  .gallery-head { text-align: center; max-width: 40em; margin: 0 auto; }
+  .gallery-head .eyebrow { justify-content: center; }
+  .gallery-head h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(30px, 4.2vw, 50px); letter-spacing: -0.02em; line-height: 1.06; margin-top: 18px; }
+  /* 6-col grid, fixed row height; spans tile every row completely (see span-math in summary) */
+  .gallery { margin-top: clamp(44px, 6vw, 72px); display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 210px; gap: 16px; }
+  @media (max-width: 820px) { .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; } }
+  .gphoto { position: relative; overflow: hidden; border-radius: var(--radius-image); box-shadow: var(--shadow-card); }
+  .gphoto img { width:100%; height:100%; object-fit: cover; filter: grayscale(.4) saturate(.85); transform: scale(1.04); transition: filter var(--dur) var(--ease); will-change: transform; }
+  .gphoto:hover img { filter: grayscale(0) saturate(1); }
+  .gphoto .cap { position:absolute; left:14px; bottom:12px; font-size: 12px; font-weight: 500; color: rgb(var(--color-on-primary)); text-shadow: 0 1px 8px rgb(var(--color-ink)/.7); opacity: 0; transform: translateY(6px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .gphoto:hover .cap { opacity: 1; transform: none; }
+  .g-tall { grid-row: span 2; }
+  .g-wide { grid-column: span 2; }
+  .g-w3 { grid-column: span 3; }
+  @media (max-width: 820px) {
+    .g-tall { grid-row: span 1; }
+    .g-wide, .g-w3 { grid-column: span 2; }
+  }
+
+  /* ============================ PRACTITIONERS ============================ */
+  /* 3-col grid; 3 equal cards = one complete row (see span-math) */
+  .prac-grid { margin-top: clamp(44px, 6vw, 72px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; align-items: stretch; }
+  @media (max-width: 860px) { .prac-grid { grid-template-columns: 1fr; max-width: 380px; margin-inline: auto; } }
+  .prac { display: flex; flex-direction: column; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); overflow: hidden; box-shadow: var(--shadow-card); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .prac:hover { transform: translateY(-6px); box-shadow: var(--shadow-elevated); border-color: rgb(var(--color-accent)/.5); }
+  .prac .pimg { aspect-ratio: 4 / 4.2; overflow: hidden; }
+  .prac .pimg img { width:100%; height:100%; object-fit: cover; transform: scale(1.03); transition: transform 1.4s var(--ease); }
+  .prac:hover .pimg img { transform: scale(1.08); }
+  .prac .pbody { padding: 24px 26px 28px; display: flex; flex-direction: column; flex: 1; }
+  .prac .pbody .spec { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--color-primary)); }
+  .prac .pbody h3 { font-family: var(--font-display); font-weight: 500; font-size: 24px; margin-top: 10px; }
+  .prac .pbody p { font-size: 14.5px; color: rgb(var(--color-muted)); margin-top: 8px; }
+
+  /* ============================ TESTIMONIALS (soft rotator) ============================ */
+  .testi { background: rgb(var(--color-surface) / .55); border-block: 1px solid rgb(var(--color-line)); text-align: center; }
+  .testi .quotemark { font-family: var(--font-display); font-size: 80px; line-height: .6; color: rgb(var(--color-accent2)/.5); }
+  .testi .stage { position: relative; min-height: 230px; max-width: 36em; margin: 26px auto 0; }
+  .testi .quote { position: absolute; inset: 0; opacity: 0; transform: translateY(14px); transition: opacity 1100ms var(--ease), transform 1100ms var(--ease); pointer-events: none; }
+  .testi .quote.active { opacity: 1; transform: none; position: relative; pointer-events: auto; }
+  .testi blockquote { font-family: var(--font-display); font-weight: 400; font-size: clamp(22px, 3.2vw, 34px); line-height: 1.4; letter-spacing: -0.01em; }
+  .testi .who { margin-top: 28px; display:flex; flex-direction: column; align-items: center; gap: 4px; }
+  .testi .who b { font-weight: 600; font-size: 15px; }
+  .testi .who span { font-size: 13px; color: rgb(var(--color-muted)); }
+  .testi .dots { display:flex; gap: 9px; justify-content: center; margin-top: 40px; }
+  .testi .dots button { width: 9px; height: 9px; border-radius: 999px; border: none; background: rgb(var(--color-line)); cursor: pointer; padding: 0; transition: background var(--dur) var(--ease), width var(--dur) var(--ease); }
+  .testi .dots button.on { background: rgb(var(--color-primary)); width: 26px; }
+
+  /* ============================ BOOKING CTA BAND ============================ */
+  .booking { padding-block: clamp(80px, 10vw, 140px); }
+  .booking .band { position: relative; overflow: hidden; border-radius: 40px; box-shadow: var(--shadow-elevated); }
+  .booking .band img { position: absolute; inset: 0; width:100%; height:100%; object-fit: cover; transform: scale(1.08); will-change: transform; }
+  .booking .band .veil { position: absolute; inset: 0; background: linear-gradient(120deg, rgb(var(--color-primary)/.82), rgb(var(--color-ink)/.55)); }
+  .booking .band .inner { position: relative; padding: clamp(54px, 8vw, 100px) clamp(28px, 6vw, 80px); text-align: center; color: rgb(var(--color-on-primary)); }
+  .booking .band .eyebrow { color: rgb(var(--color-on-primary)/.85); justify-content: center; }
+  .booking .band .eyebrow::before { background: rgb(var(--color-on-primary)/.6); }
+  .booking .band h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 5.5vw, 64px); letter-spacing: -0.02em; line-height: 1.04; margin-top: 18px; }
+  .booking .band p { color: rgb(var(--color-on-primary)/.85); font-size: 17px; margin: 18px auto 0; max-width: 30em; }
+  .booking .band .acts { display:flex; gap: 14px; justify-content: center; margin-top: 36px; flex-wrap: wrap; }
+  .booking .band .hours { margin-top: 26px; font-size: 13px; color: rgb(var(--color-on-primary)/.8); letter-spacing: .02em; }
+
+  /* ============================ FOOTER ============================ */
+  footer { border-top: 1px solid rgb(var(--color-line)); padding-block: 64px 40px; }
+  .news { display:grid; grid-template-columns: 1.3fr 1fr; gap: 36px; align-items:center; padding-bottom: 52px; margin-bottom: 52px; border-bottom: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 760px) { .news { grid-template-columns: 1fr; gap: 22px; } }
+  .news h3 { font-family: var(--font-display); font-weight: 500; font-size: clamp(24px,3vw,34px); letter-spacing:-.02em; }
+  .news .sub { font-size: 14px; color: rgb(var(--color-muted)); margin-top: 8px; }
+  .news form { display:flex; gap: 10px; }
+  .news input { flex:1; background: rgb(var(--color-bg)); border:1px solid rgb(var(--color-line)); color: rgb(var(--color-ink)); border-radius: var(--radius-input); padding: 14px 18px; font-family: var(--font-body); font-size: 15px; outline: none; transition: border-color var(--dur) var(--ease); }
+  .news input::placeholder { color: rgb(var(--color-muted)); }
+  .news input:focus { border-color: rgb(var(--color-primary)/.6); }
+  .foot { display:grid; grid-template-columns: 1.7fr 1fr 1fr 1fr; gap: 32px; }
+  @media (max-width: 760px) { .foot { grid-template-columns: 1fr 1fr; gap: 40px 24px; } }
+  .foot .blurb { font-size: 14px; color: rgb(var(--color-muted)); max-width: 24em; margin-top: 14px; }
+  .foot .contact { font-size: 14px; color: rgb(var(--color-muted)); margin-top: 16px; line-height: 1.9; }
+  .foot .contact b { color: rgb(var(--color-ink)); font-weight: 600; }
+  .foot h4 { font-size: 11.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 16px; }
+  .foot a.fl { display:block; font-size: 14px; color: rgb(var(--color-muted)); padding: 6px 0; transition: color var(--dur) var(--ease); }
+  .foot a.fl:hover { color: rgb(var(--color-ink)); }
+  .legal { display:flex; justify-content:space-between; margin-top: 52px; padding-top: 28px; border-top: 1px solid rgb(var(--color-line)); font-size: 13px; color: rgb(var(--color-muted)); flex-wrap: wrap; gap: 12px; }
+
+  .ribbon { position: fixed; bottom: 0; right: 0; z-index: 95; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); font-size: 11px; font-weight: 600; letter-spacing: .1em; padding: 9px 15px; border-top-left-radius: 16px; }
+
+  /* Reduced-motion: kill ambient CSS animation. Content always visible (never hidden by CSS). */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; }
+    html { scroll-behavior: auto; }
+    .hero .hero-bg img, .sanctuary .imgwrap .blob-img img, .booking .band img, .gphoto img { transform: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="bg-fx"><div class="blob b1"></div><div class="blob b2"></div></div>
+  <div class="ribbon">NEXA Theme · Halcyon · wellness</div>
+
+  <!-- NAV — slim & airy -->
+  <header id="hdr">
+    <div class="wrap nav">
+      <a href="#" class="brand"><span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c0-7 4-11 9-12-1 8-4 12-9 12z"/><path d="M12 21c0-5-3-8-7-9 1 6 3 9 7 9z"/></svg></span>Halcyon</a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#menu">Treatments</a>
+        <a href="#sanctuary">The space</a>
+        <a href="#guides">Practitioners</a>
+        <a href="#visit">Visit</a>
+      </nav>
+      <a href="#visit" class="btn btn-primary">Book a session</a>
+    </div>
+  </header>
+
+  <!-- HERO — calm full-bleed editorial: soft spa photo, gentle light wash, offset serene headline -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <img id="heroImg" src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1900&h=1200&q=80&auto=format&fit=crop" alt="A softly lit, plant-filled spa interior bathed in warm natural light" />
+    </div>
+    <div class="wash" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-content">
+        <span class="reassure" data-hero><span class="star">★</span> A quiet sanctuary in the heart of the city</span>
+        <h1 class="disp" data-hero>Rest your mind,<br><span class="l2">restore your <span class="ital">body</span>.</span></h1>
+        <p class="lede" data-hero>Halcyon is a calm wellness retreat for massage, skin care, and slow restorative ritual — unhurried treatments in candlelit rooms, guided by hands that listen.</p>
+        <div class="hero-actions" data-hero>
+          <a href="#visit" class="btn btn-primary">Book a session <span class="arrow">→</span></a>
+          <a href="#menu" class="btn btn-soft">Explore treatments</a>
+        </div>
+        <p class="note" data-hero><span class="dot"></span> Open daily · same-week appointments often available</p>
+      </div>
+    </div>
+    <div class="calm-detail" data-hero>
+      <span class="ring"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+      <div><b>Unhurried by design</b><span>Treatments from 45 to 120 minutes</span></div>
+    </div>
+  </section>
+
+  <!-- INTENTION BAND — single soft affirmation -->
+  <section class="intention">
+    <div class="wrap" data-reveal>
+      <span class="mark-leaf">❋</span>
+      <p>We believe rest is not a reward to be earned, but a <span class="ital">place to return to</span> — gently, and as often as you need.</p>
+      <div class="sig">— The Halcyon philosophy</div>
+    </div>
+  </section>
+
+  <!-- TREATMENT MENU — a real spa menu -->
+  <section class="block" id="menu" style="padding-top:0;">
+    <div class="wrap">
+      <div class="menu-head" data-reveal>
+        <div>
+          <span class="eyebrow">The menu</span>
+          <h2>Treatments &amp; rituals</h2>
+        </div>
+        <p class="aside">Every session begins with a quiet consultation and a cup of tea. Prices are per person; couples' rooms available on request.</p>
+      </div>
+
+      <div class="menu">
+        <div class="menu-group" data-reveal-batch>
+          <h3>Massage</h3>
+          <div class="treat">
+            <div>
+              <div class="t-name">Halcyon Signature</div>
+              <div class="t-desc">A full-body slow-flow massage with warm oil, tailored pressure, and breath-led pacing.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">75 min</span><span class="t-price">£110</span></div>
+          </div>
+          <div class="treat">
+            <div>
+              <div class="t-name">Deep Tissue Release</div>
+              <div class="t-desc">Focused work for held tension across the back, neck, and shoulders.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">60 min</span><span class="t-price">£95</span></div>
+          </div>
+          <div class="treat">
+            <div>
+              <div class="t-name">Warm Stone Calm</div>
+              <div class="t-desc">Heated basalt stones melt away tension and quiet a restless mind.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">90 min</span><span class="t-price">£135</span></div>
+          </div>
+        </div>
+
+        <div class="menu-group" data-reveal-batch>
+          <h3>Facials &amp; Skin</h3>
+          <div class="treat">
+            <div>
+              <div class="t-name">Glow Restore Facial</div>
+              <div class="t-desc">Botanical cleanse, gentle resurfacing, and a cooling jade massage.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">60 min</span><span class="t-price">£90</span></div>
+          </div>
+          <div class="treat">
+            <div>
+              <div class="t-name">Quiet Hydration</div>
+              <div class="t-desc">A soothing, fragrance-free ritual for sensitive or tired skin.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">45 min</span><span class="t-price">£75</span></div>
+          </div>
+          <div class="treat">
+            <div>
+              <div class="t-name">Sculpt &amp; Lift</div>
+              <div class="t-desc">Lymphatic facial massage with warm compresses and a finishing serum.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">75 min</span><span class="t-price">£120</span></div>
+          </div>
+        </div>
+
+        <div class="menu-group" data-reveal-batch>
+          <h3>Body &amp; Ritual</h3>
+          <div class="treat">
+            <div>
+              <div class="t-name">Salt &amp; Cedar Scrub</div>
+              <div class="t-desc">A full-body exfoliation followed by a slow nourishing wrap.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">60 min</span><span class="t-price">£98</span></div>
+          </div>
+          <div class="treat">
+            <div>
+              <div class="t-name">The Half-Day Retreat</div>
+              <div class="t-desc">Massage, facial, and a private rest in the relaxation garden.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">3 hr</span><span class="t-price">£260</span></div>
+          </div>
+          <div class="treat">
+            <div>
+              <div class="t-name">Sound &amp; Breath Bath</div>
+              <div class="t-desc">A guided, deeply restful session set to soft singing bowls.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">50 min</span><span class="t-price">£68</span></div>
+          </div>
+        </div>
+
+        <div class="menu-group" data-reveal-batch>
+          <h3>Hands &amp; Feet</h3>
+          <div class="treat">
+            <div>
+              <div class="t-name">Reflexology Reset</div>
+              <div class="t-desc">Pressure-point foot work to ground a busy nervous system.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">45 min</span><span class="t-price">£70</span></div>
+          </div>
+          <div class="treat">
+            <div>
+              <div class="t-name">Botanical Manicure</div>
+              <div class="t-desc">A slow hand soak, gentle care, and a natural-finish polish.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">50 min</span><span class="t-price">£55</span></div>
+          </div>
+          <div class="treat">
+            <div>
+              <div class="t-name">Restorative Pedicure</div>
+              <div class="t-desc">Warm soak, exfoliation, and a soothing lower-leg massage.</div>
+            </div>
+            <div class="t-meta"><span class="t-dur">60 min</span><span class="t-price">£62</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SANCTUARY SPLIT -->
+  <section class="block sanctuary" id="sanctuary">
+    <div class="wrap sanctuary-grid">
+      <div class="imgwrap" data-reveal>
+        <div class="ring-deco" aria-hidden="true"></div>
+        <div class="blob-img">
+          <img class="parallax-img" src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=900&h=940&q=80&auto=format&fit=crop" alt="A serene candlelit spa treatment room with soft towels and warm lighting" />
+        </div>
+      </div>
+      <div data-reveal>
+        <span class="eyebrow">Your sanctuary</span>
+        <h2>A space designed<br>to slow you down.</h2>
+        <p class="body">From the moment you arrive, the city fades. Linen robes, low light, the scent of cedar and eucalyptus — every detail is chosen to help your shoulders drop and your breath lengthen.</p>
+        <ul class="points">
+          <li><span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg></span> Candlelit treatment rooms, never rushed or double-booked.</li>
+          <li><span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg></span> A quiet relaxation garden to linger in before and after.</li>
+          <li><span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg></span> Organic, low-fragrance products kind to sensitive skin.</li>
+        </ul>
+        <a href="#visit" class="btn btn-primary" style="margin-top:34px;">Plan your visit <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="block">
+    <div class="wrap">
+      <div class="gallery-head" data-reveal>
+        <span class="eyebrow">Inside Halcyon</span>
+        <h2>A few moments<br>from the space.</h2>
+      </div>
+      <div class="gallery">
+        <div class="gphoto g-wide g-tall" data-reveal-batch>
+          <img class="parallax-img" src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=900&h=820&q=80&auto=format&fit=crop" alt="A calm massage room with soft towels folded on a treatment bed" />
+          <span class="cap">Treatment Room No. 3</span>
+        </div>
+        <div class="gphoto g-wide" data-reveal-batch>
+          <img class="parallax-img" src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=420&q=80&auto=format&fit=crop" alt="Rolled towels and a small bowl of stones on a wooden shelf" />
+          <span class="cap">Quiet details</span>
+        </div>
+        <div class="gphoto g-wide" data-reveal-batch>
+          <img class="parallax-img" src="https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=600&h=420&q=80&auto=format&fit=crop" alt="Warm towels and flowers prepared for a spa ritual" />
+          <span class="cap">Prepared with care</span>
+        </div>
+        <div class="gphoto g-w3" data-reveal-batch>
+          <img class="parallax-img" src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=900&h=420&q=80&auto=format&fit=crop" alt="A serene spa pool surrounded by soft lighting and greenery" />
+          <span class="cap">The water room</span>
+        </div>
+        <div class="gphoto g-w3" data-reveal-batch>
+          <img class="parallax-img" src="https://images.unsplash.com/photo-1474418397713-7ede21d49118?w=900&h=420&q=80&auto=format&fit=crop" alt="Lit candles and smooth stones arranged on a calm surface" />
+          <span class="cap">Candlelight</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRACTITIONERS -->
+  <section class="block" id="guides" style="padding-top:0;">
+    <div class="wrap">
+      <div class="gallery-head" data-reveal>
+        <span class="eyebrow">Your practitioners</span>
+        <h2>Gentle, expert hands.</h2>
+      </div>
+      <div class="prac-grid">
+        <div class="prac" data-reveal-batch>
+          <div class="pimg"><img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=630&q=80&auto=format&fit=crop" alt="Portrait of a calm massage therapist in soft natural light" /></div>
+          <div class="pbody">
+            <span class="spec">Massage &amp; bodywork</span>
+            <h3>Iris Mara</h3>
+            <p>Twelve years in restorative and deep-tissue massage, with a quiet, breath-led touch.</p>
+          </div>
+        </div>
+        <div class="prac" data-reveal-batch>
+          <div class="pimg"><img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&h=630&q=80&auto=format&fit=crop" alt="Portrait of a serene skin care specialist smiling softly" /></div>
+          <div class="pbody">
+            <span class="spec">Facials &amp; skin</span>
+            <h3>Soraya Bell</h3>
+            <p>A skin therapist who favours slow, sensorial facials over anything harsh or hurried.</p>
+          </div>
+        </div>
+        <div class="prac" data-reveal-batch>
+          <div class="pimg"><img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&h=630&q=80&auto=format&fit=crop" alt="A tranquil relaxation lounge representing the breath and ritual practitioner" /></div>
+          <div class="pbody">
+            <span class="spec">Breath &amp; ritual</span>
+            <h3>Noor Haddad</h3>
+            <p>Guides our sound, breath, and rest sessions — grounding, unrushed, deeply calming.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS — soft rotator -->
+  <section class="block testi">
+    <div class="wrap">
+      <div data-reveal>
+        <div class="quotemark" aria-hidden="true">&ldquo;</div>
+        <div class="stage" id="quoteStage" aria-live="polite">
+          <div class="quote active">
+            <blockquote>I arrived wound tight and left feeling like I'd been away for a week. Nothing was rushed — not the welcome, not the treatment, not even the goodbye.</blockquote>
+            <div class="who"><b>Rhea Lin</b><span>Halcyon Signature · returning guest</span></div>
+          </div>
+          <div class="quote">
+            <blockquote>The most genuinely restful hour I've spent in years. The room, the scent, the quiet — it all just lets you exhale.</blockquote>
+            <div class="who"><b>Daniel Okafor</b><span>Warm Stone Calm</span></div>
+          </div>
+          <div class="quote">
+            <blockquote>Soraya read my skin in a way no one else has. Gentle, considered, and somehow deeply relaxing at the same time.</blockquote>
+            <div class="who"><b>Sofia Marchetti</b><span>Glow Restore Facial</span></div>
+          </div>
+        </div>
+        <div class="dots" id="quoteDots" role="tablist" aria-label="Testimonials">
+          <button class="on" aria-label="Show testimonial 1"></button>
+          <button aria-label="Show testimonial 2"></button>
+          <button aria-label="Show testimonial 3"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING CTA BAND -->
+  <section class="booking" id="visit">
+    <div class="wrap">
+      <div class="band" data-reveal>
+        <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=1400&h=620&q=80&auto=format&fit=crop" alt="A tranquil spa pool with soft reflected light" />
+        <div class="veil" aria-hidden="true"></div>
+        <div class="inner">
+          <span class="eyebrow">Begin your ritual</span>
+          <h2>Give yourself<br>an hour of quiet.</h2>
+          <p>Reserve your treatment online in moments, or call and we'll find the right time for you. First visit? We'll gently talk you through it.</p>
+          <div class="acts">
+            <a href="#" class="btn btn-on-image">Book a session <span class="arrow">→</span></a>
+            <a href="tel:+442071234567" class="btn btn-ghost" style="border-color:rgb(var(--color-on-primary)/.4);color:rgb(var(--color-on-primary));background:transparent;">Call the studio</a>
+          </div>
+          <p class="hours">Open Mon–Fri 9–8 · Sat–Sun 9–6 · last appointment one hour before close</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="news">
+        <div>
+          <h3 data-reveal>Moments of calm, monthly.</h3>
+          <p class="sub" data-reveal>One quiet ritual, a seasonal offer, and a little space to breathe — sent once a month, never more.</p>
+        </div>
+        <form data-reveal onsubmit="return false">
+          <input type="email" placeholder="you@example.com" aria-label="Email address for the monthly calm newsletter" />
+          <button class="btn btn-primary">Subscribe</button>
+        </form>
+      </div>
+      <div class="foot">
+        <div>
+          <a href="#" class="brand"><span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c0-7 4-11 9-12-1 8-4 12-9 12z"/><path d="M12 21c0-5-3-8-7-9 1 6 3 9 7 9z"/></svg></span>Halcyon</a>
+          <p class="blurb">A calm wellness retreat for massage, skin care, and slow restorative ritual.</p>
+        </div>
+        <div>
+          <h4>Visit</h4>
+          <div class="contact"><b>14 Cedar Walk</b><br>Marylebone, London W1<br>Open daily · 9am–8pm</div>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <div class="contact"><a class="fl" href="tel:+442071234567">+44 20 7123 4567</a><a class="fl" href="mailto:hello@halcyon.studio">hello@halcyon.studio</a></div>
+        </div>
+        <div>
+          <h4>Studio</h4>
+          <a class="fl" href="#menu">Treatments</a>
+          <a class="fl" href="#guides">Practitioners</a>
+          <a class="fl" href="#">Gift cards</a>
+          <a class="fl" href="#">Memberships</a>
+        </div>
+      </div>
+      <div class="legal">
+        <span>© 2026 Halcyon Wellbeing · All rights reserved</span>
+        <span>Built with NEXA Web Studio</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP (gentle, calm motion) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+  (function () {
+    /* sticky nav — always runs, no motion dependency */
+    var hdr = document.getElementById('hdr');
+    var onScroll = function () { hdr.classList.toggle('stuck', window.scrollY > 16); };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* soft testimonial rotator — pure DOM, respects reduced-motion via matchMedia */
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var quotes = Array.prototype.slice.call(document.querySelectorAll('#quoteStage .quote'));
+      var dots = Array.prototype.slice.call(document.querySelectorAll('#quoteDots button'));
+      if (!quotes.length) return;
+      var i = 0, timer = null;
+      var show = function (n) {
+        quotes[i].classList.remove('active');
+        dots[i].classList.remove('on');
+        i = (n + quotes.length) % quotes.length;
+        quotes[i].classList.add('active');
+        dots[i].classList.add('on');
+      };
+      var start = function () { if (reduce) return; timer = setInterval(function () { show(i + 1); }, 6500); };
+      var stop = function () { if (timer) clearInterval(timer); };
+      dots.forEach(function (d, n) { d.addEventListener('click', function () { stop(); show(n); start(); }); });
+      start();
+    })();
+
+    /* ---- GSAP-driven motion. GUARD: only run if GSAP present.
+       Content is fully visible by default; we never hide via CSS.
+       gsap.set() (which hides) only ever runs inside this guard, and
+       gsap.matchMedia handles prefers-reduced-motion so reduced users
+       keep everything visible & static. ---- */
+    if (!window.gsap) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    var mm = gsap.matchMedia();
+
+    /* Full motion — only when motion is allowed */
+    mm.add('(prefers-reduced-motion: no-preference)', function () {
+
+      /* Hero entrance — slow, airy stagger */
+      var heroItems = gsap.utils.toArray('[data-hero]');
+      gsap.set(heroItems, { opacity: 0, y: 30 });
+      gsap.to(heroItems, {
+        opacity: 1, y: 0, duration: 1.5, ease: 'power2.out',
+        stagger: 0.16, delay: 0.15
+      });
+
+      /* Hero photo — slow settle + subtle scroll parallax */
+      var heroImg = document.getElementById('heroImg');
+      if (heroImg) {
+        gsap.fromTo(heroImg, { scale: 1.14 }, { scale: 1.08, duration: 2.4, ease: 'power1.out' });
+        gsap.to(heroImg, {
+          yPercent: 12, ease: 'none',
+          scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+        });
+      }
+
+      /* Soft single-element reveals */
+      gsap.utils.toArray('[data-reveal]').forEach(function (el) {
+        gsap.set(el, { opacity: 0, y: 28 });
+        ScrollTrigger.create({
+          trigger: el, start: 'top 86%', once: true,
+          onEnter: function () {
+            gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' });
+          }
+        });
+      });
+
+      /* Soft staggered batch reveals (menu groups, gallery, practitioners) */
+      gsap.set('[data-reveal-batch]', { opacity: 0, y: 30 });
+      ScrollTrigger.batch('[data-reveal-batch]', {
+        start: 'top 88%',
+        onEnter: function (batch) {
+          gsap.to(batch, { opacity: 1, y: 0, duration: 1.1, ease: 'power2.out', stagger: 0.12, overwrite: true });
+        }
+      });
+
+      /* Subtle parallax on gallery + sanctuary images */
+      gsap.utils.toArray('.parallax-img').forEach(function (img) {
+        gsap.fromTo(img, { yPercent: -6 }, {
+          yPercent: 6, ease: 'none',
+          scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+      });
+
+      ScrollTrigger.refresh();
+
+      /* cleanup when this media context no longer matches */
+      return function () {
+        gsap.set(heroItems.concat(gsap.utils.toArray('[data-reveal]'), gsap.utils.toArray('[data-reveal-batch]')), { clearProps: 'all' });
+      };
+    });
+
+    /* Reduced-motion context: do nothing. No gsap.set hides anything,
+       so the full page renders normally and completely. */
+    mm.add('(prefers-reduced-motion: reduce)', function () { return function () {}; });
+  })();
+  </script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>

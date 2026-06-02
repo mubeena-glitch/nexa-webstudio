@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pulse — High-Energy Fitness Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+<style>
+  /* ============ TOKENS — mirror theme.json 1:1 ============ */
+  :root{
+    --c-bg: 12 12 14;
+    --c-surface: 22 23 27;
+    --c-surface-2: 30 31 36;
+    --c-ink: 245 246 243;
+    --c-muted: 162 165 172;
+    --c-line: 44 46 52;
+    --c-primary: 214 255 46;
+    --c-onPrimary: 12 12 14;
+    --c-accent: 255 46 99;
+    --c-accent2: 214 255 46;
+
+    --f-display: 'Archivo', 'Arial Black', sans-serif;
+    --f-body: 'General Sans', ui-sans-serif, system-ui, sans-serif;
+    --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --scale-ratio: 1.5;
+    --w-display: 700;
+    --w-displayBold: 800;
+    --w-body: 400;
+    --w-label: 600;
+    --w-bold: 700;
+    --display-case: uppercase;
+    --display-track: -0.02em;
+
+    --s-base: 8px;
+    --s-section: clamp(88px, 11vw, 168px);
+    --s-gutter: clamp(20px, 5vw, 64px);
+
+    --r-card: 6px;
+    --r-button: 4px;
+    --r-input: 4px;
+    --r-pill: 999px;
+
+    --sh-card: 0 24px 60px -40px rgb(0 0 0 / 0.75);
+    --sh-elevated: 0 40px 90px -45px rgb(0 0 0 / 0.85);
+    --sh-glow: 0 0 0 1px rgb(var(--c-primary) / 0.4), 0 0 40px -8px rgb(var(--c-primary) / 0.45);
+
+    --ease: cubic-bezier(0.2, 0.9, 0.1, 1);
+    --dur: 520ms;
+
+    --maxw: 1240px;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  body{
+    margin:0;
+    font-family:var(--f-body);
+    font-weight:var(--w-body);
+    background:rgb(var(--c-bg));
+    color:rgb(var(--c-ink));
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{ margin:0; font-family:var(--f-display); line-height:0.96; letter-spacing:var(--display-track); }
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  img{ display:block; max-width:100%; }
+  ul{ margin:0; padding:0; list-style:none; }
+
+  .wrap{ width:100%; max-width:var(--maxw); margin:0 auto; padding-inline:var(--s-gutter); }
+  .section{ padding-block:var(--s-section); }
+
+  .eyebrow{
+    font-family:var(--f-mono);
+    font-size:0.72rem;
+    font-weight:700;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:rgb(var(--c-primary));
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width:26px; height:2px; background:rgb(var(--c-primary)); display:inline-block; }
+  .eyebrow.pink{ color:rgb(var(--c-accent)); }
+  .eyebrow.pink::before{ background:rgb(var(--c-accent)); }
+
+  .display{
+    font-family:var(--f-display);
+    font-weight:var(--w-displayBold);
+    text-transform:var(--display-case);
+    letter-spacing:var(--display-track);
+  }
+  .mono{ font-family:var(--f-mono); }
+
+  /* ============ BUTTONS ============ */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    font-family:var(--f-display); font-weight:700; text-transform:uppercase;
+    letter-spacing:0.04em; font-size:0.86rem;
+    padding:15px 26px; border-radius:var(--r-button); border:2px solid transparent;
+    cursor:pointer; transition:transform var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    transform:translate(var(--mx,0),var(--my,0));
+    will-change:transform;
+  }
+  .btn-primary{ background:rgb(var(--c-primary)); color:rgb(var(--c-onPrimary)); }
+  .btn-primary:hover{ box-shadow:var(--sh-glow); }
+  .btn-pink{ background:rgb(var(--c-accent)); color:#fff; }
+  .btn-pink:hover{ box-shadow:0 0 40px -8px rgb(var(--c-accent) / 0.6); }
+  .btn-ghost{ background:transparent; color:rgb(var(--c-ink)); border-color:rgb(var(--c-line)); }
+  .btn-ghost:hover{ border-color:rgb(var(--c-primary)); color:rgb(var(--c-primary)); }
+  .btn-onlight{ background:rgb(var(--c-bg)); color:rgb(var(--c-ink)); }
+  .btn-onlight:hover{ box-shadow:0 0 40px -6px rgb(0 0 0 / 0.5); }
+  .btn:focus-visible{ outline:3px solid rgb(var(--c-primary)); outline-offset:3px; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:3px solid rgb(var(--c-primary)); outline-offset:3px; border-radius:2px;
+  }
+
+  /* ============ NAV ============ */
+  .nav{
+    position:sticky; top:0; z-index:60;
+    transition:background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    border-bottom:1px solid transparent;
+  }
+  .nav.scrolled{
+    background:rgb(var(--c-bg) / 0.85);
+    backdrop-filter:blur(14px);
+    border-bottom-color:rgb(var(--c-line));
+  }
+  .nav-inner{ display:flex; align-items:center; justify-content:space-between; gap:24px; padding-block:18px; }
+  .logo{ display:inline-flex; align-items:center; gap:10px; font-family:var(--f-display); font-weight:900; font-size:1.35rem; text-transform:uppercase; letter-spacing:-0.02em; }
+  .logo .dot{ width:13px; height:13px; background:rgb(var(--c-primary)); border-radius:50%; box-shadow:0 0 16px rgb(var(--c-primary) / 0.8); animation:pulse 1.8s var(--ease) infinite; }
+  @keyframes pulse{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.5); opacity:0.55; } }
+  .nav-links{ display:flex; align-items:center; gap:32px; }
+  .nav-links a{ font-family:var(--f-display); font-weight:600; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.06em; color:rgb(var(--c-muted)); transition:color var(--dur) var(--ease); position:relative; }
+  .nav-links a::after{ content:""; position:absolute; left:0; bottom:-6px; width:0; height:2px; background:rgb(var(--c-primary)); transition:width var(--dur) var(--ease); }
+  .nav-links a:hover{ color:rgb(var(--c-ink)); }
+  .nav-links a:hover::after{ width:100%; }
+  .nav-cta{ display:flex; align-items:center; gap:14px; }
+  .nav-toggle{ display:none; background:none; border:1px solid rgb(var(--c-line)); color:rgb(var(--c-ink)); border-radius:var(--r-button); padding:10px; cursor:pointer; }
+  @media(max-width:900px){
+    .nav-links{ display:none; }
+    .nav-cta .btn-ghost{ display:none; }
+    .nav-toggle{ display:inline-flex; }
+  }
+
+  /* ============ HERO — full-bleed athlete + oversized angled type ============ */
+  .hero{
+    position:relative;
+    min-height:clamp(640px, 92vh, 940px);
+    display:flex; align-items:flex-end;
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .hero-bg{ position:absolute; inset:-12% 0 0 0; z-index:0; will-change:transform; }
+  .hero-bg img{ width:100%; height:118%; object-fit:cover; object-position:center 28%; filter:saturate(1.12) contrast(1.06) brightness(0.78); }
+  .hero-veil{
+    position:absolute; inset:0; z-index:1;
+    background:
+      linear-gradient(180deg, rgb(var(--c-bg) / 0.55) 0%, rgb(var(--c-bg) / 0.12) 30%, rgb(var(--c-bg) / 0.62) 72%, rgb(var(--c-bg) / 0.97) 100%),
+      linear-gradient(90deg, rgb(var(--c-bg) / 0.82) 0%, rgb(var(--c-bg) / 0.18) 58%, transparent 100%),
+      radial-gradient(60% 70% at 88% 18%, rgb(var(--c-accent) / 0.20), transparent 60%);
+  }
+  .hero-inner{ position:relative; z-index:2; width:100%; padding-block:clamp(48px,8vw,96px); }
+  .hero-flag{ display:inline-flex; align-items:center; gap:10px; margin-bottom:clamp(18px,3vw,28px); }
+  .hero h1{
+    font-size:clamp(3.4rem, 13vw, 11rem);
+    font-weight:900; text-transform:uppercase;
+    letter-spacing:-0.03em; line-height:0.86;
+    text-shadow:0 18px 60px rgb(0 0 0 / 0.5);
+  }
+  .hero h1 .ln{ display:block; }
+  .hero h1 .ln.offset{ margin-left:clamp(0px,8vw,150px); }
+  .hero h1 .skew{ display:inline-block; color:rgb(var(--c-primary)); transform:skewX(-8deg); transform-origin:left bottom; }
+  .hero h1 .out{ -webkit-text-stroke:2px rgb(var(--c-ink)); color:transparent; }
+  .hero-cluster{ display:flex; align-items:flex-end; justify-content:space-between; gap:clamp(28px,5vw,64px); flex-wrap:wrap; margin-top:clamp(28px,4vw,44px); }
+  .hero-sub{ max-width:48ch; color:rgb(var(--c-ink)); font-size:1.12rem; opacity:0.92; }
+  .hero-cta{ margin-top:26px; display:flex; flex-wrap:wrap; gap:14px; }
+  .hero-stat{ display:flex; gap:clamp(24px,4vw,42px); flex-wrap:wrap; align-items:flex-end; padding-bottom:6px; }
+  .hero-stat .num{ font-family:var(--f-mono); font-weight:700; font-size:clamp(1.7rem,3.4vw,2.4rem); color:rgb(var(--c-ink)); line-height:1; }
+  .hero-stat .lbl{ font-size:0.74rem; color:rgb(var(--c-muted)); text-transform:uppercase; letter-spacing:0.1em; margin-top:8px; }
+  .hero-stat .stars{ color:rgb(var(--c-primary)); }
+  .hero-stat .div{ width:1px; align-self:stretch; background:rgb(var(--c-line)); }
+  @media(max-width:760px){
+    .hero h1 .ln.offset{ margin-left:0; }
+    .hero-cluster{ flex-direction:column; align-items:flex-start; }
+  }
+
+  /* ============ MARQUEE ============ */
+  .marquee{ border-block:1px solid rgb(var(--c-line)); background:rgb(var(--c-surface)); overflow:hidden; padding-block:18px; }
+  .marquee-track{ display:flex; gap:48px; white-space:nowrap; width:max-content; animation:scroll 24s linear infinite; }
+  .marquee-track span{ font-family:var(--f-display); font-weight:800; text-transform:uppercase; font-size:1.15rem; letter-spacing:0.02em; color:rgb(var(--c-ink)); display:inline-flex; align-items:center; gap:48px; }
+  .marquee-track span::after{ content:"●"; color:rgb(var(--c-primary)); font-size:0.7rem; }
+  @keyframes scroll{ to{ transform:translateX(-50%); } }
+
+  /* ============ SECTION HEAD ============ */
+  .head{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:48px; flex-wrap:wrap; }
+  .head h2{ font-size:clamp(2.2rem,5vw,3.6rem); font-weight:800; text-transform:uppercase; max-width:16ch; }
+  .head p{ color:rgb(var(--c-muted)); max-width:40ch; }
+
+  /* ============ PROGRAMS ============ */
+  .programs-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  @media(max-width:980px){ .programs-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:560px){ .programs-grid{ grid-template-columns:1fr; } }
+  .prog{
+    position:relative; border-radius:var(--r-card); overflow:hidden; aspect-ratio:3/4;
+    border:1px solid rgb(var(--c-line)); transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .prog img{ width:100%; height:100%; object-fit:cover; transition:transform 800ms var(--ease); filter:saturate(1.05) brightness(0.85); }
+  .prog::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 30%, rgb(var(--c-bg) / 0.92)); }
+  .prog:hover{ transform:translateY(-8px); box-shadow:var(--sh-card); }
+  .prog:hover img{ transform:scale(1.08); }
+  .prog-body{ position:absolute; left:0; right:0; bottom:0; z-index:2; padding:20px; }
+  .prog-tags{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .tag{ font-family:var(--f-mono); font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:5px 9px; border-radius:var(--r-pill); }
+  .tag.hot{ background:rgb(var(--c-accent)); color:#fff; }
+  .tag.mid{ background:rgb(var(--c-primary)); color:rgb(var(--c-onPrimary)); }
+  .tag.dur{ background:rgb(var(--c-surface-2)); color:rgb(var(--c-ink)); border:1px solid rgb(var(--c-line)); }
+  .prog h3{ font-size:1.5rem; font-weight:800; text-transform:uppercase; }
+  .prog .arrow{ margin-top:8px; color:rgb(var(--c-primary)); font-family:var(--f-display); font-weight:700; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.06em; }
+
+  /* ============ FEATURES ============ */
+  .features{ background:rgb(var(--c-surface)); border-block:1px solid rgb(var(--c-line)); }
+  .feat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgb(var(--c-line)); border:1px solid rgb(var(--c-line)); border-radius:var(--r-card); overflow:hidden; }
+  @media(max-width:840px){ .feat-grid{ grid-template-columns:1fr; } }
+  .feat{ background:rgb(var(--c-bg)); padding:40px 32px; transition:background var(--dur) var(--ease); }
+  .feat:hover{ background:rgb(var(--c-surface-2)); }
+  .feat .ico{ width:54px; height:54px; border-radius:var(--r-button); display:flex; align-items:center; justify-content:center; background:rgb(var(--c-primary) / 0.12); color:rgb(var(--c-primary)); margin-bottom:22px; }
+  .feat .ico svg{ width:26px; height:26px; }
+  .feat h3{ font-size:1.4rem; font-weight:800; text-transform:uppercase; margin-bottom:10px; }
+  .feat p{ color:rgb(var(--c-muted)); font-size:0.95rem; }
+  .feat .n{ font-family:var(--f-mono); font-size:0.72rem; color:rgb(var(--c-accent)); font-weight:700; letter-spacing:0.1em; }
+
+  /* ============ TRAINERS ============ */
+  .trainers-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  @media(max-width:980px){ .trainers-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:540px){ .trainers-grid{ grid-template-columns:1fr; } }
+  .coach{ display:flex; flex-direction:column; border:1px solid rgb(var(--c-line)); border-radius:var(--r-card); overflow:hidden; background:rgb(var(--c-surface)); transition:transform var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .coach:hover{ transform:translateY(-6px); border-color:rgb(var(--c-primary)); }
+  .coach .pic{ position:relative; aspect-ratio:4/5; overflow:hidden; }
+  .coach .pic img{ width:100%; height:100%; object-fit:cover; transition:transform 700ms var(--ease); filter:saturate(1.05); }
+  .coach:hover .pic img{ transform:scale(1.06); }
+  .coach .pic::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgb(var(--c-surface))); }
+  .coach .meta{ padding:18px 20px 22px; }
+  .coach h3{ font-size:1.3rem; font-weight:800; text-transform:uppercase; }
+  .coach .spec{ font-family:var(--f-mono); font-size:0.74rem; color:rgb(var(--c-primary)); text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; }
+  .coach .socials{ display:flex; gap:12px; margin-top:14px; }
+  .coach .socials a{ width:34px; height:34px; border:1px solid rgb(var(--c-line)); border-radius:var(--r-button); display:flex; align-items:center; justify-content:center; color:rgb(var(--c-muted)); transition:color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .coach .socials a:hover{ color:rgb(var(--c-primary)); border-color:rgb(var(--c-primary)); }
+  .coach .socials svg{ width:16px; height:16px; }
+
+  /* ============ STATS BAND ============ */
+  .stats{ background:rgb(var(--c-primary)); color:rgb(var(--c-onPrimary)); }
+  .stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:24px; text-align:center; }
+  @media(max-width:760px){ .stats-grid{ grid-template-columns:repeat(2,1fr); } }
+  .stat .num{ font-family:var(--f-mono); font-weight:700; font-size:clamp(2.6rem,6vw,4rem); line-height:1; }
+  .stat .lbl{ font-family:var(--f-display); font-weight:700; text-transform:uppercase; letter-spacing:0.08em; font-size:0.82rem; margin-top:10px; }
+
+  /* ============ SCHEDULE ============ */
+  .sched-wrap{ overflow-x:auto; border:1px solid rgb(var(--c-line)); border-radius:var(--r-card); }
+  table.sched{ width:100%; border-collapse:collapse; min-width:760px; }
+  .sched th, .sched td{ padding:16px 14px; text-align:left; border-bottom:1px solid rgb(var(--c-line)); border-right:1px solid rgb(var(--c-line)); vertical-align:top; }
+  .sched th:last-child, .sched td:last-child{ border-right:none; }
+  .sched tr:last-child td{ border-bottom:none; }
+  .sched thead th{ background:rgb(var(--c-surface-2)); font-family:var(--f-display); font-weight:800; text-transform:uppercase; letter-spacing:0.06em; font-size:0.8rem; }
+  .sched .time{ font-family:var(--f-mono); font-weight:700; color:rgb(var(--c-primary)); white-space:nowrap; background:rgb(var(--c-surface)); }
+  .slot{ display:flex; flex-direction:column; gap:3px; }
+  .slot strong{ font-family:var(--f-display); font-weight:700; text-transform:uppercase; font-size:0.85rem; }
+  .slot span{ font-family:var(--f-mono); font-size:0.68rem; color:rgb(var(--c-muted)); }
+  .slot.hi{ color:rgb(var(--c-primary)); }
+  .slot.pk{ color:rgb(var(--c-accent)); }
+  .empty{ color:rgb(var(--c-muted)); font-family:var(--f-mono); font-size:0.8rem; }
+
+  /* ============ PRICING ============ */
+  .pricing{ background:rgb(var(--c-surface)); border-block:1px solid rgb(var(--c-line)); }
+  .price-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:stretch; }
+  @media(max-width:880px){ .price-grid{ grid-template-columns:1fr; } }
+  .plan{ display:flex; flex-direction:column; border:1px solid rgb(var(--c-line)); border-radius:var(--r-card); padding:34px 30px; background:rgb(var(--c-bg)); transition:transform var(--dur) var(--ease); }
+  .plan:hover{ transform:translateY(-6px); }
+  .plan.feat-plan{ border-color:rgb(var(--c-primary)); box-shadow:var(--sh-glow); position:relative; }
+  .plan.feat-plan .ribbon{ position:absolute; top:-13px; left:30px; right:auto; bottom:auto; width:max-content; background:rgb(var(--c-primary)); color:rgb(var(--c-onPrimary)); font-family:var(--f-mono); font-weight:700; font-size:0.66rem; text-transform:uppercase; letter-spacing:0.12em; padding:5px 12px; border-radius:var(--r-pill); }
+  .plan h3{ font-size:1.4rem; font-weight:800; text-transform:uppercase; }
+  .plan .price{ font-family:var(--f-mono); font-weight:700; font-size:3rem; line-height:1; margin-top:18px; }
+  .plan .price .per{ font-size:0.9rem; color:rgb(var(--c-muted)); font-weight:500; }
+  .plan ul{ margin-top:22px; display:flex; flex-direction:column; gap:12px; }
+  .plan li{ display:flex; gap:10px; align-items:flex-start; color:rgb(var(--c-muted)); font-size:0.95rem; }
+  .plan li svg{ width:18px; height:18px; flex:none; color:rgb(var(--c-primary)); margin-top:2px; }
+  .plan .btn{ width:100%; margin-top:auto; }
+  .plan ul + .btn{ margin-top:28px; }
+
+  /* ============ TESTIMONIALS ============ */
+  .tx-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:stretch; }
+  @media(max-width:880px){ .tx-grid{ grid-template-columns:1fr; } }
+  .tx{ display:flex; flex-direction:column; border:1px solid rgb(var(--c-line)); border-radius:var(--r-card); overflow:hidden; background:rgb(var(--c-surface)); }
+  .tx .ph{ position:relative; aspect-ratio:16/10; overflow:hidden; }
+  .tx .ph img{ width:100%; height:100%; object-fit:cover; filter:saturate(1.05); }
+  .tx .result{ position:absolute; top:14px; left:14px; background:rgb(var(--c-accent)); color:#fff; font-family:var(--f-mono); font-weight:700; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; padding:6px 12px; border-radius:var(--r-pill); }
+  .tx .body{ padding:24px; display:flex; flex-direction:column; flex:1; }
+  .tx blockquote{ margin:0; font-size:1.02rem; color:rgb(var(--c-ink)); }
+  .tx .who{ margin-top:auto; padding-top:18px; font-family:var(--f-display); font-weight:700; text-transform:uppercase; font-size:0.85rem; }
+  .tx .who span{ display:block; font-family:var(--f-mono); font-weight:500; font-size:0.72rem; color:rgb(var(--c-muted)); text-transform:none; letter-spacing:0; margin-top:3px; }
+
+  /* ============ CTA ============ */
+  .cta{ position:relative; overflow:hidden; text-align:center; background:rgb(var(--c-accent)); color:#fff; }
+  .cta::before{ content:""; position:absolute; inset:0; background:repeating-linear-gradient(135deg, rgb(255 255 255 / 0.06) 0 2px, transparent 2px 22px); }
+  .cta-inner{ position:relative; z-index:1; }
+  .cta h2{ font-size:clamp(2.6rem,8vw,6rem); font-weight:900; text-transform:uppercase; }
+  .cta p{ margin:22px auto 0; max-width:46ch; font-size:1.1rem; }
+  .cta .btn{ margin-top:34px; }
+
+  /* ============ FOOTER ============ */
+  footer{ background:rgb(var(--c-bg)); border-top:1px solid rgb(var(--c-line)); padding-block:clamp(56px,7vw,88px) 36px; }
+  .foot-grid{ display:grid; grid-template-columns:1.4fr repeat(3,1fr); gap:40px; }
+  @media(max-width:860px){ .foot-grid{ grid-template-columns:1fr 1fr; } }
+  @media(max-width:520px){ .foot-grid{ grid-template-columns:1fr; } }
+  .foot-brand p{ color:rgb(var(--c-muted)); margin-top:16px; max-width:32ch; }
+  .foot-col h4{ font-family:var(--f-display); font-weight:700; text-transform:uppercase; font-size:0.78rem; letter-spacing:0.1em; color:rgb(var(--c-muted)); margin-bottom:16px; }
+  .foot-col a{ display:block; color:rgb(var(--c-ink)); font-size:0.92rem; padding-block:6px; transition:color var(--dur) var(--ease); }
+  .foot-col a:hover{ color:rgb(var(--c-primary)); }
+  .news{ display:flex; gap:8px; margin-top:14px; }
+  .news input{ flex:1; min-width:0; background:rgb(var(--c-surface)); border:1px solid rgb(var(--c-line)); border-radius:var(--r-input); padding:12px 14px; color:rgb(var(--c-ink)); font-family:var(--f-body); font-size:0.9rem; }
+  .news input::placeholder{ color:rgb(var(--c-muted)); }
+  .news button{ flex:none; }
+  .foot-note{ font-size:0.72rem; color:rgb(var(--c-muted)); margin-top:10px; }
+  .foot-bottom{ display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-top:56px; padding-top:28px; border-top:1px solid rgb(var(--c-line)); font-size:0.82rem; color:rgb(var(--c-muted)); }
+  .foot-bottom a{ color:rgb(var(--c-muted)); }
+  .foot-bottom a:hover{ color:rgb(var(--c-ink)); }
+
+  /* ============ RIBBON ============ */
+  .ribbon{
+    position:fixed; right:14px; bottom:14px; z-index:90;
+    background:rgb(var(--c-surface) / 0.92); border:1px solid rgb(var(--c-line));
+    color:rgb(var(--c-ink)); font-family:var(--f-mono); font-size:0.68rem; font-weight:700;
+    letter-spacing:0.04em; padding:8px 13px; border-radius:var(--r-pill);
+    backdrop-filter:blur(8px);
+  }
+  .ribbon b{ color:rgb(var(--c-primary)); }
+
+  /* ============ REVEALS (CSS fallback only — JS upgrades to GSAP) ============ */
+  /* Content is ALWAYS visible by default. .reveal stays fully shown unless JS opts in. */
+  .reveal.js-init{ opacity:0; transform:translateY(28px); }
+  .reveal.js-init.in{ opacity:1; transform:none; transition:opacity 720ms var(--ease), transform 720ms var(--ease); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+    .reveal, .reveal.js-init{ opacity:1 !important; transform:none !important; }
+    .logo .dot{ animation:none !important; }
+    .marquee-track{ animation:none !important; }
+    .btn{ transform:none !important; }
+    .hero-bg{ transform:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="logo" aria-label="Pulse home"><span class="dot" aria-hidden="true"></span>PULSE</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#programs">Classes</a>
+      <a href="#trainers">Trainers</a>
+      <a href="#pricing">Membership</a>
+      <a href="#schedule">Schedule</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#pricing" class="btn btn-ghost magnetic">Sign in</a>
+      <a href="#pricing" class="btn btn-primary magnetic">Join now</a>
+      <button class="nav-toggle" aria-label="Toggle menu" id="navToggle">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO — full-bleed athlete + oversized angled type ============ -->
+<section class="hero" id="top">
+  <div class="hero-bg" id="heroBg">
+    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600&q=80&auto=format&fit=crop" alt="Athlete training with battle ropes in a dark high-energy gym" />
+  </div>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <span class="eyebrow hero-flag" data-hero>Strength · Sweat · Speed</span>
+    <h1>
+      <span class="ln" data-hero-line>Train</span>
+      <span class="ln offset" data-hero-line><span class="skew">harder.</span></span>
+      <span class="ln offset" data-hero-line><span class="out">Live louder.</span></span>
+    </h1>
+    <div class="hero-cluster">
+      <div>
+        <p class="hero-sub" data-hero>Pulse is a high-performance training studio built for people who refuse average. Coaches who push, classes that hit, and a floor that never sleeps.</p>
+        <div class="hero-cta" data-hero>
+          <a href="#pricing" class="btn btn-primary magnetic">Start free trial</a>
+          <a href="#schedule" class="btn btn-ghost magnetic">Book a class</a>
+        </div>
+      </div>
+      <div class="hero-stat" data-hero>
+        <div>
+          <div class="num"><span class="countup" data-to="12400" data-suffix="+">12,400+</span></div>
+          <div class="lbl">Active members</div>
+        </div>
+        <div class="div" aria-hidden="true"></div>
+        <div>
+          <div class="num stars">★★★★★ <span class="countup" data-to="49" data-decimal="1">4.9</span></div>
+          <div class="lbl">Avg member rating</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>HIIT</span><span>STRENGTH</span><span>BOXING</span><span>MOBILITY</span><span>SPIN</span><span>YOGA</span>
+    <span>HIIT</span><span>STRENGTH</span><span>BOXING</span><span>MOBILITY</span><span>SPIN</span><span>YOGA</span>
+  </div>
+</div>
+
+<!-- ============ PROGRAMS ============ -->
+<section class="section" id="programs">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Pick your<br>battlefield</h2>
+      <p>Eight signature programs engineered to build power, burn fat and move better. Every class is coach-led and scaled to your level.</p>
+    </div>
+    <div class="programs-grid" data-batch>
+      <article class="prog reveal">
+        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80&auto=format&fit=crop" alt="Group HIIT session in progress" />
+        <div class="prog-body">
+          <div class="prog-tags"><span class="tag hot">High intensity</span><span class="tag dur">45 min</span></div>
+          <h3>HIIT Burn</h3>
+          <div class="arrow">Explore →</div>
+        </div>
+      </article>
+      <article class="prog reveal">
+        <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=80&auto=format&fit=crop" alt="Weightlifter performing a barbell lift" />
+        <div class="prog-body">
+          <div class="prog-tags"><span class="tag hot">High intensity</span><span class="tag dur">60 min</span></div>
+          <h3>Strength Lab</h3>
+          <div class="arrow">Explore →</div>
+        </div>
+      </article>
+      <article class="prog reveal">
+        <img src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=600&q=80&auto=format&fit=crop" alt="Athlete running outdoors at speed" />
+        <div class="prog-body">
+          <div class="prog-tags"><span class="tag mid">Moderate</span><span class="tag dur">50 min</span></div>
+          <h3>Engine Run</h3>
+          <div class="arrow">Explore →</div>
+        </div>
+      </article>
+      <article class="prog reveal">
+        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&auto=format&fit=crop" alt="Member cooling down after class" />
+        <div class="prog-body">
+          <div class="prog-tags"><span class="tag mid">Recovery</span><span class="tag dur">40 min</span></div>
+          <h3>Mobility Flow</h3>
+          <div class="arrow">Explore →</div>
+        </div>
+      </article>
+      <article class="prog reveal">
+        <img src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80&auto=format&fit=crop" alt="Boxer training on the heavy bag" />
+        <div class="prog-body">
+          <div class="prog-tags"><span class="tag hot">High intensity</span><span class="tag dur">45 min</span></div>
+          <h3>Boxing Club</h3>
+          <div class="arrow">Explore →</div>
+        </div>
+      </article>
+      <article class="prog reveal">
+        <img src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=600&q=80&auto=format&fit=crop" alt="Member using studio equipment" />
+        <div class="prog-body">
+          <div class="prog-tags"><span class="tag mid">Moderate</span><span class="tag dur">45 min</span></div>
+          <h3>Power Spin</h3>
+          <div class="arrow">Explore →</div>
+        </div>
+      </article>
+      <article class="prog reveal">
+        <img src="https://images.unsplash.com/photo-1576678927484-cc907957088c?w=600&q=80&auto=format&fit=crop" alt="Yoga and stretching practice" />
+        <div class="prog-body">
+          <div class="prog-tags"><span class="tag mid">Calm</span><span class="tag dur">55 min</span></div>
+          <h3>Reset Yoga</h3>
+          <div class="arrow">Explore →</div>
+        </div>
+      </article>
+      <article class="prog reveal">
+        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80&auto=format&fit=crop" alt="Full studio conditioning circuit" />
+        <div class="prog-body">
+          <div class="prog-tags"><span class="tag hot">High intensity</span><span class="tag dur">30 min</span></div>
+          <h3>Express Sweat</h3>
+          <div class="arrow">Explore →</div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="section features">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Why train<br>at Pulse</h2>
+      <p>No gimmicks. Just elite coaching, intelligent tracking and a space built to make you faster, stronger and unstoppable.</p>
+    </div>
+    <div class="feat-grid" data-batch>
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8v8M18 8v8M4 10h4M16 10h4M8 12h8"/></svg></div>
+        <span class="n">01</span>
+        <h3>Expert coaches</h3>
+        <p>Every session is led by certified strength and conditioning coaches who know your name, your goals and your limits.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2 6 4-14 2 8h6"/></svg></div>
+        <span class="n">02</span>
+        <h3>Smart tracking</h3>
+        <p>Heart-rate zones, power output and PRs sync straight to the Pulse app so every rep moves a number that matters.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <span class="n">03</span>
+        <h3>24/7 access</h3>
+        <p>Open every hour of every day. Early grind or midnight session — the floor, the racks and the showers are yours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRAINERS ============ -->
+<section class="section" id="trainers">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Meet the<br>coaches</h2>
+      <p>The people in your corner. Decades of combined experience across strength, combat sport, endurance and recovery.</p>
+    </div>
+    <div class="trainers-grid" data-batch>
+      <article class="coach reveal">
+        <div class="pic"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80&auto=format&fit=crop" alt="Coach Marcus Reed, strength specialist" /></div>
+        <div class="meta">
+          <h3>Marcus Reed</h3>
+          <div class="spec">Strength &amp; Power</div>
+          <div class="socials">
+            <a href="#" aria-label="Marcus on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="Marcus on X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          </div>
+        </div>
+      </article>
+      <article class="coach reveal">
+        <div class="pic"><img src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80&auto=format&fit=crop" alt="Coach Nia Okafor, boxing specialist" /></div>
+        <div class="meta">
+          <h3>Nia Okafor</h3>
+          <div class="spec">Boxing &amp; Conditioning</div>
+          <div class="socials">
+            <a href="#" aria-label="Nia on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="Nia on X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          </div>
+        </div>
+      </article>
+      <article class="coach reveal">
+        <div class="pic"><img src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=600&q=80&auto=format&fit=crop" alt="Coach Eli Carter, endurance specialist" /></div>
+        <div class="meta">
+          <h3>Eli Carter</h3>
+          <div class="spec">Endurance &amp; Run</div>
+          <div class="socials">
+            <a href="#" aria-label="Eli on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="Eli on X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          </div>
+        </div>
+      </article>
+      <article class="coach reveal">
+        <div class="pic"><img src="https://images.unsplash.com/photo-1576678927484-cc907957088c?w=600&q=80&auto=format&fit=crop" alt="Coach Sara Lin, mobility specialist" /></div>
+        <div class="meta">
+          <h3>Sara Lin</h3>
+          <div class="spec">Yoga &amp; Mobility</div>
+          <div class="socials">
+            <a href="#" aria-label="Sara on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="Sara on X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS BAND ============ -->
+<section class="section stats">
+  <div class="wrap stats-grid" data-batch>
+    <div class="stat reveal">
+      <div class="num"><span class="countup" data-to="12400" data-suffix="+">12,400+</span></div>
+      <div class="lbl">Members</div>
+    </div>
+    <div class="stat reveal">
+      <div class="num"><span class="countup" data-to="180" data-suffix="+">180+</span></div>
+      <div class="lbl">Classes / week</div>
+    </div>
+    <div class="stat reveal">
+      <div class="num"><span class="countup" data-to="36">36</span></div>
+      <div class="lbl">Elite trainers</div>
+    </div>
+    <div class="stat reveal">
+      <div class="num"><span class="countup" data-to="49" data-decimal="1">4.9</span></div>
+      <div class="lbl">Avg rating</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCHEDULE ============ -->
+<section class="section" id="schedule">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Weekly<br>timetable</h2>
+      <p>Same energy, every day. Lock your spot up to seven days ahead in the Pulse app. Peak slots fill fast.</p>
+    </div>
+    <div class="sched-wrap reveal">
+      <table class="sched">
+        <caption class="empty" style="text-align:left;padding:10px 14px;">Class schedule by time slot and weekday</caption>
+        <thead>
+          <tr>
+            <th scope="col">Time</th>
+            <th scope="col">Mon</th>
+            <th scope="col">Tue</th>
+            <th scope="col">Wed</th>
+            <th scope="col">Thu</th>
+            <th scope="col">Fri</th>
+            <th scope="col">Sat</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" class="time">06:00</th>
+            <td><div class="slot hi"><strong>HIIT Burn</strong><span>Marcus</span></div></td>
+            <td><div class="slot"><strong>Engine Run</strong><span>Eli</span></div></td>
+            <td><div class="slot hi"><strong>HIIT Burn</strong><span>Marcus</span></div></td>
+            <td><div class="slot"><strong>Strength Lab</strong><span>Marcus</span></div></td>
+            <td><div class="slot hi"><strong>HIIT Burn</strong><span>Nia</span></div></td>
+            <td><div class="slot pk"><strong>Boxing Club</strong><span>Nia</span></div></td>
+          </tr>
+          <tr>
+            <th scope="row" class="time">09:30</th>
+            <td><div class="slot"><strong>Mobility Flow</strong><span>Sara</span></div></td>
+            <td><div class="slot pk"><strong>Boxing Club</strong><span>Nia</span></div></td>
+            <td><div class="slot"><strong>Reset Yoga</strong><span>Sara</span></div></td>
+            <td><div class="slot pk"><strong>Boxing Club</strong><span>Nia</span></div></td>
+            <td><div class="slot"><strong>Mobility Flow</strong><span>Sara</span></div></td>
+            <td><div class="slot hi"><strong>Power Spin</strong><span>Eli</span></div></td>
+          </tr>
+          <tr>
+            <th scope="row" class="time">12:00</th>
+            <td><div class="slot hi"><strong>Express Sweat</strong><span>Marcus</span></div></td>
+            <td><div class="slot hi"><strong>Express Sweat</strong><span>Nia</span></div></td>
+            <td><div class="slot hi"><strong>Express Sweat</strong><span>Eli</span></div></td>
+            <td><div class="slot hi"><strong>Express Sweat</strong><span>Marcus</span></div></td>
+            <td><div class="slot hi"><strong>Express Sweat</strong><span>Nia</span></div></td>
+            <td class="empty">—</td>
+          </tr>
+          <tr>
+            <th scope="row" class="time">18:00</th>
+            <td><div class="slot pk"><strong>Power Spin</strong><span>Eli</span></div></td>
+            <td><div class="slot hi"><strong>Strength Lab</strong><span>Marcus</span></div></td>
+            <td><div class="slot pk"><strong>Boxing Club</strong><span>Nia</span></div></td>
+            <td><div class="slot hi"><strong>HIIT Burn</strong><span>Marcus</span></div></td>
+            <td><div class="slot pk"><strong>Power Spin</strong><span>Eli</span></div></td>
+            <td><div class="slot"><strong>Reset Yoga</strong><span>Sara</span></div></td>
+          </tr>
+          <tr>
+            <th scope="row" class="time">20:00</th>
+            <td><div class="slot"><strong>Reset Yoga</strong><span>Sara</span></div></td>
+            <td><div class="slot hi"><strong>Engine Run</strong><span>Eli</span></div></td>
+            <td><div class="slot"><strong>Mobility Flow</strong><span>Sara</span></div></td>
+            <td><div class="slot hi"><strong>Engine Run</strong><span>Eli</span></div></td>
+            <td class="empty">—</td>
+            <td class="empty">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="section pricing" id="pricing">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Pick your<br>membership</h2>
+      <p>No contracts, cancel anytime. Every plan includes app tracking, locker access and your first week free.</p>
+    </div>
+    <div class="price-grid" data-batch>
+      <div class="plan reveal">
+        <h3>Basic</h3>
+        <div class="price">$39<span class="per"> /mo</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>8 classes per month</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Open gym floor access</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Pulse app tracking</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Locker &amp; showers</li>
+        </ul>
+        <a href="#" class="btn btn-ghost magnetic">Choose Basic</a>
+      </div>
+      <div class="plan feat-plan reveal">
+        <span class="ribbon">Most popular</span>
+        <h3>Pro</h3>
+        <div class="price">$69<span class="per"> /mo</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Unlimited classes</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>24/7 floor access</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Monthly InBody scan</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Guest passes x2</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Priority class booking</li>
+        </ul>
+        <a href="#" class="btn btn-primary magnetic">Choose Pro</a>
+      </div>
+      <div class="plan reveal">
+        <h3>Elite</h3>
+        <div class="price">$119<span class="per"> /mo</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Everything in Pro</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>2 PT sessions / month</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Custom nutrition plan</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Recovery suite access</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Unlimited guest passes</li>
+        </ul>
+        <a href="#" class="btn btn-ghost magnetic">Choose Elite</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="section" id="results">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Real<br>transformations</h2>
+      <p>Members who showed up, stayed consistent and rewrote what their bodies could do. Your before starts today.</p>
+    </div>
+    <div class="tx-grid" data-batch>
+      <article class="tx reveal">
+        <div class="ph"><span class="result">-18 kg</span><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=700&q=80&auto=format&fit=crop" alt="Member Dani after a training session" /></div>
+        <div class="body">
+          <blockquote>"I came in unable to run for a bus. Eight months later I finished my first half marathon. The coaches never let me coast."</blockquote>
+          <div class="who">Dani M.<span>Member since 2024 · Engine Run</span></div>
+        </div>
+      </article>
+      <article class="tx reveal">
+        <div class="ph"><span class="result">+22 kg PR</span><img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=700&q=80&auto=format&fit=crop" alt="Member Theo lifting in the strength lab" /></div>
+        <div class="body">
+          <blockquote>"Strength Lab rebuilt my deadlift from scratch. Smarter programming, zero ego, and numbers that just keep climbing."</blockquote>
+          <div class="who">Theo R.<span>Member since 2023 · Strength Lab</span></div>
+        </div>
+      </article>
+      <article class="tx reveal">
+        <div class="ph"><span class="result">5x / week</span><img src="https://images.unsplash.com/photo-1576678927484-cc907957088c?w=700&q=80&auto=format&fit=crop" alt="Member Priya in a mobility class" /></div>
+        <div class="body">
+          <blockquote>"Pulse turned exercise from a chore into the best part of my day. The community is unreal — I actually look forward to 6am."</blockquote>
+          <div class="who">Priya S.<span>Member since 2025 · Mobility Flow</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="section cta">
+  <div class="wrap cta-inner">
+    <h2 class="reveal">No excuses.<br>Start today.</h2>
+    <p class="reveal">Claim your free 7-day trial. Walk in, get a coach-led intro session, and feel the difference before you pay a cent.</p>
+    <a href="#pricing" class="btn btn-onlight magnetic reveal">Claim free trial</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="logo"><span class="dot" aria-hidden="true"></span>PULSE</a>
+        <p>High-performance training studio. Built for people who refuse average. Open 24/7, all year.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Classes</h4>
+        <a href="#programs">HIIT Burn</a>
+        <a href="#programs">Strength Lab</a>
+        <a href="#programs">Boxing Club</a>
+        <a href="#programs">Reset Yoga</a>
+      </div>
+      <div class="foot-col">
+        <h4>Studio</h4>
+        <a href="#trainers">Trainers</a>
+        <a href="#pricing">Membership</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#results">Results</a>
+      </div>
+      <div class="foot-col">
+        <h4>Hours</h4>
+        <a href="#" aria-disabled="true">Mon–Fri · 24 hours</a>
+        <a href="#" aria-disabled="true">Sat · 06:00–22:00</a>
+        <a href="#" aria-disabled="true">Sun · 08:00–20:00</a>
+        <form class="news" onsubmit="return false;" aria-label="Newsletter signup">
+          <label for="news-email" class="empty" style="position:absolute;left:-9999px;">Email address</label>
+          <input id="news-email" type="email" placeholder="Training tips, weekly" autocomplete="email" />
+          <button class="btn btn-primary magnetic" type="submit">Go</button>
+        </form>
+        <p class="foot-note">Get our weekly training tips. No spam, ever.</p>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Pulse Studio. All rights reserved.</span>
+      <span><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Cookies</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon" aria-hidden="true">NEXA Theme · <b>Pulse</b> · fitness</div>
+
+<!-- ============ GSAP ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ---------- Always-on, motion-independent UI ---------- */
+  var nav = document.getElementById('nav');
+  function onScroll(){ if(window.scrollY > 20) nav.classList.add('scrolled'); else nav.classList.remove('scrolled'); }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  var toggle = document.getElementById('navToggle');
+  if(toggle){ toggle.addEventListener('click', function(){ document.getElementById('programs').scrollIntoView({behavior: reduceMq.matches ? 'auto':'smooth'}); }); }
+
+  /* Count-up runs whether or not GSAP is present (uses IntersectionObserver) */
+  function animateCount(el){
+    var to = parseFloat(el.getAttribute('data-to'));
+    var decimal = parseInt(el.getAttribute('data-decimal')||'0',10);
+    var suffix = el.getAttribute('data-suffix')||'';
+    var dur = 1400, start = null;
+    function fmt(v){
+      if(decimal>0){ return (v/Math.pow(10,decimal)).toFixed(decimal); }
+      return Math.round(v).toLocaleString('en-US');
+    }
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/dur, 1);
+      var eased = 1 - Math.pow(1-p, 3);
+      el.textContent = fmt(to*eased) + suffix;
+      if(p<1) requestAnimationFrame(step);
+      else el.textContent = fmt(to) + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+  function setFinal(el){
+    var to = parseFloat(el.getAttribute('data-to'));
+    var decimal = parseInt(el.getAttribute('data-decimal')||'0',10);
+    var suffix = el.getAttribute('data-suffix')||'';
+    el.textContent = (decimal>0 ? (to/Math.pow(10,decimal)).toFixed(decimal) : Math.round(to).toLocaleString('en-US')) + suffix;
+  }
+  var counters = document.querySelectorAll('.countup');
+  if(reduceMq.matches || !('IntersectionObserver' in window)){
+    counters.forEach(setFinal);
+  } else {
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ animateCount(e.target); cio.unobserve(e.target); } });
+    }, { threshold:0.5 });
+    counters.forEach(function(el){ cio.observe(el); });
+  }
+
+  /* ---------- GSAP-enhanced motion (guarded) ---------- */
+  /* Fallback: if GSAP is absent OR reduced-motion, content stays fully visible (CSS .reveal has no hidden default). */
+  if(window.gsap && window.ScrollTrigger){
+    gsap.registerPlugin(ScrollTrigger);
+
+    var mm = gsap.matchMedia();
+
+    /* Full-motion context: only runs when reduced-motion is NOT requested */
+    mm.add('(prefers-reduced-motion: no-preference)', function(){
+
+      /* Hide reveals ONLY now that we know motion is on and GSAP exists */
+      var reveals = gsap.utils.toArray('.reveal');
+      reveals.forEach(function(el){ el.classList.add('js-init'); });
+      gsap.set(reveals, { opacity:0, y:28 });
+
+      /* HERO entrance — energetic slam/clip in */
+      var heroLines = gsap.utils.toArray('[data-hero-line]');
+      var heroBits = gsap.utils.toArray('[data-hero]');
+      gsap.set(heroLines, { yPercent:115, clipPath:'inset(0 0 100% 0)', opacity:0 });
+      gsap.set(heroBits, { y:24, opacity:0 });
+
+      var tl = gsap.timeline({ defaults:{ ease:'expo.out' } });
+      tl.to(heroLines, {
+        yPercent:0, clipPath:'inset(0 0 -10% 0)', opacity:1,
+        duration:0.9, stagger:0.12, ease:'expo.out'
+      })
+      .to(heroBits, { y:0, opacity:1, duration:0.7, stagger:0.1, ease:'power3.out' }, '-=0.45');
+
+      /* HERO image parallax on scroll */
+      var heroBg = document.getElementById('heroBg');
+      if(heroBg){
+        gsap.to(heroBg, {
+          yPercent:14, ease:'none',
+          scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true }
+        });
+      }
+
+      /* ScrollTrigger.batch staggered reveals */
+      ScrollTrigger.batch('.reveal', {
+        start:'top 86%',
+        onEnter:function(batch){
+          gsap.to(batch, { opacity:1, y:0, duration:0.7, stagger:0.08, ease:'power3.out', overwrite:true });
+        },
+        onEnterBack:function(batch){
+          gsap.to(batch, { opacity:1, y:0, duration:0.5, stagger:0.06, ease:'power3.out', overwrite:true });
+        }
+      });
+
+      /* Programs image drift parallax */
+      gsap.utils.toArray('.prog img').forEach(function(img){
+        gsap.fromTo(img, { yPercent:-4 }, {
+          yPercent:4, ease:'none',
+          scrollTrigger:{ trigger:img.closest('.prog'), start:'top bottom', end:'bottom top', scrub:true }
+        });
+      });
+
+      /* Magnetic buttons — fine pointers only */
+      if(window.matchMedia('(pointer:fine)').matches){
+        gsap.utils.toArray('.magnetic').forEach(function(btn){
+          var xTo = gsap.quickTo(btn, '--mx', { duration:0.4, ease:'power3' });
+          var yTo = gsap.quickTo(btn, '--my', { duration:0.4, ease:'power3' });
+          btn.addEventListener('mousemove', function(ev){
+            var r = btn.getBoundingClientRect();
+            xTo(((ev.clientX - (r.left+r.width/2)) * 0.18).toFixed(1) + 'px');
+            yTo(((ev.clientY - (r.top+r.height/2)) * 0.28).toFixed(1) + 'px');
+          });
+          btn.addEventListener('mouseleave', function(){ xTo('0px'); yTo('0px'); });
+        });
+      }
+
+      ScrollTrigger.refresh();
+
+      return function(){ /* cleanup handled by matchMedia */ };
+    });
+
+  }
+  /* If GSAP failed to load: do nothing — .reveal elements never got .js-init, so they are fully visible by CSS default. */
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>

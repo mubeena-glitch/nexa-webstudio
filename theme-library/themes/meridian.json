@@ -1,0 +1,47 @@
+{
+  "id": "meridian",
+  "name": "Meridian",
+  "family": "modern",
+  "sector": "Fintech / private banking",
+  "tags": ["dark", "bold", "lime-accent", "glow", "modern", "conversion"],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "13 15 14",
+      "surface": "23 26 24",
+      "ink": "243 246 240",
+      "muted": "151 160 154",
+      "line": "39 44 40",
+      "primary": "202 242 77",
+      "onPrimary": "15 19 11",
+      "accent": "202 242 77",
+      "accent2": "57 196 110"
+    },
+    "type": {
+      "display": "'Clash Display', 'Sora', ui-sans-serif, sans-serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, monospace",
+      "scaleRatio": 1.33,
+      "weights": { "display": 600, "displayBold": 700, "body": 400, "label": 500, "bold": 600 },
+      "displayCase": "none",
+      "displayTracking": "-0.02em"
+    },
+    "space": { "base": 8, "section": "clamp(96px, 12vw, 168px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "balanced" },
+    "radius": { "card": "22px", "button": "999px", "input": "14px", "pill": "999px" },
+    "shadow": {
+      "card": "0 20px 50px -30px rgb(0 0 0 / 0.6)",
+      "elevated": "0 40px 90px -40px rgb(0 0 0 / 0.7)",
+      "philosophy": "glow"
+    },
+    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "600ms", "character": "snappy" },
+    "imagery": { "treatment": "full-bleed", "ratio": "1:1", "filter": "none" }
+  },
+  "recipes": { "button": "pill-solid", "card": "glow", "nav": "centered-pill" },
+  "preferredLayouts": {
+    "hero": "split-visual-glow-parallax",
+    "trusted": "logo-marquee",
+    "features": "card-grid-dark",
+    "stats": "band-countup",
+    "cta": "glow-band"
+  }
+}

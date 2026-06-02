@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bastion — NEXA Theme Preview (Legal / Professional Services)</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     BASTION — design tokens (1:1 mirror of theme.json -> CSS vars)
+     Legal / professional services. Authoritative, classic, formal.
+     Hero archetype: formal framed-serif editorial.
+     ============================================================ */
+  :root {
+    --color-bg: 244 242 236;
+    --color-surface: 249 247 242;
+    --color-surface-2: 237 233 224;
+    --color-ink: 22 35 58;
+    --color-muted: 92 100 116;
+    --color-line: 210 204 190;
+    --color-primary: 122 34 48;
+    --color-on-primary: 244 242 236;
+    --color-accent: 184 155 94;
+    --color-accent2: 22 35 58;
+
+    --font-display: "Cormorant Garamond", "Times New Roman", Georgia, serif;
+    --font-body: "General Sans", ui-sans-serif, system-ui, sans-serif;
+    --display-tracking: 0em;
+
+    --space-section: clamp(96px, 12vw, 168px);
+    --gutter: clamp(22px, 5vw, 72px);
+
+    --radius-card: 4px;
+    --radius-button: 3px;
+    --radius-input: 3px;
+    --radius-pill: 2px;
+
+    --shadow-card: 0 1px 2px rgb(22 35 58 / 0.05), 0 12px 28px -18px rgb(22 35 58 / 0.20);
+    --shadow-elevated: 0 2px 4px rgb(22 35 58 / 0.06), 0 28px 56px -22px rgb(22 35 58 / 0.28);
+
+    --ease: cubic-bezier(0.33, 1, 0.68, 1);
+    --dur: 640ms;
+
+    --maxw: 1240px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  .eyebrow {
+    font-family: var(--font-body); font-size: 11.5px; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgb(var(--color-primary));
+    display: inline-flex; align-items: center; gap: 14px;
+  }
+  .eyebrow::before { content: ""; width: 28px; height: 1px; background: rgb(var(--color-accent)); }
+  .eyebrow.light { color: rgb(var(--color-accent)); }
+
+  .disp {
+    font-family: var(--font-display); font-weight: 500;
+    letter-spacing: var(--display-tracking); line-height: 1.04;
+  }
+  h1, h2, h3 { font-weight: 500; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.35vw, 18.5px); line-height: 1.7; }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 2px; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    font-family: var(--font-body); font-weight: 500; font-size: 14px; letter-spacing: 0.02em;
+    padding: 13px 24px; border-radius: var(--radius-button); cursor: pointer;
+    border: 1px solid transparent; transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+    white-space: nowrap;
+  }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-primary:hover { background: rgb(var(--color-ink)); }
+  .btn-outline { background: transparent; color: rgb(var(--color-ink)); border-color: rgb(var(--color-line)); }
+  .btn-outline:hover { border-color: rgb(var(--color-ink)); }
+  .btn-gold { background: rgb(var(--color-accent)); color: rgb(var(--color-ink)); }
+  .btn-gold:hover { background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); }
+  .btn-onnavy { background: transparent; color: rgb(var(--color-bg)); border-color: rgb(var(--color-bg) / 0.4); }
+  .btn-onnavy:hover { border-color: rgb(var(--color-accent)); color: rgb(var(--color-accent)); }
+
+  .link-ul {
+    display: inline-flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px;
+    padding-bottom: 3px; border-bottom: 1px solid rgb(var(--color-accent)); color: rgb(var(--color-primary));
+    transition: gap var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .link-ul:hover { gap: 14px; }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    background: rgb(var(--color-ink)); color: rgb(var(--color-bg) / 0.86);
+    font-size: 12.5px; letter-spacing: 0.04em;
+  }
+  .topbar .wrap { display: flex; justify-content: space-between; align-items: center; height: 40px; }
+  .topbar a { color: inherit; opacity: 0.86; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .topbar a:hover { opacity: 1; color: rgb(var(--color-accent)); }
+  .topbar .tb-left { display: flex; gap: 26px; align-items: center; }
+  .topbar .tb-right { display: flex; gap: 22px; align-items: center; }
+  .topbar .dotsep { color: rgb(var(--color-accent)); }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 70; background: rgb(var(--color-bg) / 0.92);
+    backdrop-filter: blur(10px); border-bottom: 1px solid rgb(var(--color-line));
+    transition: box-shadow var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .nav.scrolled { box-shadow: 0 1px 0 rgb(var(--color-line)), 0 8px 24px -18px rgb(22 35 58 / 0.4); }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 78px; gap: 24px; }
+  .wordmark { font-family: var(--font-display); font-weight: 600; font-size: 26px; letter-spacing: 0.01em; display: flex; align-items: baseline; gap: 9px; }
+  .wordmark .amp { color: rgb(var(--color-primary)); }
+  .wordmark .est { font-family: var(--font-body); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-muted)); font-weight: 600; }
+  .nav-links { display: flex; gap: 30px; align-items: center; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: rgb(var(--color-ink)); position: relative; padding-block: 6px; }
+  .nav-links a::after { content: ""; position: absolute; left: 0; bottom: 0; width: 0; height: 1px; background: rgb(var(--color-accent)); transition: width var(--dur) var(--ease); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { display: flex; align-items: center; gap: 16px; }
+  .nav-toggle { display: none; }
+
+  /* ============================================================
+     HERO — formal framed-serif editorial
+     Asymmetric: wide serif statement column + offset framed photo.
+     Formal hairline rules, generous whitespace, magazine masthead.
+     ============================================================ */
+  .hero { position: relative; padding-top: clamp(40px, 5vw, 72px); padding-bottom: var(--space-section); }
+
+  /* editorial masthead rule above the hero content */
+  .hero-mast {
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    padding-bottom: 22px; margin-bottom: clamp(40px, 5vw, 68px);
+    border-bottom: 1px solid rgb(var(--color-line)); flex-wrap: wrap;
+  }
+  .hero-mast .ml { font-family: var(--font-body); font-size: 11.5px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .hero-mast .ml b { color: rgb(var(--color-primary)); }
+  .hero-mast .mr { display: flex; align-items: center; gap: 18px; font-family: var(--font-display); font-style: italic; font-size: 17px; color: rgb(var(--color-ink)); }
+  .hero-mast .mr .sep { width: 1px; height: 16px; background: rgb(var(--color-line)); }
+
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(40px, 6vw, 92px); align-items: start; }
+
+  .hero-kicker { margin-bottom: 30px; }
+  .hero h1 {
+    font-size: clamp(48px, 6.6vw, 96px); line-height: 0.98; margin-bottom: 0;
+    letter-spacing: -0.005em;
+  }
+  .hero h1 .em { font-style: italic; color: rgb(var(--color-primary)); }
+  /* hairline rule between headline and subcopy */
+  .hero-rule { height: 1px; background: rgb(var(--color-line)); margin: 34px 0 30px; transform-origin: left; }
+  .hero .lead { max-width: 32em; margin-bottom: 38px; }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
+  .cred {
+    display: flex; align-items: center; gap: 16px; padding-top: 26px; border-top: 1px solid rgb(var(--color-line));
+    font-size: 13.5px; color: rgb(var(--color-muted)); letter-spacing: 0.03em;
+  }
+  .cred .seal {
+    width: 44px; height: 44px; border: 1px solid rgb(var(--color-accent)); border-radius: 50%;
+    display: grid; place-items: center; color: rgb(var(--color-primary)); flex-shrink: 0;
+    font-family: var(--font-display); font-weight: 600; font-size: 15px;
+  }
+  .cred b { color: rgb(var(--color-ink)); font-weight: 600; }
+
+  /* offset framed photo column */
+  .hero-aside { position: relative; padding-top: 14px; }
+  .hero-frame { position: relative; }
+  .hero-frame .photo {
+    position: relative; aspect-ratio: 4/5; overflow: hidden; border-radius: var(--radius-card);
+    box-shadow: var(--shadow-elevated);
+  }
+  .hero-frame .photo img { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+  /* thin gold frame, offset asymmetrically */
+  .hero-frame::after {
+    content: ""; position: absolute; inset: 20px -20px -20px 20px; border: 1px solid rgb(var(--color-accent));
+    border-radius: var(--radius-card); z-index: -1; pointer-events: none;
+  }
+  .hero-cap {
+    margin-top: 22px; padding-left: 18px; border-left: 2px solid rgb(var(--color-accent));
+    font-family: var(--font-display); font-style: italic; font-size: 17px; line-height: 1.4; color: rgb(var(--color-muted));
+  }
+  .hero-badge {
+    position: absolute; left: -28px; bottom: 50px; background: rgb(var(--color-ink)); color: rgb(var(--color-bg));
+    padding: 18px 22px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); max-width: 218px;
+  }
+  .hero-badge .n { font-family: var(--font-display); font-weight: 600; font-size: 34px; line-height: 1; color: rgb(var(--color-accent)); }
+  .hero-badge .t { font-size: 12.5px; margin-top: 7px; opacity: 0.85; line-height: 1.4; }
+
+  /* ---------- section heads ---------- */
+  .sec { padding-block: var(--space-section); }
+  .sec-head { max-width: 720px; margin-bottom: clamp(48px, 5vw, 72px); }
+  .sec-head h2 { font-size: clamp(34px, 4.4vw, 56px); margin-top: 20px; }
+  .sec-head .lead { margin-top: 18px; }
+  .sec-split-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; margin-bottom: clamp(40px, 4vw, 60px); }
+  .sec-split-head h2 { font-size: clamp(34px, 4.4vw, 56px); margin-top: 18px; max-width: 14em; }
+
+  /* ---------- practice areas ---------- */
+  .practice { border-top: 1px solid rgb(var(--color-line)); }
+  .pa-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 1px solid rgb(var(--color-line)); }
+  .pa-item {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: start;
+    padding: 34px 8px; border-bottom: 1px solid rgb(var(--color-line));
+    position: relative; transition: background var(--dur) var(--ease);
+  }
+  .pa-grid .pa-item:nth-child(odd) { padding-right: 40px; border-right: 1px solid rgb(var(--color-line)); }
+  .pa-grid .pa-item:nth-child(even) { padding-left: 40px; }
+  .pa-item:hover { background: rgb(var(--color-surface)); }
+  .pa-num { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: rgb(var(--color-accent)); padding-top: 5px; }
+  .pa-item h3 { font-family: var(--font-display); font-size: 27px; margin-bottom: 8px; }
+  .pa-item p { font-size: 14.5px; color: rgb(var(--color-muted)); line-height: 1.6; max-width: 30em; }
+  .pa-arrow { color: rgb(var(--color-primary)); padding-top: 6px; transform: translateX(-6px); opacity: 0; transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease); }
+  .pa-item:hover .pa-arrow { transform: translateX(0); opacity: 1; }
+
+  /* ---------- firm intro / values ---------- */
+  .intro { background: rgb(var(--color-surface)); }
+  .intro-grid { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: clamp(40px, 6vw, 84px); align-items: center; }
+  .intro-photo { position: relative; }
+  .intro-photo .photo { aspect-ratio: 4/5; overflow: hidden; border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+  .intro-photo .photo img { width: 100%; height: 100%; object-fit: cover; }
+  .intro-photo::before {
+    content: ""; position: absolute; inset: -16px 16px 16px -16px; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); z-index: -1;
+  }
+  .intro h2 { font-size: clamp(32px, 4vw, 50px); margin: 18px 0 24px; max-width: 16em; }
+  .intro .statement { font-family: var(--font-display); font-size: clamp(22px, 2.2vw, 28px); line-height: 1.4; color: rgb(var(--color-ink)); margin-bottom: 26px; }
+  .intro .lead { margin-bottom: 38px; max-width: 38em; }
+  .principles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgb(var(--color-line)); border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); overflow: hidden; }
+  .principle { background: rgb(var(--color-surface)); padding: 24px; }
+  .principle .pi { color: rgb(var(--color-primary)); margin-bottom: 12px; }
+  .principle h4 { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin-bottom: 6px; }
+  .principle p { font-size: 13.5px; color: rgb(var(--color-muted)); line-height: 1.55; }
+
+  /* ---------- attorneys ---------- */
+  .att-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+  .att-card { display: flex; flex-direction: column; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); overflow: hidden; background: rgb(var(--color-surface)); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+  .att-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-card); }
+  .att-photo { aspect-ratio: 4/5; overflow: hidden; }
+  .att-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.2); transition: filter var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .att-card:hover .att-photo img { filter: grayscale(0); transform: scale(1.04); }
+  .att-body { padding: 22px; display: flex; flex-direction: column; flex: 1; }
+  .att-body .nm { font-family: var(--font-display); font-weight: 600; font-size: 23px; }
+  .att-body .ti { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(var(--color-primary)); font-weight: 600; margin: 6px 0 12px; }
+  .att-body .fo { font-size: 13.5px; color: rgb(var(--color-muted)); line-height: 1.55; padding-top: 12px; border-top: 1px solid rgb(var(--color-line)); margin-top: auto; }
+
+  /* ---------- results band ---------- */
+  .results { background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); }
+  .results .sec-head h2 { color: rgb(var(--color-bg)); }
+  .results .sec-head .lead { color: rgb(var(--color-bg) / 0.7); }
+  .res-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgb(var(--color-bg) / 0.14); border: 1px solid rgb(var(--color-bg) / 0.14); border-radius: var(--radius-card); overflow: hidden; }
+  .res-cell { background: rgb(var(--color-ink)); padding: 40px 30px; }
+  .res-cell .num { font-family: var(--font-display); font-weight: 600; font-size: clamp(46px, 5vw, 66px); line-height: 1; color: rgb(var(--color-accent)); font-variant-numeric: tabular-nums; }
+  .res-cell .num .pre, .res-cell .num .suf { color: rgb(var(--color-bg)); }
+  .res-cell .lbl { font-size: 14px; color: rgb(var(--color-bg) / 0.74); margin-top: 16px; line-height: 1.5; }
+  .res-cell .rule { width: 36px; height: 1px; background: rgb(var(--color-accent)); margin: 18px 0 0; transform-origin: left; }
+
+  /* ---------- process ---------- */
+  .proc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+  .proc-line { position: absolute; top: 31px; left: 8%; right: 8%; height: 1px; background: rgb(var(--color-line)); z-index: 0; }
+  .proc-line .draw { position: absolute; inset: 0; background: rgb(var(--color-accent)); transform-origin: left; transform: scaleX(0); }
+  .proc-step { position: relative; z-index: 1; padding: 0 22px; }
+  .proc-step .dot { width: 62px; height: 62px; border-radius: 50%; background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 24px; color: rgb(var(--color-primary)); margin-bottom: 24px; transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease); }
+  .proc-step:hover .dot { border-color: rgb(var(--color-accent)); background: rgb(var(--color-surface)); }
+  .proc-step h3 { font-family: var(--font-display); font-size: 24px; margin-bottom: 10px; }
+  .proc-step p { font-size: 14px; color: rgb(var(--color-muted)); line-height: 1.6; padding-right: 18px; }
+
+  /* ---------- testimonials ---------- */
+  .testi { background: rgb(var(--color-surface)); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .testi-card { background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); padding: 36px 32px; display: flex; flex-direction: column; transition: box-shadow var(--dur) var(--ease); }
+  .testi-card:hover { box-shadow: var(--shadow-card); }
+  .testi-card .qm { font-family: var(--font-display); font-weight: 600; font-size: 64px; line-height: 0.6; color: rgb(var(--color-accent)); height: 34px; }
+  .testi-card blockquote { font-family: var(--font-display); font-size: 22px; line-height: 1.42; color: rgb(var(--color-ink)); margin-bottom: 28px; flex: 1; }
+  .testi-meta { display: flex; align-items: center; gap: 14px; padding-top: 22px; border-top: 1px solid rgb(var(--color-line)); }
+  .testi-meta .nm { font-weight: 600; font-size: 14.5px; }
+  .testi-meta .ro { font-size: 12.5px; color: rgb(var(--color-muted)); }
+  .stars { display: flex; gap: 3px; color: rgb(var(--color-accent)); margin-bottom: 20px; }
+
+  /* ---------- recognition ---------- */
+  .recog { border-top: 1px solid rgb(var(--color-line)); }
+  .recog .cap { text-align: center; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-muted)); font-weight: 600; margin-bottom: 40px; }
+  .recog-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgb(var(--color-line)); border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); overflow: hidden; }
+  .recog-cell { background: rgb(var(--color-bg)); padding: 34px 20px; text-align: center; transition: background var(--dur) var(--ease); }
+  .recog-cell:hover { background: rgb(var(--color-surface)); }
+  .recog-cell .rn { font-family: var(--font-display); font-weight: 600; font-size: 21px; color: rgb(var(--color-ink)); }
+  .recog-cell .rs { font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--color-primary)); font-weight: 600; margin-top: 8px; }
+
+  /* ---------- consultation CTA ---------- */
+  .cta-band { padding-block: clamp(72px, 8vw, 120px); background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); position: relative; overflow: hidden; }
+  .cta-band::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(var(--color-ink) / 0.18), transparent); }
+  .cta-inner { position: relative; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 48px; align-items: center; }
+  .cta-band .eyebrow { color: rgb(var(--color-accent)); }
+  .cta-band .eyebrow::before { background: rgb(var(--color-accent)); }
+  .cta-band h2 { font-family: var(--font-display); font-size: clamp(36px, 4.6vw, 60px); margin: 18px 0 16px; line-height: 1.05; }
+  .cta-band p { color: rgb(var(--color-on-primary) / 0.82); max-width: 30em; }
+  .cta-actions { display: flex; flex-direction: column; gap: 18px; }
+  .cta-phone { display: flex; align-items: center; gap: 14px; }
+  .cta-phone .ph { font-family: var(--font-display); font-weight: 600; font-size: 30px; }
+  .cta-phone .pl { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.8; }
+
+  /* ---------- footer ---------- */
+  footer { background: rgb(var(--color-ink)); color: rgb(var(--color-bg) / 0.78); padding-top: clamp(64px, 7vw, 96px); }
+  .foot-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 56px; border-bottom: 1px solid rgb(var(--color-bg) / 0.12); }
+  .foot-brand .wordmark { color: rgb(var(--color-bg)); margin-bottom: 18px; }
+  .foot-brand .wordmark .est { color: rgb(var(--color-accent)); }
+  .foot-brand p { font-size: 14px; line-height: 1.7; max-width: 30em; margin-bottom: 26px; }
+  .foot-addr { font-size: 13.5px; line-height: 1.7; font-style: normal; }
+  .foot-addr b { color: rgb(var(--color-bg)); font-weight: 600; }
+  .foot-col h5 { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-accent)); font-weight: 600; margin-bottom: 20px; }
+  .foot-col a { display: block; font-size: 14px; padding: 7px 0; color: rgb(var(--color-bg) / 0.78); transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-accent)); }
+  .news { margin-top: 28px; }
+  .news label { display: block; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-accent)); font-weight: 600; margin-bottom: 14px; }
+  .news-form { display: flex; gap: 10px; max-width: 380px; }
+  .news input { flex: 1; background: rgb(var(--color-bg) / 0.06); border: 1px solid rgb(var(--color-bg) / 0.2); border-radius: var(--radius-input); padding: 12px 14px; color: rgb(var(--color-bg)); font-family: var(--font-body); font-size: 14px; }
+  .news input::placeholder { color: rgb(var(--color-bg) / 0.5); }
+  .news input:focus-visible { outline-color: rgb(var(--color-accent)); border-color: rgb(var(--color-accent)); }
+  .foot-bottom { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; padding: 28px 0 40px; font-size: 12.5px; }
+  .disclaimer { background: rgb(var(--color-bg) / 0.04); border-top: 1px solid rgb(var(--color-bg) / 0.12); }
+  .disclaimer .wrap { padding-block: 26px; font-size: 12px; line-height: 1.7; color: rgb(var(--color-bg) / 0.56); max-width: var(--maxw); }
+  .foot-bottom .fb-links { display: flex; gap: 22px; }
+  .foot-bottom a:hover { color: rgb(var(--color-accent)); }
+
+  /* ---------- ribbon ---------- */
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    background: rgb(var(--color-ink)); color: rgb(var(--color-bg));
+    font-size: 11.5px; letter-spacing: 0.05em; padding: 9px 14px; border-radius: var(--radius-pill);
+    border: 1px solid rgb(var(--color-accent) / 0.5); box-shadow: var(--shadow-card);
+  }
+  .ribbon b { color: rgb(var(--color-accent)); font-weight: 600; }
+
+  /* ============================================================
+     MOTION — content is ALWAYS visible by default (no hiding via CSS).
+     Hidden states applied ONLY by gsap.set inside the guarded block.
+     ============================================================ */
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1020px) {
+    .att-grid, .res-grid, .proc-grid, .recog-row { grid-template-columns: repeat(2, 1fr); }
+    .proc-line { display: none; }
+  }
+  @media (max-width: 880px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: inline-flex; }
+    .hero-grid, .intro-grid, .cta-inner { grid-template-columns: 1fr; }
+    .hero-aside { max-width: 460px; }
+    .hero-badge { left: -16px; }
+    .pa-grid { grid-template-columns: 1fr; }
+    .pa-grid .pa-item:nth-child(odd) { border-right: none; padding-right: 8px; }
+    .pa-grid .pa-item:nth-child(even) { padding-left: 8px; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .foot-top { grid-template-columns: 1fr 1fr; }
+    .cta-actions { align-items: flex-start; }
+  }
+  @media (max-width: 560px) {
+    .att-grid, .res-grid, .proc-grid, .recog-row, .principles, .foot-top { grid-template-columns: 1fr; }
+    .topbar .tb-left .hide-sm { display: none; }
+    .hero-badge { left: 12px; }
+    .hero-mast .mr { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="tb-left">
+      <a href="#">+1 (212) 555&ndash;0174</a>
+      <span class="dotsep hide-sm">&bull;</span>
+      <a href="#" class="hide-sm">intake@hollanbrook.law</a>
+    </div>
+    <div class="tb-right">
+      <a href="#">Pay Invoice</a>
+      <span class="dotsep">&bull;</span>
+      <a href="#">Client Portal</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#" class="wordmark" aria-label="Hollanbrook & Reyes, home">
+      Hollanbrook <span class="amp">&amp;</span> Reyes
+      <span class="est">Est. 1974</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#practice">Practice</a>
+      <a href="#firm">The Firm</a>
+      <a href="#attorneys">Attorneys</a>
+      <a href="#results">Results</a>
+      <a href="#testimonials">Clients</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#consult" class="btn btn-primary">Request Consultation</a>
+      <button class="btn btn-outline nav-toggle" aria-label="Open menu">Menu</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO — formal framed-serif editorial ============ -->
+<section class="hero">
+  <div class="wrap">
+    <!-- editorial masthead rule -->
+    <div class="hero-mast" data-hero="mast">
+      <div class="ml"><b>Counsel of Record</b> &nbsp;·&nbsp; New York &nbsp;·&nbsp; Established 1974</div>
+      <div class="mr">
+        <span>Litigation</span><span class="sep" aria-hidden="true"></span>
+        <span>Corporate</span><span class="sep" aria-hidden="true"></span>
+        <span>Private Wealth</span>
+      </div>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero-col">
+        <div class="eyebrow hero-kicker" data-hero="kicker">Trusted Since 1974</div>
+        <h1 class="disp" data-hero="title">Steadfast advocacy when <span class="em">the stakes</span> are highest.</h1>
+        <div class="hero-rule" data-hero="rule" aria-hidden="true"></div>
+        <p class="lead" data-hero="lead">For five decades, Hollanbrook &amp; Reyes has represented enterprises, families, and institutions through their most consequential legal matters &mdash; with discretion, rigor, and resolve.</p>
+        <div class="hero-actions" data-hero="actions">
+          <a href="#consult" class="btn btn-primary">Request a Consultation</a>
+          <a href="#practice" class="btn btn-outline">Our Practice</a>
+        </div>
+        <div class="cred" data-hero="cred">
+          <span class="seal">H&amp;R</span>
+          <span>Trusted counsel since <b>1974</b> &mdash; serving clients across <b>three continents</b>.</span>
+        </div>
+      </div>
+
+      <aside class="hero-aside" data-hero="aside">
+        <div class="hero-frame">
+          <div class="photo">
+            <img data-hero="img" src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=900&q=80&auto=format&fit=crop" alt="Classical columns at the entrance of a courthouse" />
+          </div>
+          <div class="hero-badge">
+            <div class="n">98%</div>
+            <div class="t">Favorable resolutions across litigated matters.</div>
+          </div>
+        </div>
+        <p class="hero-cap">Counsel that has stood, unchanged in principle, for two generations.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRACTICE AREAS ============ -->
+<section class="sec practice" id="practice">
+  <div class="wrap">
+    <div class="sec-split-head" data-reveal>
+      <div>
+        <div class="eyebrow">Practice Areas</div>
+        <h2 class="disp">Comprehensive counsel across the disciplines that matter.</h2>
+      </div>
+      <a href="#consult" class="link-ul">Discuss your matter &rarr;</a>
+    </div>
+    <div class="pa-grid" data-batch>
+      <a class="pa-item" href="#">
+        <span class="pa-num">01</span>
+        <span><h3 class="disp">Corporate &amp; Securities</h3><p>Mergers, acquisitions, governance, and capital formation for closely held and public companies.</p></span>
+        <span class="pa-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="pa-item" href="#">
+        <span class="pa-num">02</span>
+        <span><h3 class="disp">Commercial Litigation</h3><p>High-stakes disputes, arbitration, and appellate advocacy before state and federal courts.</p></span>
+        <span class="pa-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="pa-item" href="#">
+        <span class="pa-num">03</span>
+        <span><h3 class="disp">Real Estate</h3><p>Acquisition, development, leasing, and land-use matters for institutional and private owners.</p></span>
+        <span class="pa-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="pa-item" href="#">
+        <span class="pa-num">04</span>
+        <span><h3 class="disp">Family &amp; Trusts</h3><p>Estate planning, succession, and sensitive family matters handled with discretion.</p></span>
+        <span class="pa-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="pa-item" href="#">
+        <span class="pa-num">05</span>
+        <span><h3 class="disp">Tax &amp; Wealth</h3><p>Domestic and cross-border tax planning, controversy, and private wealth preservation.</p></span>
+        <span class="pa-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="pa-item" href="#">
+        <span class="pa-num">06</span>
+        <span><h3 class="disp">Employment &amp; Labor</h3><p>Counsel on workforce policy, executive agreements, and complex employment disputes.</p></span>
+        <span class="pa-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIRM INTRO / VALUES ============ -->
+<section class="sec intro" id="firm">
+  <div class="wrap intro-grid">
+    <div class="intro-photo" data-reveal>
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80&auto=format&fit=crop" alt="Two professionals shaking hands in an office" />
+      </div>
+    </div>
+    <div data-reveal>
+      <div class="eyebrow">The Firm</div>
+      <h2 class="disp">A practice built on judgment, not volume.</h2>
+      <p class="statement disp">&ldquo;We measure our work not by the number of matters we take, but by the consequence of the outcomes we secure.&rdquo;</p>
+      <p class="lead">Founded in 1974, Hollanbrook &amp; Reyes remains a partner-led firm. Every engagement is staffed by senior counsel who know the matter intimately &mdash; an approach our clients have relied upon for two generations.</p>
+      <div class="principles" data-batch>
+        <div class="principle">
+          <div class="pi" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" stroke="currentColor" stroke-width="1.4"/></svg></div>
+          <h4 class="disp">Discretion</h4>
+          <p>Confidentiality is the foundation of every relationship we hold.</p>
+        </div>
+        <div class="principle">
+          <div class="pi" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M5 8h14M7 8l-3 7h6l-3-7zm10 0l-3 7h6l-3-7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+          <h4 class="disp">Integrity</h4>
+          <p>Candid counsel, even when it is not the answer a client hopes to hear.</p>
+        </div>
+        <div class="principle">
+          <div class="pi" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.4"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <h4 class="disp">Diligence</h4>
+          <p>Exhaustive preparation that leaves nothing of consequence to chance.</p>
+        </div>
+        <div class="principle">
+          <div class="pi" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-6h4v6" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+          <h4 class="disp">Stewardship</h4>
+          <p>We protect what our clients have built, and plan for what comes next.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ATTORNEYS ============ -->
+<section class="sec" id="attorneys">
+  <div class="wrap">
+    <div class="sec-split-head" data-reveal>
+      <div>
+        <div class="eyebrow">Our Attorneys</div>
+        <h2 class="disp">Senior counsel who lead every matter.</h2>
+      </div>
+      <a href="#" class="link-ul">View the full firm &rarr;</a>
+    </div>
+    <div class="att-grid" data-batch>
+      <article class="att-card">
+        <div class="att-photo"><img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80&auto=format&fit=crop" alt="Portrait of attorney Eleanor Hollanbrook" /></div>
+        <div class="att-body">
+          <div class="nm">Eleanor Hollanbrook</div>
+          <div class="ti">Founding Partner</div>
+          <p class="fo">Corporate governance and cross-border M&amp;A for institutional clients.</p>
+        </div>
+      </article>
+      <article class="att-card">
+        <div class="att-photo"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80&auto=format&fit=crop" alt="Portrait of attorney Marcus Reyes" /></div>
+        <div class="att-body">
+          <div class="nm">Marcus Reyes</div>
+          <div class="ti">Managing Partner</div>
+          <p class="fo">Trial advocacy and appellate practice in complex commercial disputes.</p>
+        </div>
+      </article>
+      <article class="att-card">
+        <div class="att-photo"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80&auto=format&fit=crop" alt="Portrait of attorney Priya Anand" /></div>
+        <div class="att-body">
+          <div class="nm">Priya Anand</div>
+          <div class="ti">Partner, Tax</div>
+          <p class="fo">Private wealth, succession planning, and international tax controversy.</p>
+        </div>
+      </article>
+      <article class="att-card">
+        <div class="att-photo"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80&auto=format&fit=crop" alt="Portrait of attorney Daniel Whitfield" /></div>
+        <div class="att-body">
+          <div class="nm">Daniel Whitfield</div>
+          <div class="ti">Partner, Real Estate</div>
+          <p class="fo">Development, land use, and institutional real estate transactions.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULTS BAND ============ -->
+<section class="sec results" id="results">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="eyebrow light">Track Record</div>
+      <h2 class="disp">Outcomes that speak for our clients.</h2>
+      <p class="lead">A measured record built over fifty years of consequential representation.</p>
+    </div>
+    <div class="res-grid" data-batch>
+      <div class="res-cell stat">
+        <div class="num"><span class="count" data-to="1850">1,850</span><span class="suf">+</span></div>
+        <div class="rule"></div>
+        <div class="lbl">Matters resolved on behalf of clients</div>
+      </div>
+      <div class="res-cell stat">
+        <div class="num"><span class="pre">$</span><span class="count" data-to="3.2" data-dec="1">3.2</span><span class="suf">B</span></div>
+        <div class="rule"></div>
+        <div class="lbl">Recovered and protected for clients</div>
+      </div>
+      <div class="res-cell stat">
+        <div class="num"><span class="count" data-to="50">50</span><span class="suf">+</span></div>
+        <div class="rule"></div>
+        <div class="lbl">Years of continuous practice</div>
+      </div>
+      <div class="res-cell stat">
+        <div class="num"><span class="count" data-to="98">98</span><span class="suf">%</span></div>
+        <div class="rule"></div>
+        <div class="lbl">Favorable resolution rate in litigation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="sec" id="process">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="eyebrow">How We Work</div>
+      <h2 class="disp">A deliberate path from inquiry to resolution.</h2>
+    </div>
+    <div class="proc-grid" data-batch>
+      <div class="proc-line" aria-hidden="true"><span class="draw"></span></div>
+      <div class="proc-step">
+        <div class="dot">01</div>
+        <h3 class="disp">Consultation</h3>
+        <p>A confidential conversation to understand your circumstances and objectives.</p>
+      </div>
+      <div class="proc-step">
+        <div class="dot">02</div>
+        <h3 class="disp">Strategy</h3>
+        <p>Senior counsel assess the matter and define a clear, principled course of action.</p>
+      </div>
+      <div class="proc-step">
+        <div class="dot">03</div>
+        <h3 class="disp">Representation</h3>
+        <p>We advocate on your behalf with rigor, discretion, and unwavering preparation.</p>
+      </div>
+      <div class="proc-step">
+        <div class="dot">04</div>
+        <h3 class="disp">Resolution</h3>
+        <p>We pursue the outcome that best protects your interests, in or out of court.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="sec testi" id="testimonials">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="eyebrow">In Their Words</div>
+      <h2 class="disp">Trusted by those they represent.</h2>
+    </div>
+    <div class="testi-grid" data-batch>
+      <figure class="testi-card">
+        <div class="qm" aria-hidden="true">&ldquo;</div>
+        <div class="stars" aria-label="Five out of five">
+          <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span>
+        </div>
+        <blockquote>They navigated a complex acquisition with a steadiness that gave our board complete confidence.</blockquote>
+        <figcaption class="testi-meta">
+          <div><div class="nm">Catherine Mercer</div><div class="ro">CEO, Mercer Holdings</div></div>
+        </figcaption>
+      </figure>
+      <figure class="testi-card">
+        <div class="qm" aria-hidden="true">&ldquo;</div>
+        <div class="stars" aria-label="Five out of five">
+          <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span>
+        </div>
+        <blockquote>In a difficult dispute, their counsel was candid, precise, and ultimately decisive. We could not have asked for more.</blockquote>
+        <figcaption class="testi-meta">
+          <div><div class="nm">James Underwood</div><div class="ro">General Counsel, Atlas Industrial</div></div>
+        </figcaption>
+      </figure>
+      <figure class="testi-card">
+        <div class="qm" aria-hidden="true">&ldquo;</div>
+        <div class="stars" aria-label="Five out of five">
+          <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span>
+        </div>
+        <blockquote>Their handling of our family&rsquo;s estate matters was thorough, sensitive, and entirely discreet.</blockquote>
+        <figcaption class="testi-meta">
+          <div><div class="nm">Margaret Saito</div><div class="ro">Private Client</div></div>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECOGNITION ============ -->
+<section class="sec recog" id="recognition">
+  <div class="wrap">
+    <p class="cap" data-reveal>Recognized by the profession</p>
+    <div class="recog-row" data-batch>
+      <div class="recog-cell"><div class="rn disp">Chambers</div><div class="rs">Band 1, 2025</div></div>
+      <div class="recog-cell"><div class="rn disp">Premier Counsel</div><div class="rs">Top 100</div></div>
+      <div class="recog-cell"><div class="rn disp">The Legal 500</div><div class="rs">Leading Firm</div></div>
+      <div class="recog-cell"><div class="rn disp">Benchmark</div><div class="rs">Highly Rated</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSULTATION CTA ============ -->
+<section class="cta-band" id="consult">
+  <div class="wrap cta-inner">
+    <div data-reveal>
+      <div class="eyebrow">Request a Consultation</div>
+      <h2 class="disp">Speak with our team in confidence.</h2>
+      <p>Tell us about your matter. A member of our counsel will respond within one business day to arrange a confidential consultation.</p>
+    </div>
+    <div class="cta-actions" data-reveal>
+      <a href="#" class="btn btn-gold">Request a Consultation</a>
+      <a href="#" class="btn btn-onnavy">Visit Our Offices</a>
+      <div class="cta-phone">
+        <span aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+        <div><div class="pl">Direct line</div><div class="ph">(212) 555&ndash;0174</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="wordmark">Hollanbrook <span class="amp">&amp;</span> Reyes <span class="est">Est. 1974</span></div>
+        <p>A partner-led firm providing counsel to enterprises, families, and institutions through their most consequential legal matters.</p>
+        <address class="foot-addr">
+          <b>Principal Office</b><br>
+          400 Madison Avenue, 28th Floor<br>
+          New York, NY 10017<br>
+          <b>Tel</b> (212) 555&ndash;0174
+        </address>
+        <div class="news">
+          <label for="news-email">Firm Briefings</label>
+          <form class="news-form" onsubmit="return false">
+            <input id="news-email" type="email" placeholder="Your email address" aria-label="Email address for firm briefings" required>
+            <button type="submit" class="btn btn-gold" aria-label="Subscribe to firm briefings">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h5>Practice</h5>
+        <a href="#">Corporate &amp; Securities</a>
+        <a href="#">Commercial Litigation</a>
+        <a href="#">Real Estate</a>
+        <a href="#">Family &amp; Trusts</a>
+        <a href="#">Tax &amp; Wealth</a>
+        <a href="#">Employment &amp; Labor</a>
+      </div>
+      <div class="foot-col">
+        <h5>The Firm</h5>
+        <a href="#">About Us</a>
+        <a href="#">Our Attorneys</a>
+        <a href="#">Track Record</a>
+        <a href="#">Recognition</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h5>Resources</h5>
+        <a href="#">Client Portal</a>
+        <a href="#">Pay Invoice</a>
+        <a href="#">Publications</a>
+        <a href="#">Newsroom</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 1974&ndash;2026 Hollanbrook &amp; Reyes LLP. All rights reserved.</span>
+      <div class="fb-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Accessibility</a>
+      </div>
+    </div>
+  </div>
+  <div class="disclaimer">
+    <div class="wrap">
+      <strong>Attorney Advertising.</strong> The information on this website is for general informational purposes only and does not constitute legal advice. Prior results do not guarantee a similar outcome. No attorney&ndash;client relationship is created by use of this website or by transmitting information to the firm. Hollanbrook &amp; Reyes LLP is a limited liability partnership organized under the laws of the State of New York.
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme &middot; <b>Bastion</b> &middot; legal</div>
+
+<!-- ============ GSAP (CDN) ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---- Always-on, non-motion behavior (works without GSAP) ---- */
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    if (window.scrollY > 12) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* count-up helper — used by GSAP path; static text is already the final value */
+  function countUp(el, dur) {
+    var to = parseFloat(el.getAttribute('data-to'));
+    var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+    var obj = { v: 0 };
+    return window.gsap.to(obj, {
+      v: to, duration: dur || 1.8, ease: "power2.out",
+      onUpdate: function () {
+        el.textContent = dec > 0 ? obj.v.toFixed(dec) : Math.round(obj.v).toLocaleString('en-US');
+      },
+      onComplete: function () {
+        el.textContent = dec > 0 ? to.toFixed(dec) : Math.round(to).toLocaleString('en-US');
+      }
+    });
+  }
+
+  /* ============================================================
+     FALLBACK GUARD: animate ONLY if GSAP is present AND motion is allowed.
+     Otherwise the page renders fully — nothing is hidden by CSS.
+     gsap.matchMedia handles reduced-motion responsively.
+     ============================================================ */
+  if (!window.gsap) return;
+
+  var gsap = window.gsap;
+  if (window.ScrollTrigger) gsap.registerPlugin(window.ScrollTrigger);
+
+  var mm = gsap.matchMedia();
+
+  /* ---- FULL MOTION: only when reduced-motion is NOT requested ---- */
+  mm.add("(prefers-reduced-motion: no-preference)", function () {
+
+    /* HERO ENTRANCE — dignified, slow, staggered editorial reveal */
+    gsap.set([
+      '[data-hero="mast"]', '[data-hero="kicker"]', '[data-hero="title"]',
+      '[data-hero="lead"]', '[data-hero="actions"]', '[data-hero="cred"]',
+      '[data-hero="aside"]'
+    ], { autoAlpha: 0, y: 26 });
+    gsap.set('[data-hero="rule"]', { scaleX: 0, transformOrigin: "left center" });
+    gsap.set('[data-hero="img"]', { scale: 1.08 });
+
+    var heroTl = gsap.timeline({ defaults: { ease: "power3.out", duration: 1.1 } });
+    heroTl
+      .to('[data-hero="mast"]',   { autoAlpha: 1, y: 0, duration: 0.9 })
+      .to('[data-hero="kicker"]', { autoAlpha: 1, y: 0, duration: 0.8 }, "-=0.5")
+      .to('[data-hero="title"]',  { autoAlpha: 1, y: 0, duration: 1.2 }, "-=0.45")
+      .to('[data-hero="rule"]',   { scaleX: 1, duration: 1.0, ease: "power2.inOut" }, "-=0.7")
+      .to('[data-hero="lead"]',   { autoAlpha: 1, y: 0 }, "-=0.7")
+      .to('[data-hero="actions"]',{ autoAlpha: 1, y: 0 }, "-=0.7")
+      .to('[data-hero="cred"]',   { autoAlpha: 1, y: 0 }, "-=0.7")
+      .to('[data-hero="aside"]',  { autoAlpha: 1, y: 0, duration: 1.2 }, "-=1.0")
+      /* refined image reveal — slow settle */
+      .to('[data-hero="img"]',    { scale: 1, duration: 1.6, ease: "power2.out" }, "<");
+
+    /* SECTION REVEALS — simple block reveals */
+    gsap.utils.toArray('[data-reveal]').forEach(function (el) {
+      gsap.set(el, { autoAlpha: 0, y: 28 });
+      window.ScrollTrigger.create({
+        trigger: el, start: "top 86%", once: true,
+        onEnter: function () { gsap.to(el, { autoAlpha: 1, y: 0, duration: 1.0, ease: "power3.out" }); }
+      });
+    });
+
+    /* BATCHED STAGGERED REVEALS — cards / cells / steps */
+    document.querySelectorAll('[data-batch]').forEach(function (group) {
+      var items = Array.prototype.filter.call(group.children, function (c) {
+        return !c.classList.contains('proc-line');
+      });
+      gsap.set(items, { autoAlpha: 0, y: 30 });
+      window.ScrollTrigger.batch(items, {
+        start: "top 88%", once: true,
+        onEnter: function (batch) {
+          gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.12 });
+        }
+      });
+    });
+
+    /* COUNT-UP STATS + hairline rule draw */
+    document.querySelectorAll('.res-cell').forEach(function (cell) {
+      var c = cell.querySelector('.count');
+      var rule = cell.querySelector('.rule');
+      if (rule) gsap.set(rule, { scaleX: 0 });
+      if (c) c.textContent = '0';
+      window.ScrollTrigger.create({
+        trigger: cell, start: "top 84%", once: true,
+        onEnter: function () {
+          if (c) countUp(c, 1.9);
+          if (rule) gsap.to(rule, { scaleX: 1, duration: 1.1, ease: "power2.out", delay: 0.15 });
+        }
+      });
+    });
+
+    /* PROCESS CONNECTOR — subtle hairline draw */
+    var draw = document.querySelector('.proc-line .draw');
+    if (draw) {
+      gsap.set(draw, { scaleX: 0 });
+      window.ScrollTrigger.create({
+        trigger: '.proc-grid', start: "top 78%", once: true,
+        onEnter: function () { gsap.to(draw, { scaleX: 1, duration: 1.4, ease: "power2.inOut" }); }
+      });
+    }
+
+    return function () { /* matchMedia cleanup: reverts all gsap.set above */ };
+  });
+
+  /* ---- REDUCED MOTION: count-up still resolves to final value instantly (no animation) ---- */
+  mm.add("(prefers-reduced-motion: reduce)", function () {
+    document.querySelectorAll('.count').forEach(function (c) {
+      var to = parseFloat(c.getAttribute('data-to'));
+      var dec = parseInt(c.getAttribute('data-dec') || '0', 10);
+      c.textContent = dec > 0 ? to.toFixed(dec) : Math.round(to).toLocaleString('en-US');
+    });
+    /* no hiding, no tweening — page already fully rendered */
+  });
+
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>
