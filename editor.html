@@ -43,6 +43,8 @@ textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
 .sx{width:24px;height:24px;border:1px solid var(--bd);border-radius:6px;background:#fff;cursor:pointer;font-size:11px;color:var(--mu);display:flex;align-items:center;justify-content:center;font-family:inherit;flex-shrink:0;padding:0}
 .sx:hover{border-color:var(--a);color:var(--a)}
 .sx.del:hover{border-color:#e5484d;color:#e5484d}
+.sx.add{border-color:var(--a);color:var(--a);font-weight:700}
+.sx.add:hover{background:var(--a);color:#fff}
 .sx:disabled{opacity:.3;cursor:default}
 .sx:disabled:hover{border-color:var(--bd);color:var(--mu)}
 .add-wrap{margin-top:4px}
@@ -89,6 +91,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
   <div class="hd-right">
     <a class="hbtn" id="backBtn" href="templates.html">&#8592; Templates</a>
     <a class="hbtn" id="openBtn" href="#" target="_blank" rel="noopener">Open Original &#8599;</a>
+    <button class="hbtn" id="textBtn" onclick="toggleTextEdit()" title="Toggle inline text editing">&#9998; Edit text</button>
     <button class="hbtn pri" onclick="exportHtml()">&#8681; Download HTML</button>
   </div>
 </div>
@@ -230,6 +233,7 @@ async function download(html){
     html=html.replace(/<link[^>]*_shared\/kit\.css[^>]*>/i,'<style>\n'+css+'\n</style>');
     html=html.replace(/<script[^>]*_shared\/kit\.js[^>]*><\/script>/i,'<script>\n'+js+'\n<\/script>');
   }catch(e){/* fall back to relative refs */}
+  html=html.replace(/ contenteditable="(?:true|false)"/gi,'');
   var blob=new Blob(['<!DOCTYPE html>\n'+html],{type:'text/html'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(id||'template')+'-edited.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
@@ -308,12 +312,21 @@ function renderSections(){
   if(!doc||!doc.body){box.innerHTML='<div class="hint" style="margin:0">Section editing runs on the deployed site (same-origin).</div>';cnt.textContent='';return;}
   var kids=editableKids(doc);cnt.textContent=kids.length;
   box.innerHTML=kids.map(function(el,i){
-    return '<div class="srow"><span class="sname">'+escHtml(labelFor(el))+'</span>'+
+    var rep=repeatContainer(el)?'<button class="sx add" title="Add an item (e.g. another card)" onclick="addItem('+i+')">&#43;</button>':'';
+    return '<div class="srow"><span class="sname">'+escHtml(labelFor(el))+'</span>'+rep+
+      '<button class="sx" title="Duplicate section" onclick="dupSec('+i+')">&#10697;</button>'+
       '<button class="sx" title="Move up" '+(i===0?'disabled':'')+' onclick="moveSec('+i+',-1)">&#9650;</button>'+
       '<button class="sx" title="Move down" '+(i===kids.length-1?'disabled':'')+' onclick="moveSec('+i+',1)">&#9660;</button>'+
       '<button class="sx del" title="Delete section" onclick="delSec('+i+')">&#215;</button></div>';
   }).join('');
 }
+// Sections that contain repeatable items (cards, testimonials, gallery images, pricing tiers, steps, FAQ rows, checklist, stats)
+var ITEM_SEL=['.nx-benefits','.nx-testimonials','.nx-gallery-grid','.nx-pricing','.nx-steps','.nx-faq','.nx-checklist','.nx-stats'];
+function repeatContainer(el){if(!el.querySelector)return null;for(var i=0;i<ITEM_SEL.length;i++){var c=el.querySelector(ITEM_SEL[i]);if(c&&c.children.length)return c;}return null;}
+function addItem(i){var doc=idoc();if(!doc)return;var el=editableKids(doc)[i];if(!el)return;var c=repeatContainer(el);if(!c){toast('This section has no repeatable items');return;}var clone=c.children[c.children.length-1].cloneNode(true);c.appendChild(clone);try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initBlocks();}catch(e){}toast('Item added');}
+function dupSec(i){var doc=idoc();if(!doc)return;var el=editableKids(doc)[i];if(!el)return;var clone=el.cloneNode(true);if(el.nextSibling)el.parentNode.insertBefore(clone,el.nextSibling);else el.parentNode.appendChild(clone);try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initBlocks();}catch(e){}renderSections();toast('Section duplicated');}
+var textEdit=false;
+function toggleTextEdit(){var doc=idoc();if(!doc){toast('Editing runs on the deployed site');return;}textEdit=!textEdit;var btn=document.getElementById('textBtn');if(btn)btn.classList.toggle('pri',textEdit);var sel='h1,h2,h3,h4,h5,p,span,a,li,blockquote,cite,summary,strong,em,td,th,.val,.lbl,.nx-cd-num';doc.body.querySelectorAll(sel).forEach(function(e){e.contentEditable=textEdit?'true':'false';});toast(textEdit?'Text editing ON — click any text and type':'Text editing off');}
 function moveSec(i,dir){var doc=idoc();if(!doc)return;var k=editableKids(doc),el=k[i],t=k[i+dir];if(!el||!t)return;if(dir<0)doc.body.insertBefore(el,t);else doc.body.insertBefore(t,el);renderSections();}
 function delSec(i){var doc=idoc();if(!doc)return;var k=editableKids(doc);if(k[i]){k[i].remove();renderSections();toast('Section deleted');}}
 function toggleAdd(){var p=document.getElementById('addPanel');p.style.display=(p.style.display==='block')?'none':'block';}
