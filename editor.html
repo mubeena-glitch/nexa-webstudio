@@ -38,6 +38,20 @@ textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
 .color-cell{flex:1}
 .color-cell input[type=color]{width:100%;height:36px;border:1.5px solid var(--bd);border-radius:8px;background:#fff;cursor:pointer;padding:3px}
 .hint{font-size:10.5px;color:var(--mu);line-height:1.5;margin-top:6px}
+.srow{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1.5px solid var(--bd);border-radius:8px;margin-bottom:6px;background:#fff}
+.srow .sname{flex:1;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sx{width:24px;height:24px;border:1px solid var(--bd);border-radius:6px;background:#fff;cursor:pointer;font-size:11px;color:var(--mu);display:flex;align-items:center;justify-content:center;font-family:inherit;flex-shrink:0;padding:0}
+.sx:hover{border-color:var(--a);color:var(--a)}
+.sx.del:hover{border-color:#e5484d;color:#e5484d}
+.sx:disabled{opacity:.3;cursor:default}
+.sx:disabled:hover{border-color:var(--bd);color:var(--mu)}
+.add-wrap{margin-top:4px}
+.add-btn{width:100%;justify-content:center;display:flex}
+.add-panel{display:none;margin-top:10px;border:1.5px solid var(--bd);border-radius:10px;padding:10px;background:var(--bg)}
+.addsec-item{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--bd);border-radius:7px;margin-bottom:5px;font-size:11.5px;background:#fff}
+.addsec-item .an{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addsec-item button{padding:3px 11px;border:1.5px solid var(--a);background:var(--a);color:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.addsec-item button:hover{opacity:.88}
 .canvas{flex:1;background:#e9e9ef;position:relative;display:flex;align-items:stretch;justify-content:center;overflow:hidden}
 .canvas iframe{width:100%;height:100%;border:0;background:#fff}
 .cv-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--mu);font-size:13px;background:#e9e9ef}
@@ -63,6 +77,19 @@ textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
 
 <div class="wrap">
   <aside class="drawer">
+
+    <div class="grp">
+      <div class="grp-h">&#129521; Sections <span id="secCount" style="margin-left:auto;font-weight:500;text-transform:none;letter-spacing:0"></span></div>
+      <div id="secList"></div>
+      <div class="add-wrap">
+        <button class="hbtn add-btn" onclick="toggleAdd()">&#43; Add section</button>
+        <div class="add-panel" id="addPanel">
+          <div class="hint" style="margin:0 0 8px">Pull a section from another template. It keeps the current theme.</div>
+          <select class="inp" id="addTplSel" onchange="loadTplSections()"><option value="">Choose a template…</option></select>
+          <div id="addSecList" style="margin-top:8px"></div>
+        </div>
+      </div>
+    </div>
 
     <div class="grp">
       <div class="grp-h">&#127912; Theme</div>
@@ -180,7 +207,7 @@ function download(html){
 // ---- messages from the template iframe ----
 window.addEventListener('message',function(e){
   var m=e.data;if(!m||typeof m!=='object'||!m.type)return;
-  if(m.type==='nexa:ready'){ready=true;document.getElementById('cvLoad').style.display='none';prefillText();}
+  if(m.type==='nexa:ready'){ready=true;document.getElementById('cvLoad').style.display='none';prefillText();renderSections();}
   if(m.type==='nexa:html'&&pendingExport){pendingExport=false;download(m.html);}
 });
 
@@ -208,6 +235,82 @@ function prefillText(){
 }
 function setVal(inputId,node){if(node)document.getElementById(inputId).value=(node.textContent||'').trim();}
 
+// ---- sections: list, reorder, delete, add-from-template ----
+var TPL=[
+  {id:'01-hospitality-hotel-booking',name:'Luxury Hotel'},{id:'02-healthcare-bls-training',name:'BLS Training'},
+  {id:'03-real-estate-residential-leadgen',name:'Off-Plan Residences'},{id:'04-education-school-admissions',name:'School Admissions'},
+  {id:'05-saas-demo-booking',name:'SaaS Demo'},{id:'06-ecommerce-sale-promo',name:'Mid-Season Sale'},
+  {id:'07-hospitality-resort-booking',name:'Luxury Resort'},{id:'08-hospitality-fnb-reservation',name:'Restaurant Reservation'},
+  {id:'09-healthcare-clinic-appointment',name:'Specialist Clinic'},{id:'10-real-estate-commercial-leadgen',name:'Commercial Real Estate'},
+  {id:'11-education-online-course',name:'Online Course'},{id:'12-saas-webinar-registration',name:'Webinar Registration'},
+  {id:'13-ecommerce-launch-waitlist',name:'Launch Waitlist'},{id:'14-fitness-wellness-free-trial',name:'Fitness Studio Trial'},
+  {id:'15-beauty-salon-booking',name:'Beauty Salon'},{id:'16-fnb-delivery-cloud-kitchen',name:'Cloud Kitchen'},
+  {id:'17-legal-consultation',name:'Legal Consultation'},{id:'18-fintech-demo',name:'Fintech Demo'},
+  {id:'19-professional-services-leadgen',name:'Tax & Advisory'},{id:'20-automotive-test-drive',name:'Automotive Test Drive'},
+  {id:'21-events-conferences-rsvp',name:'Conference RSVP'},{id:'22-ngo-cause-donation',name:'NGO Donation'},
+  {id:'23-app-launch-waitlist',name:'App Launch Waitlist'},{id:'24-partner-distributor-signup',name:'Distributor Signup'}
+];
+var addSrcDoc=null;
+
+function idoc(){try{return iframe.contentDocument||iframe.contentWindow.document;}catch(e){return null;}}
+function editableKids(doc){return Array.prototype.filter.call(doc.body.children,function(el){return ['SECTION','NAV','FOOTER','HEADER','ASIDE','DIV'].indexOf(el.tagName)>-1;});}
+function cap(s){return (s||'').replace(/[-_]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
+function trunc(s,n){s=s.trim();return s.length>n?s.slice(0,n-1)+'…':s;}
+function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function labelFor(el){
+  if(el.tagName==='NAV')return 'Navigation';
+  if(el.tagName==='FOOTER')return 'Footer';
+  var c=' '+(el.className||'')+' ';
+  if(/nx-hero/.test(c))return 'Hero';
+  if(/nx-trust/.test(c))return 'Trust bar';
+  if(/nx-final-cta/.test(c))return 'Final CTA';
+  if(el.querySelector&&el.querySelector('[data-edit="form"]'))return 'Lead form';
+  var h=el.querySelector&&el.querySelector('h2,h3');
+  if(h&&h.textContent.trim())return trunc(h.textContent,26);
+  if(el.id)return cap(el.id);
+  return 'Section';
+}
+function renderSections(){
+  var box=document.getElementById('secList'),cnt=document.getElementById('secCount');
+  var doc=idoc();
+  if(!doc||!doc.body){box.innerHTML='<div class="hint" style="margin:0">Section editing runs on the deployed site (same-origin).</div>';cnt.textContent='';return;}
+  var kids=editableKids(doc);cnt.textContent=kids.length;
+  box.innerHTML=kids.map(function(el,i){
+    return '<div class="srow"><span class="sname">'+escHtml(labelFor(el))+'</span>'+
+      '<button class="sx" title="Move up" '+(i===0?'disabled':'')+' onclick="moveSec('+i+',-1)">&#9650;</button>'+
+      '<button class="sx" title="Move down" '+(i===kids.length-1?'disabled':'')+' onclick="moveSec('+i+',1)">&#9660;</button>'+
+      '<button class="sx del" title="Delete section" onclick="delSec('+i+')">&#215;</button></div>';
+  }).join('');
+}
+function moveSec(i,dir){var doc=idoc();if(!doc)return;var k=editableKids(doc),el=k[i],t=k[i+dir];if(!el||!t)return;if(dir<0)doc.body.insertBefore(el,t);else doc.body.insertBefore(t,el);renderSections();}
+function delSec(i){var doc=idoc();if(!doc)return;var k=editableKids(doc);if(k[i]){k[i].remove();renderSections();toast('Section deleted');}}
+function toggleAdd(){var p=document.getElementById('addPanel');p.style.display=(p.style.display==='block')?'none':'block';}
+function populateAddTpl(){var sel=document.getElementById('addTplSel');if(!sel)return;sel.innerHTML='<option value="">Choose a template…</option>'+TPL.filter(function(t){return t.id!==id;}).map(function(t){return '<option value="'+t.id+'">'+escHtml(t.name)+'</option>';}).join('');}
+function loadTplSections(){
+  var tid=document.getElementById('addTplSel').value,area=document.getElementById('addSecList');
+  addSrcDoc=null;
+  if(!tid){area.innerHTML='';return;}
+  area.innerHTML='<div class="hint" style="margin:0">Loading sections…</div>';
+  fetch('templates/'+tid+'.html').then(function(r){return r.text();}).then(function(html){
+    addSrcDoc=new DOMParser().parseFromString(html,'text/html');
+    var kids=editableKids(addSrcDoc).filter(function(el){return el.tagName!=='NAV';});
+    area.innerHTML=kids.length?kids.map(function(el){
+      var realIdx=editableKids(addSrcDoc).indexOf(el);
+      return '<div class="addsec-item"><span class="an">'+escHtml(labelFor(el))+'</span><button onclick="addFromTpl('+realIdx+')">Add</button></div>';
+    }).join(''):'<div class="hint" style="margin:0">No sections found.</div>';
+  }).catch(function(){area.innerHTML='<div class="hint" style="margin:0">Could not load (works on the deployed site).</div>';});
+}
+function addFromTpl(i){
+  var doc=idoc();if(!doc||!addSrcDoc)return;
+  var src=editableKids(addSrcDoc)[i];if(!src)return;
+  var node=doc.importNode(src,true);
+  var footer=doc.body.querySelector('footer');
+  if(footer)doc.body.insertBefore(node,footer);else doc.body.appendChild(node);
+  try{if(node.querySelector('[data-edit="form"]')&&iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.setForm('lead-basic');}catch(e){}
+  renderSections();
+  toast('Section added &mdash; scroll the preview to see it');
+}
+
 // ---- boot ----
 if(!id){
   document.getElementById('cvLoad').innerHTML='<p style="max-width:280px;text-align:center">No template selected. <a href="templates.html" style="color:var(--a);font-weight:600">Pick one from the gallery</a>.</p>';
@@ -215,9 +318,10 @@ if(!id){
   document.getElementById('tname').textContent=name;
   document.title='NEXA Studio — '+name;
   document.getElementById('openBtn').href=file;
+  populateAddTpl();
   iframe.src=file;
   // Safety net: if the iframe never posts ready (older cache), hide loader after load.
-  iframe.addEventListener('load',function(){setTimeout(function(){if(!ready){document.getElementById('cvLoad').style.display='none';ready=true;prefillText();}},600);});
+  iframe.addEventListener('load',function(){setTimeout(function(){if(!ready){document.getElementById('cvLoad').style.display='none';ready=true;prefillText();}renderSections();},600);});
 }
 </script>
 </body>
