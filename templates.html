@@ -151,11 +151,35 @@ var TEMPLATES=[
   {id:'23-app-launch-waitlist',name:'App Launch Waitlist',industry:'SaaS / Tech',goal:'Waitlist',
     desc:'A new way to plan, capture, and ship your week. Beta opens in 30 days. Waitlist members get in first at the founder price.'},
   {id:'24-partner-distributor-signup',name:'Distributor Signup',industry:'Professional Services',goal:'Signup',
-    desc:'Distribution and reseller programme for our wholesale range. Tiered margins, marketing support, dedicated account manager.'}
+    desc:'Distribution and reseller programme for our wholesale range. Tiered margins, marketing support, dedicated account manager.'},
+  {id:'25-travel-tour-package-booking',name:"Tour Package Booking",industry:"Travel",goal:"Booking",
+    desc:"Hand-built small-group itineraries with local guides and handpicked stays. Refundable deposit, no hidden fees."},
+  {id:'26-dental-clinic-appointment',name:"Dental Clinic",industry:"Dental",goal:"Appointment",
+    desc:"Gentle, modern dentistry with same-week appointments, transparent pricing, and insurance handled for you."},
+  {id:'27-fitness-gym-membership',name:"Gym Membership",industry:"Fitness",goal:"Free Trial",
+    desc:"Coached strength and conditioning in small classes. Your first week is free, no card, no lock-in."},
+  {id:'28-interior-design-consultation',name:"Interior Design Studio",industry:"Interior Design",goal:"Consultation",
+    desc:"Full-service interior design with fixed fees, 3D visuals before anything is bought, and trades managed for you."},
+  {id:'29-recruitment-employer-leadgen',name:"Recruitment Agency",industry:"Recruitment",goal:"Lead Generation",
+    desc:"Specialist recruiters who send three vetted shortlists in ten days, on a no-placement-no-fee basis."},
+  {id:'30-insurance-quote-leadgen',name:"Insurance Quote",industry:"Insurance",goal:"Get a Quote",
+    desc:"Compare cover from 20+ insurers in one quote, with a real adviser and no call-centre runaround."},
+  {id:'31-coaching-discovery-call',name:"Coaching Programme",industry:"Coaching",goal:"Booking",
+    desc:"A structured coaching programme with weekly sessions, real accountability, and a free discovery call to start."},
+  {id:'32-childcare-nursery-enrolment',name:"Nursery Enrolment",industry:"Childcare",goal:"Enrolment",
+    desc:"A warm, play-based nursery with qualified staff, live updates to your phone, and places open for enrolment."},
+  {id:'33-automotive-dealership-test-drive',name:"Dealership Test Drive",industry:"Automotive",goal:"Test Drive",
+    desc:"Book a no-pressure test drive at the showroom or your home, with transparent pricing and trade-in handled."},
+  {id:'34-solar-energy-quote',name:"Solar Installation",industry:"Energy",goal:"Get a Quote",
+    desc:"Cut your power bill with solar. Free survey, fixed-price install, and a payback estimate before you commit."},
+  {id:'35-pet-care-grooming-booking',name:"Pet Grooming",industry:"Pet Care",goal:"Booking",
+    desc:"Calm, expert grooming for dogs and cats, with small daily numbers and online booking. No cages, no rush."},
+  {id:'36-home-services-handyman-quote',name:"Home Services",industry:"Home Services",goal:"Get a Quote",
+    desc:"Vetted handymen and trades for home repairs, with upfront pricing, same-week slots, and a workmanship guarantee."}
 ];
 
 // Preferred industry order for the filter row (only those present are shown)
-var IND_ORDER=['Hospitality','Healthcare','Real Estate','Education','SaaS / Tech','E-commerce','F&B','Fitness','Beauty','Legal','Finance','Professional Services','Automotive','Events','Non-profit'];
+var IND_ORDER=['Hospitality','Healthcare','Dental','Real Estate','Interior Design','Education','Childcare','SaaS / Tech','E-commerce','F&B','Fitness','Beauty','Pet Care','Legal','Finance','Insurance','Professional Services','Recruitment','Coaching','Automotive','Travel','Energy','Home Services','Events','Non-profit'];
 
 function fileFor(t){return 'templates/'+t.id+'.html';}
 
