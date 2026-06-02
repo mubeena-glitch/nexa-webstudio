@@ -1,0 +1,52 @@
+{
+  "id": "horizon",
+  "name": "Horizon",
+  "family": "vibrant",
+  "sector": "Travel / tourism",
+  "tags": ["immersive", "vivid", "wanderlust", "image-rich", "adventurous", "booking"],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "253 246 236",
+      "surface": "255 255 255",
+      "ink": "10 61 77",
+      "muted": "92 116 124",
+      "line": "226 214 198",
+      "primary": "255 138 61",
+      "onPrimary": "26 17 8",
+      "accent": "15 182 196",
+      "accent2": "10 61 77"
+    },
+    "type": {
+      "display": "'Cabinet Grotesk', 'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "scaleRatio": 1.28,
+      "weights": { "display": 700, "displayBold": 800, "body": 400, "label": 600, "bold": 600 },
+      "displayCase": "none",
+      "displayTracking": "-0.02em"
+    },
+    "space": { "base": 8, "section": "clamp(80px, 10vw, 150px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "balanced" },
+    "radius": { "card": "20px", "button": "999px", "input": "999px", "pill": "999px" },
+    "shadow": {
+      "card": "0 26px 54px -30px rgb(10 61 77 / 0.40)",
+      "elevated": "0 48px 90px -40px rgb(10 61 77 / 0.50)",
+      "philosophy": "soft"
+    },
+    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "640ms", "character": "energetic" },
+    "imagery": { "treatment": "full-bleed", "ratio": "4:5", "filter": "saturate(1.08) contrast(1.04)" }
+  },
+  "recipes": { "button": "solid-pill", "card": "image-rounded", "nav": "transparent-overlay" },
+  "preferredLayouts": {
+    "nav": "transparent-split-cta",
+    "hero": "fullbleed-search-bar",
+    "destinations": "image-card-grid",
+    "experiences": "category-image-row",
+    "itinerary": "stepped-photo-journey",
+    "trust": "compact-three-point",
+    "stats": "count-up-band",
+    "gallery": "wanderlust-mosaic",
+    "reviews": "traveler-photo-cards",
+    "cta": "image-band-adventure",
+    "footer": "multi-column-newsletter"
+  }
+}

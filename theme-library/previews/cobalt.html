@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cobalt — Northshore Health</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   COBALT — token mirror of theme.json (colors as rgb triples)
+   ============================================================ */
+:root{
+  --bg: 243 248 251;
+  --surface: 255 255 255;
+  --ink: 13 42 63;
+  --muted: 92 116 134;
+  --line: 215 228 238;
+  --primary: 31 143 214;
+  --onPrimary: 255 255 255;
+  --accent: 39 194 160;
+  --accent2: 13 42 63;
+
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'General Sans', ui-sans-serif, system-ui, sans-serif;
+  --scale: 1.24;
+  --w-display: 600;
+  --w-displayBold: 700;
+  --w-body: 400;
+  --w-label: 600;
+  --w-bold: 700;
+  --display-tracking: -0.02em;
+
+  --base: 8px;
+  --section: clamp(72px, 9vw, 132px);
+  --gutter: clamp(20px, 5vw, 56px);
+
+  --r-card: 16px;
+  --r-button: 14px;
+  --r-input: 12px;
+  --r-pill: 999px;
+
+  --sh-card: 0 18px 40px -28px rgb(13 42 63 / 0.28);
+  --sh-elevated: 0 34px 70px -34px rgb(13 42 63 / 0.34);
+  --sh-float: 0 22px 48px -24px rgb(13 42 63 / 0.4);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 560ms;
+
+  --img-filter: saturate(1.02) brightness(1.02);
+
+  /* type scale derived from ratio */
+  --t-xs: 0.8rem;
+  --t-sm: 0.92rem;
+  --t-base: 1.02rem;
+  --t-lg: calc(var(--t-base) * var(--scale));
+  --t-xl: calc(var(--t-lg) * var(--scale));
+  --t-2xl: calc(var(--t-xl) * var(--scale));
+  --t-3xl: calc(var(--t-2xl) * var(--scale));
+  --t-4xl: calc(var(--t-3xl) * var(--scale));
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+body{
+  font-family:var(--font-body);
+  background:rgb(var(--bg));
+  color:rgb(var(--ink));
+  font-size:var(--t-base);
+  line-height:1.6;
+  font-weight:var(--w-body);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:var(--w-displayBold); line-height:1.1; letter-spacing:var(--display-tracking); color:rgb(var(--ink)); }
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; }
+ul{ list-style:none; }
+
+.wrap{ width:min(1200px, 100% - (var(--gutter) * 2)); margin-inline:auto; }
+.eyebrow{
+  font-family:var(--font-display); font-weight:var(--w-label);
+  font-size:var(--t-xs); letter-spacing:0.14em; text-transform:uppercase;
+  color:rgb(var(--primary));
+  display:inline-flex; align-items:center; gap:8px;
+}
+.eyebrow::before{ content:""; width:22px; height:2px; background:rgb(var(--accent)); border-radius:2px; }
+.section{ padding-block:var(--section); }
+.section-head{ max-width:660px; margin-bottom:48px; }
+.section-head h2{ font-size:var(--t-3xl); margin-top:16px; }
+.section-head p{ color:rgb(var(--muted)); margin-top:14px; font-size:var(--t-lg); }
+
+/* ---- focus & a11y ---- */
+:focus-visible{ outline:3px solid rgb(var(--primary)); outline-offset:3px; border-radius:6px; }
+.skip-link{
+  position:absolute; left:16px; top:-60px; z-index:200;
+  background:rgb(var(--primary)); color:rgb(var(--onPrimary));
+  padding:10px 18px; border-radius:var(--r-button); font-weight:var(--w-label);
+  transition:top 200ms var(--ease);
+}
+.skip-link:focus{ top:16px; }
+.visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+/* ---- buttons ---- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  font-family:var(--font-display); font-weight:var(--w-label); font-size:var(--t-sm);
+  padding:14px 24px; border-radius:var(--r-button); border:1.5px solid transparent;
+  cursor:pointer; transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  line-height:1;
+}
+.btn-primary{ background:rgb(var(--primary)); color:rgb(var(--onPrimary)); box-shadow:0 12px 26px -14px rgb(var(--primary) / 0.7); }
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 18px 34px -14px rgb(var(--primary) / 0.8); }
+.btn-ghost{ background:transparent; color:rgb(var(--ink)); border-color:rgb(var(--line)); }
+.btn-ghost:hover{ border-color:rgb(var(--primary)); color:rgb(var(--primary)); transform:translateY(-2px); }
+.btn-accent{ background:rgb(var(--accent)); color:rgb(var(--ink)); }
+.btn-accent:hover{ transform:translateY(-2px); }
+.btn svg{ width:18px; height:18px; }
+
+/* =========================== UTILITY BAR =========================== */
+.utility{
+  background:rgb(var(--ink)); color:rgb(var(--bg));
+  font-size:var(--t-sm);
+}
+.utility .wrap{ display:flex; align-items:center; justify-content:space-between; gap:18px; padding-block:10px; flex-wrap:wrap; }
+.utility a{ display:inline-flex; align-items:center; gap:7px; color:rgb(var(--bg) / 0.88); transition:color var(--dur) var(--ease); }
+.utility a:hover{ color:rgb(var(--accent)); }
+.utility svg{ width:15px; height:15px; }
+.utility .util-left{ display:flex; gap:24px; flex-wrap:wrap; }
+.utility .util-right{ display:flex; gap:20px; align-items:center; }
+.utility-portal{ font-weight:var(--w-label); }
+
+/* =========================== NAV =========================== */
+.nav{
+  position:sticky; top:0; z-index:100;
+  background:rgb(var(--surface) / 0.86);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;
+  transition:box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.nav.scrolled{ box-shadow:0 6px 24px -18px rgb(var(--ink) / 0.5); border-color:rgb(var(--line)); }
+.nav .wrap{ display:flex; align-items:center; justify-content:space-between; gap:24px; padding-block:16px; }
+.brand{ display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-weight:var(--w-bold); font-size:var(--t-lg); }
+.brand .mark{ width:38px; height:38px; border-radius:11px; background:linear-gradient(135deg, rgb(var(--primary)), rgb(var(--accent))); display:grid; place-items:center; color:rgb(var(--onPrimary)); }
+.brand .mark svg{ width:21px; height:21px; }
+.nav-links{ display:flex; gap:30px; align-items:center; }
+.nav-links a{ font-weight:500; font-size:var(--t-sm); color:rgb(var(--ink) / 0.82); position:relative; transition:color var(--dur) var(--ease); }
+.nav-links a::after{ content:""; position:absolute; left:0; bottom:-6px; width:0; height:2px; background:rgb(var(--primary)); border-radius:2px; transition:width var(--dur) var(--ease); }
+.nav-links a:hover{ color:rgb(var(--ink)); }
+.nav-links a:hover::after{ width:100%; }
+.nav-cta{ display:flex; align-items:center; gap:14px; }
+.menu-toggle{ display:none; background:none; border:1.5px solid rgb(var(--line)); border-radius:var(--r-button); padding:9px; cursor:pointer; color:rgb(var(--ink)); }
+.menu-toggle svg{ width:22px; height:22px; }
+
+/* =========================== HERO — reassuring asymmetric ~55/45 =========================== */
+.hero{ position:relative; overflow:hidden; padding-block:clamp(56px, 7vw, 100px); }
+.hero::before{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(58% 76% at 88% 14%, rgb(var(--primary) / 0.11), transparent 60%),
+    radial-gradient(48% 58% at 4% 96%, rgb(var(--accent) / 0.11), transparent 60%);
+}
+/* asymmetric grid: copy slightly wider, photo column offset down */
+.hero .wrap{ display:grid; grid-template-columns:1.22fr 0.88fr; gap:clamp(32px, 5vw, 80px); align-items:center; }
+.hero-copy{ position:relative; z-index:2; }
+.hero-copy h1{ font-size:var(--t-4xl); letter-spacing:-0.03em; }
+.hero-copy h1 .hl{ color:rgb(var(--primary)); }
+.hero-copy p{ color:rgb(var(--muted)); font-size:var(--t-lg); margin-top:22px; max-width:46ch; }
+.hero-actions{ display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; }
+.hero-trust{ display:flex; gap:26px; margin-top:38px; flex-wrap:wrap; }
+.hero-trust li{ display:flex; align-items:center; gap:10px; font-weight:500; font-size:var(--t-sm); color:rgb(var(--ink) / 0.85); }
+.hero-trust .ic{ width:34px; height:34px; border-radius:10px; background:rgb(var(--accent) / 0.16); color:rgb(var(--accent)); display:grid; place-items:center; }
+.hero-trust .ic svg{ width:18px; height:18px; }
+
+/* offset photo + layered cards */
+.hero-media{ position:relative; transform:translateY(18px); justify-self:end; width:100%; max-width:460px; }
+.hero-media::after{
+  content:""; position:absolute; inset:auto -26px -26px 30px; height:64%;
+  background:linear-gradient(140deg, rgb(var(--primary) / 0.14), rgb(var(--accent) / 0.14));
+  border-radius:30px; z-index:-1;
+}
+.hero-photo{
+  width:100%; aspect-ratio:4/4.7; object-fit:cover; border-radius:26px;
+  filter:var(--img-filter); box-shadow:var(--sh-elevated);
+}
+.hero-card{
+  position:absolute; left:-30px; bottom:54px;
+  background:rgb(var(--surface)); border-radius:var(--r-card);
+  padding:15px 20px; box-shadow:var(--sh-float);
+  display:flex; align-items:center; gap:14px; border:1px solid rgb(var(--line)); will-change:transform;
+}
+.hero-card .dot{ width:12px; height:12px; border-radius:50%; background:rgb(var(--accent)); box-shadow:0 0 0 5px rgb(var(--accent) / 0.18); flex-shrink:0; }
+.hero-card .lab{ font-size:var(--t-xs); color:rgb(var(--muted)); text-transform:uppercase; letter-spacing:0.08em; font-weight:var(--w-label); }
+.hero-card .val{ font-family:var(--font-display); font-weight:var(--w-bold); font-size:var(--t-base); }
+.hero-card-2{
+  position:absolute; right:-26px; top:48px;
+  background:rgb(var(--surface)); border-radius:var(--r-card);
+  padding:13px 18px; box-shadow:var(--sh-float); border:1px solid rgb(var(--line));
+  display:flex; flex-direction:column; gap:8px; will-change:transform; min-width:148px;
+}
+.hero-card-2 .rate{ display:flex; align-items:center; gap:8px; }
+.hero-card-2 .stars-sm{ display:flex; gap:2px; color:rgb(var(--accent)); }
+.hero-card-2 .stars-sm svg{ width:14px; height:14px; }
+.hero-card-2 .score{ font-family:var(--font-display); font-weight:var(--w-bold); font-size:var(--t-sm); }
+.hero-card-2 .cap{ font-size:var(--t-xs); color:rgb(var(--muted)); display:flex; align-items:center; gap:6px; }
+.hero-card-2 .cap svg{ width:14px; height:14px; color:rgb(var(--primary)); }
+
+/* =========================== QUICK ACCESS =========================== */
+.quick{ margin-top:-28px; position:relative; z-index:5; }
+.quick-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; }
+.quick-tile{
+  background:rgb(var(--surface)); border:1px solid rgb(var(--line));
+  border-radius:var(--r-card); padding:24px 22px; box-shadow:var(--sh-card);
+  display:flex; gap:15px; align-items:center;
+  transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.quick-tile:hover{ transform:translateY(-5px); box-shadow:var(--sh-elevated); border-color:rgb(var(--primary) / 0.4); }
+.quick-tile .ic{ width:48px; height:48px; border-radius:13px; background:rgb(var(--primary) / 0.1); color:rgb(var(--primary)); display:grid; place-items:center; flex-shrink:0; }
+.quick-tile .ic svg{ width:24px; height:24px; }
+.quick-tile h3{ font-size:var(--t-base); font-weight:var(--w-bold); }
+.quick-tile p{ font-size:var(--t-xs); color:rgb(var(--muted)); margin-top:3px; }
+
+/* =========================== SPECIALTIES =========================== */
+.spec-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+.spec-card{
+  background:rgb(var(--surface)); border:1px solid rgb(var(--line));
+  border-radius:var(--r-card); padding:30px; box-shadow:var(--sh-card);
+  display:flex; flex-direction:column;
+  transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.spec-card:hover{ transform:translateY(-6px); box-shadow:var(--sh-elevated); border-color:rgb(var(--primary) / 0.35); }
+.spec-card .ic{ width:54px; height:54px; border-radius:14px; background:linear-gradient(135deg, rgb(var(--primary) / 0.14), rgb(var(--accent) / 0.14)); color:rgb(var(--primary)); display:grid; place-items:center; margin-bottom:20px; }
+.spec-card .ic svg{ width:27px; height:27px; }
+.spec-card h3{ font-size:var(--t-xl); }
+.spec-card p{ color:rgb(var(--muted)); margin-top:10px; font-size:var(--t-sm); flex:1; }
+.spec-card .link{ display:inline-flex; align-items:center; gap:7px; margin-top:18px; color:rgb(var(--primary)); font-weight:var(--w-label); font-size:var(--t-sm); }
+.spec-card .link svg{ width:16px; height:16px; transition:transform var(--dur) var(--ease); }
+.spec-card:hover .link svg{ transform:translateX(4px); }
+
+/* =========================== CARE PATH =========================== */
+.care{ background:rgb(var(--surface)); }
+.care-steps{ position:relative; display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; }
+.care-line{ position:absolute; top:34px; left:9%; right:9%; height:3px; z-index:0; }
+.care-line svg{ width:100%; height:3px; overflow:visible; }
+.care-line path{ fill:none; stroke:rgb(var(--primary) / 0.4); stroke-width:3; stroke-linecap:round; }
+.care-step{ position:relative; z-index:1; text-align:center; }
+.care-num{
+  width:68px; height:68px; border-radius:50%; margin:0 auto 20px;
+  background:rgb(var(--surface)); border:3px solid rgb(var(--primary) / 0.3);
+  display:grid; place-items:center; font-family:var(--font-display);
+  font-weight:var(--w-bold); font-size:var(--t-xl); color:rgb(var(--primary));
+}
+.care-step h3{ font-size:var(--t-lg); }
+.care-step p{ color:rgb(var(--muted)); margin-top:8px; font-size:var(--t-sm); }
+
+/* =========================== DOCTORS =========================== */
+.doc-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
+.doc-card{
+  background:rgb(var(--surface)); border:1px solid rgb(var(--line));
+  border-radius:var(--r-card); overflow:hidden; box-shadow:var(--sh-card);
+  display:flex; flex-direction:column;
+  transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.doc-card:hover{ transform:translateY(-6px); box-shadow:var(--sh-elevated); }
+.doc-photo{ width:100%; aspect-ratio:4/3.4; object-fit:cover; filter:var(--img-filter); }
+.doc-body{ padding:22px 24px 26px; display:flex; flex-direction:column; flex:1; }
+.doc-body h3{ font-size:var(--t-lg); }
+.doc-spec{ color:rgb(var(--primary)); font-weight:var(--w-label); font-size:var(--t-sm); margin-top:4px; }
+.doc-meta{ display:flex; gap:14px; margin-top:12px; font-size:var(--t-xs); color:rgb(var(--muted)); }
+.doc-meta span{ display:inline-flex; align-items:center; gap:5px; }
+.doc-meta svg{ width:14px; height:14px; color:rgb(var(--accent)); }
+.doc-link{ display:inline-flex; align-items:center; gap:7px; margin-top:auto; padding-top:18px; font-weight:var(--w-label); font-size:var(--t-sm); color:rgb(var(--ink)); border-top:1px solid rgb(var(--line)); width:100%; justify-content:space-between; transition:color var(--dur) var(--ease); }
+.doc-link.spacer{ margin-top:16px; }
+.doc-link svg{ width:17px; height:17px; transition:transform var(--dur) var(--ease); }
+.doc-card:hover .doc-link{ color:rgb(var(--primary)); }
+.doc-card:hover .doc-link svg{ transform:translateX(4px); }
+
+/* =========================== STATS =========================== */
+.stats{ background:rgb(var(--ink)); color:rgb(var(--bg)); }
+.stats .eyebrow{ color:rgb(var(--accent)); }
+.stats .section-head h2{ color:rgb(var(--bg)); }
+.stats .section-head p{ color:rgb(var(--bg) / 0.7); }
+.stat-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; }
+.stat{ border-left:2px solid rgb(var(--accent) / 0.5); padding-left:22px; }
+.stat .num{ font-family:var(--font-display); font-weight:var(--w-bold); font-size:var(--t-4xl); color:rgb(var(--bg)); line-height:1; }
+.stat .num .suf{ color:rgb(var(--accent)); }
+.stat .lab{ color:rgb(var(--bg) / 0.74); margin-top:10px; font-size:var(--t-sm); }
+
+/* =========================== INSURANCE =========================== */
+.insurance{ background:rgb(var(--surface)); border-block:1px solid rgb(var(--line)); padding-block:48px; }
+.insurance .lead{ text-align:center; color:rgb(var(--muted)); font-weight:var(--w-label); font-size:var(--t-sm); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:32px; }
+.ins-grid{ display:grid; grid-template-columns:repeat(6, 1fr); gap:16px; }
+.ins-cell{
+  display:flex; align-items:center; justify-content:center; gap:9px;
+  background:rgb(var(--bg)); border:1px solid rgb(var(--line)); border-radius:var(--r-card);
+  padding:20px 14px; min-height:78px;
+  transition:transform var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.ins-cell:hover{ transform:translateY(-4px); border-color:rgb(var(--primary) / 0.4); box-shadow:var(--sh-card); }
+.ins-cell .wordmark{ font-family:var(--font-display); font-weight:var(--w-bold); font-size:var(--t-base); color:rgb(var(--ink) / 0.55); letter-spacing:-0.02em; display:flex; align-items:center; gap:9px; white-space:nowrap; }
+.ins-cell .wordmark::before{ content:""; width:11px; height:11px; border-radius:50%; border:2.5px solid rgb(var(--primary) / 0.5); flex-shrink:0; }
+
+/* =========================== TESTIMONIALS =========================== */
+.test-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
+.test-card{
+  background:rgb(var(--surface)); border:1px solid rgb(var(--line));
+  border-radius:var(--r-card); padding:30px; box-shadow:var(--sh-card);
+  display:flex; flex-direction:column;
+  transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.test-card:hover{ transform:translateY(-6px); box-shadow:var(--sh-elevated); }
+.test-card .quoteic{ width:40px; height:40px; color:rgb(var(--accent)); margin-bottom:14px; }
+.test-card blockquote{ font-size:var(--t-lg); color:rgb(var(--ink) / 0.9); line-height:1.5; flex:1; }
+.test-author{ display:flex; align-items:center; gap:13px; margin-top:24px; padding-top:22px; border-top:1px solid rgb(var(--line)); }
+.test-author .av{ width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg, rgb(var(--primary)), rgb(var(--accent))); color:rgb(var(--onPrimary)); display:grid; place-items:center; font-family:var(--font-display); font-weight:var(--w-bold); }
+.test-author .nm{ font-weight:var(--w-bold); font-size:var(--t-sm); }
+.test-author .rl{ color:rgb(var(--muted)); font-size:var(--t-xs); }
+.stars{ display:flex; gap:3px; color:rgb(var(--accent)); margin-top:16px; }
+.stars svg{ width:17px; height:17px; }
+
+/* =========================== APPOINTMENT CTA =========================== */
+.cta-band{ padding-block:var(--section); }
+.cta-inner{
+  background:linear-gradient(135deg, rgb(var(--primary)), color-mix(in srgb, rgb(var(--primary)) 62%, rgb(var(--ink))));
+  border-radius:28px; padding:clamp(40px, 6vw, 72px); position:relative; overflow:hidden;
+  color:rgb(var(--onPrimary));
+  display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:center;
+}
+.cta-inner::before{ content:""; position:absolute; right:-80px; top:-80px; width:340px; height:340px; border-radius:50%; background:rgb(var(--accent) / 0.22); }
+.cta-inner::after{ content:""; position:absolute; left:-60px; bottom:-90px; width:260px; height:260px; border-radius:50%; background:rgb(255 255 255 / 0.08); }
+.cta-text{ position:relative; z-index:1; }
+.cta-text .eyebrow{ color:rgb(var(--bg)); }
+.cta-text .eyebrow::before{ background:rgb(var(--accent)); }
+.cta-text h2{ color:rgb(var(--onPrimary)); font-size:var(--t-3xl); margin-top:14px; }
+.cta-text p{ color:rgb(var(--onPrimary) / 0.86); margin-top:14px; font-size:var(--t-lg); }
+.cta-actions{ position:relative; z-index:1; display:flex; flex-direction:column; gap:14px; }
+.cta-actions .btn-light{ background:rgb(var(--surface)); color:rgb(var(--primary)); }
+.cta-actions .btn-light:hover{ transform:translateY(-2px); }
+.cta-phone{ display:flex; align-items:center; gap:13px; background:rgb(255 255 255 / 0.12); border:1px solid rgb(255 255 255 / 0.22); border-radius:var(--r-card); padding:16px 20px; }
+.cta-phone .ic{ width:42px; height:42px; border-radius:11px; background:rgb(var(--accent)); color:rgb(var(--ink)); display:grid; place-items:center; flex-shrink:0; }
+.cta-phone .ic svg{ width:20px; height:20px; }
+.cta-phone .lab{ font-size:var(--t-xs); color:rgb(var(--onPrimary) / 0.78); text-transform:uppercase; letter-spacing:0.08em; }
+.cta-phone .num{ font-family:var(--font-display); font-weight:var(--w-bold); font-size:var(--t-lg); }
+
+/* =========================== FOOTER =========================== */
+.footer{ background:rgb(var(--ink)); color:rgb(var(--bg) / 0.8); padding-block:64px 32px; }
+.footer-top{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1.4fr; gap:40px; padding-bottom:48px; border-bottom:1px solid rgb(var(--bg) / 0.12); }
+.footer .brand{ color:rgb(var(--bg)); margin-bottom:16px; }
+.footer-about p{ font-size:var(--t-sm); max-width:36ch; }
+.foot-loc{ display:flex; gap:9px; margin-top:18px; font-size:var(--t-sm); }
+.foot-loc svg{ width:17px; height:17px; color:rgb(var(--accent)); flex-shrink:0; margin-top:2px; }
+.footer h4{ color:rgb(var(--bg)); font-size:var(--t-sm); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:18px; }
+.footer-links li{ margin-bottom:11px; }
+.footer-links a{ font-size:var(--t-sm); color:rgb(var(--bg) / 0.72); transition:color var(--dur) var(--ease); }
+.footer-links a:hover{ color:rgb(var(--accent)); }
+.foot-hours{ font-size:var(--t-sm); }
+.foot-hours div{ display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid rgb(var(--bg) / 0.08); }
+.foot-hours .d{ color:rgb(var(--bg) / 0.62); }
+.newsletter p{ font-size:var(--t-sm); margin-bottom:16px; }
+.news-form{ display:flex; gap:8px; }
+.news-form input{
+  flex:1; background:rgb(var(--bg) / 0.08); border:1px solid rgb(var(--bg) / 0.2);
+  border-radius:var(--r-input); padding:13px 15px; color:rgb(var(--bg)); font-family:var(--font-body); font-size:var(--t-sm);
+}
+.news-form input::placeholder{ color:rgb(var(--bg) / 0.5); }
+.news-form input:focus-visible{ outline-color:rgb(var(--accent)); }
+.news-form button{ flex-shrink:0; }
+.footer-bottom{ display:flex; justify-content:space-between; align-items:center; gap:18px; padding-top:28px; font-size:var(--t-xs); color:rgb(var(--bg) / 0.6); flex-wrap:wrap; }
+.footer-bottom .legal{ display:flex; gap:22px; flex-wrap:wrap; }
+.footer-bottom a:hover{ color:rgb(var(--accent)); }
+
+/* =========================== RIBBON =========================== */
+.ribbon{
+  position:fixed; right:16px; bottom:16px; z-index:300;
+  background:rgb(var(--ink)); color:rgb(var(--bg));
+  font-family:var(--font-display); font-weight:var(--w-label); font-size:12px;
+  padding:9px 15px; border-radius:var(--r-pill); box-shadow:var(--sh-card);
+  display:flex; align-items:center; gap:8px;
+}
+.ribbon .d{ width:7px; height:7px; border-radius:50%; background:rgb(var(--accent)); }
+
+/* =========================== RESPONSIVE =========================== */
+@media (max-width:1000px){
+  .hero .wrap{ grid-template-columns:1fr; }
+  .hero-media{ transform:none; justify-self:center; max-width:520px; margin-top:8px; }
+  .quick-grid{ grid-template-columns:repeat(2,1fr); }
+  .spec-grid,.doc-grid,.test-grid{ grid-template-columns:repeat(2,1fr); }
+  .stat-grid{ grid-template-columns:repeat(2,1fr); }
+  .care-steps{ grid-template-columns:repeat(2,1fr); row-gap:40px; }
+  .care-line{ display:none; }
+  .ins-grid{ grid-template-columns:repeat(3,1fr); }
+  .cta-inner{ grid-template-columns:1fr; }
+  .footer-top{ grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:640px){
+  .nav-links{
+    position:absolute; top:100%; left:0; right:0; background:rgb(var(--surface));
+    flex-direction:column; gap:0; padding:8px 0; box-shadow:var(--sh-card);
+    border-bottom:1px solid rgb(var(--line)); display:none;
+  }
+  .nav-links.open{ display:flex; }
+  .nav-links a{ padding:14px var(--gutter); width:100%; }
+  .nav-links a::after{ display:none; }
+  .menu-toggle{ display:inline-flex; }
+  .nav-cta .btn-book-text{ display:none; }
+  .quick-grid,.spec-grid,.doc-grid,.test-grid,.stat-grid{ grid-template-columns:1fr; }
+  .care-steps{ grid-template-columns:1fr; }
+  .ins-grid{ grid-template-columns:repeat(2,1fr); }
+  .footer-top{ grid-template-columns:1fr; }
+  .hero-card{ left:0; }
+  .hero-card-2{ right:0; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- ===================== UTILITY BAR ===================== -->
+<div class="utility">
+  <div class="wrap">
+    <div class="util-left">
+      <a href="tel:+18005550142">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+        24/7 Nurse line: 1-800-555-0142
+      </a>
+      <a href="#locations">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        4 locations across the bay
+      </a>
+    </div>
+    <div class="util-right">
+      <a href="#" class="utility-portal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Patient portal
+      </a>
+      <a href="#">En Español</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== NAV ===================== -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#" class="brand" aria-label="Northshore Health home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="m8 11 2 2 2-3 2 3 2-2"/></svg>
+      </span>
+      Northshore Health
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#specialties">Specialties</a>
+      <a href="#care">How care works</a>
+      <a href="#doctors">Find a doctor</a>
+      <a href="#testimonials">Patient stories</a>
+      <a href="#locations">Locations</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#book" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span class="btn-book-text">Book appointment</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ===================== HERO — reassuring asymmetric w/ floating UI cards ===================== -->
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow" data-hero>Compassionate, connected care</span>
+      <h1 id="hero-h" data-hero>Health care that <span class="hl">listens</span> first, treats with care.</h1>
+      <p data-hero>From routine check-ups to specialist care, Northshore Health brings together expert clinicians and modern facilities — so you and your family always feel looked after.</p>
+      <div class="hero-actions" data-hero>
+        <a href="#book" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Book appointment
+        </a>
+        <a href="#doctors" class="btn btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          Find a doctor
+        </a>
+      </div>
+      <ul class="hero-trust" data-hero>
+        <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></span> JCI-accredited</li>
+        <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span> 24/7 urgent care</li>
+        <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> 180+ specialists</li>
+      </ul>
+    </div>
+    <div class="hero-media" id="heroMedia">
+      <img class="hero-photo" src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=900&q=80&auto=format&fit=crop" alt="A doctor in a clinic warmly consulting with a patient" />
+      <div class="hero-card" id="heroCard1">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <div class="lab">Next available</div>
+          <div class="val">Today, 3:40 PM</div>
+        </div>
+      </div>
+      <div class="hero-card-2" id="heroCard2">
+        <div class="rate">
+          <span class="stars-sm" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+          </span>
+          <span class="score">4.9</span>
+        </div>
+        <span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> Same-day care</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== QUICK ACCESS — wayfinding row ===================== -->
+<section class="quick wrap" aria-label="Quick access">
+  <div class="quick-grid">
+    <a class="quick-tile" href="#book" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg></span>
+      <div><h3>Book online</h3><p>Schedule in under 2 minutes</p></div>
+    </a>
+    <a class="quick-tile" href="#locations" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <div><h3>Find a location</h3><p>4 clinics near you</p></div>
+    </a>
+    <a class="quick-tile" href="#" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 2 9 5M12 2l3 3"/><path d="M19 14a7 7 0 1 1-14 0c0-2 1-4 3-6"/><path d="M9 18h6"/></svg></span>
+      <div><h3>Emergency</h3><p>24/7 urgent care</p></div>
+    </a>
+    <a class="quick-tile" href="#insurance" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></span>
+      <div><h3>Insurance</h3><p>We accept 30+ plans</p></div>
+    </a>
+  </div>
+</section>
+
+<!-- ===================== SPECIALTIES ===================== -->
+<section class="section wrap" id="specialties" aria-labelledby="spec-h">
+  <div class="section-head" data-reveal>
+    <span class="eyebrow">Areas of care</span>
+    <h2 id="spec-h">Specialty care under one roof</h2>
+    <p>Coordinated teams across the disciplines that matter most to your family's health — with shared records so nothing falls through the cracks.</p>
+  </div>
+  <div class="spec-grid">
+    <article class="spec-card" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+      <h3>Cardiology</h3>
+      <p>Heart screening, diagnostics and ongoing care led by board-certified cardiologists.</p>
+      <a class="link" href="#">Explore cardiology <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </article>
+    <article class="spec-card" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/><path d="M9 8h.01M15 8h.01"/></svg></span>
+      <h3>Pediatrics</h3>
+      <p>Gentle, child-friendly care from newborn check-ups through the teenage years.</p>
+      <a class="link" href="#">Explore pediatrics <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </article>
+    <article class="spec-card" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3"/></svg></span>
+      <h3>Dermatology</h3>
+      <p>Skin health, mole screening and dermatologic treatment with same-week visits.</p>
+      <a class="link" href="#">Explore dermatology <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </article>
+    <article class="spec-card" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a5 5 0 0 0 10 0V5a3 3 0 0 0-3-3"/><path d="M9 5H6a3 3 0 0 0 0 6h1"/></svg></span>
+      <h3>Neurology</h3>
+      <p>Comprehensive evaluation and care for headaches, sleep and neurological conditions.</p>
+      <a class="link" href="#">Explore neurology <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </article>
+    <article class="spec-card" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 22V12h6v10M12 6v3M10.5 7.5h3"/></svg></span>
+      <h3>Family medicine</h3>
+      <p>Your everyday medical home for check-ups, prevention and chronic-care management.</p>
+      <a class="link" href="#">Explore family medicine <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </article>
+    <article class="spec-card" data-reveal>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8M9 2v3a6 6 0 0 0 6 6 6 6 0 0 0 6-6V2"/><path d="M15 2v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V2"/><path d="M12 11v8a3 3 0 0 0 6 0v-1"/></svg></span>
+      <h3>Orthopedics</h3>
+      <p>Bone, joint and sports-injury care with on-site imaging and physical therapy.</p>
+      <a class="link" href="#">Explore orthopedics <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== CARE PATH — connected line ===================== -->
+<section class="section care" id="care" aria-labelledby="care-h">
+  <div class="wrap">
+    <div class="section-head" data-reveal style="margin-inline:auto; text-align:center;">
+      <span class="eyebrow" style="justify-content:center;">A simple path</span>
+      <h2 id="care-h">How your care works</h2>
+      <p>No confusing paperwork or guesswork — just four clear steps from your first booking to your follow-up.</p>
+    </div>
+    <div class="care-steps" id="careSteps">
+      <div class="care-line" id="careLine" aria-hidden="true">
+        <svg viewBox="0 0 1000 3" preserveAspectRatio="none"><path id="careLinePath" d="M0 1.5 H1000" /></svg>
+      </div>
+      <div class="care-step" data-reveal>
+        <div class="care-num">1</div>
+        <h3>Book</h3>
+        <p>Choose a doctor and time online, or call our 24/7 line — same-day slots available.</p>
+      </div>
+      <div class="care-step" data-reveal>
+        <div class="care-num">2</div>
+        <h3>Visit</h3>
+        <p>Arrive to a calm clinic. Your clinician reviews your history and listens, unhurried.</p>
+      </div>
+      <div class="care-step" data-reveal>
+        <div class="care-num">3</div>
+        <h3>Care plan</h3>
+        <p>Walk away with a clear, written plan — tests, prescriptions and next steps explained.</p>
+      </div>
+      <div class="care-step" data-reveal>
+        <div class="care-num">4</div>
+        <h3>Follow-up</h3>
+        <p>We check in through the portal and coordinate any specialists you need.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DOCTORS ===================== -->
+<section class="section wrap" id="doctors" aria-labelledby="doc-h">
+  <div class="section-head" data-reveal>
+    <span class="eyebrow">Meet the team</span>
+    <h2 id="doc-h">Find a doctor you'll trust</h2>
+    <p>Every clinician at Northshore is board-certified and chosen as much for their bedside manner as their expertise.</p>
+  </div>
+  <div class="doc-grid">
+    <article class="doc-card" data-reveal>
+      <img class="doc-photo" src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&q=80&auto=format&fit=crop" alt="Portrait of Dr. Elena Marsh, cardiologist" />
+      <div class="doc-body">
+        <h3>Dr. Elena Marsh</h3>
+        <div class="doc-spec">Cardiology</div>
+        <div class="doc-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> 14 yrs</span>
+          <span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg> 4.9</span>
+        </div>
+        <a class="doc-link" href="#">View profile <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </article>
+    <article class="doc-card" data-reveal>
+      <img class="doc-photo" src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80&auto=format&fit=crop" alt="Portrait of Dr. Marcus Reyes, family medicine physician" />
+      <div class="doc-body">
+        <h3>Dr. Marcus Reyes</h3>
+        <div class="doc-spec">Family medicine</div>
+        <div class="doc-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> 11 yrs</span>
+          <span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg> 4.8</span>
+        </div>
+        <a class="doc-link" href="#">View profile <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </article>
+    <article class="doc-card" data-reveal>
+      <img class="doc-photo" src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=600&q=80&auto=format&fit=crop" alt="Portrait of Dr. Priya Nair, pediatrician" />
+      <div class="doc-body">
+        <h3>Dr. Priya Nair</h3>
+        <div class="doc-spec">Pediatrics</div>
+        <div class="doc-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> 9 yrs</span>
+          <span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg> 5.0</span>
+        </div>
+        <a class="doc-link" href="#">View profile <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== STATS — count-up trust band ===================== -->
+<section class="section stats" aria-labelledby="stats-h">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">By the numbers</span>
+      <h2 id="stats-h">Care our community counts on</h2>
+      <p>Two decades of looking after families across the bay — measured in outcomes, not slogans.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat" data-reveal><div class="num"><span class="count" data-to="248" data-suffix="K">0</span><span class="suf">+</span></div><div class="lab">Patients cared for</div></div>
+      <div class="stat" data-reveal><div class="num"><span class="count" data-to="98">0</span><span class="suf">%</span></div><div class="lab">Patient satisfaction</div></div>
+      <div class="stat" data-reveal><div class="num"><span class="count" data-to="22">0</span><span class="suf"></span></div><div class="lab">Years of service</div></div>
+      <div class="stat" data-reveal><div class="num"><span class="count" data-to="4">0</span><span class="suf"></span></div><div class="lab">Clinic locations</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== INSURANCE — wordmark grid ===================== -->
+<section class="insurance" id="insurance" aria-label="Accepted insurance partners">
+  <div class="wrap">
+    <p class="lead">Accepted by 30+ insurers, including</p>
+    <div class="ins-grid">
+      <div class="ins-cell" data-reveal><span class="wordmark">BlueHarbor</span></div>
+      <div class="ins-cell" data-reveal><span class="wordmark">Meridian</span></div>
+      <div class="ins-cell" data-reveal><span class="wordmark">Vantage</span></div>
+      <div class="ins-cell" data-reveal><span class="wordmark">Northwind</span></div>
+      <div class="ins-cell" data-reveal><span class="wordmark">Caduceus</span></div>
+      <div class="ins-cell" data-reveal><span class="wordmark">PacificMed</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TESTIMONIALS ===================== -->
+<section class="section wrap" id="testimonials" aria-labelledby="test-h">
+  <div class="section-head" data-reveal>
+    <span class="eyebrow">Patient stories</span>
+    <h2 id="test-h">Cared for, every step</h2>
+    <p>Real words from the families who trust Northshore with the people they love most.</p>
+  </div>
+  <div class="test-grid">
+    <figure class="test-card" data-reveal>
+      <svg class="quoteic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h4v10H3V11c0-2.2 1.8-4 4-4Zm10 0h4v10h-8V11c0-2.2 1.8-4 4-4Z" opacity="0.85"/></svg>
+      <blockquote>The cardiologist took 40 minutes to explain my results in plain language. I've never felt so listened to by a doctor.</blockquote>
+      <div class="stars" aria-label="5 out of 5 stars">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+      </div>
+      <figcaption class="test-author"><span class="av" aria-hidden="true">DA</span><div><div class="nm">Diane Alvarez</div><div class="rl">Cardiology patient</div></div></figcaption>
+    </figure>
+    <figure class="test-card" data-reveal>
+      <svg class="quoteic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h4v10H3V11c0-2.2 1.8-4 4-4Zm10 0h4v10h-8V11c0-2.2 1.8-4 4-4Z" opacity="0.85"/></svg>
+      <blockquote>Booking online took two minutes and my son was seen the same afternoon. The pediatric team was so gentle with him.</blockquote>
+      <div class="stars" aria-label="5 out of 5 stars">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+      </div>
+      <figcaption class="test-author"><span class="av" aria-hidden="true">TO</span><div><div class="nm">Tomás Okafor</div><div class="rl">Parent</div></div></figcaption>
+    </figure>
+    <figure class="test-card" data-reveal>
+      <svg class="quoteic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h4v10H3V11c0-2.2 1.8-4 4-4Zm10 0h4v10h-8V11c0-2.2 1.8-4 4-4Z" opacity="0.85"/></svg>
+      <blockquote>Having all my records in one portal means every specialist already knows my history. It finally feels coordinated.</blockquote>
+      <div class="stars" aria-label="5 out of 5 stars">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+      </div>
+      <figcaption class="test-author"><span class="av" aria-hidden="true">JL</span><div><div class="nm">Janet Liu</div><div class="rl">Long-term patient</div></div></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===================== APPOINTMENT CTA ===================== -->
+<section class="cta-band wrap" id="book" aria-labelledby="cta-h">
+  <div class="cta-inner" data-reveal>
+    <div class="cta-text">
+      <span class="eyebrow">Ready when you are</span>
+      <h2 id="cta-h">Your health, on your schedule</h2>
+      <p>Book online in minutes or speak with our care team. Same-day and weekend appointments are available across all four locations.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="#" class="btn btn-light">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Book an appointment
+      </a>
+      <a href="tel:+18005550142" class="cta-phone">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg></span>
+        <span><span class="lab">Call our care team</span><br><span class="num">1-800-555-0142</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer" id="locations">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-about">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="m8 11 2 2 2-3 2 3 2-2"/></svg></span>
+          Northshore Health
+        </div>
+        <p>Compassionate, coordinated healthcare for families across the bay — since 2004.</p>
+        <div class="foot-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg> 1200 Harborview Ave, Bayside · + 3 more clinics</div>
+      </div>
+      <div>
+        <h4>Care</h4>
+        <ul class="footer-links">
+          <li><a href="#specialties">Specialties</a></li>
+          <li><a href="#doctors">Find a doctor</a></li>
+          <li><a href="#book">Book appointment</a></li>
+          <li><a href="#insurance">Insurance</a></li>
+          <li><a href="#">Patient portal</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Hours</h4>
+        <div class="foot-hours">
+          <div><span class="d">Mon – Fri</span><span>7:00 – 21:00</span></div>
+          <div><span class="d">Saturday</span><span>8:00 – 18:00</span></div>
+          <div><span class="d">Sunday</span><span>9:00 – 15:00</span></div>
+          <div><span class="d">Urgent care</span><span>24 / 7</span></div>
+        </div>
+      </div>
+      <div class="newsletter">
+        <h4>Health tips, monthly</h4>
+        <p>Practical, doctor-reviewed wellness tips in your inbox. No spam — unsubscribe anytime.</p>
+        <form class="news-form" onsubmit="return false;">
+          <label for="news-email" class="visually-hidden">Email address</label>
+          <input id="news-email" type="email" name="email" placeholder="you@email.com" aria-label="Email address" required />
+          <button type="submit" class="btn btn-accent" aria-label="Subscribe to newsletter">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Northshore Health. All rights reserved.</span>
+      <div class="legal">
+        <a href="#">Privacy &amp; HIPAA</a>
+        <a href="#">Terms</a>
+        <a href="#">Accessibility</a>
+        <a href="#">Non-discrimination</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon" aria-label="Theme ribbon"><span class="d" aria-hidden="true"></span>NEXA Theme · Cobalt · healthcare</div>
+
+<!-- ===================== INTERACTION (non-GSAP, always runs) ===================== -->
+<script>
+(function(){
+  /* sticky nav shadow */
+  var nav = document.getElementById('nav');
+  function onScroll(){ if(window.scrollY > 12){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); } }
+  window.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+
+  /* mobile menu */
+  var toggle = document.getElementById('menuToggle');
+  var links = document.getElementById('navLinks');
+  toggle.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links.addEventListener('click', function(e){ if(e.target.tagName === 'A'){ links.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); } });
+})();
+</script>
+
+<!-- ===================== GSAP (CDN) ===================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* All motion is guarded. If GSAP is absent OR reduced-motion is on,
+   nothing is hidden and the page renders fully as authored. */
+(function(){
+  if(!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var mm = gsap.matchMedia();
+
+  /* ---- Motion only when reduced-motion is NOT requested ---- */
+  mm.add("(prefers-reduced-motion: no-preference)", function(){
+
+    /* HERO entrance — calm, precise */
+    var heroBits = gsap.utils.toArray('[data-hero]');
+    gsap.set(heroBits, { opacity:0, y:24 });
+    gsap.set('#heroMedia', { opacity:0, y:28, scale:0.98 });
+    gsap.set(['#heroCard1','#heroCard2'], { opacity:0, y:18, scale:0.94 });
+
+    var heroTl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+    heroTl
+      .to(heroBits, { opacity:1, y:0, duration:0.8, stagger:0.1 })
+      .to('#heroMedia', { opacity:1, y:0, scale:1, duration:0.9 }, 0.15)
+      .to('#heroCard1', { opacity:1, y:0, scale:1, duration:0.6 }, '-=0.35')
+      .to('#heroCard2', { opacity:1, y:0, scale:1, duration:0.6 }, '-=0.45');
+
+    /* gentle perpetual float on the floating UI cards */
+    gsap.to('#heroCard1', { y:'-=9', duration:3.4, ease:'sine.inOut', yoyo:true, repeat:-1, delay:1.2 });
+    gsap.to('#heroCard2', { y:'+=8', duration:3.8, ease:'sine.inOut', yoyo:true, repeat:-1, delay:1.4 });
+
+    /* SCROLL REVEALS — batched, staggered per row */
+    var reveals = gsap.utils.toArray('[data-reveal]');
+    gsap.set(reveals, { opacity:0, y:30 });
+    ScrollTrigger.batch(reveals, {
+      start:'top 86%',
+      onEnter:function(batch){
+        gsap.to(batch, { opacity:1, y:0, duration:0.7, ease:'power3.out', stagger:0.09, overwrite:true });
+      }
+    });
+
+    /* CARE-STEPS connecting line draw */
+    var path = document.getElementById('careLinePath');
+    if(path){
+      var len = path.getTotalLength();
+      gsap.set(path, { strokeDasharray:len, strokeDashoffset:len });
+      gsap.to(path, {
+        strokeDashoffset:0, ease:'power2.inOut', duration:1.4,
+        scrollTrigger:{ trigger:'#careSteps', start:'top 70%' }
+      });
+    }
+
+    /* COUNT-UP stats */
+    gsap.utils.toArray('.count').forEach(function(el){
+      var to = parseFloat(el.getAttribute('data-to'));
+      var obj = { v:0 };
+      var isInt = (to % 1 === 0);
+      ScrollTrigger.create({
+        trigger:'.stats', start:'top 75%', once:true,
+        onEnter:function(){
+          gsap.to(obj, {
+            v:to, duration:1.6, ease:'power2.out',
+            onUpdate:function(){ el.textContent = isInt ? Math.round(obj.v) : obj.v.toFixed(1); },
+            onComplete:function(){ el.textContent = isInt ? to : to.toFixed(1); }
+          });
+        }
+      });
+    });
+
+    /* refresh after fonts/images settle to keep triggers accurate */
+    window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
+
+    return function(){ /* matchMedia auto-reverts gsap.set on cleanup */ };
+  });
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>

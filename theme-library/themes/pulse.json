@@ -1,0 +1,54 @@
+{
+  "id": "pulse",
+  "name": "Pulse",
+  "family": "bold",
+  "sector": "Fitness / sports",
+  "tags": ["fitness", "athletic", "high-energy", "dark", "gym", "bold", "image-rich"],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "12 12 14",
+      "surface": "22 23 27",
+      "surface-2": "30 31 36",
+      "ink": "245 246 243",
+      "muted": "162 165 172",
+      "line": "44 46 52",
+      "primary": "214 255 46",
+      "onPrimary": "12 12 14",
+      "accent": "255 46 99",
+      "accent2": "214 255 46"
+    },
+    "type": {
+      "display": "'Archivo', 'Arial Black', sans-serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, monospace",
+      "scaleRatio": 1.5,
+      "weights": { "display": 700, "displayBold": 800, "body": 400, "label": 600, "bold": 700 },
+      "displayCase": "upper",
+      "displayTracking": "-0.02em"
+    },
+    "space": { "base": 8, "section": "clamp(88px, 11vw, 168px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "balanced" },
+    "radius": { "card": "6px", "button": "4px", "input": "4px", "pill": "999px" },
+    "shadow": {
+      "card": "0 24px 60px -40px rgb(0 0 0 / 0.75)",
+      "elevated": "0 40px 90px -45px rgb(0 0 0 / 0.85)",
+      "philosophy": "glow"
+    },
+    "motion": { "ease": "cubic-bezier(0.2, 0.9, 0.1, 1)", "duration": "520ms", "character": "energetic" },
+    "imagery": { "treatment": "full-bleed", "ratio": "4:5", "filter": "saturate" }
+  },
+  "recipes": { "button": "solid", "card": "elevated", "nav": "split" },
+  "preferredLayouts": {
+    "hero": "fullbleed-athlete-angled-oversized-headline",
+    "marquee": "scrolling-keyword-strip",
+    "programs": "intensity-image-cards",
+    "features": "punchy-benefit-blocks",
+    "trainers": "coach-profile-cards",
+    "stats": "punchy-countup",
+    "schedule": "weekly-timetable-grid",
+    "pricing": "three-plan-highlight",
+    "testimonials": "transformation-quote-cards",
+    "cta": "fullbleed-colorblock",
+    "footer": "bold-wordmark"
+  }
+}

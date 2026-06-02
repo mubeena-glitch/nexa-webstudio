@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quanta — NEXA Theme Preview (Crypto / Web3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     QUANTA — tokens (mirror of theme.json -> CSS vars)
+     =========================================================== */
+  :root{
+    --bg:7 8 15; --surface:11 14 26; --surface-2:17 21 38;
+    --ink:233 236 248; --muted:143 150 178; --line:38 44 72;
+    --primary:124 92 255; --on-primary:247 248 255; --accent:35 224 200; --accent2:255 92 158;
+    --f-display:'Sora',ui-sans-serif,system-ui,sans-serif;
+    --f-body:'Geist',ui-sans-serif,system-ui,sans-serif;
+    --f-mono:'JetBrains Mono',ui-monospace,monospace;
+    --r-card:20px; --r-btn:12px; --r-pill:999px;
+    --gutter:clamp(20px,5vw,56px); --section:clamp(92px,11vw,160px);
+    --maxw:1200px;
+    --ease:cubic-bezier(0.22,1,0.36,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:rgb(var(--bg));color:rgb(var(--ink));font-family:var(--f-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+
+  /* aurora + grid backdrop */
+  .backdrop{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+  .aurora{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+  .a1{width:60vw;height:60vw;background:radial-gradient(circle,rgb(var(--primary)/.55),transparent 60%);top:-22vw;left:-10vw}
+  .a2{width:52vw;height:52vw;background:radial-gradient(circle,rgb(var(--accent)/.42),transparent 60%);top:18vw;right:-14vw}
+  .a3{width:46vw;height:46vw;background:radial-gradient(circle,rgb(var(--accent2)/.32),transparent 60%);top:60vw;left:14vw}
+  .gridlines{position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:linear-gradient(rgb(var(--line)/.5) 1px,transparent 1px),linear-gradient(90deg,rgb(var(--line)/.5) 1px,transparent 1px);
+    background-size:60px 60px;
+    -webkit-mask-image:radial-gradient(120% 70% at 50% 0%,#000,transparent 75%);
+    mask-image:radial-gradient(120% 70% at 50% 0%,#000,transparent 75%);opacity:.4}
+
+  #prog{position:fixed;top:0;left:0;height:2px;width:0;z-index:90;background:linear-gradient(90deg,rgb(var(--primary)),rgb(var(--accent)));box-shadow:0 0 16px rgb(var(--primary)/.7)}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter)}
+  .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+  .disp{font-family:var(--f-display);font-weight:700;letter-spacing:-.025em;line-height:1.04}
+  .grad-text{background:linear-gradient(100deg,#fff 0%,rgb(var(--accent)) 45%,rgb(var(--primary)) 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--accent));padding:7px 14px;border:1px solid rgb(var(--accent)/.3);border-radius:var(--r-pill);background:rgb(var(--accent)/.06)}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:rgb(var(--accent));box-shadow:0 0 10px rgb(var(--accent))}
+
+  /* glass surface */
+  .glass{background:linear-gradient(160deg,rgb(var(--surface-2)/.72),rgb(var(--surface)/.5));backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);border:1px solid rgb(255 255 255/.08);border-radius:var(--r-card);box-shadow:inset 0 1px 0 rgb(255 255 255/.07),0 30px 60px -34px rgb(0 0 0/.8)}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-family:var(--f-body);font-weight:600;font-size:15px;padding:14px 26px;border-radius:var(--r-btn);border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:transform .4s var(--ease),box-shadow .4s var(--ease),background .4s var(--ease),border-color .4s var(--ease)}
+  .btn-primary{background:linear-gradient(120deg,rgb(var(--primary)),rgb(var(--accent2)));color:#fff}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px -10px rgb(var(--primary)/.7)}
+  .btn-glass{background:rgb(255 255 255/.04);border-color:rgb(255 255 255/.14);color:rgb(var(--ink))}
+  .btn-glass:hover{border-color:rgb(var(--accent)/.6);transform:translateY(-2px)}
+  .btn .arrow{transition:transform .4s var(--ease)}
+  .btn:hover .arrow{transform:translateX(4px)}
+
+  /* ====== NAV ====== */
+  header{position:sticky;top:0;z-index:60;transition:background .4s var(--ease),border-color .4s var(--ease);border-bottom:1px solid transparent}
+  header.stuck{background:rgb(var(--bg)/.7);backdrop-filter:blur(16px);border-bottom-color:rgb(var(--line)/.7)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:78px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--f-display);font-weight:700;font-size:21px;letter-spacing:-.02em}
+  .brand .mk{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,rgb(var(--primary)),rgb(var(--accent)));display:grid;place-items:center;box-shadow:0 0 22px rgb(var(--primary)/.6)}
+  .nav-links{display:flex;gap:30px}
+  .nav-links a{font-size:14px;color:rgb(var(--muted));transition:color .3s}
+  .nav-links a:hover{color:rgb(var(--ink))}
+  .nav-cta{display:flex;gap:12px;align-items:center}
+  @media(max-width:920px){.nav-links{display:none}}
+
+  /* ====== HERO (immersive glass) ====== */
+  .hero{position:relative;padding-top:clamp(40px,6vw,72px);padding-bottom:var(--section);text-align:center}
+  .hero .eyebrow{margin-inline:auto}
+  .hero h1{font-family:var(--f-display);font-weight:800;font-size:clamp(44px,7vw,104px);line-height:.98;letter-spacing:-.03em;margin:24px auto 0;max-width:16ch}
+  .hero .lede{font-size:clamp(16px,1.5vw,20px);color:rgb(var(--muted));max-width:54ch;margin:24px auto 0}
+  .hero-actions{display:flex;gap:14px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+  .hero-meta{display:flex;gap:30px;justify-content:center;margin-top:30px;flex-wrap:wrap;color:rgb(var(--muted));font-size:13px;font-family:var(--f-mono)}
+  .hero-meta b{color:rgb(var(--ink))}
+
+  /* central console */
+  .console-wrap{position:relative;margin:64px auto 0;max-width:920px;perspective:1600px}
+  .console{position:relative;padding:22px;text-align:left;z-index:3}
+  .console-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid rgb(255 255 255/.07)}
+  .console-head .t{font-family:var(--f-display);font-weight:600;font-size:15px}
+  .console-head .live{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:rgb(var(--accent));display:flex;align-items:center;gap:7px}
+  .console-head .live::before{content:"";width:7px;height:7px;border-radius:50%;background:rgb(var(--accent));box-shadow:0 0 0 0 rgb(var(--accent)/.6);animation:pulse 2.2s infinite}
+  @keyframes pulse{70%{box-shadow:0 0 0 8px rgb(var(--accent)/0)}100%{box-shadow:0 0 0 0 rgb(var(--accent)/0)}}
+  .console-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+  @media(max-width:640px){.console-grid{grid-template-columns:1fr}}
+  .panel-inner{background:rgb(var(--bg)/.5);border:1px solid rgb(255 255 255/.06);border-radius:14px;padding:18px}
+  .bal-label{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--muted))}
+  .bal-amt{font-family:var(--f-display);font-weight:700;font-size:34px;margin-top:6px;font-variant-numeric:tabular-nums}
+  .bal-delta{font-family:var(--f-mono);font-size:13px;color:rgb(var(--accent));margin-top:4px}
+  .chart{margin-top:14px}
+  .chart svg{width:100%;height:74px;display:block}
+  .swap-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid rgb(255 255 255/.06);font-size:14px}
+  .swap-row:first-of-type{border-top:none}
+  .swap-row .coin{display:flex;align-items:center;gap:10px}
+  .swap-row .ico{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgb(var(--primary)),rgb(var(--accent)));display:grid;place-items:center;font-family:var(--f-mono);font-size:10px;font-weight:700;color:#fff}
+  .swap-row .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+  .swap-cta{width:100%;margin-top:14px}
+  /* floating coins */
+  .coin-float{position:absolute;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;color:#fff;z-index:4;
+    background:linear-gradient(150deg,rgb(var(--surface-2)/.9),rgb(var(--surface)/.7));border:1px solid rgb(255 255 255/.12);box-shadow:0 14px 30px -12px rgb(0 0 0/.8),inset 0 1px 0 rgb(255 255 255/.12);backdrop-filter:blur(8px);will-change:transform}
+  .coin-float.c1{top:-26px;left:-30px;color:rgb(var(--accent))}
+  .coin-float.c2{top:40%;right:-36px;color:rgb(var(--primary))}
+  .coin-float.c3{bottom:-28px;left:18%;width:52px;height:52px;color:rgb(var(--accent2))}
+  @media(max-width:640px){.coin-float{display:none}}
+
+  /* ====== MARKET MARQUEE ====== */
+  .market{border-block:1px solid rgb(var(--line)/.7);background:rgb(var(--surface)/.4);overflow:hidden}
+  .market .track{display:flex;gap:46px;width:max-content;padding:16px 0;animation:scroll 42s linear infinite}
+  .market .it{display:flex;align-items:center;gap:11px;font-family:var(--f-mono);font-size:14px;white-space:nowrap}
+  .market .it .sym{color:rgb(var(--ink));font-weight:500}
+  .market .it .px{color:rgb(var(--muted))}
+  .market .it .up{color:rgb(var(--accent))}.market .it .dn{color:rgb(var(--accent2))}
+  .market .it .ic{width:24px;height:24px;border-radius:50%;background:rgb(var(--surface-2));display:grid;place-items:center;font-size:10px;color:rgb(var(--primary));border:1px solid rgb(var(--line))}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* ====== SECTION HEADS ====== */
+  section.block{padding-block:var(--section)}
+  .shead{max-width:50ch;margin:0 auto;text-align:center}
+  .shead .eyebrow{margin-bottom:18px}
+  .shead h2{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,4.4vw,56px);letter-spacing:-.025em;line-height:1.05}
+  .shead p{color:rgb(var(--muted));font-size:17px;margin-top:16px}
+
+  /* ====== STATS ====== */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{padding:30px 24px;text-align:center}
+  .stat .n{font-family:var(--f-display);font-weight:700;font-size:clamp(32px,3.6vw,46px);font-variant-numeric:tabular-nums}
+  .stat .n .u{color:rgb(var(--accent))}
+  .stat .l{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgb(var(--muted));margin-top:10px}
+
+  /* ====== FEATURE BENTO (glass) ====== */
+  .bento{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:200px;gap:18px;grid-auto-flow:row dense;margin-top:60px}
+  @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.bento{grid-template-columns:1fr}}
+  .cell{position:relative;overflow:hidden;padding:26px;display:flex;flex-direction:column}
+  .cell::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgb(var(--primary)/.16),transparent 60%);opacity:0;transition:opacity .4s var(--ease)}
+  .cell:hover::before{opacity:1}
+  .cell:hover{border-color:rgb(var(--primary)/.4)}
+  .cell .ic{width:48px;height:48px;border-radius:13px;background:rgb(var(--primary)/.14);color:rgb(var(--accent));display:grid;place-items:center;margin-bottom:auto}
+  .cell h3{font-family:var(--f-display);font-weight:600;font-size:20px;margin-top:18px}
+  .cell p{color:rgb(var(--muted));font-size:14px;margin-top:8px}
+  .c-wide{grid-column:span 4}.c-half{grid-column:span 3}.c-third{grid-column:span 2}
+  @media(max-width:900px){.c-wide,.c-half,.c-third{grid-column:span 2}}
+  @media(max-width:560px){.c-wide,.c-half,.c-third{grid-column:span 1}}
+  .cell .big{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,4vw,48px)}
+  .cell .mini-ring{position:absolute;right:-30px;bottom:-30px;width:150px;height:150px;border-radius:50%;border:1px solid rgb(var(--accent)/.3)}
+  .cell .mini-ring::after{content:"";position:absolute;inset:22px;border-radius:50%;border:1px solid rgb(var(--primary)/.25)}
+  .cell .spark{margin-top:auto}
+  .cell .spark svg{width:100%;height:48px}
+
+  /* ====== PINNED HORIZONTAL TOUR ====== */
+  .tour{position:relative;background:rgb(var(--surface)/.25)}
+  .tour .pin{height:100vh;display:flex;align-items:center;overflow:hidden}
+  .tour .htrack{display:flex;gap:32px;padding-inline:var(--gutter);will-change:transform}
+  .tour .step{flex:0 0 min(80vw,560px);display:grid;grid-template-columns:64px 1fr;gap:22px;align-items:start}
+  .tour .step .no{font-family:var(--f-display);font-weight:800;font-size:30px;color:rgb(var(--primary));width:64px;height:64px;border-radius:16px;display:grid;place-items:center;background:rgb(var(--primary)/.12);border:1px solid rgb(var(--primary)/.3)}
+  .tour .step h3{font-family:var(--f-display);font-weight:700;font-size:clamp(24px,2.6vw,34px)}
+  .tour .step p{color:rgb(var(--muted));margin-top:10px;font-size:15px}
+  .tour .step .scr{margin-top:20px;border-radius:16px;overflow:hidden;border:1px solid rgb(255 255 255/.08);aspect-ratio:16/10;background:rgb(var(--bg)/.6);position:relative}
+  .tour .step .scr .barrow{position:absolute;inset:auto 18px 18px 18px;display:flex;gap:8px;align-items:flex-end;height:50%}
+  .tour .step .scr .barrow i{flex:1;border-radius:5px 5px 0 0;background:linear-gradient(rgb(var(--primary)),rgb(var(--accent)))}
+  .tour .step .scr .scrtop{position:absolute;top:16px;left:18px;font-family:var(--f-mono);font-size:11px;color:rgb(var(--muted));letter-spacing:.1em;text-transform:uppercase}
+  .tour .intro{flex:0 0 min(80vw,420px);align-self:center}
+  .tour .intro h2{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,4vw,52px);letter-spacing:-.025em;line-height:1.04}
+  .tour .intro p{color:rgb(var(--muted));margin-top:16px}
+  /* fallback when GSAP/pin is unavailable or reduced-motion: lay the tour out normally */
+  .tour.static .pin{height:auto;overflow:visible;padding-block:var(--section)}
+  .tour.static .htrack{flex-wrap:wrap;gap:44px}
+  .tour.static .intro{flex:1 1 100%}
+  .tour.static .step{flex:1 1 min(100%,440px)}
+
+  /* ====== TOKENOMICS ====== */
+  .tok{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(30px,5vw,72px);align-items:center;margin-top:54px}
+  @media(max-width:820px){.tok{grid-template-columns:1fr;gap:40px}}
+  .donut-wrap{position:relative;width:min(340px,80vw);margin-inline:auto;aspect-ratio:1}
+  .donut-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .donut-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .donut-center .big{font-family:var(--f-display);font-weight:700;font-size:34px}
+  .donut-center .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--muted))}
+  .legend{display:grid;gap:14px}
+  .legend .row{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:rgb(var(--surface)/.5);border:1px solid rgb(var(--line)/.7)}
+  .legend .row .sw{width:14px;height:14px;border-radius:4px;flex:none}
+  .legend .row .nm{flex:1;font-weight:500}
+  .legend .row .pc{font-family:var(--f-mono);color:rgb(var(--muted))}
+
+  /* ====== SECURITY ====== */
+  .secrow{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:46px}
+  .badge{display:flex;align-items:center;gap:12px;padding:16px 22px;font-family:var(--f-mono);font-size:13px;letter-spacing:.04em}
+  .badge svg{color:rgb(var(--accent))}
+
+  /* ====== ROADMAP ====== */
+  .road{position:relative;margin-top:56px;padding-left:34px}
+  .road::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(rgb(var(--primary)),rgb(var(--accent)),transparent)}
+  .phase{position:relative;padding:0 0 40px 30px}
+  .phase:last-child{padding-bottom:0}
+  .phase::before{content:"";position:absolute;left:-34px;top:4px;width:16px;height:16px;border-radius:50%;background:rgb(var(--bg));border:2px solid rgb(var(--primary));box-shadow:0 0 14px rgb(var(--primary)/.7)}
+  .phase .q{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--accent))}
+  .phase h3{font-family:var(--f-display);font-weight:600;font-size:21px;margin-top:6px}
+  .phase p{color:rgb(var(--muted));font-size:15px;margin-top:6px;max-width:54ch}
+
+  /* ====== ECOSYSTEM ====== */
+  .eco{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:50px}
+  @media(max-width:820px){.eco{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:480px){.eco{grid-template-columns:repeat(2,1fr)}}
+  .eco .e{aspect-ratio:5/3;display:grid;place-items:center;font-family:var(--f-display);font-weight:600;font-size:16px;color:rgb(var(--muted));transition:color .3s,border-color .3s}
+  .eco .e:hover{color:rgb(var(--ink));border-color:rgb(var(--primary)/.4)}
+
+  /* ====== FAQ ====== */
+  .faq{max-width:760px;margin:46px auto 0}
+  .qa{border:1px solid rgb(var(--line)/.7);border-radius:14px;margin-bottom:12px;overflow:hidden;background:rgb(var(--surface)/.4)}
+  .qa button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:18px;background:none;border:none;color:inherit;cursor:pointer;text-align:left;padding:20px 22px;font-family:var(--f-display);font-weight:600;font-size:17px}
+  .qa .ic{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid rgb(var(--line));display:grid;place-items:center;transition:transform .4s var(--ease),background .4s,color .4s}
+  .qa.open .ic{transform:rotate(45deg);background:rgb(var(--primary));color:#fff;border-color:transparent}
+  .qa .ans{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+  .qa .ans p{padding:0 22px 22px;color:rgb(var(--muted));font-size:15px}
+
+  /* ====== CTA ====== */
+  .cta-box{position:relative;overflow:hidden;text-align:center;padding:clamp(50px,8vw,96px) var(--gutter);border-radius:28px}
+  .cta-box .glow{position:absolute;bottom:-60%;left:50%;transform:translateX(-50%);width:80%;height:120%;background:radial-gradient(circle,rgb(var(--primary)/.35),transparent 60%);filter:blur(50px)}
+  .cta-box h2{position:relative;font-family:var(--f-display);font-weight:800;font-size:clamp(32px,5vw,62px);letter-spacing:-.03em;line-height:1.02}
+  .cta-box p{position:relative;color:rgb(var(--muted));font-size:18px;margin:18px auto 0;max-width:46ch}
+  .cta-box .acts{position:relative;display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+
+  /* ====== FOOTER ====== */
+  footer{border-top:1px solid rgb(var(--line)/.7);padding-block:56px 36px}
+  .foot{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
+  @media(max-width:760px){.foot{grid-template-columns:1fr 1fr;gap:38px 24px}}
+  .foot h4{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--muted));margin-bottom:16px}
+  .foot a{display:block;font-size:14px;color:rgb(var(--muted));padding:6px 0;transition:color .3s}
+  .foot a:hover{color:rgb(var(--ink))}
+  .foot .blurb{font-size:14px;color:rgb(var(--muted));max-width:30ch;margin-top:14px}
+  .legal{display:flex;justify-content:space-between;margin-top:46px;padding-top:24px;border-top:1px solid rgb(var(--line)/.7);font-size:13px;color:rgb(var(--muted));flex-wrap:wrap;gap:12px;font-family:var(--f-mono)}
+
+  .ribbon{position:fixed;bottom:0;right:0;z-index:95;background:linear-gradient(120deg,rgb(var(--primary)),rgb(var(--accent)));color:#fff;font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-top-left-radius:12px}
+
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+  <div class="backdrop"><span class="aurora a1"></span><span class="aurora a2"></span><span class="aurora a3"></span></div>
+  <div class="gridlines"></div>
+  <div id="prog"></div>
+  <div class="ribbon">NEXA Theme · Quanta · crypto</div>
+
+  <!-- NAV -->
+  <header id="hdr"><div class="wrap nav">
+    <div class="brand"><span class="mk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 12l9-5M12 12v10M12 12L3 7"/></svg></span>Quanta</div>
+    <nav class="nav-links"><a href="#">Protocol</a><a href="#features">Features</a><a href="#tokenomics">Token</a><a href="#roadmap">Roadmap</a><a href="#">Docs</a></nav>
+    <div class="nav-cta"><a href="#" class="btn btn-glass">Launch app</a><a href="#" class="btn btn-primary">Connect wallet</a></div>
+  </div></header>
+
+  <!-- HERO -->
+  <section class="hero"><div class="wrap">
+    <span class="eyebrow" data-hero><span class="dot"></span>Now live on 9 chains</span>
+    <h1 data-hero><span class="grad-text">Liquidity</span> without limits.</h1>
+    <p class="lede" data-hero>Swap, stake, bridge and govern across every major chain from one self-custodial protocol — secured by audited smart contracts and sub-second settlement.</p>
+    <div class="hero-actions" data-hero>
+      <a href="#" class="btn btn-primary">Launch app <span class="arrow">→</span></a>
+      <a href="#" class="btn btn-glass">Read the docs</a>
+    </div>
+    <div class="hero-meta" data-hero><span>TVL <b class="mono" data-count="4.8" data-suffix="B" data-prefix="$" data-dec="1">$0</b></span><span>Volume 24h <b class="mono" data-count="921" data-suffix="M" data-prefix="$">$0</b></span><span>Chains <b class="mono" data-count="9">0</b></span></div>
+
+    <!-- central glass console -->
+    <div class="console-wrap" id="consoleWrap">
+      <span class="coin-float c1" data-coin="22">Ξ</span>
+      <span class="coin-float c2" data-coin="-30">◎</span>
+      <span class="coin-float c3" data-coin="16">₿</span>
+      <div class="console glass" id="console">
+        <div class="console-head"><span class="t">Portfolio</span><span class="live">LIVE</span></div>
+        <div class="console-grid">
+          <div class="panel-inner">
+            <div class="bal-label">Total balance</div>
+            <div class="bal-amt mono" data-count="184920.5" data-prefix="$" data-dec="2">$0</div>
+            <div class="bal-delta">▲ +12.4% · +$20,418 / 24h</div>
+            <div class="chart"><svg viewBox="0 0 320 74" preserveAspectRatio="none" fill="none">
+              <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(35 224 200)" stop-opacity=".35"/><stop offset="1" stop-color="rgb(35 224 200)" stop-opacity="0"/></linearGradient></defs>
+              <polyline points="0,58 36,50 72,54 108,36 144,42 180,24 216,30 252,14 288,20 320,8" stroke="rgb(35 224 200)" stroke-width="2"/>
+              <polygon points="0,58 36,50 72,54 108,36 144,42 180,24 216,30 252,14 288,20 320,8 320,74 0,74" fill="url(#g)"/>
+            </svg></div>
+          </div>
+          <div class="panel-inner">
+            <div class="swap-row"><span class="coin"><span class="ico">ET</span> Ethereum</span><span class="v up" style="color:rgb(var(--accent))">+2.4%</span></div>
+            <div class="swap-row"><span class="coin"><span class="ico">SO</span> Solana</span><span class="v" style="color:rgb(var(--accent))">+5.1%</span></div>
+            <div class="swap-row"><span class="coin"><span class="ico">AR</span> Arbitrum</span><span class="v" style="color:rgb(var(--accent2))">−0.8%</span></div>
+            <button class="btn btn-primary swap-cta">Swap now <span class="arrow">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- MARKET MARQUEE -->
+  <div class="market"><div class="track" id="market"></div></div>
+
+  <!-- STATS -->
+  <section class="block"><div class="wrap">
+    <div class="stats">
+      <div class="stat glass" data-rv><div class="n mono"><span class="u">$</span><span data-count="4.8" data-dec="1">0</span><span class="u">B</span></div><div class="l">Total value locked</div></div>
+      <div class="stat glass" data-rv><div class="n mono"><span data-count="1.2" data-dec="1">0</span><span class="u">M+</span></div><div class="l">Active wallets</div></div>
+      <div class="stat glass" data-rv><div class="n mono"><span data-count="9">0</span></div><div class="l">Chains supported</div></div>
+      <div class="stat glass" data-rv><div class="n mono"><span data-count="14">0</span><span class="u">ms</span></div><div class="l">Median settlement</div></div>
+    </div>
+  </div></section>
+
+  <!-- FEATURE BENTO -->
+  <section class="block" id="features"><div class="wrap">
+    <div class="shead" data-rv><span class="eyebrow">The protocol</span><h2>One protocol. <span class="grad-text">Every primitive.</span></h2><p>Everything DeFi needs — swaps, yield, bridging and governance — unified behind one self-custodial interface.</p></div>
+    <div class="bento">
+      <div class="cell glass c-wide" data-rv data-spot>
+        <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 10l-4 4 4 4"/><path d="M3 14h13a4 4 0 0 0 4-4V6"/></svg></div>
+        <h3>Instant cross-chain swaps</h3>
+        <p>Route trades across 9 chains with MEV-protected execution and the deepest aggregated liquidity in DeFi.</p>
+        <div class="spark"><svg viewBox="0 0 400 48" preserveAspectRatio="none" fill="none"><polyline points="0,40 50,34 100,38 150,22 200,28 250,12 300,18 350,6 400,10" stroke="rgb(var(--accent))" stroke-width="2"/></svg></div>
+      </div>
+      <div class="cell glass c-third" data-rv data-spot>
+        <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2v20M5 7l7-5 7 5M5 17l7 5 7-5"/></svg></div>
+        <h3>Liquid staking</h3>
+        <p>Earn while staying liquid.</p>
+        <div class="big mono" style="margin-top:auto" data-count="7.4" data-dec="1" data-suffix="%">0%</div>
+      </div>
+      <div class="cell glass c-third" data-rv data-spot>
+        <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
+        <h3>Bridge</h3>
+        <p>Move assets between chains in one click.</p>
+        <span class="mini-ring"></span>
+      </div>
+      <div class="cell glass c-third" data-rv data-spot>
+        <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>On-chain governance</h3>
+        <p>Vote on every parameter with QNT.</p>
+      </div>
+      <div class="cell glass c-third" data-rv data-spot>
+        <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Self-custodial &amp; audited</h3>
+        <p>Your keys, your coins — audited by three firms with a live $2M bug bounty.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- PINNED HORIZONTAL TOUR -->
+  <section class="tour" id="tour">
+    <div class="pin" id="tourPin">
+      <div class="htrack" id="htrack">
+        <div class="intro">
+          <span class="eyebrow">Product tour</span>
+          <h2 style="margin-top:16px">Four moves.<br>One wallet.</h2>
+          <p>Scroll to walk through the core flow — from your first swap to earning yield and shaping the protocol.</p>
+        </div>
+        <div class="step"><span class="no">1</span><div><h3>Swap</h3><p>Best-price routing across every connected chain, with gas abstracted away.</p><div class="scr"><span class="scrtop">Swap · ETH → SOL</span><div class="barrow"><i style="height:40%"></i><i style="height:65%"></i><i style="height:50%"></i><i style="height:80%"></i><i style="height:95%"></i><i style="height:70%"></i></div></div></div></div>
+        <div class="step"><span class="no">2</span><div><h3>Stake</h3><p>Stake into liquid vaults and keep a tradeable receipt token earning 7.4% APY.</p><div class="scr"><span class="scrtop">Stake · Vault</span><div class="barrow"><i style="height:30%"></i><i style="height:48%"></i><i style="height:62%"></i><i style="height:74%"></i><i style="height:88%"></i><i style="height:100%"></i></div></div></div></div>
+        <div class="step"><span class="no">3</span><div><h3>Bridge</h3><p>Move liquidity across chains in a single signed transaction, settled in seconds.</p><div class="scr"><span class="scrtop">Bridge · Arbitrum</span><div class="barrow"><i style="height:60%"></i><i style="height:40%"></i><i style="height:72%"></i><i style="height:55%"></i><i style="height:84%"></i><i style="height:66%"></i></div></div></div></div>
+        <div class="step"><span class="no">4</span><div><h3>Govern</h3><p>Propose and vote on protocol upgrades — every QNT is one on-chain vote.</p><div class="scr"><span class="scrtop">Govern · Proposal 47</span><div class="barrow"><i style="height:90%"></i><i style="height:30%"></i><i style="height:70%"></i><i style="height:45%"></i><i style="height:60%"></i><i style="height:80%"></i></div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOKENOMICS -->
+  <section class="block" id="tokenomics"><div class="wrap">
+    <div class="shead" data-rv><span class="eyebrow">QNT token</span><h2>Owned by its <span class="grad-text">community.</span></h2><p>1 billion QNT, distributed to align the protocol with the people who use and secure it.</p></div>
+    <div class="tok">
+      <div class="donut-wrap" data-rv>
+        <svg viewBox="0 0 120 120" id="donut">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgb(var(--line))" stroke-width="14"/>
+          <circle class="seg" cx="60" cy="60" r="52" fill="none" stroke="rgb(124 92 255)" stroke-width="14" stroke-dasharray="0 999" data-frac=".40"/>
+          <circle class="seg" cx="60" cy="60" r="52" fill="none" stroke="rgb(35 224 200)" stroke-width="14" stroke-dasharray="0 999" data-frac=".25"/>
+          <circle class="seg" cx="60" cy="60" r="52" fill="none" stroke="rgb(255 92 158)" stroke-width="14" stroke-dasharray="0 999" data-frac=".20"/>
+          <circle class="seg" cx="60" cy="60" r="52" fill="none" stroke="rgb(143 150 178)" stroke-width="14" stroke-dasharray="0 999" data-frac=".15"/>
+        </svg>
+        <div class="donut-center"><div class="big mono">1B</div><div class="lbl">QNT supply</div></div>
+      </div>
+      <div class="legend">
+        <div class="row" data-rv><span class="sw" style="background:rgb(124 92 255)"></span><span class="nm">Community &amp; ecosystem</span><span class="pc">40%</span></div>
+        <div class="row" data-rv><span class="sw" style="background:rgb(35 224 200)"></span><span class="nm">Staking rewards</span><span class="pc">25%</span></div>
+        <div class="row" data-rv><span class="sw" style="background:rgb(255 92 158)"></span><span class="nm">Core contributors</span><span class="pc">20%</span></div>
+        <div class="row" data-rv><span class="sw" style="background:rgb(143 150 178)"></span><span class="nm">Treasury</span><span class="pc">15%</span></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- SECURITY -->
+  <section class="block" style="padding-top:0"><div class="wrap">
+    <div class="shead" data-rv><span class="eyebrow">Security first</span><h2>Audited, insured, battle-tested.</h2></div>
+    <div class="secrow">
+      <div class="badge glass" data-rv><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Halborn</div>
+      <div class="badge glass" data-rv><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Spearbit</div>
+      <div class="badge glass" data-rv><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Trail of Bits</div>
+      <div class="badge glass" data-rv><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg> $2M bug bounty</div>
+    </div>
+  </div></section>
+
+  <!-- ROADMAP -->
+  <section class="block" id="roadmap" style="padding-top:0"><div class="wrap" style="max-width:840px">
+    <div class="shead" data-rv><span class="eyebrow">Roadmap</span><h2>The road ahead.</h2></div>
+    <div class="road">
+      <div class="phase" data-rv><div class="q">Q1 2026 · Shipped</div><h3>Mainnet &amp; multi-chain swaps</h3><p>Launched on 9 chains with aggregated liquidity routing and gas abstraction.</p></div>
+      <div class="phase" data-rv><div class="q">Q2 2026 · In progress</div><h3>Liquid staking vaults</h3><p>Tradeable staking receipts and auto-compounding yield strategies.</p></div>
+      <div class="phase" data-rv><div class="q">Q3 2026</div><h3>Intent-based bridging</h3><p>Solver network for the cheapest, fastest cross-chain settlement.</p></div>
+      <div class="phase" data-rv><div class="q">Q4 2026</div><h3>Full on-chain governance</h3><p>Hand the treasury and protocol parameters to QNT holders.</p></div>
+    </div>
+  </div></section>
+
+  <!-- ECOSYSTEM -->
+  <section class="block" style="padding-top:0"><div class="wrap">
+    <div class="shead" data-rv><span class="eyebrow">Ecosystem</span><h2>Built with the best.</h2></div>
+    <div class="eco">
+      <div class="e glass" data-rv>Nebula</div><div class="e glass" data-rv>Vaultis</div><div class="e glass" data-rv>Chainmesh</div>
+      <div class="e glass" data-rv>Orbital</div><div class="e glass" data-rv>Helix</div><div class="e glass" data-rv>Zenith</div>
+      <div class="e glass" data-rv>Pulsar</div><div class="e glass" data-rv>Cipher</div><div class="e glass" data-rv>Lumen</div>
+      <div class="e glass" data-rv>Quark</div><div class="e glass" data-rv>Aether</div><div class="e glass" data-rv>Nova</div>
+    </div>
+  </div></section>
+
+  <!-- FAQ -->
+  <section class="block" style="padding-top:0"><div class="wrap">
+    <div class="shead" data-rv><span class="eyebrow">FAQ</span><h2>Questions, answered.</h2></div>
+    <div class="faq">
+      <div class="qa" data-rv><button>Is Quanta self-custodial? <span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Yes. You always hold your own keys — Quanta never takes custody of your assets. Every action is a transaction you sign from your own wallet.</p></div></div>
+      <div class="qa" data-rv><button>Which chains are supported? <span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Quanta is live on 9 chains including Ethereum, Solana, Arbitrum, Base and Optimism, with more added through governance.</p></div></div>
+      <div class="qa" data-rv><button>How is the protocol secured? <span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Contracts are audited by Halborn, Spearbit and Trail of Bits, with a permanent $2M bug bounty and time-locked upgrades.</p></div></div>
+    </div>
+  </div></section>
+
+  <!-- CTA -->
+  <section class="block" style="padding-top:0"><div class="wrap">
+    <div class="cta-box glass" data-rv><div class="glow"></div>
+      <span class="eyebrow" style="position:relative">Get started</span>
+      <h2 style="margin-top:18px">Your gateway to <span class="grad-text">on-chain.</span></h2>
+      <p>Connect a wallet and make your first swap in under a minute. No sign-up, no custody, no limits.</p>
+      <div class="acts"><a href="#" class="btn btn-primary">Launch app <span class="arrow">→</span></a><a href="#" class="btn btn-glass">Read docs</a></div>
+    </div>
+  </div></section>
+
+  <!-- FOOTER -->
+  <footer><div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="brand"><span class="mk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg></span>Quanta</div>
+        <p class="blurb">A self-custodial protocol for swaps, staking, bridging and governance across every major chain.</p>
+      </div>
+      <div><h4>Protocol</h4><a href="#">Swap</a><a href="#">Stake</a><a href="#">Bridge</a><a href="#">Govern</a></div>
+      <div><h4>Developers</h4><a href="#">Docs</a><a href="#">SDK</a><a href="#">Audits</a><a href="#">Bug bounty</a></div>
+      <div><h4>Community</h4><a href="#">Discord</a><a href="#">X / Twitter</a><a href="#">Governance</a><a href="#">Blog</a></div>
+    </div>
+    <div class="legal"><span>© 2026 Quanta Protocol · Non-custodial</span><span>Built with NEXA Web Studio</span></div>
+  </div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  // ----- market ticker data -----
+  var coins=[["BTC","$71,204","+2.1%","up"],["ETH","$3,902","+1.4%","up"],["SOL","$214.5","+5.1%","up"],["QNT","$4.82","+8.3%","up"],["ARB","$1.12","-0.8%","dn"],["OP","$2.44","+0.6%","up"],["AVAX","$38.1","+1.9%","up"],["MATIC","$0.74","-1.2%","dn"]];
+  var mk=document.getElementById('market'), html='';
+  function row(c){return '<span class="it"><span class="ic">'+c[0][0]+'</span><span class="sym">'+c[0]+'</span><span class="px">'+c[1]+'</span><span class="'+c[3]+'">'+c[2]+'</span></span>';}
+  coins.concat(coins).forEach(function(c){html+=row(c);}); mk.innerHTML=html;
+
+  // ----- sticky nav + progress -----
+  var hdr=document.getElementById('hdr'), prog=document.getElementById('prog');
+  function onScroll(){hdr.classList.toggle('stuck',scrollY>30);var h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';}
+  onScroll(); addEventListener('scroll',onScroll,{passive:true});
+
+  // ----- count-up (used by GSAP + fallback) -----
+  function runCount(el){
+    var target=parseFloat(el.dataset.count),dec=parseInt(el.dataset.dec||'0',10),pre=el.dataset.prefix||'',suf=el.dataset.suffix||'',t0=performance.now();
+    (function tick(now){var p=Math.min((now-t0)/1500,1),v=target*(1-Math.pow(1-p,3));
+      el.textContent=pre+(dec?v.toFixed(dec):Math.round(v).toLocaleString())+suf; if(p<1)requestAnimationFrame(tick);})(t0);
+  }
+
+  // ----- FAQ accordion -----
+  document.querySelectorAll('.qa button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var qa=b.parentElement,ans=qa.querySelector('.ans'),open=qa.classList.contains('open');
+      document.querySelectorAll('.qa').forEach(function(o){o.classList.remove('open');o.querySelector('.ans').style.maxHeight=null;});
+      if(!open){qa.classList.add('open');ans.style.maxHeight=ans.scrollHeight+'px';}
+    });
+  });
+
+  var hasGSAP=!!window.gsap, reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  // donut helper
+  function drawDonut(animate){
+    var C=2*Math.PI*52, off=0;
+    document.querySelectorAll('#donut .seg').forEach(function(seg,i){
+      var frac=parseFloat(seg.dataset.frac), len=frac*C, gap=C-len;
+      seg.setAttribute('transform','rotate('+(off/C*360)+' 60 60)');
+      if(animate&&hasGSAP&&!reduce){gsap.fromTo(seg,{strokeDasharray:'0 '+C},{strokeDasharray:len+' '+gap,duration:1.1,delay:i*0.12,ease:'power2.out'});}
+      else{seg.setAttribute('stroke-dasharray',len+' '+gap);}
+      off+=len;
+    });
+  }
+
+  if(!hasGSAP || reduce){
+    // graceful fallback: show everything, lay out the tour normally, run counts
+    document.getElementById('tour').classList.add('static');
+    document.querySelectorAll('[data-count]').forEach(runCount);
+    drawDonut(false);
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ----- hero entrance timeline -----
+  var tl=gsap.timeline({defaults:{ease:'power3.out'}});
+  tl.from('[data-hero]',{autoAlpha:0,y:26,duration:.8,stagger:.1})
+    .from('#console',{autoAlpha:0,y:50,scale:.96,duration:.9},'-=.4')
+    .from('.coin-float',{autoAlpha:0,scale:.4,duration:.7,stagger:.12,ease:'back.out(1.7)'},'-=.5');
+
+  // hero counts on load
+  document.querySelectorAll('.hero [data-count]').forEach(runCount);
+
+  // ----- aurora drift -----
+  gsap.to('.a1',{x:80,y:60,duration:18,repeat:-1,yoyo:true,ease:'sine.inOut'});
+  gsap.to('.a2',{x:-90,y:40,duration:22,repeat:-1,yoyo:true,ease:'sine.inOut'});
+  gsap.to('.a3',{x:60,y:-50,duration:26,repeat:-1,yoyo:true,ease:'sine.inOut'});
+
+  // ----- pointer + scroll parallax on hero console/coins -----
+  var cw=document.getElementById('consoleWrap');
+  if(matchMedia('(pointer:fine)').matches){
+    cw.addEventListener('pointermove',function(e){
+      var r=cw.getBoundingClientRect(),dx=(e.clientX-r.left)/r.width-.5,dy=(e.clientY-r.top)/r.height-.5;
+      gsap.to('#console',{rotationY:dx*6,rotationX:-dy*6,transformPerspective:1400,duration:.6,ease:'power2.out'});
+      document.querySelectorAll('.coin-float').forEach(function(c,i){gsap.to(c,{x:dx*(20+i*12),y:dy*(20+i*12),duration:.6,ease:'power2.out'});});
+    });
+    cw.addEventListener('pointerleave',function(){gsap.to('#console',{rotationY:0,rotationX:0,duration:.8});gsap.to('.coin-float',{x:0,y:0,duration:.8});});
+  }
+  gsap.to('.coin-float',{y:'-=14',duration:3,repeat:-1,yoyo:true,ease:'sine.inOut',stagger:.4});
+
+  // ----- batch reveals -----
+  gsap.set('[data-rv]',{autoAlpha:0,y:30});
+  ScrollTrigger.batch('[data-rv]',{start:'top 86%',onEnter:function(els){gsap.to(els,{autoAlpha:1,y:0,duration:.7,stagger:.08,ease:'power2.out',overwrite:true});}});
+
+  // ----- count-ups on scroll (non-hero) -----
+  document.querySelectorAll('[data-count]').forEach(function(el){
+    if(el.closest('.hero'))return;
+    ScrollTrigger.create({trigger:el,start:'top 88%',once:true,onEnter:function(){runCount(el);}});
+  });
+
+  // ----- donut on view -----
+  ScrollTrigger.create({trigger:'#donut',start:'top 80%',once:true,onEnter:function(){drawDonut(true);}});
+
+  // ----- pinned horizontal product tour -----
+  var track=document.getElementById('htrack'), tourPin=document.getElementById('tourPin');
+  function tourEnd(){return '+='+(track.scrollWidth-window.innerWidth+ window.innerWidth*0.1);}
+  gsap.to(track,{
+    x:function(){return -(track.scrollWidth-window.innerWidth)-window.innerWidth*0.05;},
+    ease:'none',
+    scrollTrigger:{trigger:'#tour',start:'top top',end:tourEnd,pin:tourPin,scrub:1,invalidateOnRefresh:true,anticipatePin:1}
+  });
+
+  // refresh after fonts load
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){ScrollTrigger.refresh();});}
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>

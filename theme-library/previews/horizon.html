@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Horizon — Travel &amp; Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
+<style>
+/* ============ TOKENS — mirror theme.json 1:1 ============ */
+:root{
+  /* color (rgb triples) */
+  --bg: 253 246 236;
+  --surface: 255 255 255;
+  --ink: 10 61 77;
+  --muted: 92 116 124;
+  --line: 226 214 198;
+  --primary: 255 138 61;
+  --onPrimary: 26 17 8;
+  --accent: 15 182 196;
+  --accent2: 10 61 77;
+
+  /* type */
+  --display: 'Cabinet Grotesk', 'General Sans', ui-sans-serif, system-ui, sans-serif;
+  --body: 'General Sans', ui-sans-serif, system-ui, sans-serif;
+  --scaleRatio: 1.28;
+  --w-display: 700;
+  --w-displayBold: 800;
+  --w-body: 400;
+  --w-label: 600;
+  --w-bold: 600;
+  --displayTracking: -0.02em;
+
+  /* space */
+  --base: 8px;
+  --section: clamp(80px, 10vw, 150px);
+  --gutter: clamp(20px, 5vw, 64px);
+
+  /* radius */
+  --r-card: 20px;
+  --r-button: 999px;
+  --r-input: 999px;
+  --r-pill: 999px;
+
+  /* shadow */
+  --sh-card: 0 26px 54px -30px rgb(10 61 77 / 0.40);
+  --sh-elevated: 0 48px 90px -40px rgb(10 61 77 / 0.50);
+
+  /* motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 640ms;
+
+  /* imagery */
+  --img-filter: saturate(1.08) contrast(1.04);
+
+  /* type scale (1.28) */
+  --t-xs: 0.78rem;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-md: 1.28rem;
+  --t-lg: 1.64rem;
+  --t-xl: 2.1rem;
+  --t-2xl: 2.69rem;
+  --t-3xl: 3.44rem;
+  --t-4xl: clamp(2.6rem, 6vw, 4.6rem);
+  --t-5xl: clamp(3.2rem, 8.5vw, 6.4rem);
+
+  --maxw: 1280px;
+
+  /* grid system — single source of gap rhythm */
+  --grid-gap: 24px;
+}
+
+/* ============ RESET / BASE ============ */
+*{ box-sizing: border-box; margin: 0; padding: 0; }
+html{ scroll-behavior: smooth; }
+body{
+  font-family: var(--body);
+  font-weight: var(--w-body);
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+h1,h2,h3,h4{ font-family: var(--display); font-weight: var(--w-displayBold); letter-spacing: var(--displayTracking); line-height: 1.04; }
+img{ display: block; max-width: 100%; }
+a{ color: inherit; text-decoration: none; }
+button{ font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input{ font-family: inherit; }
+
+:focus-visible{ outline: 3px solid rgb(var(--accent)); outline-offset: 3px; border-radius: 6px; }
+
+.wrap{ width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+.section{ padding-block: var(--section); }
+
+.eyebrow{
+  font-family: var(--body);
+  font-weight: var(--w-label);
+  font-size: var(--t-xs);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(var(--accent));
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.eyebrow::before{ content: ""; width: 28px; height: 2px; background: rgb(var(--accent)); display: inline-block; border-radius: 2px; }
+.eyebrow.on-dark{ color: rgb(var(--primary)); }
+.eyebrow.on-dark::before{ background: rgb(var(--primary)); }
+
+.head h2{ font-size: var(--t-3xl); max-width: 18ch; }
+.head p{ color: rgb(var(--muted)); font-size: var(--t-md); max-width: 52ch; margin-top: 16px; }
+.head{ margin-bottom: 56px; }
+
+/* ============ BUTTONS (recipe: solid-pill) ============ */
+.btn{
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  font-family: var(--body); font-weight: var(--w-label);
+  font-size: var(--t-sm); letter-spacing: 0.01em;
+  padding: 15px 28px; border-radius: var(--r-button);
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), color var(--dur) var(--ease);
+  will-change: transform;
+}
+.btn svg{ width: 16px; height: 16px; }
+.btn-primary{ background: rgb(var(--primary)); color: rgb(var(--onPrimary)); }
+.btn-primary:hover{ transform: translateY(-3px); box-shadow: 0 18px 34px -14px rgb(var(--primary) / 0.7); }
+.btn-accent{ background: rgb(var(--accent)); color: #fff; }
+.btn-accent:hover{ transform: translateY(-3px); box-shadow: 0 18px 34px -14px rgb(var(--accent) / 0.6); }
+.btn-ghost{ background: transparent; color: rgb(var(--ink)); border: 1.5px solid rgb(var(--line)); }
+.btn-ghost:hover{ border-color: rgb(var(--ink)); transform: translateY(-3px); }
+.btn-glass{ background: rgb(255 255 255 / 0.16); color: #fff; border: 1.5px solid rgb(255 255 255 / 0.4); backdrop-filter: blur(8px); }
+.btn-glass:hover{ background: rgb(255 255 255 / 0.28); transform: translateY(-3px); }
+
+/* ============ NAV (recipe: transparent-overlay) ============ */
+.nav{
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), padding var(--dur) var(--ease);
+  padding-block: 22px;
+}
+.nav .wrap{ display: flex; align-items: center; gap: 32px; }
+.logo{ font-family: var(--display); font-weight: var(--w-displayBold); font-size: 1.5rem; letter-spacing: -0.03em; color: #fff; display: inline-flex; align-items: center; gap: 9px; transition: color var(--dur) var(--ease); }
+.logo svg{ width: 26px; height: 26px; }
+.nav-links{ display: flex; gap: 30px; margin-left: 8px; }
+.nav-links a{ color: #fff; font-weight: var(--w-label); font-size: var(--t-sm); opacity: 0.92; position: relative; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+.nav-links a::after{ content: ""; position: absolute; left: 0; bottom: -6px; width: 0; height: 2px; background: rgb(var(--primary)); transition: width var(--dur) var(--ease); }
+.nav-links a:hover{ opacity: 1; }
+.nav-links a:hover::after{ width: 100%; }
+.nav-actions{ margin-left: auto; display: flex; align-items: center; gap: 18px; }
+.nav-signin{ color: #fff; font-weight: var(--w-label); font-size: var(--t-sm); transition: color var(--dur) var(--ease); }
+.nav.scrolled{ background: rgb(var(--surface) / 0.96); backdrop-filter: blur(14px); box-shadow: 0 8px 30px -18px rgb(var(--ink) / 0.4); padding-block: 14px; }
+.nav.scrolled .logo,
+.nav.scrolled .nav-links a,
+.nav.scrolled .nav-signin{ color: rgb(var(--ink)); }
+.nav.scrolled .nav-links a{ opacity: 0.78; }
+.nav.scrolled .btn-glass{ background: rgb(var(--primary)); color: rgb(var(--onPrimary)); border-color: transparent; }
+.nav.scrolled .btn-glass:hover{ box-shadow: 0 16px 30px -14px rgb(var(--primary) / 0.6); }
+.nav-toggle{ display: none; flex-direction: column; gap: 5px; margin-left: auto; padding: 8px; }
+.nav-toggle span{ width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease), background var(--dur) var(--ease); }
+.nav.scrolled .nav-toggle span{ background: rgb(var(--ink)); }
+
+/* ============ HERO (recipe: fullbleed-search-bar) ============ */
+.hero{ position: relative; min-height: 100vh; display: flex; align-items: flex-end; overflow: hidden; }
+.hero-bg{ position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.hero-bg img{ width: 100%; height: 120%; object-fit: cover; filter: var(--img-filter); transform: scale(1.12); will-change: transform; }
+/* CSS ken-burns is the fallback when GSAP is absent; GSAP removes this class to take over */
+.kenburns{ animation: kenburns 22s ease-in-out infinite alternate; }
+@keyframes kenburns{ from{ transform: scale(1.08) translate(0,0); } to{ transform: scale(1.2) translate(-2%, -3%); } }
+.hero-bg::after{ content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(var(--ink) / 0.42) 0%, rgb(var(--ink) / 0.18) 38%, rgb(var(--ink) / 0.72) 100%); z-index: 1; }
+.hero-inner{ position: relative; z-index: 2; width: 100%; padding-bottom: clamp(40px, 6vw, 80px); padding-top: 140px; }
+.hero-badge{
+  display: inline-flex; align-items: center; gap: 9px; color: #fff;
+  background: rgb(255 255 255 / 0.14); border: 1px solid rgb(255 255 255 / 0.35);
+  backdrop-filter: blur(8px); padding: 8px 16px; border-radius: var(--r-pill);
+  font-size: var(--t-xs); font-weight: var(--w-label); letter-spacing: 0.1em; text-transform: uppercase;
+}
+.hero-badge .pin{ width: 14px; height: 14px; color: rgb(var(--primary)); }
+.hero h1{ color: #fff; font-size: var(--t-5xl); max-width: 16ch; margin-top: 24px; text-shadow: 0 4px 40px rgb(var(--ink) / 0.4); }
+.hero h1 .hl{ color: rgb(var(--primary)); }
+.hero-sub{ color: rgb(255 255 255 / 0.92); font-size: var(--t-md); max-width: 50ch; margin-top: 20px; }
+
+/* search / booking bar */
+.searchbar{
+  margin-top: 40px; background: rgb(var(--surface) / 0.96); backdrop-filter: blur(14px);
+  border-radius: var(--r-card); box-shadow: var(--sh-elevated);
+  padding: 14px; display: grid; grid-template-columns: 1.3fr 1px 1fr 1px 1fr auto; gap: 6px; align-items: stretch;
+  max-width: 940px;
+}
+.search-field{ display: flex; flex-direction: column; gap: 4px; padding: 12px 18px; border-radius: 16px; transition: background var(--dur) var(--ease); }
+.search-field:hover{ background: rgb(var(--bg)); }
+.search-field label{ font-size: var(--t-xs); font-weight: var(--w-label); letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--muted)); display: flex; align-items: center; gap: 7px; }
+.search-field label svg{ width: 14px; height: 14px; color: rgb(var(--accent)); }
+.search-field input{ border: none; background: transparent; font-size: var(--t-base); font-weight: var(--w-label); color: rgb(var(--ink)); width: 100%; padding: 2px 0; }
+.search-field input::placeholder{ color: rgb(var(--ink) / 0.45); font-weight: 400; }
+.search-field input:focus{ outline: none; }
+.search-divider{ width: 1px; background: rgb(var(--line)); align-self: center; height: 56%; }
+.search-submit{ align-self: stretch; }
+.search-submit .btn{ height: 100%; width: 100%; padding-inline: 30px; }
+
+/* ============ TRENDING DESTINATIONS (recipe: image-card-grid) ============ */
+.dest-top{ display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 52px; }
+.dest-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--grid-gap); }
+.dest-card{ position: relative; border-radius: var(--r-card); overflow: hidden; box-shadow: var(--sh-card); aspect-ratio: 4 / 5; isolation: isolate; }
+.dest-card img{ width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); transition: transform 900ms var(--ease); }
+.dest-card:hover img{ transform: scale(1.09); }
+.dest-card::after{ content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(var(--ink) / 0) 38%, rgb(var(--ink) / 0.82) 100%); z-index: 1; }
+.dest-rating{ position: absolute; top: 14px; right: 14px; z-index: 2; background: rgb(var(--surface) / 0.95); color: rgb(var(--ink)); font-weight: var(--w-bold); font-size: var(--t-xs); padding: 6px 11px; border-radius: var(--r-pill); display: flex; align-items: center; gap: 5px; }
+.dest-rating svg{ width: 13px; height: 13px; color: rgb(var(--primary)); }
+.dest-info{ position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 20px; color: #fff; }
+.dest-country{ font-size: var(--t-xs); letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.85; display: flex; align-items: center; gap: 6px; }
+.dest-country svg{ width: 12px; height: 12px; color: rgb(var(--primary)); }
+.dest-name{ font-family: var(--display); font-weight: var(--w-displayBold); font-size: var(--t-lg); margin-top: 5px; }
+.dest-price{ margin-top: 8px; font-size: var(--t-sm); }
+.dest-price b{ color: rgb(var(--primary)); font-weight: var(--w-bold); }
+
+/* ============ EXPERIENCES (recipe: category-image-row) ============ */
+.exp{ background: rgb(var(--accent2)); color: #fff; }
+.exp .head h2{ color: #fff; }
+.exp .head p{ color: rgb(255 255 255 / 0.78); }
+.exp-row{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+.exp-card{ position: relative; border-radius: var(--r-card); overflow: hidden; aspect-ratio: 3 / 4; isolation: isolate; }
+.exp-card img{ width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); transition: transform 900ms var(--ease); }
+.exp-card:hover img{ transform: scale(1.1); }
+.exp-card::after{ content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(var(--ink) / 0.1) 30%, rgb(var(--ink) / 0.8) 100%); z-index: 1; }
+.exp-label{ position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 18px; }
+.exp-label h3{ font-size: var(--t-md); color: #fff; }
+.exp-label span{ font-size: var(--t-xs); color: rgb(255 255 255 / 0.78); }
+
+/* ============ ITINERARY (recipe: stepped-photo-journey) ============ */
+.itin-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; }
+.itin-photo{ position: relative; border-radius: var(--r-card); overflow: hidden; box-shadow: var(--sh-elevated); aspect-ratio: 4 / 5; }
+.itin-photo img{ width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); }
+.itin-tag{ position: absolute; left: 18px; bottom: 18px; background: rgb(var(--primary)); color: rgb(var(--onPrimary)); font-weight: var(--w-bold); font-size: var(--t-sm); padding: 10px 18px; border-radius: var(--r-pill); }
+.itin h2{ font-size: var(--t-3xl); max-width: 14ch; }
+.itin .lead{ color: rgb(var(--muted)); font-size: var(--t-md); margin: 16px 0 32px; max-width: 46ch; }
+.steps{ display: flex; flex-direction: column; gap: 4px; }
+.step{ display: flex; gap: 20px; padding: 18px 0; border-bottom: 1px solid rgb(var(--line)); }
+.step:last-child{ border-bottom: none; }
+.step-day{ flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%; background: rgb(var(--accent) / 0.12); color: rgb(var(--accent)); display: grid; place-items: center; font-family: var(--display); font-weight: var(--w-displayBold); font-size: var(--t-base); }
+.step h4{ font-size: var(--t-md); }
+.step p{ color: rgb(var(--muted)); font-size: var(--t-sm); margin-top: 4px; }
+
+/* ============ TRUST (recipe: compact-three-point) ============ */
+.trust{ background: rgb(var(--surface)); }
+.trust-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.trust-item{ display: flex; flex-direction: column; gap: 12px; }
+.trust-ico{ width: 52px; height: 52px; border-radius: 16px; background: rgb(var(--primary) / 0.12); color: rgb(var(--primary)); display: grid; place-items: center; }
+.trust-ico svg{ width: 24px; height: 24px; }
+.trust-item h3{ font-size: var(--t-md); }
+.trust-item p{ color: rgb(var(--muted)); font-size: var(--t-sm); }
+
+/* ============ STATS (recipe: count-up-band) ============ */
+.stats{ background: rgb(var(--accent)); color: #fff; }
+.stats-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; }
+.stat-num{ font-family: var(--display); font-weight: var(--w-displayBold); font-size: var(--t-4xl); line-height: 1; }
+.stat-num .suf{ color: rgb(var(--onPrimary)); }
+.stat-label{ margin-top: 10px; font-size: var(--t-sm); letter-spacing: 0.05em; opacity: 0.92; }
+
+/* ============ GALLERY (recipe: wanderlust-mosaic) ============ */
+/* 4 cols × 4 rows fixed grid. Every cell explicitly placed — no auto-flow holes. */
+.mosaic{ display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 200px); gap: 16px; }
+.mosaic figure{ position: relative; border-radius: var(--r-card); overflow: hidden; }
+.mosaic img{ width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); transition: transform 900ms var(--ease); }
+.mosaic figure:hover img{ transform: scale(1.08); }
+.mosaic figcaption{ position: absolute; left: 14px; bottom: 12px; color: #fff; font-weight: var(--w-label); font-size: var(--t-sm); text-shadow: 0 2px 12px rgb(var(--ink) / 0.6); display: flex; align-items: center; gap: 6px; z-index: 2; }
+.mosaic figcaption svg{ width: 13px; height: 13px; color: rgb(var(--primary)); }
+.mosaic figure::after{ content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgb(var(--ink) / 0.5) 100%); }
+/* explicit placement: fills a 4×4 grid exactly (16 cells, 0 holes) */
+.mosaic .m1{ grid-column: 1; grid-row: 1 / span 2; }      /* col1 r1-2 (2 cells) */
+.mosaic .m2{ grid-column: 2 / span 2; grid-row: 1; }      /* col2-3 r1 (2 cells) */
+.mosaic .m3{ grid-column: 4; grid-row: 1 / span 2; }      /* col4 r1-2 (2 cells) */
+.mosaic .m4{ grid-column: 2; grid-row: 2; }               /* col2 r2 (1 cell) */
+.mosaic .m5{ grid-column: 3; grid-row: 2; }               /* col3 r2 (1 cell) */
+.mosaic .m6{ grid-column: 1 / span 2; grid-row: 3; }      /* col1-2 r3 (2 cells) */
+.mosaic .m7{ grid-column: 3 / span 2; grid-row: 3 / span 2; } /* col3-4 r3-4 (4 cells) */
+.mosaic .m8{ grid-column: 1 / span 2; grid-row: 4; }      /* col1-2 r4 (2 cells) */
+
+/* ============ REVIEWS (recipe: traveler-photo-cards) ============ */
+.rev-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--grid-gap); }
+.rev-card{ background: rgb(var(--surface)); border: 1px solid rgb(var(--line)); border-radius: var(--r-card); padding: 28px; box-shadow: var(--sh-card); display: flex; flex-direction: column; gap: 18px; }
+.rev-stars{ display: flex; gap: 3px; color: rgb(var(--primary)); }
+.rev-stars svg{ width: 16px; height: 16px; }
+.rev-card blockquote{ font-size: var(--t-md); line-height: 1.45; color: rgb(var(--ink)); }
+.rev-author{ display: flex; align-items: center; gap: 13px; margin-top: auto; }
+.rev-author img{ width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.rev-author .nm{ font-weight: var(--w-bold); }
+.rev-author .tp{ font-size: var(--t-xs); color: rgb(var(--accent)); font-weight: var(--w-label); letter-spacing: 0.04em; }
+
+/* ============ CTA (recipe: image-band-adventure) ============ */
+.cta-band{ position: relative; border-radius: 28px; overflow: hidden; box-shadow: var(--sh-elevated); }
+.cta-band img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); z-index: 0; }
+.cta-band::after{ content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, rgb(var(--ink) / 0.78) 20%, rgb(var(--ink) / 0.3) 100%); z-index: 1; }
+.cta-inner{ position: relative; z-index: 2; padding: clamp(48px, 7vw, 96px); max-width: 640px; }
+.cta-inner .eyebrow{ color: rgb(var(--primary)); }
+.cta-inner .eyebrow::before{ background: rgb(var(--primary)); }
+.cta-inner h2{ color: #fff; font-size: var(--t-4xl); margin-top: 16px; }
+.cta-inner p{ color: rgb(255 255 255 / 0.9); font-size: var(--t-md); margin: 18px 0 32px; max-width: 44ch; }
+.cta-actions{ display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* ============ FOOTER (recipe: multi-column-newsletter) ============ */
+.footer{ background: rgb(var(--accent2)); color: rgb(255 255 255 / 0.78); padding-top: clamp(64px, 8vw, 110px); }
+.footer-top{ display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 56px; border-bottom: 1px solid rgb(255 255 255 / 0.14); }
+.footer .logo{ color: #fff; }
+.footer-brand p{ margin-top: 16px; max-width: 34ch; font-size: var(--t-sm); }
+.news{ margin-top: 24px; }
+.news label{ display: block; color: #fff; font-weight: var(--w-label); font-size: var(--t-sm); margin-bottom: 10px; }
+.news-form{ display: flex; gap: 8px; max-width: 360px; }
+.news-form input{ flex: 1; padding: 13px 18px; border-radius: var(--r-input); border: 1px solid rgb(255 255 255 / 0.22); background: rgb(255 255 255 / 0.08); color: #fff; font-size: var(--t-sm); }
+.news-form input::placeholder{ color: rgb(255 255 255 / 0.5); }
+.news-form input:focus{ outline: none; border-color: rgb(var(--primary)); }
+.footer-col h4{ font-family: var(--display); color: #fff; font-size: var(--t-base); margin-bottom: 16px; letter-spacing: 0; }
+.footer-col a{ display: block; padding: 6px 0; font-size: var(--t-sm); transition: color var(--dur) var(--ease); }
+.footer-col a:hover{ color: rgb(var(--primary)); }
+.footer-bottom{ display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; padding-block: 28px; font-size: var(--t-xs); }
+.footer-bottom .legal{ display: flex; gap: 22px; flex-wrap: wrap; }
+
+/* ============ RIBBON ============ */
+.ribbon{
+  position: fixed; right: 16px; bottom: 16px; z-index: 200;
+  background: rgb(var(--ink)); color: #fff;
+  font-family: var(--body); font-weight: var(--w-label); font-size: 12px; letter-spacing: 0.02em;
+  padding: 9px 15px; border-radius: var(--r-pill); box-shadow: var(--sh-card);
+  display: flex; align-items: center; gap: 9px;
+}
+.ribbon .dot{ width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--primary)); box-shadow: 0 0 0 4px rgb(var(--primary) / 0.25); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1080px){
+  .dest-grid{ grid-template-columns: repeat(2, 1fr); }      /* 4 cards = 2 rows of 2 */
+  .exp-row{ grid-template-columns: repeat(5, 1fr); }
+  .trust-grid, .stats-grid{ grid-template-columns: repeat(2, 1fr); }
+  .rev-grid{ grid-template-columns: 1fr; }
+  .footer-top{ grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 860px){
+  .nav-links, .nav-signin{ display: none; }
+  .nav-toggle{ display: flex; }
+  .nav.open .nav-links{ display: flex; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 4px; background: rgb(var(--surface)); padding: 18px var(--gutter); box-shadow: var(--sh-card); }
+  .nav.open .nav-links a{ color: rgb(var(--ink)); padding: 10px 0; }
+  .searchbar{ grid-template-columns: 1fr; }
+  .search-divider{ display: none; }
+  .itin-grid{ grid-template-columns: 1fr; }
+  .itin-photo{ order: -1; }
+  /* mosaic → simple 2-col stack, all spans reset to single cells (8 items = 4 rows of 2) */
+  .mosaic{ grid-template-columns: repeat(2, 1fr); grid-template-rows: none; grid-auto-rows: 170px; }
+  .mosaic figure{ grid-column: auto !important; grid-row: auto !important; }
+}
+@media (max-width: 600px){
+  .exp-row{ grid-template-columns: repeat(2, 1fr); }        /* 5 cards: handled below */
+}
+@media (max-width: 540px){
+  .dest-grid{ grid-template-columns: 1fr; }
+  .exp-row{ grid-template-columns: 1fr; }
+  .trust-grid, .stats-grid{ grid-template-columns: 1fr; }
+  .mosaic{ grid-template-columns: 1fr; }
+}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation: none !important; transition: none !important; }
+  .kenburns{ transform: scale(1.04) !important; }
+  .hero-bg img{ height: 100%; }
+  html{ scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#" class="logo" aria-label="Horizon home">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 3c-4 3.5-4 14.5 0 18M12 3c4 3.5 4 14.5 0 18M3.5 9h17M3.5 15h17" stroke="currentColor" stroke-width="1.6"/></svg>
+      Horizon
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#destinations">Destinations</a>
+      <a href="#experiences">Experiences</a>
+      <a href="#itinerary">Itineraries</a>
+      <a href="#deals">Deals</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#" class="nav-signin">Sign in</a>
+      <a href="#hero-search" class="btn btn-glass">Plan a trip</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-bg">
+    <img class="kenburns" id="heroImg" src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=2000&q=80&auto=format&fit=crop" alt="Aerial view of a winding coastal road beside turquoise ocean at golden hour" />
+  </div>
+  <div class="hero-inner wrap">
+    <span class="hero-badge" data-hero><svg class="pin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="2"/></svg>120+ destinations worldwide</span>
+    <h1 data-hero>Find your next <span class="hl">horizon</span> and wander further.</h1>
+    <p class="hero-sub" data-hero>Handpicked journeys, real-time booking, and local experiences that turn any trip into the story you'll be telling for years.</p>
+
+    <form class="searchbar" id="hero-search" role="search" aria-label="Search trips" data-hero>
+      <div class="search-field">
+        <label for="f-dest"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.2" stroke="currentColor" stroke-width="2"/></svg>Destination</label>
+        <input id="f-dest" type="text" placeholder="Where to? e.g. Santorini" aria-label="Destination" />
+      </div>
+      <span class="search-divider" aria-hidden="true"></span>
+      <div class="search-field">
+        <label for="f-dates"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2"/></svg>Dates</label>
+        <input id="f-dates" type="text" placeholder="Add when" aria-label="Travel dates" />
+      </div>
+      <span class="search-divider" aria-hidden="true"></span>
+      <div class="search-field">
+        <label for="f-trav"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 6.2a3 3 0 0 1 0 5.6M20.5 20a5 5 0 0 0-4-4.9" stroke="currentColor" stroke-width="2"/></svg>Travelers</label>
+        <input id="f-trav" type="text" placeholder="2 adults" aria-label="Number of travelers" />
+      </div>
+      <div class="search-submit">
+        <button type="submit" class="btn btn-primary" aria-label="Search trips">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Search
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ TRENDING DESTINATIONS ============ -->
+<section class="section" id="destinations">
+  <div class="wrap">
+    <div class="dest-top">
+      <div class="head" style="margin-bottom:0">
+        <span class="eyebrow">Trending now</span>
+        <h2 style="margin-top:14px">Destinations travelers love this season</h2>
+      </div>
+      <a href="#" class="btn btn-ghost">View all 120 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="dest-grid">
+      <article class="dest-card" data-reveal data-batch="dest">
+        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80&auto=format&fit=crop" alt="Calm mountain lake reflecting forested peaks under a clear sky" />
+        <span class="dest-rating"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>4.9</span>
+        <div class="dest-info">
+          <span class="dest-country"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Switzerland</span>
+          <h3 class="dest-name">Lake Lucerne</h3>
+          <p class="dest-price">7 nights from <b>$1,240</b></p>
+        </div>
+      </article>
+      <article class="dest-card" data-reveal data-batch="dest">
+        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80&auto=format&fit=crop" alt="Eiffel Tower rising above tree-lined Parisian avenues" />
+        <span class="dest-rating"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>4.8</span>
+        <div class="dest-info">
+          <span class="dest-country"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>France</span>
+          <h3 class="dest-name">Paris Escape</h3>
+          <p class="dest-price">4 nights from <b>$890</b></p>
+        </div>
+      </article>
+      <article class="dest-card" data-reveal data-batch="dest">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80&auto=format&fit=crop" alt="Misty pine forest road disappearing into the mountains" />
+        <span class="dest-rating"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>4.9</span>
+        <div class="dest-info">
+          <span class="dest-country"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Norway</span>
+          <h3 class="dest-name">Fjord Trails</h3>
+          <p class="dest-price">6 nights from <b>$1,510</b></p>
+        </div>
+      </article>
+      <article class="dest-card" data-reveal data-batch="dest">
+        <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80&auto=format&fit=crop" alt="Sunlit coastline with dramatic cliffs meeting the sea" />
+        <span class="dest-rating"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>5.0</span>
+        <div class="dest-info">
+          <span class="dest-country"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Portugal</span>
+          <h3 class="dest-name">Algarve Coast</h3>
+          <p class="dest-price">5 nights from <b>$1,080</b></p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERIENCES ============ -->
+<section class="section exp" id="experiences">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="eyebrow on-dark">Travel your way</span>
+      <h2 style="margin-top:14px">Pick an experience, not just a place</h2>
+      <p>From sun-warmed shores to high alpine ridgelines, browse by the kind of adventure you're chasing.</p>
+    </div>
+    <div class="exp-row">
+      <article class="exp-card" data-reveal data-batch="exp">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&q=80&auto=format&fit=crop" alt="Turquoise tropical beach lapped by gentle waves" />
+        <div class="exp-label"><h3>Beaches</h3><span>48 trips</span></div>
+      </article>
+      <article class="exp-card" data-reveal data-batch="exp">
+        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=700&q=80&auto=format&fit=crop" alt="Jagged mountain peaks above a still alpine lake" />
+        <div class="exp-label"><h3>Mountains</h3><span>36 trips</span></div>
+      </article>
+      <article class="exp-card" data-reveal data-batch="exp">
+        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=700&q=80&auto=format&fit=crop" alt="Historic European city skyline at dusk" />
+        <div class="exp-label"><h3>Cities</h3><span>52 trips</span></div>
+      </article>
+      <article class="exp-card" data-reveal data-batch="exp">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=700&q=80&auto=format&fit=crop" alt="Wild forested wilderness stretching to the horizon" />
+        <div class="exp-label"><h3>Wilderness</h3><span>29 trips</span></div>
+      </article>
+      <article class="exp-card" data-reveal data-batch="exp">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=700&q=80&auto=format&fit=crop" alt="Vast desert dunes glowing under warm light" />
+        <div class="exp-label"><h3>Desert</h3><span>18 trips</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ITINERARY ============ -->
+<section class="section itin" id="itinerary">
+  <div class="wrap itin-grid">
+    <div data-reveal>
+      <span class="eyebrow">Featured journey</span>
+      <h2 style="margin-top:14px">7 days in the Norwegian fjords</h2>
+      <p class="lead">A sample itinerary crafted by our local experts — fully customizable, fully guided, and unforgettable from the first sunrise.</p>
+      <div class="steps">
+        <div class="step">
+          <span class="step-day">01</span>
+          <div><h4>Arrive in Bergen</h4><p>Settle into the harbor old town, then a welcome dinner of fresh-caught seafood.</p></div>
+        </div>
+        <div class="step">
+          <span class="step-day">02</span>
+          <div><h4>Cruise the Nærøyfjord</h4><p>Glide between towering cliffs and cascading waterfalls on a UNESCO-listed fjord.</p></div>
+        </div>
+        <div class="step">
+          <span class="step-day">04</span>
+          <div><h4>Hike to Trolltunga</h4><p>A guided summit trek with panoramic ridgeline views and a packed lunch above the clouds.</p></div>
+        </div>
+        <div class="step">
+          <span class="step-day">07</span>
+          <div><h4>Depart from Oslo</h4><p>One last morning of coffee and canals before your easy onward flight.</p></div>
+        </div>
+      </div>
+      <a href="#" class="btn btn-primary" style="margin-top:32px">Customize this trip <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="itin-photo" data-reveal>
+      <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1000&q=80&auto=format&fit=crop" alt="Winding forest road through misty Norwegian mountains" />
+      <span class="itin-tag">From $1,510 · all-inclusive</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUST ============ -->
+<section class="section trust">
+  <div class="wrap">
+    <div class="head" data-reveal style="text-align:center; max-width:none">
+      <span class="eyebrow" style="justify-content:center">Why book with Horizon</span>
+      <h2 style="margin:14px auto 0">Travel further, worry less</h2>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-item" data-reveal data-batch="trust">
+        <span class="trust-ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V6l-8-3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3>Best-price promise</h3>
+        <p>Find it cheaper elsewhere and we'll match it, then add a $50 travel credit.</p>
+      </div>
+      <div class="trust-item" data-reveal data-batch="trust">
+        <span class="trust-ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3>24/7 real support</h3>
+        <p>Reach a human in under 90 seconds, in any timezone, whenever plans shift.</p>
+      </div>
+      <div class="trust-item" data-reveal data-batch="trust">
+        <span class="trust-ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+        <h3>Curated by locals</h3>
+        <p>Every route is shaped by guides who actually live where you're going.</p>
+      </div>
+      <div class="trust-item" data-reveal data-batch="trust">
+        <span class="trust-ico"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 0 1 16 0M2 12h2m16 0h2M12 4V2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 20h13M9 20l3-8 3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3>Carbon-balanced</h3>
+        <p>Every booking offsets its footprint through verified reforestation partners.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="section stats">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat" data-reveal data-batch="stat"><div class="stat-num"><span class="count" data-target="120">0</span><span class="suf">+</span></div><div class="stat-label">Destinations</div></div>
+      <div class="stat" data-reveal data-batch="stat"><div class="stat-num"><span class="count" data-target="480000">0</span><span class="suf">+</span></div><div class="stat-label">Happy travelers</div></div>
+      <div class="stat" data-reveal data-batch="stat"><div class="stat-num"><span class="count" data-target="14">0</span></div><div class="stat-label">Years exploring</div></div>
+      <div class="stat" data-reveal data-batch="stat"><div class="stat-num"><span class="count" data-target="38000">0</span><span class="suf">+</span></div><div class="stat-label">5-star reviews</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY / MOSAIC ============ -->
+<section class="section gallery">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="eyebrow">Wanderlust</span>
+      <h2 style="margin-top:14px">Moments from the road</h2>
+      <p>Real photos from real Horizon travelers, tagged from every corner of the map.</p>
+    </div>
+    <div class="mosaic">
+      <figure class="m1" data-reveal data-batch="mosaic">
+        <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&q=80&auto=format&fit=crop" alt="Coastal road curving along a cliff above the ocean" />
+        <figcaption><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Big Sur, USA</figcaption>
+      </figure>
+      <figure class="m2" data-reveal data-batch="mosaic">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1100&q=80&auto=format&fit=crop" alt="Crystal-clear tropical beach with soft white sand" />
+        <figcaption><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Maldives</figcaption>
+      </figure>
+      <figure class="m3" data-reveal data-batch="mosaic">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=700&q=80&auto=format&fit=crop" alt="Warm desert dunes under soft light" />
+        <figcaption><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Sahara, Morocco</figcaption>
+      </figure>
+      <figure class="m4" data-reveal data-batch="mosaic">
+        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=700&q=80&auto=format&fit=crop" alt="Sunlit white-stone village built into a hillside" />
+        <figcaption><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Santorini, Greece</figcaption>
+      </figure>
+      <figure class="m5" data-reveal data-batch="mosaic">
+        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=700&q=80&auto=format&fit=crop" alt="Historic European city skyline at dusk" />
+        <figcaption><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Paris, France</figcaption>
+      </figure>
+      <figure class="m6" data-reveal data-batch="mosaic">
+        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1100&q=80&auto=format&fit=crop" alt="Mountain lake mirroring snowy peaks" />
+        <figcaption><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Banff, Canada</figcaption>
+      </figure>
+      <figure class="m7" data-reveal data-batch="mosaic">
+        <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=900&q=80&auto=format&fit=crop" alt="Dramatic cliffs along a sunlit coastline" />
+        <figcaption><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Algarve, Portugal</figcaption>
+      </figure>
+      <figure class="m8" data-reveal data-batch="mosaic">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1100&q=80&auto=format&fit=crop" alt="Misty pine forest road winding through the mountains" />
+        <figcaption><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z" stroke="currentColor" stroke-width="2"/></svg>Telemark, Norway</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REVIEWS ============ -->
+<section class="section reviews">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="eyebrow">Traveler stories</span>
+      <h2 style="margin-top:14px">Trips worth writing home about</h2>
+    </div>
+    <div class="rev-grid">
+      <article class="rev-card" data-reveal data-batch="rev">
+        <div class="rev-stars" aria-label="5 out of 5 stars">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+        </div>
+        <blockquote>"The fjord cruise was the best day of our lives. Every detail was handled before we even thought to ask."</blockquote>
+        <div class="rev-author">
+          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=120&q=80&auto=format&fit=crop" alt="Portrait of traveler Mara Olsen" />
+          <div><div class="nm">Mara Olsen</div><div class="tp">Norwegian Fjords · 7 days</div></div>
+        </div>
+      </article>
+      <article class="rev-card" data-reveal data-batch="rev">
+        <div class="rev-stars" aria-label="5 out of 5 stars">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+        </div>
+        <blockquote>"I've used a dozen booking sites. Horizon is the only one that felt like having a friend who actually lives there."</blockquote>
+        <div class="rev-author">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=120&q=80&auto=format&fit=crop" alt="Portrait of traveler Dev Patel" />
+          <div><div class="nm">Dev Patel</div><div class="tp">Maldives Escape · 5 days</div></div>
+        </div>
+      </article>
+      <article class="rev-card" data-reveal data-batch="rev">
+        <div class="rev-stars" aria-label="5 out of 5 stars">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+        </div>
+        <blockquote>"From the desert sunrise to the rooftop dinner, every moment felt designed just for us. Booking again already."</blockquote>
+        <div class="rev-author">
+          <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=120&q=80&auto=format&fit=crop" alt="Portrait of traveler Sofia Reyes" />
+          <div><div class="nm">Sofia Reyes</div><div class="tp">Morocco Sands · 6 days</div></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA / DEALS ============ -->
+<section class="section deals" id="deals">
+  <div class="wrap">
+    <div class="cta-band" data-reveal>
+      <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1600&q=80&auto=format&fit=crop" alt="Whitewashed cliffside village glowing at golden hour" />
+      <div class="cta-inner">
+        <span class="eyebrow">Limited deals</span>
+        <h2>Your next adventure is one click away</h2>
+        <p>Book before the season turns and save up to 30% on hand-picked summer journeys. Free cancellation, always.</p>
+        <div class="cta-actions">
+          <a href="#hero-search" class="btn btn-primary">Plan a trip <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a href="#destinations" class="btn btn-glass">Browse deals</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo" aria-label="Horizon home">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 3c-4 3.5-4 14.5 0 18M12 3c4 3.5 4 14.5 0 18M3.5 9h17M3.5 15h17" stroke="currentColor" stroke-width="1.6"/></svg>
+          Horizon
+        </a>
+        <p>Curated journeys and seamless booking for travelers who'd rather wander than wait.</p>
+        <div class="news">
+          <form class="news-form" id="newsletterForm">
+            <label for="news-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+            <input id="news-email" type="email" placeholder="Travel deals, weekly" required aria-label="Email address" />
+            <button type="submit" class="btn btn-primary">Join</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Destinations</h4>
+        <a href="#">Europe</a><a href="#">Asia</a><a href="#">The Americas</a><a href="#">Africa</a><a href="#">Oceania</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About us</a><a href="#">Our guides</a><a href="#">Careers</a><a href="#">Press</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#">Help center</a><a href="#">Book a call</a><a href="#">Cancellation</a><a href="#">Travel insurance</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Horizon Travel Co. All rights reserved.</span>
+      <div class="legal">
+        <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon" aria-hidden="true"><span class="dot"></span>NEXA Theme · Horizon · travel</div>
+
+<!-- ============ GSAP (CDN) ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  /* ---------- ALWAYS-ON behaviour (works with or without GSAP) ---------- */
+  var nav = document.getElementById('nav');
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 40); }
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+  var toggle = document.getElementById('navToggle');
+  toggle.addEventListener('click', function(){
+    var open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.getElementById('navLinks').querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ nav.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); });
+  });
+
+  /* count-up formatter + runner (reused by GSAP path and static fallback) */
+  function fmt(n){
+    if (n >= 1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
+    if (n >= 1000) return Math.round(n/1000) + 'K';
+    return String(n);
+  }
+  function countUp(el){
+    if (el.dataset.done) return; el.dataset.done = '1';
+    var target = +el.getAttribute('data-target');
+    var dur = 1700, start = null;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(target * eased));
+      if (p < 1) requestAnimationFrame(step); else el.textContent = fmt(target);
+    }
+    requestAnimationFrame(step);
+  }
+  function setStatic(){
+    document.querySelectorAll('.count').forEach(function(el){ el.textContent = fmt(+el.getAttribute('data-target')); });
+  }
+
+  /* demo forms (no real submit) */
+  document.getElementById('hero-search').addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = this.querySelector('button'); var t = btn.innerHTML;
+    btn.textContent = 'Searching…'; setTimeout(function(){ btn.innerHTML = t; }, 1400);
+  });
+  document.getElementById('newsletterForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    this.querySelector('button').textContent = 'Subscribed ✓';
+    this.querySelector('input').value = '';
+  });
+
+  /* ---------- FALLBACK: GSAP absent OR reduced-motion → full page renders, nothing hidden ---------- */
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!window.gsap || prefersReduced){
+    setStatic();
+    return; /* content was never hidden by CSS, so it's already fully visible */
+  }
+
+  /* ---------- GSAP-ENHANCED path ---------- */
+  gsap.registerPlugin(ScrollTrigger);
+
+  var mm = gsap.matchMedia();
+
+  /* Animate ONLY inside this matchMedia. When reduced-motion is on at runtime,
+     this branch never runs, so gsap.set() never hides anything. */
+  mm.add('(prefers-reduced-motion: no-preference)', function(){
+
+    /* hero entrance */
+    var heroEls = gsap.utils.toArray('[data-hero]');
+    gsap.set(heroEls, { opacity: 0, y: 28 });
+    gsap.to(heroEls, {
+      opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+      stagger: 0.14, delay: 0.15
+    });
+
+    /* hero ken-burns: take over from CSS animation for a smoother, scrubbable image */
+    var heroImg = document.getElementById('heroImg');
+    heroImg.classList.remove('kenburns');
+    gsap.set(heroImg, { transformOrigin: '50% 50%', scale: 1.12 });
+    gsap.to(heroImg, { scale: 1.24, duration: 12, ease: 'none', repeat: -1, yoyo: true });
+
+    /* hero parallax on scroll (image drifts up as you scroll past) */
+    gsap.to(heroImg, {
+      yPercent: 18, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+
+    /* batched, staggered reveals across all sections */
+    var batches = {};
+    gsap.utils.toArray('[data-reveal]').forEach(function(el){
+      var key = el.getAttribute('data-batch') || ('solo-' + Math.random());
+      (batches[key] = batches[key] || []).push(el);
+    });
+    Object.keys(batches).forEach(function(key){
+      var items = batches[key];
+      gsap.set(items, { opacity: 0, y: 36 });
+      ScrollTrigger.batch(items, {
+        start: 'top 86%',
+        onEnter: function(els){
+          gsap.to(els, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.09, overwrite: true });
+        }
+      });
+    });
+
+    /* count-up stats triggered on scroll */
+    ScrollTrigger.create({
+      trigger: '.stats', start: 'top 80%', once: true,
+      onEnter: function(){ document.querySelectorAll('.count').forEach(countUp); }
+    });
+
+    /* refresh after fonts/images settle */
+    window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
+
+    return function(){
+      /* cleanup when leaving this media context: restore visibility, static counts */
+      gsap.set('[data-hero], [data-reveal]', { clearProps: 'all' });
+      setStatic();
+    };
+  });
+
+  /* If user has reduced-motion ON at load, mm.add branch above is inactive →
+     ensure stats show their final values immediately. */
+  if (prefersReduced) setStatic();
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>

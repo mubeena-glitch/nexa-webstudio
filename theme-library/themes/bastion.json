@@ -1,0 +1,53 @@
+{
+  "id": "bastion",
+  "name": "Bastion",
+  "family": "corporate",
+  "sector": "Legal / professional",
+  "tags": ["light", "legal", "law-firm", "professional-services", "authoritative", "classic", "editorial", "navy", "burgundy"],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "244 242 236",
+      "surface": "249 247 242",
+      "surface2": "237 233 224",
+      "ink": "22 35 58",
+      "muted": "92 100 116",
+      "line": "210 204 190",
+      "primary": "122 34 48",
+      "onPrimary": "244 242 236",
+      "accent": "184 155 94",
+      "accent2": "22 35 58"
+    },
+    "type": {
+      "display": "'Cormorant Garamond', 'Times New Roman', Georgia, serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "scaleRatio": 1.32,
+      "weights": { "display": 500, "displaySemibold": 600, "body": 400, "label": 500, "bold": 600 },
+      "displayCase": "none",
+      "displayTracking": "0em"
+    },
+    "space": { "base": 8, "section": "clamp(96px, 12vw, 168px)", "gutter": "clamp(22px, 5vw, 72px)", "density": "airy" },
+    "radius": { "card": "4px", "button": "3px", "input": "3px", "pill": "2px" },
+    "shadow": {
+      "card": "0 1px 2px rgb(22 35 58 / 0.05), 0 12px 28px -18px rgb(22 35 58 / 0.20)",
+      "elevated": "0 2px 4px rgb(22 35 58 / 0.06), 0 28px 56px -22px rgb(22 35 58 / 0.28)",
+      "philosophy": "hairline"
+    },
+    "motion": { "ease": "cubic-bezier(0.33, 1, 0.68, 1)", "duration": "640ms", "character": "calm" },
+    "imagery": { "treatment": "framed", "ratio": "4:5", "filter": "none" }
+  },
+  "recipes": { "button": "solid-square", "card": "hairline", "nav": "split-serif" },
+  "preferredLayouts": {
+    "nav": "split-serif-topbar",
+    "hero": "framed-serif-editorial-masthead",
+    "practice": "hairline-list-grid",
+    "intro": "editorial-split-principles",
+    "attorneys": "partner-profile-cards",
+    "results": "navy-band-countup",
+    "process": "numbered-steps",
+    "testimonial": "formal-quote-cards",
+    "recognition": "bar-membership-row",
+    "cta": "formal-band-phone",
+    "footer": "multi-column-disclaimer"
+  }
+}

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voltage — NEXA Theme Preview (Creative Agency)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Anton&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     VOLTAGE — design tokens (mirror of theme.json -> CSS vars)
+     Maximalist creative-agency aesthetic. Mode: dark.
+     ============================================================ */
+  :root {
+    --color-bg: 17 17 17;
+    --color-surface: 26 26 26;
+    --color-surface-2: 34 34 34;
+    --color-ink: 245 245 240;
+    --color-muted: 158 158 150;
+    --color-line: 54 54 52;
+    --color-primary: 245 255 77;   /* electric chartreuse */
+    --color-on-primary: 17 17 17;
+    --color-accent: 245 255 77;
+    --color-accent2: 255 77 61;    /* hot red-orange */
+
+    --font-display: "Bricolage Grotesque", "Arial Black", sans-serif;
+    --font-anton: "Anton", "Arial Black", sans-serif;
+    --font-body: "General Sans", ui-sans-serif, system-ui, sans-serif;
+
+    --section: clamp(96px, 12vw, 180px);
+    --gutter: clamp(20px, 5vw, 64px);
+    --maxw: 1500px;
+    --radius-card: 4px;
+    --radius-btn: 999px;
+    --ease: cubic-bezier(0.2, 0.9, 0.1, 1);
+    --dur: 560ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: rgb(var(--color-bg)); color: rgb(var(--color-ink));
+    font-family: var(--font-body); font-weight: 400; line-height: 1.55;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  ::selection { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  :focus-visible { outline: 3px solid rgb(var(--color-primary)); outline-offset: 3px; }
+
+  /* ---- type primitives ---- */
+  .disp { font-family: var(--font-display); font-weight: 800; line-height: 0.86; letter-spacing: -0.03em; text-transform: uppercase; }
+  .label { font-family: var(--font-body); font-weight: 600; font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .yel { color: rgb(var(--color-primary)); }
+  .red { color: rgb(var(--color-accent2)); }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  .stroke { color: transparent; -webkit-text-stroke: 2px rgb(var(--color-ink)); }
+
+  /* ---- buttons : chunky pill, solid ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 12px; cursor: pointer;
+    font-family: var(--font-body); font-weight: 600; font-size: 14px; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 18px 34px; border-radius: var(--radius-btn);
+    background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary));
+    border: 2px solid rgb(var(--color-primary));
+    transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .btn:hover { background: rgb(var(--color-accent2)); border-color: rgb(var(--color-accent2)); color: #fff; }
+  .btn .dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+  .btn-outline { background: transparent; color: rgb(var(--color-ink)); border-color: rgb(var(--color-line)); }
+  .btn-outline:hover { background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); border-color: rgb(var(--color-ink)); }
+
+  /* ---- progress bar ---- */
+  #prog { position: fixed; top: 0; left: 0; height: 4px; width: 0; background: rgb(var(--color-accent2)); z-index: 120; }
+
+  /* ---- custom cursor (pointer:fine only) ---- */
+  #cursor { position: fixed; top: 0; left: 0; width: 14px; height: 14px; border-radius: 50%;
+    background: rgb(var(--color-primary)); pointer-events: none; z-index: 200; mix-blend-mode: difference;
+    transform: translate(-50%, -50%) scale(1); transition: transform .2s var(--ease); display: none; }
+  #cursor.big { transform: translate(-50%, -50%) scale(3.4); }
+
+  /* ============================================================ NAV */
+  .announce { background: rgb(var(--color-accent2)); color: #fff; overflow: hidden; white-space: nowrap;
+    border-bottom: 2px solid rgb(var(--color-bg)); }
+  .announce .track { display: inline-flex; gap: 56px; padding: 9px 0; font-weight: 600; font-size: 13px;
+    letter-spacing: 0.16em; text-transform: uppercase; animation: marq 26s linear infinite; }
+  .announce .track span { display: inline-flex; gap: 56px; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgb(var(--color-bg) / 0.82);
+    backdrop-filter: blur(12px); border-bottom: 2px solid rgb(var(--color-line));
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease); }
+  nav.scrolled { border-bottom-color: rgb(var(--color-primary)); }
+  .navinner { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; gap: 24px; }
+  .wordmark { font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -0.04em;
+    text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; }
+  .wordmark b { color: rgb(var(--color-primary)); }
+  .navlinks { display: flex; align-items: center; gap: 30px; }
+  .navlink { font-weight: 600; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; position: relative; }
+  .navlink::after { content: ""; position: absolute; left: 0; bottom: -5px; height: 3px; width: 100%;
+    background: rgb(var(--color-primary)); transform: scaleX(0); transform-origin: right; transition: transform .4s var(--ease); }
+  .navlink:hover::after { transform: scaleX(1); transform-origin: left; }
+  @media (max-width: 860px) { .navlinks .navlink { display: none; } }
+
+  /* ============================================================ HERO */
+  .hero { padding-top: clamp(48px, 7vw, 96px); padding-bottom: 0; position: relative; }
+  .hero .eyebrow { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; }
+  .hero .eyebrow .ln { height: 2px; flex: 0 0 64px; background: rgb(var(--color-primary)); }
+  .htitle { font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+    line-height: 0.82; letter-spacing: -0.04em; font-size: clamp(56px, 13.5vw, 220px); }
+  .htitle .row { display: block; overflow: hidden; padding-bottom: 0.04em; }
+  /* CSS fallback only (no GSAP / reduced motion safe). When GSAP runs it takes over. */
+  .htitle .row > span { display: inline-block; transform: translateY(110%); transition: transform 0.9s var(--ease); }
+  .loaded .htitle .row > span { transform: translateY(0); }
+  .htitle .row:nth-child(2) > span { transition-delay: .08s; }
+  .htitle .row:nth-child(3) > span { transition-delay: .16s; }
+  .htitle .ml { margin-left: clamp(40px, 14vw, 280px); }
+  .hero-bottom { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+    gap: 32px; margin-top: clamp(32px, 5vw, 64px); padding-bottom: clamp(40px, 5vw, 72px); }
+  .hero-bottom p { max-width: 38ch; font-size: clamp(16px, 1.5vw, 20px); color: rgb(var(--color-ink)); }
+  .hero-bottom p b { color: rgb(var(--color-primary)); font-weight: 600; }
+
+  /* hero rotating word strip */
+  .rotor { border-top: 2px solid rgb(var(--color-line)); border-bottom: 2px solid rgb(var(--color-line));
+    overflow: hidden; display: flex; align-items: center; }
+  .rotor .lbl { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); font-weight: 600;
+    font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 22px; white-space: nowrap; align-self: stretch; display: flex; align-items: center; }
+  .rotor .win { flex: 1; height: 72px; overflow: hidden; position: relative; }
+  .rotor ul { list-style: none; position: absolute; top: 0; left: 0; right: 0; }
+  /* CSS-only fallback animation (used only when JS/GSAP is unavailable) */
+  .no-js-rotor .rotor ul { animation: roll 9s steps(5) infinite; }
+  .rotor li { height: 72px; display: flex; align-items: center; padding-left: 22px; font-family: var(--font-display);
+    font-weight: 800; text-transform: uppercase; font-size: clamp(26px, 4vw, 44px); letter-spacing: -0.02em; line-height: 1; }
+
+  /* ============================================================ MARQUEE */
+  .marquee { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary));
+    overflow: hidden; white-space: nowrap; padding: 22px 0; border-top: 2px solid rgb(var(--color-bg));
+    border-bottom: 2px solid rgb(var(--color-bg)); }
+  .marquee .track { display: inline-flex; align-items: center; animation: marq 24s linear infinite; }
+  .marquee.rev .track { animation-direction: reverse; }
+  .marquee .track span { font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+    font-size: clamp(30px, 5vw, 64px); letter-spacing: -0.02em; display: inline-flex; align-items: center; }
+  .marquee .star { padding: 0 28px; color: rgb(var(--color-accent2)); font-size: clamp(22px, 3.5vw, 44px); }
+
+  @keyframes marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  /* window & each word are 72px; step through 5 unique words (6th li duplicates the 1st for a seamless loop) */
+  @keyframes roll { 0%{transform:translateY(0)} 100%{transform:translateY(-360px)} }
+
+  /* ============================================================ SECTION HEAD */
+  .shead { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+    margin-bottom: clamp(40px, 5vw, 72px); }
+  .shead h2 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; line-height: 0.86;
+    letter-spacing: -0.03em; font-size: clamp(40px, 7vw, 110px); }
+  .shead .idx { font-family: var(--font-body); font-weight: 600; font-size: 14px; letter-spacing: 0.2em;
+    color: rgb(var(--color-muted)); }
+
+  section { padding-block: var(--section); }
+  section.tight { padding-block: clamp(72px, 9vw, 130px); }
+
+  /* ---- reveal (CSS-only fallback; GSAP-driven reveals override when active) ---- */
+  .rv { opacity: 0; transform: translateY(40px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .rv.in { opacity: 1; transform: none; }
+  /* When GSAP controls reveals, neutralise the CSS reveal so gsap.set owns visibility */
+  .gsap-active .rv { opacity: 1; transform: none; transition: none; }
+
+  /* ============================================================ WORK — pinned horizontal */
+  /* The work section becomes the pin trigger; .worktrack scrolls sideways via GSAP. */
+  #work { padding-bottom: 0; }
+  .work-head { margin-bottom: clamp(28px, 3.5vw, 48px); }
+  .workpin { position: relative; }
+  .workviewport { overflow: hidden; }
+  .worktrack {
+    display: flex; gap: clamp(16px, 2vw, 28px);
+    padding-inline: var(--gutter); padding-bottom: var(--section);
+    align-items: stretch;
+  }
+  .proj {
+    position: relative; overflow: hidden; border-radius: var(--radius-card);
+    background: rgb(var(--color-surface)); display: block;
+    flex: 0 0 clamp(280px, 42vw, 560px); height: clamp(360px, 64vh, 660px);
+  }
+  .proj img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease), filter .8s var(--ease);
+    filter: saturate(1.1); }
+  .proj .ovl { position: absolute; inset: 0; background: rgb(var(--color-primary)); opacity: 0;
+    transition: opacity .5s var(--ease); display: flex; flex-direction: column; justify-content: space-between; padding: 26px; }
+  .proj:hover img { transform: scale(1.07); }
+  .proj:hover .ovl, .proj:focus-visible .ovl { opacity: 0.96; }
+  .proj.red .ovl { background: rgb(var(--color-accent2)); }
+  .proj .ovl .top { display: flex; justify-content: space-between; align-items: flex-start; color: rgb(var(--color-on-primary)); }
+  .proj.red .ovl .top, .proj.red .ovl .bot, .proj.red .ovl .bot h3, .proj.red .ovl .disc, .proj.red .ovl .yr, .proj.red .ovl .arrow { color: #fff; }
+  .proj .ovl .disc { font-weight: 600; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(var(--color-on-primary)); }
+  .proj .ovl .yr { font-weight: 600; font-size: 13px; color: rgb(var(--color-on-primary)); }
+  .proj .ovl .bot { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .proj .ovl .bot h3 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; line-height: 0.9;
+    letter-spacing: -0.02em; font-size: clamp(28px, 3.6vw, 56px); color: rgb(var(--color-on-primary)); }
+  .proj .ovl .arrow { font-family: var(--font-display); font-size: 40px; color: rgb(var(--color-on-primary)); line-height: 1; }
+  .proj .tag { position: absolute; left: 16px; top: 16px; z-index: 2; background: rgb(var(--color-bg) / 0.7);
+    color: rgb(var(--color-ink)); font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 7px 13px; border-radius: 999px; backdrop-filter: blur(4px); transition: opacity .4s var(--ease); }
+  .proj:hover .tag { opacity: 0; }
+  .work-progress { display: flex; align-items: center; gap: 14px; padding-inline: var(--gutter);
+    padding-bottom: clamp(40px, 5vw, 64px); }
+  .work-progress .bar { flex: 1; height: 3px; background: rgb(var(--color-line)); position: relative; overflow: hidden; border-radius: 999px; }
+  .work-progress .bar i { position: absolute; left: 0; top: 0; height: 100%; width: 18%; background: rgb(var(--color-primary)); border-radius: 999px; }
+  .work-progress .hint { font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-muted)); white-space: nowrap; }
+
+  /* Fallback layout: when GSAP/horizontal not active, tile as a perfect 12-col grid.
+     Span math — every row sums to 12:
+       Row 1: p-a (7) + p-b (5) = 12
+       Row 2: p-c (5) + p-d (7) = 12
+       Row 3: p-e (4) + p-f (8) = 12  */
+  .work-static .workviewport { overflow: visible; }
+  .work-static .worktrack {
+    display: grid; grid-template-columns: repeat(12, 1fr);
+    gap: clamp(16px, 2vw, 28px);
+    padding-bottom: var(--section);
+  }
+  .work-static .proj { flex: initial; height: auto; }
+  .work-static .p-a { grid-column: span 7; aspect-ratio: 16/11; }
+  .work-static .p-b { grid-column: span 5; aspect-ratio: 4/5; }
+  .work-static .p-c { grid-column: span 5; aspect-ratio: 4/5; }
+  .work-static .p-d { grid-column: span 7; aspect-ratio: 16/11; }
+  .work-static .p-e { grid-column: span 4; aspect-ratio: 1/1; }
+  .work-static .p-f { grid-column: span 8; aspect-ratio: 16/9; }
+  .work-static .work-progress { display: none; }
+  @media (max-width: 820px) {
+    .work-static .worktrack { grid-template-columns: repeat(2, 1fr); }
+    .work-static .p-a, .work-static .p-b, .work-static .p-c,
+    .work-static .p-d, .work-static .p-e, .work-static .p-f { grid-column: span 2; aspect-ratio: 4/3; }
+  }
+
+  /* ============================================================ MANIFESTO */
+  .manifesto { background: rgb(var(--color-accent2)); color: #fff; }
+  .manifesto .big { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; line-height: 0.92;
+    letter-spacing: -0.03em; font-size: clamp(34px, 6vw, 96px); }
+  .manifesto .big em { font-style: normal; color: rgb(var(--color-bg)); }
+  .manifesto .lbl { color: #fff; opacity: 0.85; }
+  .manifesto .meta { display: flex; gap: 48px; flex-wrap: wrap; margin-top: 48px; font-weight: 600; }
+  .manifesto .meta span { font-size: 14px; letter-spacing: 0.04em; }
+
+  /* ============================================================ SERVICES list */
+  .svc { border-top: 2px solid rgb(var(--color-line)); }
+  .svc-row { display: grid; grid-template-columns: 90px 1fr auto; align-items: center; gap: 20px;
+    padding: clamp(22px, 3vw, 40px) 8px; border-bottom: 2px solid rgb(var(--color-line)); position: relative; overflow: hidden;
+    transition: padding-left var(--dur) var(--ease); }
+  .svc-row .fill { position: absolute; inset: 0; background: rgb(var(--color-primary)); transform: scaleX(0);
+    transform-origin: left; transition: transform .5s var(--ease); z-index: 0; }
+  .svc-row:nth-child(even) .fill { background: rgb(var(--color-accent2)); }
+  .svc-row:hover .fill, .svc-row:focus-within .fill { transform: scaleX(1); }
+  .svc-row:hover { padding-left: 28px; }
+  .svc-row > * { position: relative; z-index: 1; }
+  .svc-row .num { font-family: var(--font-body); font-weight: 600; font-size: 16px; color: rgb(var(--color-muted)); transition: color .4s var(--ease); }
+  .svc-row h3 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em;
+    line-height: 0.9; font-size: clamp(28px, 4.4vw, 72px); transition: color .4s var(--ease); }
+  .svc-row p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 32ch; text-align: right; transition: color .4s var(--ease); }
+  .svc-row:hover .num, .svc-row:hover h3, .svc-row:hover p,
+  .svc-row:focus-within .num, .svc-row:focus-within h3, .svc-row:focus-within p { color: rgb(var(--color-on-primary)); }
+  .svc-row:nth-child(even):hover .num, .svc-row:nth-child(even):hover h3, .svc-row:nth-child(even):hover p,
+  .svc-row:nth-child(even):focus-within .num, .svc-row:nth-child(even):focus-within h3, .svc-row:nth-child(even):focus-within p { color: #fff; }
+  @media (max-width: 720px) { .svc-row { grid-template-columns: 56px 1fr; } .svc-row p { display: none; } }
+
+  /* ============================================================ AWARDS */
+  .awards { background: rgb(var(--color-surface)); }
+  .award-row { display: grid; grid-template-columns: auto 1fr auto auto; gap: 20px; align-items: baseline;
+    padding: 22px 0; border-bottom: 2px solid rgb(var(--color-line)); transition: color .4s var(--ease); }
+  .award-row:hover { color: rgb(var(--color-primary)); }
+  .award-row .nm { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em;
+    font-size: clamp(20px, 2.6vw, 38px); }
+  .award-row .org { color: rgb(var(--color-muted)); font-size: 14px; font-weight: 500; }
+  .award-row .ct { font-weight: 600; }
+  .award-row .yr { font-weight: 600; color: rgb(var(--color-muted)); }
+  @media (max-width: 640px) { .award-row { grid-template-columns: 1fr auto; } .award-row .org, .award-row .ct { display: none; } }
+
+  /* ============================================================ STATS */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(24px, 3vw, 48px); }
+  .stat .n { font-family: var(--font-display); font-weight: 800; line-height: 0.86; letter-spacing: -0.03em;
+    font-size: clamp(48px, 9vw, 132px); color: rgb(var(--color-primary)); }
+  .stat:nth-child(even) .n { color: rgb(var(--color-accent2)); }
+  .stat .lab { margin-top: 12px; font-weight: 600; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  @media (max-width: 760px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ============================================================ CTA */
+  .cta { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); text-align: center; }
+  .cta h2 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; line-height: 0.86;
+    letter-spacing: -0.04em; font-size: clamp(48px, 12vw, 180px); }
+  .cta h2 .stroke2 { color: transparent; -webkit-text-stroke: 3px rgb(var(--color-on-primary)); }
+  .cta p { max-width: 50ch; margin: 28px auto 40px; font-size: clamp(16px, 1.6vw, 21px); font-weight: 500; }
+  .cta .btn { background: rgb(var(--color-bg)); border-color: rgb(var(--color-bg)); color: rgb(var(--color-ink)); }
+  .cta .btn:hover { background: rgb(var(--color-accent2)); border-color: rgb(var(--color-accent2)); color: #fff; }
+
+  /* ============================================================ FOOTER */
+  footer { background: rgb(var(--color-bg)); border-top: 2px solid rgb(var(--color-line)); }
+  .foot-mark { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; line-height: 0.82;
+    letter-spacing: -0.04em; font-size: clamp(64px, 18vw, 280px); padding-block: clamp(32px, 4vw, 56px); }
+  .foot-mark .yel { color: rgb(var(--color-primary)); }
+  .foot-cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; padding-bottom: clamp(40px, 5vw, 72px);
+    border-top: 2px solid rgb(var(--color-line)); padding-top: clamp(40px, 5vw, 64px); }
+  .foot-cols h4 { font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 18px; }
+  .foot-cols ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .foot-cols a { font-weight: 500; font-size: 15px; transition: color .3s var(--ease); }
+  .foot-cols a:hover { color: rgb(var(--color-primary)); }
+  .foot-cols .lead { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; line-height: 1; }
+  .foot-bot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-block: 26px;
+    border-top: 2px solid rgb(var(--color-line)); font-size: 13px; color: rgb(var(--color-muted)); font-weight: 500; }
+  @media (max-width: 760px) { .foot-cols { grid-template-columns: 1fr 1fr; } }
+
+  /* ============================================================ RIBBON */
+  .ribbon { position: fixed; right: 0; bottom: 0; z-index: 130; background: rgb(var(--color-bg));
+    border: 2px solid rgb(var(--color-primary)); border-right: 0; border-bottom: 0; color: rgb(var(--color-ink));
+    font-weight: 600; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 16px;
+    border-top-left-radius: 8px; }
+  .ribbon b { color: rgb(var(--color-primary)); }
+
+  /* magnetic */
+  .mag { will-change: transform; }
+
+  /* ============================================================ REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .htitle .row > span { transform: none !important; }
+    .rv { opacity: 1 !important; transform: none !important; }
+    #cursor { display: none !important; }
+    .rotor ul { position: static; }
+    .rotor li:not(:first-child) { display: none; }
+    .marquee .track, .announce .track { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="prog" aria-hidden="true"></div>
+<div id="cursor" aria-hidden="true"></div>
+
+<!-- ============================ ANNOUNCE -->
+<div class="announce" aria-hidden="true">
+  <div class="track">
+    <span>★ STUDIO OPEN FOR Q3 2026 ★ NOW BOOKING BOLD BRANDS ★ HELLO@VOLTAGE.STUDIO ★ AWWWARDS SOTD ×4 ★&nbsp;</span>
+    <span>★ STUDIO OPEN FOR Q3 2026 ★ NOW BOOKING BOLD BRANDS ★ HELLO@VOLTAGE.STUDIO ★ AWWWARDS SOTD ×4 ★&nbsp;</span>
+  </div>
+</div>
+
+<!-- ============================ NAV -->
+<nav id="nav">
+  <div class="wrap navinner">
+    <a href="#top" class="wordmark" aria-label="Voltage home">VOLT<b>★</b>GE</a>
+    <div class="navlinks">
+      <a class="navlink" href="#work">Work</a>
+      <a class="navlink" href="#services">Services</a>
+      <a class="navlink" href="#awards">Studio</a>
+      <a class="btn mag" href="#contact"><span class="dot" aria-hidden="true"></span>Let's talk</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================ HERO -->
+<header class="hero wrap" id="top">
+  <div class="eyebrow rv">
+    <span class="ln" aria-hidden="true"></span>
+    <span class="label">Creative studio · Worldwide · Est. 2014</span>
+  </div>
+  <h1 class="htitle">
+    <span class="row"><span>WE MAKE</span></span>
+    <span class="row"><span class="yel">LOUD</span></span>
+    <span class="row ml"><span>BR<span class="red">A</span>NDS</span></span>
+  </h1>
+  <div class="hero-bottom">
+    <p>A maximalist design studio for brands allergic to beige. <b>Branding, motion &amp; digital</b> that refuses to whisper.</p>
+    <a class="btn mag" href="#work"><span class="dot" aria-hidden="true"></span>See the work</a>
+  </div>
+  <div class="rotor rv" aria-hidden="true">
+    <span class="lbl">We do →</span>
+    <div class="win">
+      <ul>
+        <li class="yel">BRANDING.</li>
+        <li class="red">MOTION.</li>
+        <li>STRATEGY.</li>
+        <li class="yel">DIGITAL.</li>
+        <li class="red">CAMPAIGNS.</li>
+        <li>BRANDING.</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="track">
+    <span>BRANDING<span class="star">✦</span>MOTION<span class="star">✦</span>STRATEGY<span class="star">✦</span>DIGITAL<span class="star">✦</span>ART DIRECTION<span class="star">✦</span></span>
+    <span>BRANDING<span class="star">✦</span>MOTION<span class="star">✦</span>STRATEGY<span class="star">✦</span>DIGITAL<span class="star">✦</span>ART DIRECTION<span class="star">✦</span></span>
+  </div>
+</div>
+
+<!-- ============================ WORK (pinned horizontal showcase) -->
+<section id="work">
+  <div class="wrap work-head">
+    <div class="shead">
+      <h2 class="rv">Selected<br>work</h2>
+      <span class="idx rv">[ 01 — Recent projects ]</span>
+    </div>
+  </div>
+  <div class="workpin">
+    <div class="workviewport">
+      <div class="worktrack">
+        <a class="proj p-a" href="#work" aria-label="Hyperfizz — branding and packaging, 2026">
+          <span class="tag" aria-hidden="true">Hyperfizz</span>
+          <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1200&q=80&auto=format&fit=crop" alt="Bold abstract color-blocked beverage brand campaign" loading="lazy">
+          <div class="ovl" aria-hidden="true"><div class="top"><span class="disc">Branding · Packaging</span><span class="yr">2026</span></div><div class="bot"><h3>Hyperfizz</h3><span class="arrow">↗</span></div></div>
+        </a>
+        <a class="proj p-b red" href="#work" aria-label="Pulse FM — motion and identity, 2025">
+          <span class="tag" aria-hidden="true">Pulse FM</span>
+          <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=900&q=80&auto=format&fit=crop" alt="Vibrant motion design poster for a music platform" loading="lazy">
+          <div class="ovl" aria-hidden="true"><div class="top"><span class="disc">Motion · Identity</span><span class="yr">2025</span></div><div class="bot"><h3>Pulse FM</h3><span class="arrow">↗</span></div></div>
+        </a>
+        <a class="proj p-c" href="#work" aria-label="Neon Athletic — campaign and art direction, 2025">
+          <span class="tag" aria-hidden="true">Neon Athletic</span>
+          <img src="https://images.unsplash.com/photo-1547119957-637f8679db1e?w=900&q=80&auto=format&fit=crop" alt="High-energy sportswear brand art direction" loading="lazy">
+          <div class="ovl" aria-hidden="true"><div class="top"><span class="disc">Campaign · Art Dir.</span><span class="yr">2025</span></div><div class="bot"><h3>Neon Athletic</h3><span class="arrow">↗</span></div></div>
+        </a>
+        <a class="proj p-d red" href="#work" aria-label="Voltgrid — digital and web, 2026">
+          <span class="tag" aria-hidden="true">Voltgrid</span>
+          <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=1200&q=80&auto=format&fit=crop" alt="Digital product interface with bold typography" loading="lazy">
+          <div class="ovl" aria-hidden="true"><div class="top"><span class="disc">Digital · Web</span><span class="yr">2026</span></div><div class="bot"><h3>Voltgrid</h3><span class="arrow">↗</span></div></div>
+        </a>
+        <a class="proj p-e" href="#work" aria-label="Riot Skin — branding, 2024">
+          <span class="tag" aria-hidden="true">Riot Skin</span>
+          <img src="https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?w=800&q=80&auto=format&fit=crop" alt="Colourful cosmetics brand still life" loading="lazy">
+          <div class="ovl" aria-hidden="true"><div class="top"><span class="disc">Branding</span><span class="yr">2024</span></div><div class="bot"><h3>Riot</h3><span class="arrow">↗</span></div></div>
+        </a>
+        <a class="proj p-f" href="#work" aria-label="Maxx Festival — strategy and event, 2025">
+          <span class="tag" aria-hidden="true">Maxx Festival</span>
+          <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=1200&q=80&auto=format&fit=crop" alt="Kinetic festival branding with overlapping type" loading="lazy">
+          <div class="ovl" aria-hidden="true"><div class="top"><span class="disc">Strategy · Event</span><span class="yr">2025</span></div><div class="bot"><h3>Maxx Fest</h3><span class="arrow">↗</span></div></div>
+        </a>
+      </div>
+    </div>
+    <div class="work-progress" aria-hidden="true">
+      <span class="hint">Scroll →</span>
+      <span class="bar"><i id="workbar"></i></span>
+      <span class="hint">06 projects</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MANIFESTO -->
+<section class="manifesto tight">
+  <div class="wrap">
+    <span class="label lbl rv">[ 02 — Manifesto ]</span>
+    <p class="big rv" style="margin-top:24px;">Beige is a<br>choice. <em>We</em> made<br>a different one.<br>Make it <em>loud,</em><br>make it <em>matter.</em></p>
+    <div class="meta">
+      <span class="rv">↳ 12 humans</span>
+      <span class="rv">↳ 4 timezones</span>
+      <span class="rv">↳ 0 templates</span>
+      <span class="rv">↳ ∞ opinions</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SERVICES -->
+<section id="services" class="wrap">
+  <div class="shead">
+    <h2 class="rv">What<br>we do</h2>
+    <span class="idx rv">[ 03 — Capabilities ]</span>
+  </div>
+  <div class="svc">
+    <a class="svc-row rv" href="#contact"><span class="fill" aria-hidden="true"></span><span class="num">01</span><h3>Branding</h3><p>Identity systems, logos, naming and guidelines that own a room.</p></a>
+    <a class="svc-row rv" href="#contact"><span class="fill" aria-hidden="true"></span><span class="num">02</span><h3>Digital</h3><p>Websites &amp; products engineered to move fast and hit hard.</p></a>
+    <a class="svc-row rv" href="#contact"><span class="fill" aria-hidden="true"></span><span class="num">03</span><h3>Motion</h3><p>Title sequences, social and broadcast that never sits still.</p></a>
+    <a class="svc-row rv" href="#contact"><span class="fill" aria-hidden="true"></span><span class="num">04</span><h3>Strategy</h3><p>Positioning, voice and the big idea everything else hangs on.</p></a>
+  </div>
+</section>
+
+<!-- ============================ AWARDS -->
+<section id="awards" class="awards tight">
+  <div class="wrap">
+    <div class="shead">
+      <h2 class="rv">Recognition</h2>
+      <span class="idx rv">[ 04 — Trophies &amp; noise ]</span>
+    </div>
+    <div>
+      <div class="award-row rv"><span class="nm">Site of the Day</span><span class="org">Awwwards</span><span class="ct">×4</span><span class="yr">2026</span></div>
+      <div class="award-row rv"><span class="nm">Best Branding</span><span class="org">The FWA</span><span class="ct">×2</span><span class="yr">2025</span></div>
+      <div class="award-row rv"><span class="nm">Gold · Identity</span><span class="org">Type Directors Club</span><span class="ct">×1</span><span class="yr">2025</span></div>
+      <div class="award-row rv"><span class="nm">Motion of the Year</span><span class="org">Klikkit Festival</span><span class="ct">×1</span><span class="yr">2024</span></div>
+      <div class="award-row rv"><span class="nm">Studio to Watch</span><span class="org">Creative Loud Index</span><span class="ct">—</span><span class="yr">2024</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STATS -->
+<section class="wrap tight">
+  <div class="stats">
+    <div class="stat rv"><div class="n" data-count="240" data-suffix="+">0</div><div class="lab">Projects shipped</div></div>
+    <div class="stat rv"><div class="n" data-count="12" data-suffix="">0</div><div class="lab">Years loud</div></div>
+    <div class="stat rv"><div class="n" data-count="38" data-suffix="">0</div><div class="lab">Awards won</div></div>
+    <div class="stat rv"><div class="n" data-count="96" data-suffix="%">0</div><div class="lab">Client repeat rate</div></div>
+  </div>
+</section>
+
+<!-- ============================ CTA -->
+<section id="contact" class="cta tight">
+  <div class="wrap">
+    <span class="label rv" style="color:rgb(var(--color-on-primary));opacity:.7;">[ 05 — Start something ]</span>
+    <h2 class="rv" style="margin-top:18px;">GOT A<br><span class="stroke2">WILD</span> IDEA?</h2>
+    <p class="rv">Tell us the impossible brief. We'll bring the volume, the colour and the receipts.</p>
+    <a class="btn mag rv" href="mailto:hello@voltage.studio"><span class="dot" aria-hidden="true"></span>hello@voltage.studio</a>
+  </div>
+</section>
+
+<!-- ============================ FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-mark">VOLT<span class="yel">★</span>GE</div>
+    <div class="foot-cols">
+      <div>
+        <h4>Studio</h4>
+        <p class="lead">Loud by<br>design, since<br>twenty-fourteen.</p>
+      </div>
+      <div>
+        <h4>Menu</h4>
+        <ul>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#awards">Studio</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Social</h4>
+        <ul>
+          <li><a href="#contact">Instagram ↗</a></li>
+          <li><a href="#contact">Behance ↗</a></li>
+          <li><a href="#contact">Dribbble ↗</a></li>
+          <li><a href="#contact">LinkedIn ↗</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Newsletter</h4>
+        <form id="nl" novalidate>
+          <label for="email" class="label" style="display:block;margin-bottom:10px;">Get loud, monthly</label>
+          <input id="email" name="email" type="email" inputmode="email" autocomplete="email" required
+            aria-label="Email address" placeholder="you@studio.com"
+            style="width:100%;padding:14px 16px;border-radius:4px;border:2px solid rgb(var(--color-line));background:rgb(var(--color-surface));color:rgb(var(--color-ink));font-family:var(--font-body);font-size:15px;">
+          <button class="btn" type="submit" style="margin-top:12px;width:100%;justify-content:center;"><span class="dot" aria-hidden="true"></span>Subscribe</button>
+          <p id="nlmsg" role="status" aria-live="polite" style="margin-top:10px;font-size:13px;color:rgb(var(--color-primary));"></p>
+        </form>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 Voltage Studio. All caps reserved.</span>
+      <span>Made loud · No templates · webteam@digitalnexa.com</span>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · <b>Voltage</b> · agency</div>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+(function () {
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var fine = window.matchMedia("(pointer:fine)").matches;
+  var hasGSAP = !!(window.gsap && window.ScrollTrigger);
+  var work = document.getElementById("work");
+
+  /* ---------- BASE BEHAVIOUR (always on, no GSAP needed) ---------- */
+
+  /* hero CSS-fallback reveal on load (only matters if GSAP absent) */
+  window.addEventListener("load", function () { document.body.classList.add("loaded"); });
+  if (reduce) document.body.classList.add("loaded");
+
+  /* progress bar + sticky nav state */
+  var prog = document.getElementById("prog");
+  var nav = document.getElementById("nav");
+  function onScroll() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? (h.scrollTop || document.body.scrollTop) / max : 0;
+    prog.style.width = (p * 100) + "%";
+    nav.classList.toggle("scrolled", (h.scrollTop || document.body.scrollTop) > 30);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* newsletter (independent of motion) */
+  var form = document.getElementById("nl");
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = document.getElementById("email");
+      var msg = document.getElementById("nlmsg");
+      if (email.value && /\S+@\S+\.\S+/.test(email.value)) {
+        msg.style.color = "rgb(var(--color-primary))";
+        msg.textContent = "Loud and clear — you're in. ✦";
+        email.value = "";
+      } else {
+        msg.style.color = "rgb(var(--color-accent2))";
+        msg.textContent = "Drop a real email so we can shout back.";
+      }
+    });
+  }
+
+  /* JS-driven rotor (lands cleanly on each word; no clipping). Used whenever JS runs & motion allowed. */
+  function startRotor() {
+    if (reduce) return;
+    var ul = document.querySelector(".rotor ul");
+    if (!ul) return;
+    var items = ul.querySelectorAll("li");      // 6 items, last duplicates first
+    var unique = items.length - 1;              // 5 unique words
+    var step = items[0].offsetHeight;           // exact row height -> no clipping
+    var i = 0;
+    function advance() {
+      i++;
+      ul.style.transition = "transform .55s " + "cubic-bezier(0.2,0.9,0.1,1)";
+      ul.style.transform = "translateY(" + (-step * i) + "px)";
+      if (i >= unique) {
+        // after landing on the duplicate (=first), snap back to 0 with no transition
+        setTimeout(function () {
+          ul.style.transition = "none";
+          ul.style.transform = "translateY(0)";
+          i = 0;
+        }, 600);
+      }
+    }
+    setInterval(advance, 1800);
+  }
+
+  /* ---------- COUNT-UP (works with or without GSAP) ---------- */
+  var counters = Array.prototype.slice.call(document.querySelectorAll("[data-count]"));
+  function runCount(el) {
+    var target = parseFloat(el.getAttribute("data-count"));
+    var suffix = el.getAttribute("data-suffix") || "";
+    if (reduce) { el.textContent = target + suffix; return; }
+    var start = null, dur = 1500;
+    function stepFn(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(eased * target) + suffix;
+      if (p < 1) requestAnimationFrame(stepFn);
+    }
+    requestAnimationFrame(stepFn);
+  }
+
+  /* ---------- CUSTOM CURSOR + MAGNETIC (fine pointers, motion allowed) ---------- */
+  function initPointer() {
+    if (!(fine && !reduce)) return;
+    var cursor = document.getElementById("cursor");
+    cursor.style.display = "block";
+    window.addEventListener("mousemove", function (e) {
+      cursor.style.left = e.clientX + "px";
+      cursor.style.top = e.clientY + "px";
+    });
+    var hovers = Array.prototype.slice.call(document.querySelectorAll(".mag, a.proj, .navlink, .svc-row, .award-row"));
+    hovers.forEach(function (el) {
+      el.addEventListener("mouseenter", function () { cursor.classList.add("big"); });
+      el.addEventListener("mouseleave", function () { cursor.classList.remove("big"); });
+    });
+    var magBtns = Array.prototype.slice.call(document.querySelectorAll(".mag"));
+    magBtns.forEach(function (el) {
+      el.addEventListener("mousemove", function (e) {
+        var r = el.getBoundingClientRect();
+        var x = e.clientX - (r.left + r.width / 2);
+        var y = e.clientY - (r.top + r.height / 2);
+        if (hasGSAP) {
+          gsap.to(el, { x: x * 0.3, y: y * 0.42, duration: 0.4, ease: "power3.out" });
+        } else {
+          el.style.transform = "translate(" + x * 0.28 + "px," + y * 0.4 + "px)";
+        }
+      });
+      el.addEventListener("mouseleave", function () {
+        if (hasGSAP) { gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1,0.4)" }); }
+        else { el.style.transform = ""; }
+      });
+    });
+  }
+
+  /* ============================================================
+     FALLBACK PATH — no GSAP OR reduced motion.
+     Never hides content. Work section tiles as a perfect 12-col grid.
+     ============================================================ */
+  if (!hasGSAP || reduce) {
+    work.classList.add("work-static");           // perfect-grid layout, normal vertical scroll
+    document.documentElement.classList.add("no-js-rotor"); // CSS keyframe rotor (or static if reduced)
+
+    // reveals: show immediately via IntersectionObserver (or instantly if unavailable/reduced)
+    var rvsF = Array.prototype.slice.call(document.querySelectorAll(".rv"));
+    if (reduce || !("IntersectionObserver" in window)) {
+      rvsF.forEach(function (el) { el.classList.add("in"); });
+    } else {
+      var ioF = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            var sibs = Array.prototype.slice.call(e.target.parentNode.querySelectorAll(".rv"));
+            var idx = sibs.indexOf(e.target);
+            e.target.style.transitionDelay = Math.min(idx, 6) * 70 + "ms";
+            e.target.classList.add("in");
+            ioF.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
+      rvsF.forEach(function (el) { ioF.observe(el); });
+    }
+
+    // count-up via observer (or instant)
+    if (reduce || !("IntersectionObserver" in window)) {
+      counters.forEach(runCount);
+    } else {
+      var cioF = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { runCount(e.target); cioF.unobserve(e.target); }
+        });
+      }, { threshold: 0.5 });
+      counters.forEach(function (el) { cioF.observe(el); });
+    }
+
+    if (!reduce) { startRotor(); }   // JS rotor still fine without GSAP; CSS class is harmless backup
+    initPointer();
+    return;  // do not run any GSAP code below
+  }
+
+  /* ============================================================
+     GSAP PATH — motion allowed.
+     ============================================================ */
+  gsap.registerPlugin(ScrollTrigger);
+  document.documentElement.classList.add("gsap-active"); // neutralise CSS reveal so gsap owns it
+
+  startRotor();
+  initPointer();
+
+  /* ---- HERO ENTRANCE: words slam/clip in from below ---- */
+  gsap.set(".htitle .row > span", { yPercent: 115 });
+  gsap.set(".hero .eyebrow", { autoAlpha: 0, y: 20 });
+  gsap.set(".hero-bottom > *", { autoAlpha: 0, y: 30 });
+  gsap.set(".rotor", { autoAlpha: 0, y: 24 });
+
+  var heroTl = gsap.timeline({ delay: 0.15, defaults: { ease: "expo.out" } });
+  heroTl
+    .to(".hero .eyebrow", { autoAlpha: 1, y: 0, duration: 0.7 })
+    .to(".htitle .row > span", { yPercent: 0, duration: 1.05, stagger: 0.1, ease: "power4.out" }, "-=0.4")
+    .to(".hero-bottom > *", { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.08 }, "-=0.5")
+    .to(".rotor", { autoAlpha: 1, y: 0, duration: 0.7 }, "-=0.55");
+
+  /* ---- matchMedia: pinned horizontal work (desktop) vs stacked (mobile) ---- */
+  var mm = gsap.matchMedia();
+
+  mm.add(
+    {
+      isDesktop: "(min-width: 821px)",
+      isMobile: "(max-width: 820px)"
+    },
+    function (ctx) {
+      var conds = ctx.conditions;
+      var track = document.querySelector(".worktrack");
+      var viewport = document.querySelector(".workviewport");
+      var bar = document.getElementById("workbar");
+
+      if (conds.isDesktop) {
+        // PINNED HORIZONTAL SHOWCASE
+        var getShift = function () {
+          // distance the track must travel so its right edge reaches the viewport right edge
+          return Math.max(0, track.scrollWidth - viewport.clientWidth);
+        };
+
+        var horiz = gsap.to(track, {
+          x: function () { return -getShift(); },
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#work",
+            start: "top top",
+            end: function () { return "+=" + getShift(); },
+            pin: true,
+            scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: function (self) {
+              if (bar) {
+                var w = 18 + self.progress * 82; // 18% min -> 100%
+                bar.style.width = w + "%";
+              }
+            }
+          }
+        });
+        return function () { horiz.scrollTrigger && horiz.scrollTrigger.kill(); horiz.kill(); gsap.set(track, { x: 0 }); };
+      } else {
+        // MOBILE: no pin/horizontal — fall back to perfect grid, normal vertical scroll
+        work.classList.add("work-static");
+        gsap.set(track, { clearProps: "x" });
+        return function () { work.classList.remove("work-static"); };
+      }
+    }
+  );
+
+  /* ---- ScrollTrigger.batch reveals (bold) ---- */
+  gsap.set(".rv", { y: 46, autoAlpha: 0 });
+  ScrollTrigger.batch(".rv", {
+    start: "top 88%",
+    onEnter: function (els) {
+      gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.85, stagger: 0.09, ease: "power3.out", overwrite: true });
+    },
+    once: true
+  });
+  // exclude hero .rv from batch double-handling: hero ones already visible via heroTl,
+  // re-assert their visible state so batch doesn't leave them hidden if off-screen logic differs
+  gsap.set(".hero .rv", { clearProps: "all" });
+
+  /* ---- count-up via ScrollTrigger ---- */
+  counters.forEach(function (el) {
+    ScrollTrigger.create({
+      trigger: el,
+      start: "top 85%",
+      once: true,
+      onEnter: function () { runCount(el); }
+    });
+  });
+
+  /* ---- services rows: subtle entrance handled by batch; ensure refresh after fonts/images ---- */
+  window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe ===
+   Guarantees reveal/heading content can never stay permanently hidden,
+   independent of GSAP/ScrollTrigger. Delayed 1.3s so real entrance
+   animations (which finish <1s) play untouched; only elements still
+   invisible after entering the viewport are forced to their final state. */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-line],.reveal,[data-rv],[data-reveal],[data-reveal-clip],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;            /* don't touch elements that already animated in (preserves parallax/hover transforms) */
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  /* catch-all sweep for anything in/near the first viewport that never animated */
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+</body>
+</html>

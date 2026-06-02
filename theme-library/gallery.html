@@ -1,0 +1,57 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXA Web Studio — Theme Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+ :root{--ink:#12151a;--muted:#697079;--line:#e7e9ec;--bg:#f5f6f8;--card:#fff;--accent:#4f6bed}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+ .mono{font-family:'JetBrains Mono',monospace}
+ .wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+ header{background:#fff;border-bottom:1px solid var(--line)}
+ .top{padding:44px 0 36px}
+ .kick{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+ h1{font-size:34px;letter-spacing:-.02em;margin-top:10px}
+ .sub{color:var(--muted);margin-top:10px;max-width:64ch;font-size:15px}
+ .meta{display:flex;gap:30px;margin-top:24px}
+ .meta .n{font-size:24px;font-weight:700}.meta .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+ .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:36px 0 80px}
+ @media(max-width:940px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.grid{grid-template-columns:1fr}}
+ .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .25s,transform .25s;text-decoration:none;color:inherit}
+ .card:hover{box-shadow:0 18px 40px -22px rgba(17,21,26,.35);transform:translateY(-3px)}
+ .thumb{aspect-ratio:16/10;border-bottom:1px solid var(--line);background:#eceef1;overflow:hidden}
+ .thumb img{width:100%;height:100%;object-fit:cover;object-position:top}
+ .body{padding:16px 18px 18px;flex:1;display:flex;flex-direction:column}
+ .row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+ .body h3{font-size:18px;letter-spacing:-.01em}
+ .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+ .sector{font-size:13px;color:var(--muted);margin-top:3px}
+ .sw{display:flex;gap:6px;margin-top:12px}
+ .sw span{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
+ .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+ .tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.04em;padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+ .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:12px;color:var(--muted)}
+ .badge{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:999px;background:#eef1fb;color:#3a52c4}
+ .open{font-weight:600;color:var(--accent);font-size:13px}
+</style></head><body>
+<header><div class="wrap top">
+ <div class="kick">NEXA Web Studio</div><h1>Design Theme Library</h1>
+ <p class="sub">15 sector-originated, token-driven themes — each with a distinct layout, real imagery, and GSAP-powered motion. Click any theme to open its full live preview.</p>
+ <div class="meta"><div><div class="n">15</div><div class="l">Themes</div></div><div><div class="n">6</div><div class="l">Families</div></div><div><div class="n">100%</div><div class="l">Token-driven</div></div></div>
+</div></header>
+<div class="wrap"><div class="grid" id="g"></div></div>
+<script>
+ var T=[{"id": "meridian", "name": "Meridian", "family": "modern", "sector": "Fintech / private banking", "mode": "dark", "tags": ["dark", "bold", "lime-accent", "glow", "modern", "conversion"], "palette": {"bg": "#0d0f0e", "ink": "#f3f6f0", "primary": "#caf24d", "accent": "#caf24d"}, "fonts": {"display": "Clash Display", "body": "General Sans"}, "manifest": "themes/meridian.json", "preview": "previews/meridian.html", "thumbnail": "thumbnails/meridian.png"}, {"id": "halcyon", "name": "Halcyon", "family": "minimal", "sector": "Wellness / spa", "mode": "light", "tags": ["light", "calm", "organic", "sage", "wellness", "serene", "spa", "image-led"], "palette": {"bg": "#f3efe7", "ink": "#2f3c35", "primary": "#4e6e54", "accent": "#7e9b7a"}, "fonts": {"display": "Fraunces", "body": "Hanken Grotesk"}, "manifest": "themes/halcyon.json", "preview": "previews/halcyon.html", "thumbnail": "thumbnails/halcyon.png"}, {"id": "atlas", "name": "Atlas", "family": "modern", "sector": "SaaS / B2B", "mode": "light", "tags": ["light", "saas", "indigo", "product-led", "modern", "analytics", "conversion"], "palette": {"bg": "#ffffff", "ink": "#1b2030", "primary": "#4f6bed", "accent": "#4f6bed"}, "fonts": {"display": "Schibsted Grotesk", "body": "General Sans"}, "manifest": "themes/atlas.json", "preview": "previews/atlas.html", "thumbnail": "thumbnails/atlas.png"}, {"id": "noir", "name": "Noir", "family": "luxury", "sector": "Luxury fashion", "mode": "dark", "tags": ["dark", "editorial", "luxury", "monochrome", "champagne-accent", "fashion", "high-contrast"], "palette": {"bg": "#080808", "ink": "#f4f1ea", "primary": "#c8a96a", "accent": "#c8a96a"}, "fonts": {"display": "Bodoni Moda", "body": "General Sans"}, "manifest": "themes/noir.json", "preview": "previews/noir.html", "thumbnail": "thumbnails/noir.png"}, {"id": "voltage", "name": "Voltage", "family": "bold", "sector": "Creative agency", "mode": "dark", "tags": ["maximalist", "kinetic", "high-contrast", "editorial", "agency", "grid-breaking", "loud"], "palette": {"bg": "#111111", "ink": "#f5f5f0", "primary": "#f5ff4d", "accent": "#f5ff4d"}, "fonts": {"display": "Bricolage Grotesque", "body": "General Sans"}, "manifest": "themes/voltage.json", "preview": "previews/voltage.html", "thumbnail": "thumbnails/voltage.png"}, {"id": "ember", "name": "Ember", "family": "luxury", "sector": "Restaurant / hospitality", "mode": "light", "tags": ["warm", "earthy", "editorial", "luxury", "appetizing", "image-rich"], "palette": {"bg": "#f7efe3", "ink": "#2b1b14", "primary": "#c4622d", "accent": "#c4622d"}, "fonts": {"display": "DM Serif Display", "body": "Albert Sans"}, "manifest": "themes/ember.json", "preview": "previews/ember.html", "thumbnail": "thumbnails/ember.png"}, {"id": "cobalt", "name": "Cobalt", "family": "corporate", "sector": "Healthcare / medical", "mode": "light", "tags": ["clinical", "trustworthy", "accessible", "calm", "image-rich", "healthcare"], "palette": {"bg": "#f3f8fb", "ink": "#0d2a3f", "primary": "#1f8fd6", "accent": "#27c2a0"}, "fonts": {"display": "Plus Jakarta Sans", "body": "General Sans"}, "manifest": "themes/cobalt.json", "preview": "previews/cobalt.html", "thumbnail": "thumbnails/cobalt.png"}, {"id": "quanta", "name": "Quanta", "family": "vibrant", "sector": "Crypto / Web3", "mode": "dark", "tags": ["web3", "crypto", "defi", "neon", "futuristic", "glassmorphism", "dark", "protocol"], "palette": {"bg": "#07080f", "ink": "#e9ecf8", "primary": "#7c5cff", "accent": "#23e0c8"}, "fonts": {"display": "Sora", "body": "Geist"}, "manifest": "themes/quanta.json", "preview": "previews/quanta.html", "thumbnail": "thumbnails/quanta.png"}, {"id": "verdant", "name": "Verdant", "family": "minimal", "sector": "Sustainability / nonprofit", "mode": "light", "tags": ["earthy", "editorial", "hopeful", "image-rich", "organic", "impact"], "palette": {"bg": "#f4f1e6", "ink": "#1f3320", "primary": "#4a7c3f", "accent": "#d99a3f"}, "fonts": {"display": "Newsreader", "body": "General Sans"}, "manifest": "themes/verdant.json", "preview": "previews/verdant.html", "thumbnail": "thumbnails/verdant.png"}, {"id": "chalk", "name": "Chalk", "family": "vibrant", "sector": "Education / EdTech", "mode": "light", "tags": ["friendly", "bright", "image-rich", "playful", "approachable", "learning"], "palette": {"bg": "#fff9f0", "ink": "#23304a", "primary": "#ff7a59", "accent": "#3db8ff"}, "fonts": {"display": "Gabarito", "body": "General Sans"}, "manifest": "themes/chalk.json", "preview": "previews/chalk.html", "thumbnail": "thumbnails/chalk.png"}, {"id": "bastion", "name": "Bastion", "family": "corporate", "sector": "Legal / professional", "mode": "light", "tags": ["light", "legal", "law-firm", "professional-services", "authoritative", "classic", "editorial", "navy", "burgundy"], "palette": {"bg": "#f4f2ec", "ink": "#16233a", "primary": "#7a2230", "accent": "#b89b5e"}, "fonts": {"display": "Cormorant Garamond", "body": "General Sans"}, "manifest": "themes/bastion.json", "preview": "previews/bastion.html", "thumbnail": "thumbnails/bastion.png"}, {"id": "horizon", "name": "Horizon", "family": "vibrant", "sector": "Travel / tourism", "mode": "light", "tags": ["immersive", "vivid", "wanderlust", "image-rich", "adventurous", "booking"], "palette": {"bg": "#fdf6ec", "ink": "#0a3d4d", "primary": "#ff8a3d", "accent": "#0fb6c4"}, "fonts": {"display": "Cabinet Grotesk", "body": "General Sans"}, "manifest": "themes/horizon.json", "preview": "previews/horizon.html", "thumbnail": "thumbnails/horizon.png"}, {"id": "pulse", "name": "Pulse", "family": "bold", "sector": "Fitness / sports", "mode": "dark", "tags": ["fitness", "athletic", "high-energy", "dark", "gym", "bold", "image-rich"], "palette": {"bg": "#0c0c0e", "ink": "#f5f6f3", "primary": "#d6ff2e", "accent": "#ff2e63"}, "fonts": {"display": "Archivo", "body": "General Sans"}, "manifest": "themes/pulse.json", "preview": "previews/pulse.html", "thumbnail": "thumbnails/pulse.png"}, {"id": "terrace", "name": "Terrace", "family": "minimal", "sector": "Real estate / architecture", "mode": "light", "tags": ["real-estate", "architecture", "property", "gridded", "neutral", "image-rich", "refined"], "palette": {"bg": "#f2efe9", "ink": "#2b2824", "primary": "#9a8466", "accent": "#3f4a4f"}, "fonts": {"display": "Marcellus", "body": "General Sans"}, "manifest": "themes/terrace.json", "preview": "previews/terrace.html", "thumbnail": "thumbnails/terrace.png"}, {"id": "spark", "name": "Spark", "family": "vibrant", "sector": "E-commerce / retail", "mode": "light", "tags": ["ecommerce", "retail", "vibrant", "conversion", "product-led", "energetic", "shop"], "palette": {"bg": "#fff5f7", "ink": "#1a1430", "primary": "#ff3b6b", "accent": "#ffb02e"}, "fonts": {"display": "Unbounded", "body": "General Sans"}, "manifest": "themes/spark.json", "preview": "previews/spark.html", "thumbnail": "thumbnails/spark.png"}];
+ document.getElementById('g').innerHTML=T.map(function(t,i){
+   var sw=Object.values(t.palette).map(function(c){return '<span style="background:'+c+'"></span>'}).join('');
+   var tags=t.tags.slice(0,3).map(function(x){return '<span class="tag">'+x+'</span>'}).join('');
+   var nn=('0'+(i+1)).slice(-2);
+   return '<a class="card" href="'+t.preview+'">'
+     +'<div class="thumb"><img loading="lazy" src="'+t.thumbnail+'" alt="'+t.name+' preview"></div>'
+     +'<div class="body"><div class="row1"><h3>'+t.name+'</h3><span class="badge">'+t.mode+'</span></div>'
+     +'<div class="sector"><span class="num">'+nn+'</span> · '+t.sector+'</div>'
+     +'<div class="sw">'+sw+'</div><div class="tags">'+tags+'</div>'
+     +'<div class="foot"><span>'+t.fonts.display+' / '+t.fonts.body+'</span><span class="open">Open preview →</span></div>'
+     +'</div></a>';
+ }).join('');
+</script></body></html>

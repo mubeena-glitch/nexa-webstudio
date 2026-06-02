@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NEXA StyleManifest",
+  "description": "A design theme as data. Tokens map 1:1 to CSS custom properties injected by the studio's StyleProvider. No token may be a hardcoded literal in a section component.",
+  "type": "object",
+  "required": ["id", "name", "family", "sector", "tags", "mode", "tokens", "recipes"],
+  "properties": {
+    "id":     { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "name":   { "type": "string" },
+    "family": {
+      "type": "string",
+      "description": "Maps to the Step-5 brand aesthetic.",
+      "enum": ["minimal", "bold", "luxury", "modern", "corporate", "vibrant"]
+    },
+    "sector": { "type": "string", "description": "Origin sector. Personality, not a constraint." },
+    "tags":   { "type": "array", "items": { "type": "string" }, "minItems": 3 },
+    "mode":   { "type": "string", "enum": ["light", "dark"] },
+    "tokens": {
+      "type": "object",
+      "required": ["color", "type", "space", "radius", "shadow", "motion", "imagery"],
+      "properties": {
+        "color": {
+          "type": "object",
+          "required": ["bg", "surface", "ink", "muted", "line", "primary", "onPrimary", "accent"],
+          "description": "All values rgb-channel triples ('11 27 43') so Tailwind alpha modifiers work.",
+          "properties": {
+            "bg":        { "type": "string" },
+            "surface":   { "type": "string" },
+            "ink":       { "type": "string" },
+            "muted":     { "type": "string" },
+            "line":      { "type": "string" },
+            "primary":   { "type": "string" },
+            "onPrimary": { "type": "string" },
+            "accent":    { "type": "string" },
+            "accent2":   { "type": "string" }
+          }
+        },
+        "type": {
+          "type": "object",
+          "required": ["display", "body", "scaleRatio", "weights"],
+          "properties": {
+            "display":    { "type": "string" },
+            "body":       { "type": "string" },
+            "mono":       { "type": "string" },
+            "scaleRatio": { "type": "number" },
+            "weights":    { "type": "object" },
+            "displayCase":{ "type": "string", "enum": ["none", "upper", "title"] },
+            "displayTracking": { "type": "string" }
+          }
+        },
+        "space": {
+          "type": "object",
+          "required": ["base", "section", "gutter"],
+          "properties": {
+            "base":    { "type": "number", "description": "px rhythm unit (4 or 8)" },
+            "section": { "type": "string" },
+            "gutter":  { "type": "string" },
+            "density": { "type": "string", "enum": ["airy", "balanced", "dense"] }
+          }
+        },
+        "radius": {
+          "type": "object",
+          "required": ["card", "button"],
+          "properties": {
+            "card":   { "type": "string" },
+            "button": { "type": "string" },
+            "input":  { "type": "string" },
+            "pill":   { "type": "string" }
+          }
+        },
+        "shadow": {
+          "type": "object",
+          "required": ["card"],
+          "properties": {
+            "card":     { "type": "string" },
+            "elevated": { "type": "string" },
+            "philosophy": { "type": "string", "enum": ["none", "hairline", "soft", "dramatic", "glow"] }
+          }
+        },
+        "motion": {
+          "type": "object",
+          "required": ["ease", "duration"],
+          "properties": {
+            "ease":      { "type": "string" },
+            "duration":  { "type": "string" },
+            "character": { "type": "string", "enum": ["calm", "snappy", "energetic", "fluid"] }
+          }
+        },
+        "imagery": {
+          "type": "object",
+          "required": ["treatment"],
+          "properties": {
+            "treatment": { "type": "string", "enum": ["full-bleed", "framed", "duotone", "rounded", "masked"] },
+            "ratio":     { "type": "string" },
+            "filter":    { "type": "string" }
+          }
+        }
+      }
+    },
+    "recipes": {
+      "type": "object",
+      "description": "Component-level style choices, all resolved from tokens.",
+      "required": ["button", "card", "nav"],
+      "properties": {
+        "button": { "type": "string", "description": "e.g. solid, ghost-underline, pill-outline" },
+        "card":   { "type": "string", "description": "e.g. borderless, hairline, elevated, glass" },
+        "nav":    { "type": "string", "description": "e.g. minimal-inline, centered, split" }
+      }
+    },
+    "preferredLayouts": {
+      "type": "object",
+      "description": "Optional default section variants this theme looks best with. The composition axis can still override per project.",
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}

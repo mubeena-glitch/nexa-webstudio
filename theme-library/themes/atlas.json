@@ -1,0 +1,54 @@
+{
+  "id": "atlas",
+  "name": "Atlas",
+  "family": "modern",
+  "sector": "SaaS / B2B",
+  "tags": ["light", "saas", "indigo", "product-led", "modern", "analytics", "conversion"],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "255 255 255",
+      "surface": "247 248 250",
+      "surface2": "240 242 246",
+      "ink": "27 32 48",
+      "muted": "100 110 130",
+      "line": "226 230 238",
+      "primary": "79 107 237",
+      "onPrimary": "255 255 255",
+      "accent": "79 107 237",
+      "accent2": "25 195 125"
+    },
+    "type": {
+      "display": "'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif",
+      "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, monospace",
+      "scaleRatio": 1.28,
+      "weights": { "display": 600, "displayBold": 700, "body": 400, "label": 500, "bold": 600 },
+      "displayCase": "none",
+      "displayTracking": "-0.02em"
+    },
+    "space": { "base": 8, "section": "clamp(88px, 11vw, 152px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "balanced" },
+    "radius": { "card": "16px", "button": "12px", "input": "12px", "pill": "999px" },
+    "shadow": {
+      "card": "0 1px 2px rgb(27 32 48 / 0.04), 0 8px 24px -12px rgb(27 32 48 / 0.12)",
+      "elevated": "0 2px 4px rgb(27 32 48 / 0.05), 0 24px 48px -16px rgb(27 32 48 / 0.18)",
+      "philosophy": "soft"
+    },
+    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "440ms", "character": "snappy" },
+    "imagery": { "treatment": "framed", "ratio": "16:10", "filter": "none" }
+  },
+  "recipes": { "button": "solid-rounded", "card": "elevated", "nav": "split-inline" },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "gradient-mesh-glass-dashboard",
+    "trusted": "logo-bar",
+    "screenshot": "full-width-band",
+    "features": "alternating-splits",
+    "bento": "dense-capabilities",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "soft-band"
+  }
+}
