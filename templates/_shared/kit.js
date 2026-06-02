@@ -187,6 +187,7 @@
       case 'nexa:set-footer':      return setFooter(m.data);
       case 'nexa:enable-edit':     return enableEditMode();
       case 'nexa:init-carousels':  return initCarousels();
+      case 'nexa:init-blocks':     return initBlocks();
       case 'nexa:get-html':
         return evt.source.postMessage({type:'nexa:html', html: document.documentElement.outerHTML}, '*');
     }
@@ -224,14 +225,41 @@
     });
   }
 
+  // ───────── 13. Countdown timers ─────────
+  function initCountdowns(root){
+    (root || document).querySelectorAll('.nx-countdown').forEach(cd => {
+      if(cd._nxInit) return; cd._nxInit = true;
+      const hrs = parseFloat(cd.getAttribute('data-hours') || '72');
+      const target = Date.now() + hrs * 3600 * 1000;
+      const units = [86400000, 3600000, 60000, 1000];
+      const nums = cd.querySelectorAll('.nx-cd-num');
+      function tick(){
+        let diff = Math.max(0, target - Date.now());
+        nums.forEach((n, i) => { const v = Math.floor(diff / units[i]); diff -= v * units[i]; n.textContent = String(v).padStart(2, '0'); });
+      }
+      tick(); cd._t = setInterval(tick, 1000);
+    });
+  }
+
+  // ───────── 14. Dismissible bars (sticky CTA / announcement) ─────────
+  function wireDismiss(root){
+    (root || document).querySelectorAll('.nx-stickybar-close, .nx-announce-close').forEach(b => {
+      if(b._nxInit) return; b._nxInit = true;
+      b.addEventListener('click', () => { const p = b.closest('.nx-stickybar, .nx-announce'); if(p) p.style.display = 'none'; });
+    });
+  }
+
+  // Umbrella initialiser — safe to call repeatedly (guards via _nxInit)
+  function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); }
+
   // Expose globals for in-page debugging / non-iframe use
-  window.NEXA = {setTheme,setHero,setBrand,setLogo,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
+  window.NEXA = {setTheme,setHero,setBrand,setLogo,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
 
   // Auto-init: if loaded with ?edit=1, enable edit mode
   if(location.search.includes('edit=1')) enableEditMode();
 
-  // Wire any carousels present on initial load
-  initCarousels();
+  // Wire any interactive blocks present on initial load
+  initBlocks();
 
   // Tell parent the template is ready
   if(window.parent !== window){

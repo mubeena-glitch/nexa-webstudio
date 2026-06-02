@@ -53,7 +53,10 @@ textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
 .addsec-item button{padding:3px 11px;border:1.5px solid var(--a);background:var(--a);color:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 .addsec-item button:hover{opacity:.88}
 /* block palette */
-.palette{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.palette{display:block}
+.pgroup-h{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);margin:13px 0 7px}
+.pgroup-h:first-child{margin-top:0}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pblock{border:1.5px solid var(--bd);border-radius:9px;padding:8px 8px 7px;cursor:grab;background:#fff;text-align:center;transition:.14s;user-select:none}
 .pblock:hover{border-color:var(--a);box-shadow:0 4px 14px rgba(147,84,255,.13)}
 .pblock:active{cursor:grabbing}
@@ -375,12 +378,62 @@ var BLOCKS=[
    html:'<section class="nx-section alt"><div class="container"><div class="nx-stats"><div class="nx-stat"><div class="val">4.9</div><div class="lbl">Average rating</div></div><div class="nx-stat"><div class="val">12k</div><div class="lbl">Happy customers</div></div><div class="nx-stat"><div class="val">98%</div><div class="lbl">Would recommend</div></div><div class="nx-stat"><div class="val">24/7</div><div class="lbl">Support</div></div></div></div></section>'},
   {key:'faq',label:'FAQ',
    svg:'<rect class="wf-mut" x="7" y="7" width="27" height="3" rx="1.5"/><text x="38" y="11" class="wf-acc" font-size="8">+</text><rect class="wf-mut" x="7" y="14" width="27" height="3" rx="1.5"/><text x="38" y="18" class="wf-acc" font-size="8">+</text><rect class="wf-mut" x="7" y="21" width="27" height="3" rx="1.5"/><text x="38" y="25" class="wf-acc" font-size="8">+</text>',
-   html:'<section class="nx-section"><div class="container"><div class="nx-section-head"><span class="nx-eyebrow">FAQ</span><h2>Questions, answered</h2></div><div class="nx-faq"><details><summary>First question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details><details><summary>Second question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details><details><summary>Third question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details></div></div></section>'}
+   html:'<section class="nx-section"><div class="container"><div class="nx-section-head"><span class="nx-eyebrow">FAQ</span><h2>Questions, answered</h2></div><div class="nx-faq"><details><summary>First question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details><details><summary>Second question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details><details><summary>Third question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details></div></div></section>'},
+
+  // ---- Convert (performance-marketer blocks) ----
+  {key:'leadform',label:'Lead form',
+   svg:'<rect class="wf-box" x="11" y="4" width="26" height="22" rx="2"/><rect class="wf-mut" x="14" y="7" width="14" height="3" rx="1.5"/><rect class="wf-mut" x="14" y="12" width="20" height="3" rx="1"/><rect class="wf-mut" x="14" y="16.5" width="20" height="3" rx="1"/><rect class="wf-acc" x="14" y="21" width="20" height="3.5" rx="1.5"/>',
+   html:'<section class="nx-section alt"><div class="container" style="max-width:520px"><div class="nx-form"><h3>Get your free consultation</h3><p class="form-sub">We reply within 2 business hours.</p><form onsubmit="return false"><input class="nx-input" type="text" placeholder="Full name" required><input class="nx-input" type="email" placeholder="Email address" required><input class="nx-input" type="tel" placeholder="Phone number" required><button class="nx-btn nx-btn-primary">Request a call back</button><p class="form-foot">We respect your privacy. No spam.</p></form></div></div></section>'},
+  {key:'stickybar',label:'Sticky CTA bar',
+   svg:'<rect class="wf-acc" x="4" y="19" width="40" height="7" rx="2"/><rect x="8" y="21.5" width="16" height="2" rx="1" fill="#fff" opacity=".8"/><rect x="30" y="20.5" width="10" height="4" rx="2" fill="#fff"/>',
+   html:'<div class="nx-stickybar"><strong>Limited offer — 20% off this week.</strong><a href="#form" class="nx-btn nx-btn-primary">Claim offer</a><button class="nx-stickybar-close" type="button" aria-label="Dismiss">&times;</button></div>'},
+  {key:'countdown',label:'Countdown',
+   svg:'<rect class="wf-box" x="6" y="11" width="8" height="9" rx="1.5"/><rect class="wf-box" x="16" y="11" width="8" height="9" rx="1.5"/><rect class="wf-box" x="26" y="11" width="8" height="9" rx="1.5"/><rect class="wf-box" x="36" y="11" width="6" height="9" rx="1.5"/><rect class="wf-acc" x="8" y="13" width="4" height="3" rx="1"/><rect class="wf-acc" x="18" y="13" width="4" height="3" rx="1"/><rect class="wf-acc" x="28" y="13" width="4" height="3" rx="1"/>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-section-head"><span class="nx-eyebrow">Hurry</span><h2>Offer ends soon</h2></div><div class="nx-countdown" data-hours="72"><div class="nx-cd-unit"><div class="nx-cd-num">00</div><div class="nx-cd-lbl">Days</div></div><div class="nx-cd-unit"><div class="nx-cd-num">00</div><div class="nx-cd-lbl">Hours</div></div><div class="nx-cd-unit"><div class="nx-cd-num">00</div><div class="nx-cd-lbl">Mins</div></div><div class="nx-cd-unit"><div class="nx-cd-num">00</div><div class="nx-cd-lbl">Secs</div></div></div></div></section>'},
+  {key:'announce',label:'Announcement bar',
+   svg:'<rect class="wf-acc" x="4" y="5" width="40" height="6" rx="2"/><rect x="13" y="7" width="22" height="2" rx="1" fill="#fff" opacity=".85"/>',
+   html:'<div class="nx-announce">New: free shipping on all orders this month. <a href="#">Shop now</a><button class="nx-announce-close" type="button" aria-label="Dismiss">&times;</button></div>'},
+  {key:'pricing',label:'Pricing',
+   svg:'<rect class="wf-box" x="5" y="7" width="11" height="17" rx="2"/><rect class="wf-acc" x="18.5" y="5" width="11" height="20" rx="2"/><rect class="wf-box" x="32" y="7" width="11" height="17" rx="2"/>',
+   html:'<section class="nx-section alt"><div class="container"><div class="nx-section-head"><span class="nx-eyebrow">Pricing</span><h2>Simple, transparent pricing</h2></div><div class="nx-pricing"><div class="nx-price"><h4>Starter</h4><div class="amt">$19<span>/mo</span></div><ul><li>Up to 3 projects</li><li>Basic analytics</li><li>Email support</li></ul><a href="#" class="nx-btn nx-btn-ghost">Choose Starter</a></div><div class="nx-price featured"><h4>Growth</h4><div class="amt">$49<span>/mo</span></div><ul><li>Unlimited projects</li><li>Advanced analytics</li><li>Priority support</li></ul><a href="#" class="nx-btn nx-btn-primary">Choose Growth</a></div><div class="nx-price"><h4>Scale</h4><div class="amt">$99<span>/mo</span></div><ul><li>Everything in Growth</li><li>Dedicated manager</li><li>Custom integrations</li></ul><a href="#" class="nx-btn nx-btn-ghost">Choose Scale</a></div></div></div></section>'},
+  {key:'compare',label:'Comparison',
+   svg:'<rect class="wf-mut" x="6" y="7" width="36" height="3" rx="1"/><rect class="wf-mut" x="6" y="13" width="24" height="2" rx="1"/><rect class="wf-mut" x="6" y="18" width="24" height="2" rx="1"/><rect class="wf-mut" x="6" y="23" width="24" height="2" rx="1"/><rect class="wf-acc" x="34" y="12.5" width="4" height="3" rx="1"/><rect class="wf-acc" x="34" y="17.5" width="4" height="3" rx="1"/><rect class="wf-acc" x="34" y="22.5" width="4" height="3" rx="1"/>',
+   html:'<section class="nx-section"><div class="container" style="max-width:760px"><div class="nx-section-head"><h2>How we compare</h2></div><table class="nx-compare"><thead><tr><th>Feature</th><th>Us</th><th>Others</th></tr></thead><tbody><tr><td>Setup time</td><td class="yes">Minutes</td><td class="no">Weeks</td></tr><tr><td>Live support</td><td class="yes">✓</td><td class="no">—</td></tr><tr><td>No contracts</td><td class="yes">✓</td><td class="no">—</td></tr><tr><td>Free updates</td><td class="yes">✓</td><td class="no">Paid</td></tr></tbody></table></div></section>'},
+  {key:'steps',label:'How it works',
+   svg:'<circle class="wf-acc" cx="11" cy="12" r="4"/><circle class="wf-acc" cx="24" cy="12" r="4"/><circle class="wf-acc" cx="37" cy="12" r="4"/><rect class="wf-mut" x="6" y="19" width="10" height="2" rx="1"/><rect class="wf-mut" x="19" y="19" width="10" height="2" rx="1"/><rect class="wf-mut" x="32" y="19" width="10" height="2" rx="1"/>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-section-head"><span class="nx-eyebrow">How it works</span><h2>Three steps to get started</h2></div><div class="nx-steps"><div class="nx-step"><div class="nx-step-num">1</div><h4>Sign up</h4><p>Create your account in under a minute.</p></div><div class="nx-step"><div class="nx-step-num">2</div><h4>Set it up</h4><p>Connect your tools and configure your space.</p></div><div class="nx-step"><div class="nx-step-num">3</div><h4>Go live</h4><p>Launch and start seeing results the same day.</p></div></div></div></section>'},
+  {key:'checklist',label:'Feature checklist',
+   svg:'<circle class="wf-acc" cx="9" cy="8" r="3"/><rect class="wf-mut" x="15" y="6.5" width="27" height="3" rx="1.5"/><circle class="wf-acc" cx="9" cy="16" r="3"/><rect class="wf-mut" x="15" y="14.5" width="27" height="3" rx="1.5"/><circle class="wf-acc" cx="9" cy="24" r="3"/><rect class="wf-mut" x="15" y="22.5" width="27" height="3" rx="1.5"/>',
+   html:'<section class="nx-section alt"><div class="container"><div class="nx-section-head"><h2>Everything included</h2></div><ul class="nx-checklist"><li>No setup fees, ever</li><li>Cancel anytime, no questions asked</li><li>Free migration from your old tool</li><li>24/7 support from real humans</li><li>Bank-grade security and daily backups</li></ul></div></section>'},
+  {key:'reviews',label:'Review strip',
+   svg:'<text x="8" y="20" font-size="13" fill="#f5a623" letter-spacing="1">★★★★★</text>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-reviews-strip"><span class="rscore">4.9</span><div><div class="stars">★★★★★</div><div class="rmeta">from 1,200+ verified reviews</div></div></div></div></section>'},
+  {key:'guarantee',label:'Guarantee',
+   svg:'<circle class="wf-fill" cx="15" cy="15" r="9"/><path d="M11 15l3 3 5-6" fill="none" stroke="#9354FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect class="wf-mut" x="28" y="11" width="14" height="3" rx="1.5"/><rect class="wf-mut" x="28" y="16" width="11" height="2" rx="1"/>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-guarantee"><div class="gicon">✓</div><div><h4>30-day money-back guarantee</h4><p>Not happy? Get a full refund within 30 days, no questions asked.</p></div></div></div></section>'},
+  {key:'video',label:'Video embed',
+   svg:'<rect class="wf-fill" x="7" y="5" width="34" height="20" rx="2"/><circle class="wf-acc" cx="24" cy="15" r="5"/><path d="M22.3 12.7l4 2.3-4 2.3z" fill="#fff"/>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-video"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div></section>'}
 ];
 
+// Palette groups (performance-marketer taxonomy)
+var GROUPS=[
+  {name:'Convert',keys:['leadform','stickybar','countdown','announce','cta']},
+  {name:'Content',keys:['split-left','split-right','cards','steps','pricing','compare','checklist','faq']},
+  {name:'Social proof',keys:['quote','reviews','guarantee','logos','stats']},
+  {name:'Media',keys:['gallery','carousel','media','video']}
+];
+function blockByKey(k){return BLOCKS.find(function(b){return b.key===k;});}
+function pblockHtml(b){return '<div class="pblock" data-key="'+b.key+'" title="'+b.label+' — drag onto the page or click to append"><svg viewBox="0 0 48 30">'+b.svg+'</svg><div class="pl">'+escHtml(b.label)+'</div></div>';}
 function renderPalette(){
   var p=document.getElementById('palette');if(!p)return;
-  p.innerHTML=BLOCKS.map(function(b){return '<div class="pblock" data-key="'+b.key+'" title="'+b.label+' — drag onto the page or click to append"><svg viewBox="0 0 48 30">'+b.svg+'</svg><div class="pl">'+escHtml(b.label)+'</div></div>';}).join('');
+  var h='';
+  GROUPS.forEach(function(g){
+    h+='<div class="pgroup-h">'+g.name+'</div><div class="pgrid">';
+    g.keys.forEach(function(k){var b=blockByKey(k);if(b)h+=pblockHtml(b);});
+    h+='</div>';
+  });
+  p.innerHTML=h;
   p.querySelectorAll('.pblock').forEach(function(el){el.addEventListener('mousedown',function(e){startDrag(el.getAttribute('data-key'),e);});});
 }
 function blockLabel(key){var b=BLOCKS.find(function(x){return x.key===key;});return b?b.label:'Block';}
@@ -436,7 +489,7 @@ function insertBlockAt(key,idx){
   var kids=editableKids(doc);
   if(idx===null||idx>=kids.length){var footer=doc.body.querySelector('footer');if(footer)doc.body.insertBefore(node,footer);else doc.body.appendChild(node);}
   else doc.body.insertBefore(node,kids[idx]);
-  try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initCarousels();}catch(e){}
+  try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initBlocks();}catch(e){}
   renderSections();
   toast(b.label+' added');
   try{node.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
