@@ -1,0 +1,79 @@
+{
+  "id": "press",
+  "name": "Press",
+  "family": "vibrant",
+  "sector": "Magazine / events",
+  "tags": [
+    "retro",
+    "print",
+    "editorial",
+    "bold-serif"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "244 239 230",
+      "surface": "255 253 247",
+      "ink": "26 26 26",
+      "muted": "107 99 87",
+      "line": "26 26 26",
+      "primary": "226 59 46",
+      "onPrimary": "255 255 255",
+      "accent": "43 95 163",
+      "accent2": "43 95 163"
+    },
+    "type": {
+      "display": "'DM Serif Display', serif",
+      "body": "'Space Mono', sans-serif",
+      "scaleRatio": 1.28,
+      "weights": {
+        "display": 400,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(72px,9vw,120px)",
+      "gutter": "clamp(20px,5vw,48px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "4px",
+      "button": "2px",
+      "input": "2px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "4px 4px 0 var(--accent)",
+      "elevated": "4px 4px 0 var(--accent)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22,1,0.36,1)",
+      "duration": "500ms",
+      "character": "smooth"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:3",
+      "filter": "none"
+    }
+  },
+  "recipes": {
+    "button": "solid",
+    "card": "bordered",
+    "nav": "split"
+  },
+  "preferredLayouts": {
+    "hero": "split-visual",
+    "trusted": "logo-strip",
+    "features": "card-grid",
+    "stats": "band",
+    "cta": "gradient-band"
+  }
+}

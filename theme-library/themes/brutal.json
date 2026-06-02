@@ -1,0 +1,79 @@
+{
+  "id": "brutal",
+  "name": "Brutal",
+  "family": "bold",
+  "sector": "Portfolio / studio",
+  "tags": [
+    "brutalist",
+    "raw",
+    "high-contrast",
+    "mono"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "251 247 234",
+      "surface": "255 255 255",
+      "ink": "10 10 10",
+      "muted": "85 85 85",
+      "line": "10 10 10",
+      "primary": "31 68 255",
+      "onPrimary": "255 255 255",
+      "accent": "255 92 0",
+      "accent2": "255 92 0"
+    },
+    "type": {
+      "display": "'Space Grotesk', serif",
+      "body": "'Space Mono', sans-serif",
+      "scaleRatio": 1.28,
+      "weights": {
+        "display": 700,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(72px,9vw,120px)",
+      "gutter": "clamp(20px,5vw,48px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "0px",
+      "button": "0px",
+      "input": "0px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "6px 6px 0 var(--ink)",
+      "elevated": "6px 6px 0 var(--ink)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22,1,0.36,1)",
+      "duration": "500ms",
+      "character": "smooth"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:3",
+      "filter": "none"
+    }
+  },
+  "recipes": {
+    "button": "solid",
+    "card": "bordered",
+    "nav": "split"
+  },
+  "preferredLayouts": {
+    "hero": "split-visual",
+    "trusted": "logo-strip",
+    "features": "card-grid",
+    "stats": "band",
+    "cta": "gradient-band"
+  }
+}

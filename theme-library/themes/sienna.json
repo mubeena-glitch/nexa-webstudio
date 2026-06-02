@@ -1,0 +1,79 @@
+{
+  "id": "sienna",
+  "name": "Sienna",
+  "family": "luxury",
+  "sector": "Editorial / lifestyle",
+  "tags": [
+    "warm",
+    "editorial",
+    "serif",
+    "lifestyle"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "246 237 225",
+      "surface": "255 250 242",
+      "ink": "42 29 20",
+      "muted": "122 101 82",
+      "line": "227 212 192",
+      "primary": "181 83 42",
+      "onPrimary": "255 255 255",
+      "accent": "31 111 92",
+      "accent2": "31 111 92"
+    },
+    "type": {
+      "display": "'Fraunces', serif",
+      "body": "'Newsreader', sans-serif",
+      "scaleRatio": 1.28,
+      "weights": {
+        "display": 600,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(72px,9vw,120px)",
+      "gutter": "clamp(20px,5vw,48px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "14px",
+      "button": "8px",
+      "input": "8px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 18px 44px -28px rgba(60,40,20,.4)",
+      "elevated": "0 18px 44px -28px rgba(60,40,20,.4)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22,1,0.36,1)",
+      "duration": "500ms",
+      "character": "smooth"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:3",
+      "filter": "none"
+    }
+  },
+  "recipes": {
+    "button": "solid",
+    "card": "bordered",
+    "nav": "split"
+  },
+  "preferredLayouts": {
+    "hero": "split-visual",
+    "trusted": "logo-strip",
+    "features": "card-grid",
+    "stats": "band",
+    "cta": "gradient-band"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "id": "aurora",
+  "name": "Aurora",
+  "family": "modern",
+  "sector": "SaaS / product",
+  "tags": [
+    "glassmorphism",
+    "dark",
+    "gradient",
+    "modern"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "10 14 26",
+      "surface": "20 26 46",
+      "ink": "234 240 255",
+      "muted": "147 160 192",
+      "line": "40 48 72",
+      "primary": "109 139 255",
+      "onPrimary": "8 16 31",
+      "accent": "40 224 200",
+      "accent2": "40 224 200"
+    },
+    "type": {
+      "display": "'Sora', serif",
+      "body": "'Inter', sans-serif",
+      "scaleRatio": 1.28,
+      "weights": {
+        "display": 700,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(72px,9vw,120px)",
+      "gutter": "clamp(20px,5vw,48px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "18px",
+      "button": "12px",
+      "input": "12px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 24px 60px -30px rgba(0,0,0,.8)",
+      "elevated": "0 24px 60px -30px rgba(0,0,0,.8)",
+      "philosophy": "glow"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22,1,0.36,1)",
+      "duration": "500ms",
+      "character": "smooth"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:3",
+      "filter": "none"
+    }
+  },
+  "recipes": {
+    "button": "solid",
+    "card": "bordered",
+    "nav": "split"
+  },
+  "preferredLayouts": {
+    "hero": "split-visual",
+    "trusted": "logo-strip",
+    "features": "card-grid",
+    "stats": "band",
+    "cta": "gradient-band"
+  }
+}

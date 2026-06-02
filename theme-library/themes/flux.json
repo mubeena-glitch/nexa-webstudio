@@ -1,0 +1,79 @@
+{
+  "id": "flux",
+  "name": "Flux",
+  "family": "vibrant",
+  "sector": "Gaming / nightlife",
+  "tags": [
+    "neon",
+    "glow",
+    "dark",
+    "gaming"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "8 7 15",
+      "surface": "20 16 31",
+      "ink": "240 233 255",
+      "muted": "154 143 192",
+      "line": "42 36 64",
+      "primary": "192 38 255",
+      "onPrimary": "10 6 18",
+      "accent": "46 230 255",
+      "accent2": "46 230 255"
+    },
+    "type": {
+      "display": "'Space Grotesk', serif",
+      "body": "'Inter', sans-serif",
+      "scaleRatio": 1.28,
+      "weights": {
+        "display": 700,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(72px,9vw,120px)",
+      "gutter": "clamp(20px,5vw,48px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "14px",
+      "button": "10px",
+      "input": "10px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 0 28px -6px rgba(192,38,255,.5)",
+      "elevated": "0 0 28px -6px rgba(192,38,255,.5)",
+      "philosophy": "glow"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22,1,0.36,1)",
+      "duration": "500ms",
+      "character": "smooth"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:3",
+      "filter": "none"
+    }
+  },
+  "recipes": {
+    "button": "solid",
+    "card": "bordered",
+    "nav": "split"
+  },
+  "preferredLayouts": {
+    "hero": "split-visual",
+    "trusted": "logo-strip",
+    "features": "card-grid",
+    "stats": "band",
+    "cta": "gradient-band"
+  }
+}
