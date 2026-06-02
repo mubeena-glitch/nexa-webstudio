@@ -186,16 +186,52 @@
       case 'nexa:set-form':        return setForm(m.bundle);
       case 'nexa:set-footer':      return setFooter(m.data);
       case 'nexa:enable-edit':     return enableEditMode();
+      case 'nexa:init-carousels':  return initCarousels();
       case 'nexa:get-html':
         return evt.source.postMessage({type:'nexa:html', html: document.documentElement.outerHTML}, '*');
     }
   });
 
+  // ───────── 12. Carousel runtime (for block-library carousels) ─────────
+  function initCarousels(root){
+    (root || document).querySelectorAll('.nx-carousel').forEach(c => {
+      if(c._nxInit) return; c._nxInit = true;
+      const track = c.querySelector('.nx-carousel-track');
+      const slides = c.querySelectorAll('.nx-carousel-slide');
+      const dotsWrap = c.querySelector('.nx-carousel-dots');
+      if(!track || !slides.length) return;
+      let i = 0;
+      function go(n){
+        i = (n + slides.length) % slides.length;
+        track.style.transform = `translateX(-${i*100}%)`;
+        if(dotsWrap) dotsWrap.querySelectorAll('.nx-carousel-dot').forEach((d,j)=>d.classList.toggle('active', j===i));
+      }
+      if(dotsWrap){
+        dotsWrap.innerHTML = '';
+        slides.forEach((_,j) => {
+          const d = document.createElement('button');
+          d.className = 'nx-carousel-dot' + (j===0?' active':'');
+          d.type = 'button';
+          d.addEventListener('click', () => go(j));
+          dotsWrap.appendChild(d);
+        });
+      }
+      const prev = c.querySelector('[data-car="prev"]');
+      const next = c.querySelector('[data-car="next"]');
+      if(prev) prev.addEventListener('click', () => go(i-1));
+      if(next) next.addEventListener('click', () => go(i+1));
+      go(0);
+    });
+  }
+
   // Expose globals for in-page debugging / non-iframe use
-  window.NEXA = {setTheme,setHero,setBrand,setLogo,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
+  window.NEXA = {setTheme,setHero,setBrand,setLogo,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
 
   // Auto-init: if loaded with ?edit=1, enable edit mode
   if(location.search.includes('edit=1')) enableEditMode();
+
+  // Wire any carousels present on initial load
+  initCarousels();
 
   // Tell parent the template is ready
   if(window.parent !== window){

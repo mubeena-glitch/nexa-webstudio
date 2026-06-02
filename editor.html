@@ -52,6 +52,21 @@ textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
 .addsec-item .an{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .addsec-item button{padding:3px 11px;border:1.5px solid var(--a);background:var(--a);color:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 .addsec-item button:hover{opacity:.88}
+/* block palette */
+.palette{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pblock{border:1.5px solid var(--bd);border-radius:9px;padding:8px 8px 7px;cursor:grab;background:#fff;text-align:center;transition:.14s;user-select:none}
+.pblock:hover{border-color:var(--a);box-shadow:0 4px 14px rgba(147,84,255,.13)}
+.pblock:active{cursor:grabbing}
+.pblock svg{width:100%;height:30px;display:block;margin-bottom:5px}
+.pblock .pl{font-size:10.5px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pblock .wf-fill{fill:var(--a2)}
+.pblock .wf-acc{fill:var(--a)}
+.pblock .wf-mut{fill:var(--mu);opacity:.32}
+.pblock .wf-box{fill:#f0f0f4}
+.drag-ghost{position:fixed;z-index:300;pointer-events:none;background:var(--a);color:#fff;font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;box-shadow:0 12px 30px rgba(0,0,0,.3);opacity:.96;transform:translate(-50%,-150%);white-space:nowrap}
+body.dragging{cursor:grabbing!important;user-select:none}
+.drop-line{position:absolute;left:18px;right:18px;height:0;border-top:3px dashed var(--a);z-index:20;pointer-events:none;display:none}
+.drop-line::before{content:'Drop here';position:absolute;left:50%;top:-9px;transform:translateX(-50%);background:var(--a);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:10px}
 .canvas{flex:1;background:#e9e9ef;position:relative;display:flex;align-items:stretch;justify-content:center;overflow:hidden}
 .canvas iframe{width:100%;height:100%;border:0;background:#fff}
 .cv-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--mu);font-size:13px;background:#e9e9ef}
@@ -89,6 +104,12 @@ textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
           <div id="addSecList" style="margin-top:8px"></div>
         </div>
       </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-h">&#9638; Add Blocks</div>
+      <div class="hint" style="margin:0 0 9px">Drag a block onto the page, or click to append it.</div>
+      <div class="palette" id="palette"></div>
     </div>
 
     <div class="grp">
@@ -138,6 +159,7 @@ textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
   <main class="canvas">
     <div class="cv-loading" id="cvLoad"><div class="sp"></div><p>Loading template…</p></div>
     <iframe id="cv" title="Template preview"></iframe>
+    <div class="drop-line" id="dropLine"></div>
   </main>
 </div>
 
@@ -311,6 +333,115 @@ function addFromTpl(i){
   toast('Section added &mdash; scroll the preview to see it');
 }
 
+// ---- block palette + drag-and-drop ----
+var PIC=[
+  'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80'
+];
+var BLOCKS=[
+  {key:'cta',label:'CTA band',
+   svg:'<rect class="wf-mut" x="13" y="7" width="22" height="3" rx="1.5"/><rect class="wf-mut" x="17" y="13" width="14" height="2" rx="1"/><rect class="wf-acc" x="19" y="19" width="10" height="5" rx="2.5"/>',
+   html:'<section class="nx-final-cta"><div class="container"><h2>Ready to get started?</h2><p class="lede">Join hundreds of teams already growing with us.</p><a href="#form" class="nx-btn nx-btn-primary">Get started</a></div></section>'},
+  {key:'split-left',label:'2-col (img left)',
+   svg:'<rect class="wf-fill" x="5" y="6" width="17" height="18" rx="2"/><rect class="wf-mut" x="26" y="8" width="16" height="3" rx="1.5"/><rect class="wf-mut" x="26" y="14" width="14" height="2" rx="1"/><rect class="wf-mut" x="26" y="18" width="14" height="2" rx="1"/><rect class="wf-acc" x="26" y="22" width="9" height="3" rx="1.5"/>',
+   html:'<section class="nx-section nx-split"><div class="container"><div class="nx-split-media"><img src="'+PIC[0]+'" alt=""></div><div class="nx-split-copy"><span class="nx-eyebrow">Why us</span><h2>A headline about what you do best</h2><p>Two or three lines of supporting copy that make the value clear in plain language.</p><a href="#" class="nx-btn nx-btn-primary">Learn more</a></div></div></section>'},
+  {key:'split-right',label:'2-col (img right)',
+   svg:'<rect class="wf-fill" x="26" y="6" width="17" height="18" rx="2"/><rect class="wf-mut" x="6" y="8" width="16" height="3" rx="1.5"/><rect class="wf-mut" x="8" y="14" width="14" height="2" rx="1"/><rect class="wf-mut" x="8" y="18" width="14" height="2" rx="1"/><rect class="wf-acc" x="13" y="22" width="9" height="3" rx="1.5"/>',
+   html:'<section class="nx-section nx-split reverse"><div class="container"><div class="nx-split-media"><img src="'+PIC[1]+'" alt=""></div><div class="nx-split-copy"><span class="nx-eyebrow">Why us</span><h2>A headline about what you do best</h2><p>Two or three lines of supporting copy that make the value clear in plain language.</p><a href="#" class="nx-btn nx-btn-primary">Learn more</a></div></div></section>'},
+  {key:'quote',label:'Quote',
+   svg:'<text x="7" y="20" font-size="22" class="wf-acc" font-family="Georgia">“</text><rect class="wf-mut" x="16" y="10" width="26" height="3" rx="1.5"/><rect class="wf-mut" x="18" y="16" width="22" height="3" rx="1.5"/><rect class="wf-mut" x="24" y="22" width="10" height="2" rx="1"/>',
+   html:'<section class="nx-section nx-quote"><div class="container"><span class="nx-quote-mark">&ldquo;</span><blockquote>This is the single best decision we made all year. The team shipped in days what used to take months.</blockquote><cite><b>Sarah K.</b>, Head of Product</cite></div></section>'},
+  {key:'cards',label:'Cards',
+   svg:'<rect class="wf-box" x="5" y="9" width="11" height="13" rx="2"/><rect class="wf-box" x="18.5" y="9" width="11" height="13" rx="2"/><rect class="wf-box" x="32" y="9" width="11" height="13" rx="2"/><rect class="wf-acc" x="7" y="11" width="5" height="5" rx="2.5"/><rect class="wf-acc" x="20.5" y="11" width="5" height="5" rx="2.5"/><rect class="wf-acc" x="34" y="11" width="5" height="5" rx="2.5"/>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-section-head"><span class="nx-eyebrow">Features</span><h2>Everything you need</h2></div><div class="nx-benefits"><div class="nx-benefit"><div class="nx-benefit-icon">◆</div><h4>First benefit</h4><p>A short description of this feature or benefit.</p></div><div class="nx-benefit"><div class="nx-benefit-icon">★</div><h4>Second benefit</h4><p>A short description of this feature or benefit.</p></div><div class="nx-benefit"><div class="nx-benefit-icon">●</div><h4>Third benefit</h4><p>A short description of this feature or benefit.</p></div></div></div></section>'},
+  {key:'gallery',label:'Gallery',
+   svg:'<rect class="wf-fill" x="6" y="5" width="10" height="9" rx="1.5"/><rect class="wf-fill" x="19" y="5" width="10" height="9" rx="1.5"/><rect class="wf-fill" x="32" y="5" width="10" height="9" rx="1.5"/><rect class="wf-fill" x="6" y="16" width="10" height="9" rx="1.5"/><rect class="wf-fill" x="19" y="16" width="10" height="9" rx="1.5"/><rect class="wf-fill" x="32" y="16" width="10" height="9" rx="1.5"/>',
+   html:'<section class="nx-section nx-gallery"><div class="container"><div class="nx-section-head"><h2>Gallery</h2></div><div class="nx-gallery-grid"><img src="'+PIC[0]+'" alt=""><img src="'+PIC[1]+'" alt=""><img src="'+PIC[2]+'" alt=""><img src="'+PIC[3]+'" alt=""><img src="'+PIC[4]+'" alt=""><img src="'+PIC[5]+'" alt=""></div></div></section>'},
+  {key:'carousel',label:'Carousel',
+   svg:'<rect class="wf-fill" x="9" y="6" width="30" height="14" rx="2"/><path class="wf-acc" d="M6 13l3-2v4z"/><path class="wf-acc" d="M42 13l-3-2v4z"/><circle class="wf-acc" cx="20" cy="24" r="1.5"/><circle class="wf-mut" cx="24" cy="24" r="1.5"/><circle class="wf-mut" cx="28" cy="24" r="1.5"/>',
+   html:'<section class="nx-section nx-carousel"><div class="container"><div class="nx-carousel-viewport"><div class="nx-carousel-track"><div class="nx-carousel-slide"><img src="'+PIC[3]+'" alt=""><div class="nx-carousel-cap">First slide</div></div><div class="nx-carousel-slide"><img src="'+PIC[4]+'" alt=""><div class="nx-carousel-cap">Second slide</div></div><div class="nx-carousel-slide"><img src="'+PIC[5]+'" alt=""><div class="nx-carousel-cap">Third slide</div></div></div></div><div class="nx-carousel-nav"><button class="nx-carousel-btn" data-car="prev" type="button">&#8249;</button><div class="nx-carousel-dots"></div><button class="nx-carousel-btn" data-car="next" type="button">&#8250;</button></div></div></section>'},
+  {key:'logos',label:'Logo strip',
+   svg:'<rect class="wf-mut" x="6" y="13" width="7" height="4" rx="1"/><rect class="wf-mut" x="16" y="13" width="7" height="4" rx="1"/><rect class="wf-mut" x="26" y="13" width="7" height="4" rx="1"/><rect class="wf-mut" x="36" y="13" width="6" height="4" rx="1"/>',
+   html:'<div class="nx-trust"><div class="container"><div class="nx-trust-label">Trusted by teams at</div><div style="width:120px;height:30px;background:var(--ink);opacity:.14;border-radius:4px"></div><div style="width:120px;height:30px;background:var(--ink);opacity:.14;border-radius:4px"></div><div style="width:120px;height:30px;background:var(--ink);opacity:.14;border-radius:4px"></div><div style="width:120px;height:30px;background:var(--ink);opacity:.14;border-radius:4px"></div><div style="width:120px;height:30px;background:var(--ink);opacity:.14;border-radius:4px"></div></div></div>'},
+  {key:'media',label:'Image / Video',
+   svg:'<rect class="wf-fill" x="7" y="5" width="34" height="20" rx="2"/><path class="wf-acc" d="M21 11l8 4-8 4z"/>',
+   html:'<section class="nx-section nx-media-block"><div class="container"><div class="nx-media-frame"><img src="'+PIC[2]+'" alt=""></div><p class="nx-media-cap">Add a caption, or swap this image for an embedded video.</p></div></section>'},
+  {key:'stats',label:'Stats',
+   svg:'<rect class="wf-acc" x="6" y="9" width="7" height="6" rx="1"/><rect class="wf-mut" x="6" y="17" width="7" height="2" rx="1"/><rect class="wf-acc" x="16" y="9" width="7" height="6" rx="1"/><rect class="wf-mut" x="16" y="17" width="7" height="2" rx="1"/><rect class="wf-acc" x="26" y="9" width="7" height="6" rx="1"/><rect class="wf-mut" x="26" y="17" width="7" height="2" rx="1"/><rect class="wf-acc" x="36" y="9" width="6" height="6" rx="1"/><rect class="wf-mut" x="36" y="17" width="6" height="2" rx="1"/>',
+   html:'<section class="nx-section alt"><div class="container"><div class="nx-stats"><div class="nx-stat"><div class="val">4.9</div><div class="lbl">Average rating</div></div><div class="nx-stat"><div class="val">12k</div><div class="lbl">Happy customers</div></div><div class="nx-stat"><div class="val">98%</div><div class="lbl">Would recommend</div></div><div class="nx-stat"><div class="val">24/7</div><div class="lbl">Support</div></div></div></div></section>'},
+  {key:'faq',label:'FAQ',
+   svg:'<rect class="wf-mut" x="7" y="7" width="27" height="3" rx="1.5"/><text x="38" y="11" class="wf-acc" font-size="8">+</text><rect class="wf-mut" x="7" y="14" width="27" height="3" rx="1.5"/><text x="38" y="18" class="wf-acc" font-size="8">+</text><rect class="wf-mut" x="7" y="21" width="27" height="3" rx="1.5"/><text x="38" y="25" class="wf-acc" font-size="8">+</text>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-section-head"><span class="nx-eyebrow">FAQ</span><h2>Questions, answered</h2></div><div class="nx-faq"><details><summary>First question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details><details><summary>Second question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details><details><summary>Third question goes here?</summary><p>And the answer goes here, kept short and clear.</p></details></div></div></section>'}
+];
+
+function renderPalette(){
+  var p=document.getElementById('palette');if(!p)return;
+  p.innerHTML=BLOCKS.map(function(b){return '<div class="pblock" data-key="'+b.key+'" title="'+b.label+' — drag onto the page or click to append"><svg viewBox="0 0 48 30">'+b.svg+'</svg><div class="pl">'+escHtml(b.label)+'</div></div>';}).join('');
+  p.querySelectorAll('.pblock').forEach(function(el){el.addEventListener('mousedown',function(e){startDrag(el.getAttribute('data-key'),e);});});
+}
+function blockLabel(key){var b=BLOCKS.find(function(x){return x.key===key;});return b?b.label:'Block';}
+
+var ghost=null,dropIdx=null;
+function startDrag(key,e){
+  e.preventDefault();
+  dropIdx=null;
+  var moved=false,sx=e.clientX,sy=e.clientY;
+  ghost=document.createElement('div');ghost.className='drag-ghost';ghost.textContent=blockLabel(key);document.body.appendChild(ghost);
+  posGhost(e.clientX,e.clientY);
+  document.body.classList.add('dragging');
+  iframe.style.pointerEvents='none';
+  function mv(ev){
+    if(Math.abs(ev.clientX-sx)+Math.abs(ev.clientY-sy)>5)moved=true;
+    posGhost(ev.clientX,ev.clientY);
+    if(moved){updateDrop(ev.clientX,ev.clientY);autoScroll(ev.clientY);}
+  }
+  function up(){
+    document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);
+    var idx=dropIdx;cleanupDrag();
+    if(moved)insertBlockAt(key,idx);else insertBlockAt(key,null);
+  }
+  document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+}
+function posGhost(x,y){if(ghost){ghost.style.left=x+'px';ghost.style.top=y+'px';}}
+function cleanupDrag(){if(ghost){ghost.remove();ghost=null;}document.body.classList.remove('dragging');iframe.style.pointerEvents='';var dl=document.getElementById('dropLine');if(dl)dl.style.display='none';dropIdx=null;}
+function gapPositions(){
+  var doc=idoc();if(!doc)return [];
+  var kids=editableKids(doc),ir=iframe.getBoundingClientRect(),arr=[];
+  kids.forEach(function(el,i){arr.push({idx:i,y:ir.top+el.getBoundingClientRect().top});});
+  if(kids.length){var last=kids[kids.length-1].getBoundingClientRect();arr.push({idx:kids.length,y:ir.top+last.bottom});}
+  return arr;
+}
+function updateDrop(x,y){
+  var canvas=document.querySelector('.canvas'),cr=canvas.getBoundingClientRect(),dl=document.getElementById('dropLine');
+  if(x<cr.left||x>cr.right||y<cr.top||y>cr.bottom){dl.style.display='none';dropIdx=null;return;}
+  var gaps=gapPositions();if(!gaps.length){dropIdx=0;return;}
+  var best=gaps[0],bd=Math.abs(y-gaps[0].y);
+  gaps.forEach(function(g){var d=Math.abs(y-g.y);if(d<bd){bd=d;best=g;}});
+  dropIdx=best.idx;
+  dl.style.top=(Math.max(cr.top,Math.min(best.y,cr.bottom))-cr.top)+'px';dl.style.display='block';
+}
+function autoScroll(y){
+  var canvas=document.querySelector('.canvas'),cr=canvas.getBoundingClientRect();
+  try{if(y<cr.top+50)iframe.contentWindow.scrollBy(0,-16);else if(y>cr.bottom-50)iframe.contentWindow.scrollBy(0,16);}catch(e){}
+}
+function insertBlockAt(key,idx){
+  var doc=idoc();if(!doc){toast('Block editing runs on the deployed site');return;}
+  var b=BLOCKS.find(function(x){return x.key===key;});if(!b)return;
+  var wrap=doc.createElement('div');wrap.innerHTML=b.html.trim();
+  var node=wrap.firstElementChild;if(!node)return;
+  var kids=editableKids(doc);
+  if(idx===null||idx>=kids.length){var footer=doc.body.querySelector('footer');if(footer)doc.body.insertBefore(node,footer);else doc.body.appendChild(node);}
+  else doc.body.insertBefore(node,kids[idx]);
+  try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initCarousels();}catch(e){}
+  renderSections();
+  toast(b.label+' added');
+  try{node.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+}
+
 // ---- boot ----
 if(!id){
   document.getElementById('cvLoad').innerHTML='<p style="max-width:280px;text-align:center">No template selected. <a href="templates.html" style="color:var(--a);font-weight:600">Pick one from the gallery</a>.</p>';
@@ -319,6 +450,7 @@ if(!id){
   document.title='NEXA Studio — '+name;
   document.getElementById('openBtn').href=file;
   populateAddTpl();
+  renderPalette();
   iframe.src=file;
   // Safety net: if the iframe never posts ready (older cache), hide loader after load.
   iframe.addEventListener('load',function(){setTimeout(function(){if(!ready){document.getElementById('cvLoad').style.display='none';ready=true;prefillText();}renderSections();},600);});
