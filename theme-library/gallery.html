@@ -33,19 +33,41 @@
  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:12px;color:var(--muted)}
  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:999px;background:#eef1fb;color:#3a52c4}
  .open{font-weight:600;color:var(--accent);font-size:13px}
+ .filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:18px 0 2px}
+ .fgroup{display:flex;gap:6px;flex-wrap:wrap}
+ .fpill{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;padding:6px 13px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:#fff;cursor:pointer;transition:.15s;text-transform:capitalize}
+ .fpill:hover{border-color:var(--accent);color:var(--accent)}
+ .fpill.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+ .fdiv{width:1px;height:20px;background:var(--line);margin:0 2px}
+ .fsearch{padding:8px 14px;border:1px solid var(--line);border-radius:999px;font-size:13px;outline:none;font-family:inherit;min-width:170px}
+ .fsearch:focus{border-color:var(--accent)}
+ .fcount{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+ .empty{grid-column:1/-1;text-align:center;padding:64px;color:var(--muted)}
+ @media(max-width:620px){.fsearch{margin-left:0;flex:1}}
 </style></head><body>
 <header><div class="wrap top">
  <div class="kick">NEXA Web Studio</div><h1>Design Theme Library</h1>
  <p class="sub">15 sector-originated, token-driven themes — each with a distinct layout, real imagery, and GSAP-powered motion. Click any theme to open its full live preview.</p>
- <div class="meta"><div><div class="n">15</div><div class="l">Themes</div></div><div><div class="n">6</div><div class="l">Families</div></div><div><div class="n">100%</div><div class="l">Token-driven</div></div></div>
+ <div class="meta"><div><div class="n" id="nThemes">15</div><div class="l">Themes</div></div><div><div class="n" id="nFamilies">6</div><div class="l">Families</div></div><div><div class="n">100%</div><div class="l">Token-driven</div></div></div>
 </div></header>
-<div class="wrap"><div class="grid" id="g"></div></div>
+<div class="wrap">
+ <div class="filters">
+  <div class="fgroup" id="modeF"></div>
+  <div class="fdiv"></div>
+  <div class="fgroup" id="familyF"></div>
+  <input class="fsearch" id="search" placeholder="Search sector, tag…" aria-label="Search themes">
+  <span class="fcount" id="count"></span>
+ </div>
+ <div class="grid" id="g"></div>
+</div>
 <script>
  var T=[{"id": "meridian", "name": "Meridian", "family": "modern", "sector": "Fintech / private banking", "mode": "dark", "tags": ["dark", "bold", "lime-accent", "glow", "modern", "conversion"], "palette": {"bg": "#0d0f0e", "ink": "#f3f6f0", "primary": "#caf24d", "accent": "#caf24d"}, "fonts": {"display": "Clash Display", "body": "General Sans"}, "manifest": "themes/meridian.json", "preview": "previews/meridian.html", "thumbnail": "thumbnails/meridian.png"}, {"id": "halcyon", "name": "Halcyon", "family": "minimal", "sector": "Wellness / spa", "mode": "light", "tags": ["light", "calm", "organic", "sage", "wellness", "serene", "spa", "image-led"], "palette": {"bg": "#f3efe7", "ink": "#2f3c35", "primary": "#4e6e54", "accent": "#7e9b7a"}, "fonts": {"display": "Fraunces", "body": "Hanken Grotesk"}, "manifest": "themes/halcyon.json", "preview": "previews/halcyon.html", "thumbnail": "thumbnails/halcyon.png"}, {"id": "atlas", "name": "Atlas", "family": "modern", "sector": "SaaS / B2B", "mode": "light", "tags": ["light", "saas", "indigo", "product-led", "modern", "analytics", "conversion"], "palette": {"bg": "#ffffff", "ink": "#1b2030", "primary": "#4f6bed", "accent": "#4f6bed"}, "fonts": {"display": "Schibsted Grotesk", "body": "General Sans"}, "manifest": "themes/atlas.json", "preview": "previews/atlas.html", "thumbnail": "thumbnails/atlas.png"}, {"id": "noir", "name": "Noir", "family": "luxury", "sector": "Luxury fashion", "mode": "dark", "tags": ["dark", "editorial", "luxury", "monochrome", "champagne-accent", "fashion", "high-contrast"], "palette": {"bg": "#080808", "ink": "#f4f1ea", "primary": "#c8a96a", "accent": "#c8a96a"}, "fonts": {"display": "Bodoni Moda", "body": "General Sans"}, "manifest": "themes/noir.json", "preview": "previews/noir.html", "thumbnail": "thumbnails/noir.png"}, {"id": "voltage", "name": "Voltage", "family": "bold", "sector": "Creative agency", "mode": "dark", "tags": ["maximalist", "kinetic", "high-contrast", "editorial", "agency", "grid-breaking", "loud"], "palette": {"bg": "#111111", "ink": "#f5f5f0", "primary": "#f5ff4d", "accent": "#f5ff4d"}, "fonts": {"display": "Bricolage Grotesque", "body": "General Sans"}, "manifest": "themes/voltage.json", "preview": "previews/voltage.html", "thumbnail": "thumbnails/voltage.png"}, {"id": "ember", "name": "Ember", "family": "luxury", "sector": "Restaurant / hospitality", "mode": "light", "tags": ["warm", "earthy", "editorial", "luxury", "appetizing", "image-rich"], "palette": {"bg": "#f7efe3", "ink": "#2b1b14", "primary": "#c4622d", "accent": "#c4622d"}, "fonts": {"display": "DM Serif Display", "body": "Albert Sans"}, "manifest": "themes/ember.json", "preview": "previews/ember.html", "thumbnail": "thumbnails/ember.png"}, {"id": "cobalt", "name": "Cobalt", "family": "corporate", "sector": "Healthcare / medical", "mode": "light", "tags": ["clinical", "trustworthy", "accessible", "calm", "image-rich", "healthcare"], "palette": {"bg": "#f3f8fb", "ink": "#0d2a3f", "primary": "#1f8fd6", "accent": "#27c2a0"}, "fonts": {"display": "Plus Jakarta Sans", "body": "General Sans"}, "manifest": "themes/cobalt.json", "preview": "previews/cobalt.html", "thumbnail": "thumbnails/cobalt.png"}, {"id": "quanta", "name": "Quanta", "family": "vibrant", "sector": "Crypto / Web3", "mode": "dark", "tags": ["web3", "crypto", "defi", "neon", "futuristic", "glassmorphism", "dark", "protocol"], "palette": {"bg": "#07080f", "ink": "#e9ecf8", "primary": "#7c5cff", "accent": "#23e0c8"}, "fonts": {"display": "Sora", "body": "Geist"}, "manifest": "themes/quanta.json", "preview": "previews/quanta.html", "thumbnail": "thumbnails/quanta.png"}, {"id": "verdant", "name": "Verdant", "family": "minimal", "sector": "Sustainability / nonprofit", "mode": "light", "tags": ["earthy", "editorial", "hopeful", "image-rich", "organic", "impact"], "palette": {"bg": "#f4f1e6", "ink": "#1f3320", "primary": "#4a7c3f", "accent": "#d99a3f"}, "fonts": {"display": "Newsreader", "body": "General Sans"}, "manifest": "themes/verdant.json", "preview": "previews/verdant.html", "thumbnail": "thumbnails/verdant.png"}, {"id": "chalk", "name": "Chalk", "family": "vibrant", "sector": "Education / EdTech", "mode": "light", "tags": ["friendly", "bright", "image-rich", "playful", "approachable", "learning"], "palette": {"bg": "#fff9f0", "ink": "#23304a", "primary": "#ff7a59", "accent": "#3db8ff"}, "fonts": {"display": "Gabarito", "body": "General Sans"}, "manifest": "themes/chalk.json", "preview": "previews/chalk.html", "thumbnail": "thumbnails/chalk.png"}, {"id": "bastion", "name": "Bastion", "family": "corporate", "sector": "Legal / professional", "mode": "light", "tags": ["light", "legal", "law-firm", "professional-services", "authoritative", "classic", "editorial", "navy", "burgundy"], "palette": {"bg": "#f4f2ec", "ink": "#16233a", "primary": "#7a2230", "accent": "#b89b5e"}, "fonts": {"display": "Cormorant Garamond", "body": "General Sans"}, "manifest": "themes/bastion.json", "preview": "previews/bastion.html", "thumbnail": "thumbnails/bastion.png"}, {"id": "horizon", "name": "Horizon", "family": "vibrant", "sector": "Travel / tourism", "mode": "light", "tags": ["immersive", "vivid", "wanderlust", "image-rich", "adventurous", "booking"], "palette": {"bg": "#fdf6ec", "ink": "#0a3d4d", "primary": "#ff8a3d", "accent": "#0fb6c4"}, "fonts": {"display": "Cabinet Grotesk", "body": "General Sans"}, "manifest": "themes/horizon.json", "preview": "previews/horizon.html", "thumbnail": "thumbnails/horizon.png"}, {"id": "pulse", "name": "Pulse", "family": "bold", "sector": "Fitness / sports", "mode": "dark", "tags": ["fitness", "athletic", "high-energy", "dark", "gym", "bold", "image-rich"], "palette": {"bg": "#0c0c0e", "ink": "#f5f6f3", "primary": "#d6ff2e", "accent": "#ff2e63"}, "fonts": {"display": "Archivo", "body": "General Sans"}, "manifest": "themes/pulse.json", "preview": "previews/pulse.html", "thumbnail": "thumbnails/pulse.png"}, {"id": "terrace", "name": "Terrace", "family": "minimal", "sector": "Real estate / architecture", "mode": "light", "tags": ["real-estate", "architecture", "property", "gridded", "neutral", "image-rich", "refined"], "palette": {"bg": "#f2efe9", "ink": "#2b2824", "primary": "#9a8466", "accent": "#3f4a4f"}, "fonts": {"display": "Marcellus", "body": "General Sans"}, "manifest": "themes/terrace.json", "preview": "previews/terrace.html", "thumbnail": "thumbnails/terrace.png"}, {"id": "spark", "name": "Spark", "family": "vibrant", "sector": "E-commerce / retail", "mode": "light", "tags": ["ecommerce", "retail", "vibrant", "conversion", "product-led", "energetic", "shop"], "palette": {"bg": "#fff5f7", "ink": "#1a1430", "primary": "#ff3b6b", "accent": "#ffb02e"}, "fonts": {"display": "Unbounded", "body": "General Sans"}, "manifest": "themes/spark.json", "preview": "previews/spark.html", "thumbnail": "thumbnails/spark.png"}];
- document.getElementById('g').innerHTML=T.map(function(t,i){
+ var curMode='all',curFam='all',curSearch='';
+
+ function cardHtml(t){
+   var nn=('0'+(T.indexOf(t)+1)).slice(-2);
    var sw=Object.values(t.palette).map(function(c){return '<span style="background:'+c+'"></span>'}).join('');
    var tags=t.tags.slice(0,3).map(function(x){return '<span class="tag">'+x+'</span>'}).join('');
-   var nn=('0'+(i+1)).slice(-2);
    return '<a class="card" href="'+t.preview+'">'
      +'<div class="thumb"><img loading="lazy" src="'+t.thumbnail+'" alt="'+t.name+' preview"></div>'
      +'<div class="body"><div class="row1"><h3>'+t.name+'</h3><span class="badge">'+t.mode+'</span></div>'
@@ -53,5 +75,38 @@
      +'<div class="sw">'+sw+'</div><div class="tags">'+tags+'</div>'
      +'<div class="foot"><span>'+t.fonts.display+' / '+t.fonts.body+'</span><span class="open">Open preview →</span></div>'
      +'</div></a>';
- }).join('');
+ }
+
+ function families(){var s=[];T.forEach(function(t){if(s.indexOf(t.family)<0)s.push(t.family);});return s.sort();}
+
+ function buildFilters(){
+   var modes=[['all','All modes'],['light','Light'],['dark','Dark']];
+   document.getElementById('modeF').innerHTML=modes.map(function(m){return '<button class="fpill'+(m[0]==='all'?' on':'')+'" data-f="mode" data-v="'+m[0]+'">'+m[1]+'</button>';}).join('');
+   document.getElementById('familyF').innerHTML='<button class="fpill on" data-f="family" data-v="all">All families</button>'+families().map(function(f){return '<button class="fpill" data-f="family" data-v="'+f+'">'+f+'</button>';}).join('');
+   document.querySelectorAll('.fpill').forEach(function(b){
+     b.addEventListener('click',function(){
+       var f=b.getAttribute('data-f'),v=b.getAttribute('data-v');
+       if(f==='mode')curMode=v; else curFam=v;
+       document.querySelectorAll('.fpill[data-f="'+f+'"]').forEach(function(x){x.classList.toggle('on',x===b);});
+       render();
+     });
+   });
+   document.getElementById('search').addEventListener('input',function(){curSearch=this.value.toLowerCase();render();});
+   document.getElementById('nThemes').textContent=T.length;
+   document.getElementById('nFamilies').textContent=families().length;
+ }
+
+ function render(){
+   var list=T.filter(function(t){
+     if(curMode!=='all'&&t.mode!==curMode)return false;
+     if(curFam!=='all'&&t.family!==curFam)return false;
+     if(curSearch){var hay=(t.name+' '+t.sector+' '+t.family+' '+t.tags.join(' ')).toLowerCase();if(hay.indexOf(curSearch)<0)return false;}
+     return true;
+   });
+   document.getElementById('count').textContent=list.length+' of '+T.length+' themes';
+   var g=document.getElementById('g');
+   g.innerHTML=list.length?list.map(cardHtml).join(''):'<div class="empty">No themes match. Try a different filter or search.</div>';
+ }
+
+ buildFilters();render();
 </script></body></html>
