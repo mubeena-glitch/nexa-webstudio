@@ -222,11 +222,18 @@ function applyFooter(){send({type:'nexa:set-footer',data:{
 
 // ---- export ----
 function exportHtml(){if(!ready){toast('Template still loading…');return;}pendingExport=true;send({type:'nexa:get-html'});toast('Preparing download…');}
-function download(html){
+async function download(html){
+  // Inline the shared kit so the downloaded file renders anywhere (self-contained).
+  try{
+    var css=await (await fetch('templates/_shared/kit.css')).text();
+    var js=await (await fetch('templates/_shared/kit.js')).text();
+    html=html.replace(/<link[^>]*_shared\/kit\.css[^>]*>/i,'<style>\n'+css+'\n</style>');
+    html=html.replace(/<script[^>]*_shared\/kit\.js[^>]*><\/script>/i,'<script>\n'+js+'\n<\/script>');
+  }catch(e){/* fall back to relative refs */}
   var blob=new Blob(['<!DOCTYPE html>\n'+html],{type:'text/html'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(id||'template')+'-edited.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
-  toast('Downloaded &mdash; opens with the kit if kept beside /templates/_shared');
+  toast('Downloaded &mdash; self-contained, opens anywhere');
 }
 
 // ---- messages from the template iframe ----
@@ -383,7 +390,7 @@ var BLOCKS=[
   // ---- Convert (performance-marketer blocks) ----
   {key:'leadform',label:'Lead form',
    svg:'<rect class="wf-box" x="11" y="4" width="26" height="22" rx="2"/><rect class="wf-mut" x="14" y="7" width="14" height="3" rx="1.5"/><rect class="wf-mut" x="14" y="12" width="20" height="3" rx="1"/><rect class="wf-mut" x="14" y="16.5" width="20" height="3" rx="1"/><rect class="wf-acc" x="14" y="21" width="20" height="3.5" rx="1.5"/>',
-   html:'<section class="nx-section alt"><div class="container" style="max-width:520px"><div class="nx-form"><h3>Get your free consultation</h3><p class="form-sub">We reply within 2 business hours.</p><form onsubmit="return false"><input class="nx-input" type="text" placeholder="Full name" required><input class="nx-input" type="email" placeholder="Email address" required><input class="nx-input" type="tel" placeholder="Phone number" required><button class="nx-btn nx-btn-primary">Request a call back</button><p class="form-foot">We respect your privacy. No spam.</p></form></div></div></section>'},
+   html:'<section class="nx-section alt"><div class="container" style="max-width:520px"><div class="nx-form"><h3>Get your free consultation</h3><p class="form-sub">We reply within 2 business hours.</p><form onsubmit="return false"><input class="nx-input" type="text" placeholder="Full name" aria-label="Full name" required><input class="nx-input" type="email" placeholder="Email address" aria-label="Email address" required><input class="nx-input" type="tel" placeholder="Phone number" aria-label="Phone number" required><button class="nx-btn nx-btn-primary">Request a call back</button><p class="form-foot">We respect your privacy. No spam.</p></form></div></div></section>'},
   {key:'stickybar',label:'Sticky CTA bar',
    svg:'<rect class="wf-acc" x="4" y="19" width="40" height="7" rx="2"/><rect x="8" y="21.5" width="16" height="2" rx="1" fill="#fff" opacity=".8"/><rect x="30" y="20.5" width="10" height="4" rx="2" fill="#fff"/>',
    html:'<div class="nx-stickybar"><strong>Limited offer — 20% off this week.</strong><a href="#form" class="nx-btn nx-btn-primary">Claim offer</a><button class="nx-stickybar-close" type="button" aria-label="Dismiss">&times;</button></div>'},
@@ -413,7 +420,7 @@ var BLOCKS=[
    html:'<section class="nx-section"><div class="container"><div class="nx-guarantee"><div class="gicon">✓</div><div><h4>30-day money-back guarantee</h4><p>Not happy? Get a full refund within 30 days, no questions asked.</p></div></div></div></section>'},
   {key:'video',label:'Video embed',
    svg:'<rect class="wf-fill" x="7" y="5" width="34" height="20" rx="2"/><circle class="wf-acc" cx="24" cy="15" r="5"/><path d="M22.3 12.7l4 2.3-4 2.3z" fill="#fff"/>',
-   html:'<section class="nx-section"><div class="container"><div class="nx-video"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div></section>'}
+   html:'<section class="nx-section"><div class="container"><div class="nx-video"><iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ" title="Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div></section>'}
 ];
 
 // Palette groups (performance-marketer taxonomy)

@@ -130,21 +130,23 @@
     html += `<p class="form-sub" data-field="sub">${b.sub}</p>`;
     html += `<form onsubmit="return false">`;
     b.fields.forEach(f => {
+      const label = f.placeholder || f.name;
       if(f.type === 'select'){
-        html += `<select class="nx-select" name="${f.name}"${f.required?' required':''}>`;
+        html += `<select class="nx-select" name="${f.name}" aria-label="${f.name}"${f.required?' required':''}>`;
         html += `<option value="" disabled selected>Select…</option>`;
         f.options.forEach(opt => html += `<option>${opt}</option>`);
         html += `</select>`;
       } else if(f.type === 'textarea'){
-        html += `<textarea class="nx-textarea" name="${f.name}" placeholder="${f.placeholder}" rows="${f.rows||3}"${f.required?' required':''}></textarea>`;
+        html += `<textarea class="nx-textarea" name="${f.name}" placeholder="${f.placeholder}" aria-label="${label}" rows="${f.rows||3}"${f.required?' required':''}></textarea>`;
       } else {
-        html += `<input class="nx-input" type="${f.type}" name="${f.name}" placeholder="${f.placeholder||''}"${f.required?' required':''}>`;
+        html += `<input class="nx-input" type="${f.type}" name="${f.name}" placeholder="${f.placeholder||''}" aria-label="${label}"${f.required?' required':''}>`;
       }
     });
     html += `<button class="nx-btn nx-btn-primary" data-field="cta">${b.cta}</button>`;
     html += `<p class="form-foot">We respect your privacy. No spam.</p>`;
     html += `</form>`;
     form.innerHTML = html;
+    wireForms(form);
   }
 
   // ───────── 9. Footer setter ─────────
@@ -229,8 +231,12 @@
   function initCountdowns(root){
     (root || document).querySelectorAll('.nx-countdown').forEach(cd => {
       if(cd._nxInit) return; cd._nxInit = true;
-      const hrs = parseFloat(cd.getAttribute('data-hours') || '72');
-      const target = Date.now() + hrs * 3600 * 1000;
+      // Fixed campaign end-date (data-deadline="2026-07-01T18:00") survives reloads;
+      // otherwise fall back to a rolling N-hour window (data-hours).
+      const dl = cd.getAttribute('data-deadline');
+      let target;
+      if(dl){ const t = Date.parse(dl); target = isNaN(t) ? Date.now() + 72*3600*1000 : t; }
+      else { const hrs = parseFloat(cd.getAttribute('data-hours') || '72'); target = Date.now() + hrs*3600*1000; }
       const units = [86400000, 3600000, 60000, 1000];
       const nums = cd.querySelectorAll('.nx-cd-num');
       function tick(){
@@ -249,8 +255,20 @@
     });
   }
 
+  // ───────── 15. Form submit → thank-you state (client-side) ─────────
+  function wireForms(root){
+    (root || document).querySelectorAll('.nx-form form').forEach(f => {
+      if(f._nxInit) return; f._nxInit = true;
+      f.addEventListener('submit', e => {
+        e.preventDefault();
+        const box = f.closest('.nx-form'); if(!box) return;
+        box.innerHTML = '<div class="nx-form-success"><div class="nx-form-tick">✓</div><h3>Thank you</h3><p>We have received your details and will be in touch within 2 business hours.</p></div>';
+      });
+    });
+  }
+
   // Umbrella initialiser — safe to call repeatedly (guards via _nxInit)
-  function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); }
+  function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); wireForms(root); }
 
   // Expose globals for in-page debugging / non-iframe use
   window.NEXA = {setTheme,setHero,setBrand,setLogo,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
