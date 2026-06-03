@@ -72,6 +72,7 @@ textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
 body.dragging{cursor:grabbing!important;user-select:none}
 .drop-line{position:absolute;left:18px;right:18px;height:0;border-top:3px dashed var(--a);z-index:20;pointer-events:none;display:none}
 .drop-line::before{content:'Drop here';position:absolute;left:50%;top:-9px;transform:translateX(-50%);background:var(--a);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:10px}
+.hero-drop{position:absolute;z-index:21;border:3px dashed var(--a);border-radius:12px;background:rgba(147,84,255,.12);display:none;align-items:center;justify-content:center;color:var(--a);font-weight:700;font-size:13px;pointer-events:none;text-shadow:0 1px 4px #fff}
 .canvas{flex:1;background:#e9e9ef;position:relative;display:flex;align-items:stretch;justify-content:center;overflow:hidden}
 .canvas iframe{width:100%;height:100%;border:0;background:#fff}
 .cv-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--mu);font-size:13px;background:#e9e9ef}
@@ -166,6 +167,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
     <div class="cv-loading" id="cvLoad"><div class="sp"></div><p>Loading template…</p></div>
     <iframe id="cv" title="Template preview"></iframe>
     <div class="drop-line" id="dropLine"></div>
+    <div class="hero-drop" id="heroDrop">Drop form into hero</div>
   </main>
 </div>
 
@@ -458,10 +460,10 @@ function renderPalette(){
 }
 function blockLabel(key){var b=BLOCKS.find(function(x){return x.key===key;});return b?b.label:'Block';}
 
-var ghost=null,dropIdx=null;
+var ghost=null,dropIdx=null,dropInHero=false,dragKey=null;
 function startDrag(key,e){
   e.preventDefault();
-  dropIdx=null;
+  dropIdx=null;dragKey=key;
   var moved=false,sx=e.clientX,sy=e.clientY;
   ghost=document.createElement('div');ghost.className='drag-ghost';ghost.textContent=blockLabel(key);document.body.appendChild(ghost);
   posGhost(e.clientX,e.clientY);
@@ -474,13 +476,27 @@ function startDrag(key,e){
   }
   function up(){
     document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);
-    var idx=dropIdx;cleanupDrag();
-    if(moved)insertBlockAt(key,idx);else insertBlockAt(key,null);
+    var idx=dropIdx,inHero=dropInHero;cleanupDrag();
+    if(inHero){placeFormInHero();}
+    else if(moved)insertBlockAt(key,idx);else insertBlockAt(key,null);
   }
   document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
 }
 function posGhost(x,y){if(ghost){ghost.style.left=x+'px';ghost.style.top=y+'px';}}
-function cleanupDrag(){if(ghost){ghost.remove();ghost=null;}document.body.classList.remove('dragging');iframe.style.pointerEvents='';var dl=document.getElementById('dropLine');if(dl)dl.style.display='none';dropIdx=null;}
+function cleanupDrag(){if(ghost){ghost.remove();ghost=null;}document.body.classList.remove('dragging');iframe.style.pointerEvents='';var dl=document.getElementById('dropLine');if(dl)dl.style.display='none';var hd=document.getElementById('heroDrop');if(hd)hd.style.display='none';dropIdx=null;dropInHero=false;dragKey=null;}
+function heroRectVp(){var doc=idoc();if(!doc)return null;var h=doc.querySelector('.nx-hero');if(!h)return null;var ir=iframe.getBoundingClientRect(),r=h.getBoundingClientRect();return {left:ir.left+r.left,top:ir.top+r.top,right:ir.left+r.right,bottom:ir.top+r.bottom,width:r.width};}
+function placeFormInHero(){
+  var doc=idoc();if(!doc)return;var hero=doc.querySelector('.nx-hero');if(!hero){insertBlockAt('leadform',null);return;}
+  hero.setAttribute('data-hero','form-right');
+  var cont=hero.querySelector('.container')||hero;
+  var form=hero.querySelector('.nx-form');
+  if(!form){form=doc.createElement('div');form.className='nx-form';form.id='form';form.setAttribute('data-edit','form');cont.appendChild(form);}
+  form.style.display='';
+  form.innerHTML='<h3>Get your free consultation</h3><p class="form-sub">We reply within 2 business hours.</p><form onsubmit="return false"><input class="nx-input" type="text" placeholder="Full name" aria-label="Full name" required><input class="nx-input" type="email" placeholder="Email address" aria-label="Email address" required><input class="nx-input" type="tel" placeholder="Phone number" aria-label="Phone number" required><button class="nx-btn nx-btn-primary">Request a call back</button><p class="form-foot">We respect your privacy. No spam.</p></form>';
+  try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initBlocks();}catch(e){}
+  renderSections();
+  toast('Form placed in the hero');
+}
 function gapPositions(){
   var doc=idoc();if(!doc)return [];
   var kids=editableKids(doc),ir=iframe.getBoundingClientRect(),arr=[];
@@ -489,8 +505,19 @@ function gapPositions(){
   return arr;
 }
 function updateDrop(x,y){
-  var canvas=document.querySelector('.canvas'),cr=canvas.getBoundingClientRect(),dl=document.getElementById('dropLine');
+  var canvas=document.querySelector('.canvas'),cr=canvas.getBoundingClientRect(),dl=document.getElementById('dropLine'),hd=document.getElementById('heroDrop');
+  dropInHero=false;hd.style.display='none';
   if(x<cr.left||x>cr.right||y<cr.top||y>cr.bottom){dl.style.display='none';dropIdx=null;return;}
+  // Lead form dragged over the hero → offer "drop into hero"
+  if(dragKey==='leadform'){
+    var hr=heroRectVp();
+    if(hr&&x>=hr.left&&x<=hr.right&&y>=hr.top&&y<=hr.bottom){
+      dropInHero=true;dropIdx=null;dl.style.display='none';
+      var top=Math.max(cr.top,hr.top)-cr.top,bottom=Math.min(cr.bottom,hr.bottom)-cr.top;
+      hd.style.left=(hr.left-cr.left)+'px';hd.style.top=top+'px';hd.style.width=hr.width+'px';hd.style.height=(bottom-top)+'px';hd.style.display='flex';
+      return;
+    }
+  }
   var gaps=gapPositions();if(!gaps.length){dropIdx=0;return;}
   var best=gaps[0],bd=Math.abs(y-gaps[0].y);
   gaps.forEach(function(g){var d=Math.abs(y-g.y);if(d<bd){bd=d;best=g;}});
