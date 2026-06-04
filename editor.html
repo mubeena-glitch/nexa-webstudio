@@ -143,6 +143,9 @@ body.dragging{cursor:grabbing!important;user-select:none}
       <div class="fld"><label>Headings</label><select class="inp" id="fontDisplay" onchange="applyFont('display',this)"></select></div>
       <div class="fld"><label>Body</label><select class="inp" id="fontBody" onchange="applyFont('body',this)"></select></div>
       <div class="hint">Google Fonts. Applies live and survives theme changes.</div>
+      <div class="fld" style="margin-top:12px"><label>Upload a custom / brand font</label><input class="inp" type="file" id="fontFile" accept=".woff2,.woff,.ttf,.otf,font/*" onchange="uploadFont(this)"></div>
+      <div class="fld"><label>Apply custom font to</label><select class="inp" id="fontTarget"><option value="display">Headings</option><option value="body">Body</option><option value="both">Both</option></select></div>
+      <div class="hint">.woff2, .woff, .ttf or .otf. Embedded in the page, so it travels with the download. Use fonts you are licensed to embed.</div>
     </div>
 
     <div class="grp">
@@ -232,6 +235,20 @@ var FONTS_BODY=[['Poppins','Poppins:wght@300;400;500;600'],['Inter','Inter:wght@
 function fillFontSel(id,list){var s=document.getElementById(id);if(!s)return;s.innerHTML=list.map(function(f){return '<option value="'+f[0]+'" data-q="'+f[1]+'">'+f[0]+'</option>';}).join('');}
 function populateFonts(){fillFontSel('fontDisplay',FONTS_DISPLAY);fillFontSel('fontBody',FONTS_BODY);}
 function applyFont(role,sel){var opt=sel.selectedOptions[0];send({type:'nexa:set-font',role:role,family:sel.value,query:opt?opt.getAttribute('data-q'):''});toast((role==='display'?'Headings: ':'Body: ')+sel.value);}
+function uploadFont(input){
+  var f=input.files&&input.files[0];if(!f)return;
+  var ext=(f.name.split('.').pop()||'').toLowerCase();
+  var fmt={woff2:'woff2',woff:'woff',ttf:'truetype',otf:'opentype'}[ext]||'woff2';
+  var fam=(f.name.replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9 ]+/g,' ').trim())||'Custom Font';
+  var target=document.getElementById('fontTarget').value;
+  var r=new FileReader();
+  r.onload=function(){
+    if(target==='both'){send({type:'nexa:add-font',family:fam,dataUrl:r.result,format:fmt,role:'display'});send({type:'nexa:add-font',family:fam,dataUrl:r.result,format:fmt,role:'body'});}
+    else{send({type:'nexa:add-font',family:fam,dataUrl:r.result,format:fmt,role:target});}
+    toast('Custom font “'+fam+'” applied');
+  };
+  r.readAsDataURL(f);
+}
 function applyFooter(){send({type:'nexa:set-footer',data:{
   email:document.getElementById('fEmail').value,
   phone:document.getElementById('fPhone').value,

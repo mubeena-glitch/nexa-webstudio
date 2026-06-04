@@ -60,6 +60,14 @@
     document.body.style.setProperty(role === 'display' ? '--font-display' : '--font-body', "'" + family + "', system-ui, sans-serif");
   }
 
+  // Register an uploaded custom font (embedded as a base64 @font-face → travels with the export).
+  function addFont(family, dataUrl, format, role){
+    const style = document.createElement('style');
+    style.textContent = "@font-face{font-family:'" + family + "';src:url(" + dataUrl + ") format('" + format + "');font-display:swap}";
+    document.head.appendChild(style);
+    if(role) document.body.style.setProperty(role === 'display' ? '--font-display' : '--font-body', "'" + family + "', system-ui, sans-serif");
+  }
+
   // ───────── 5. Text zone setter (hero copy, footer, etc.) ─────────
   function setText(zone, fields){
     const el = document.querySelector(`[data-edit="${zone}"]`);
@@ -201,6 +209,7 @@
       case 'nexa:set-brand':       return setBrand(m.primary, m.secondary);
       case 'nexa:set-logo':        return setLogo(m.url);
       case 'nexa:set-font':        return setFont(m.role, m.family, m.query);
+      case 'nexa:add-font':        return addFont(m.family, m.dataUrl, m.format, m.role);
       case 'nexa:set-text':        return setText(m.zone, m.fields);
       case 'nexa:set-hero-media':  return setHeroMedia(m.url, m.mediaType);
       case 'nexa:set-benefits':    return setBenefits(m.items);
@@ -290,7 +299,7 @@
   function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); wireForms(root); }
 
   // Expose globals for in-page debugging / non-iframe use
-  window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
+  window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,addFont,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
 
   // Auto-init: if loaded with ?edit=1, enable edit mode
   if(location.search.includes('edit=1')) enableEditMode();
