@@ -145,6 +145,11 @@ body.dragging{cursor:grabbing!important;user-select:none}
     <details class="cat">
       <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="13" y2="18"/></svg></span> Content</summary>
       <div class="cat-body">
+        <div class="sublbl">AI content</div>
+        <div class="fld"><label>Describe your page</label><textarea class="inp" id="aiPrompt" placeholder="e.g. A BLS training course for nurses, urgent, AED 1,200"></textarea></div>
+        <button class="hbtn" style="width:100%;justify-content:center" id="aiGenBtn" onclick="aiGenerate()">Generate copy with AI</button>
+        <button class="hbtn" style="width:100%;justify-content:center;margin-top:7px" id="aiTrBtn" onclick="aiTranslate()">Translate page to Arabic</button>
+        <div class="hint">Generates hero copy + benefits. Translate uses the Arabic dialect chosen below.</div>
         <div class="sublbl">Hero copy</div>
         <div class="fld"><label>Eyebrow</label><input class="inp" id="tEyebrow" oninput="applyHeroText()" placeholder="Small label above headline"></div>
         <div class="fld"><label>Headline</label><textarea class="inp" id="tHeadline" oninput="applyHeroText()" placeholder="Main headline"></textarea></div>
@@ -262,6 +267,43 @@ function applyHeroText(){
 }
 function applyLogo(){var u=document.getElementById('tLogo').value.trim();if(u)send({type:'nexa:set-logo',url:u});}
 function uploadLogo(input){var f=input.files&&input.files[0];if(!f)return;var r=new FileReader();r.onload=function(){send({type:'nexa:set-logo',url:r.result});toast('Logo applied');};r.readAsDataURL(f);}
+// ---- AI content (calls the /api/ai serverless endpoint) ----
+async function aiCall(payload){
+  var r=await fetch('/api/ai',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+  var d=await r.json().catch(function(){return{error:'Unexpected response from the AI service.'};});
+  if(!r.ok)throw new Error(d.error||('Error '+r.status));
+  return d;
+}
+function applyAiContent(c){
+  if(!c)return;
+  send({type:'nexa:set-text',zone:'hero-copy',fields:{eyebrow:c.eyebrow||'',headline:c.headline||'',subhead:c.subhead||'',cta:c.cta||''}});
+  if(c.eyebrow!=null&&document.getElementById('tEyebrow'))document.getElementById('tEyebrow').value=c.eyebrow;
+  if(c.headline!=null&&document.getElementById('tHeadline'))document.getElementById('tHeadline').value=c.headline;
+  if(c.subhead!=null&&document.getElementById('tSubhead'))document.getElementById('tSubhead').value=c.subhead;
+  if(c.cta!=null&&document.getElementById('tCta'))document.getElementById('tCta').value=c.cta;
+  if(Array.isArray(c.benefits)&&c.benefits.length){send({type:'nexa:set-benefits',items:c.benefits.map(function(b){return{icon:'★',title:b.title||'',body:b.body||''};})});}
+}
+async function aiGenerate(){
+  var p=(document.getElementById('aiPrompt').value||'').trim();if(!p){toast('Describe your page first');return;}
+  var b=document.getElementById('aiGenBtn');b.disabled=true;b.textContent='Generating…';
+  try{applyAiContent(await aiCall({mode:'generate',prompt:p}));toast('Copy generated');}
+  catch(e){toast(e.message);}
+  finally{b.disabled=false;b.textContent='Generate copy with AI';}
+}
+async function aiTranslate(){
+  var b=document.getElementById('aiTrBtn');b.disabled=true;b.textContent='Translating…';
+  var fields={eyebrow:(document.getElementById('tEyebrow')||{}).value||'',headline:(document.getElementById('tHeadline')||{}).value||'',subhead:(document.getElementById('tSubhead')||{}).value||'',cta:(document.getElementById('tCta')||{}).value||''};
+  var dialect=(document.getElementById('dialectSel')||{}).value||'Modern Standard (MSA)';
+  try{
+    applyAiContent(await aiCall({mode:'translate',fields:fields,targetLang:'Arabic',dialect:dialect}));
+    send({type:'nexa:set-dir',dir:'rtl',lang:'ar'});
+    send({type:'nexa:set-font',role:'display',family:'Cairo',query:'Cairo:wght@400;600;700;800'});
+    send({type:'nexa:set-font',role:'body',family:'Cairo',query:'Cairo:wght@400;500;600;700'});
+    var ls=document.getElementById('langSel');if(ls)ls.value='ar';var df=document.getElementById('dialectFld');if(df)df.style.display='';
+    toast('Translated to Arabic');
+  }catch(e){toast(e.message);}
+  finally{b.disabled=false;b.textContent='Translate page to Arabic';}
+}
 function applyLang(sel){
   var df=document.getElementById('dialectFld');
   if(sel.value==='ar'){
