@@ -735,6 +735,22 @@ body.nx-edit-mode [data-edit]:hover::before{opacity:1}
 .nx-video{max-width:880px;margin:0 auto;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-md);background:var(--surface-2)}
 .nx-video iframe{width:100%;height:100%;border:0;display:block}
 
+/* ---- RTL (Arabic etc.) ---- */
+[dir="rtl"] body{text-align:right}
+[dir="rtl"] .nx-section-head,
+[dir="rtl"] .nx-final-cta,
+[dir="rtl"] .nx-stats,
+[dir="rtl"] .nx-stat,
+[dir="rtl"] .nx-reviews-strip,
+[dir="rtl"] .nx-quote .container,
+[dir="rtl"] .nx-hero[data-hero="centred"] .container,
+[dir="rtl"] .nx-cd-unit,
+[dir="rtl"] .nx-step,
+[dir="rtl"] .nx-media-cap{text-align:center}
+[dir="rtl"] .nx-input,[dir="rtl"] .nx-select,[dir="rtl"] .nx-textarea{text-align:right}
+[dir="rtl"] .nx-faq summary{flex-direction:row-reverse}
+[dir="rtl"] .nx-benefit-icon,[dir="rtl"] .nx-test-avatar{margin-left:0}
+
 /* Form success (thank-you) state */
 .nx-form-success{text-align:center;padding:var(--sp-4) 0}
 .nx-form-tick{width:56px;height:56px;border-radius:50%;background:var(--brand-accent);color:var(--brand-primary);font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-4)}

@@ -60,6 +60,12 @@
     document.body.style.setProperty(role === 'display' ? '--font-display' : '--font-body', "'" + family + "', system-ui, sans-serif");
   }
 
+  // ───────── Text direction (LTR / RTL for Arabic etc.) ─────────
+  function setDir(dir, lang){
+    document.documentElement.setAttribute('dir', dir || 'ltr');
+    if(lang) document.documentElement.setAttribute('lang', lang);
+  }
+
   // Register an uploaded custom font (embedded as a base64 @font-face → travels with the export).
   function addFont(family, dataUrl, format, role){
     const style = document.createElement('style');
@@ -210,6 +216,7 @@
       case 'nexa:set-logo':        return setLogo(m.url);
       case 'nexa:set-font':        return setFont(m.role, m.family, m.query);
       case 'nexa:add-font':        return addFont(m.family, m.dataUrl, m.format, m.role);
+      case 'nexa:set-dir':         return setDir(m.dir, m.lang);
       case 'nexa:set-text':        return setText(m.zone, m.fields);
       case 'nexa:set-hero-media':  return setHeroMedia(m.url, m.mediaType);
       case 'nexa:set-benefits':    return setBenefits(m.items);
@@ -299,7 +306,7 @@
   function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); wireForms(root); }
 
   // Expose globals for in-page debugging / non-iframe use
-  window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,addFont,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
+  window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,addFont,setDir,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
 
   // Auto-init: if loaded with ?edit=1, enable edit mode
   if(location.search.includes('edit=1')) enableEditMode();

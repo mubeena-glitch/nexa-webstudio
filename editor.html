@@ -153,6 +153,10 @@ body.dragging{cursor:grabbing!important;user-select:none}
         <div class="sublbl">Lead form</div>
         <div class="chips" id="formChips"></div>
         <div class="hint">Swaps the form fields and CTA for a ready-made bundle.</div>
+        <div class="sublbl">Language &amp; direction</div>
+        <div class="fld"><label>Language</label><select class="inp" id="langSel" onchange="applyLang(this)"><option value="en">English (LTR)</option><option value="ar">Arabic (RTL)</option></select></div>
+        <div class="fld" id="dialectFld" style="display:none"><label>Arabic dialect / region</label><select class="inp" id="dialectSel"><option>Modern Standard (MSA)</option><option>Gulf / Khaleeji</option><option>Egyptian</option><option>Levantine</option></select></div>
+        <div class="hint">RTL layout and an Arabic font apply now. Type or paste your Arabic copy; AI-translate arrives with the AI add-on.</div>
       </div>
     </details>
 
@@ -258,6 +262,20 @@ function applyHeroText(){
 }
 function applyLogo(){var u=document.getElementById('tLogo').value.trim();if(u)send({type:'nexa:set-logo',url:u});}
 function uploadLogo(input){var f=input.files&&input.files[0];if(!f)return;var r=new FileReader();r.onload=function(){send({type:'nexa:set-logo',url:r.result});toast('Logo applied');};r.readAsDataURL(f);}
+function applyLang(sel){
+  var df=document.getElementById('dialectFld');
+  if(sel.value==='ar'){
+    send({type:'nexa:set-dir',dir:'rtl',lang:'ar'});
+    send({type:'nexa:set-font',role:'display',family:'Cairo',query:'Cairo:wght@400;600;700;800'});
+    send({type:'nexa:set-font',role:'body',family:'Cairo',query:'Cairo:wght@400;500;600;700'});
+    if(df)df.style.display='';
+    toast('Arabic (RTL) applied — enter or paste your Arabic copy');
+  } else {
+    send({type:'nexa:set-dir',dir:'ltr',lang:'en'});
+    if(df)df.style.display='none';
+    toast('English (LTR)');
+  }
+}
 var FONTS_DISPLAY=[['Poppins','Poppins:wght@400;600;700;800;900'],['Montserrat','Montserrat:wght@400;600;700;800'],['Playfair Display','Playfair+Display:wght@400;600;700;800'],['Fraunces','Fraunces:wght@400;600;700'],['Sora','Sora:wght@400;600;700'],['Space Grotesk','Space+Grotesk:wght@400;600;700'],['DM Serif Display','DM+Serif+Display'],['Archivo','Archivo:wght@400;600;700;800'],['Cormorant Garamond','Cormorant+Garamond:wght@500;600;700'],['Bricolage Grotesque','Bricolage+Grotesque:wght@400;600;700;800'],['Outfit','Outfit:wght@400;600;700;800'],['Unbounded','Unbounded:wght@400;600;700;800'],['Manrope','Manrope:wght@400;600;700;800']];
 var FONTS_BODY=[['Poppins','Poppins:wght@300;400;500;600'],['Inter','Inter:wght@400;500;600'],['Manrope','Manrope:wght@400;500;600'],['Work Sans','Work+Sans:wght@400;500;600'],['DM Sans','DM+Sans:wght@400;500;600'],['Source Sans 3','Source+Sans+3:wght@400;500;600'],['IBM Plex Sans','IBM+Plex+Sans:wght@400;500;600'],['Nunito Sans','Nunito+Sans:wght@400;600;700'],['Karla','Karla:wght@400;500;600'],['Outfit','Outfit:wght@400;500;600']];
 function fillFontSel(id,list){var s=document.getElementById(id);if(!s)return;s.innerHTML=list.map(function(f){return '<option value="'+f[0]+'" data-q="'+f[1]+'">'+f[0]+'</option>';}).join('');}
