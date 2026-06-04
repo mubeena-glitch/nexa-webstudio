@@ -30,8 +30,15 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--tx);overf
 .cat>summary::after{content:'\25B8';margin-left:auto;color:var(--mu);transition:transform .2s;font-size:12px}
 .cat[open]>summary::after{transform:rotate(90deg)}
 .cat>summary:hover{color:var(--a)}
-.cat-ic{font-size:14px}
+.cat-ic{color:var(--a);display:inline-flex;align-items:center}
 .cat-meta{font-weight:500;text-transform:none;letter-spacing:0;color:var(--mu);font-size:11px}
+/* review / QA results */
+.rv-summary{font-size:11.5px;color:var(--mu);font-weight:600;margin-bottom:9px}
+.rv{display:flex;gap:8px;padding:7px 9px;border:1px solid var(--bd);border-radius:8px;margin-bottom:6px;font-size:11.5px;line-height:1.45;align-items:flex-start}
+.rv .rv-i{flex-shrink:0;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-top:1px}
+.rv.pass .rv-i{background:var(--a)}
+.rv.warn .rv-i{background:#e8a33d}
+.rv.fail .rv-i{background:#e5484d}
 .cat-body{padding:0 2px 18px}
 .sublbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);margin:16px 0 8px}
 .sublbl:first-child{margin-top:2px}
@@ -113,7 +120,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
   <aside class="drawer">
 
     <details class="cat" open>
-      <summary><span class="cat-ic">&#129521;</span> Sections <span class="cat-meta" id="secCount"></span></summary>
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/></svg></span> Sections <span class="cat-meta" id="secCount"></span></summary>
       <div class="cat-body">
         <div id="secList"></div>
         <div class="add-wrap">
@@ -128,7 +135,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
     </details>
 
     <details class="cat">
-      <summary><span class="cat-ic">&#9638;</span> Add Blocks</summary>
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg></span> Add Blocks</summary>
       <div class="cat-body">
         <div class="hint" style="margin:0 0 9px">Drag a block onto the page, or click to append it.</div>
         <div class="palette" id="palette"></div>
@@ -136,7 +143,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
     </details>
 
     <details class="cat">
-      <summary><span class="cat-ic">&#9999;&#65039;</span> Content</summary>
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="13" y2="18"/></svg></span> Content</summary>
       <div class="cat-body">
         <div class="sublbl">Hero copy</div>
         <div class="fld"><label>Eyebrow</label><input class="inp" id="tEyebrow" oninput="applyHeroText()" placeholder="Small label above headline"></div>
@@ -150,7 +157,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
     </details>
 
     <details class="cat">
-      <summary><span class="cat-ic">&#127912;</span> Design</summary>
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c4 4.5 6 7.6 6 10.5a6 6 0 0 1-12 0C6 10.6 8 7.5 12 3z"/></svg></span> Design</summary>
       <div class="cat-body">
         <div class="sublbl">Theme</div>
         <div class="chips" id="themeChips"></div>
@@ -171,7 +178,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
     </details>
 
     <details class="cat">
-      <summary><span class="cat-ic">&#127970;</span> Brand &amp; Footer</summary>
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V5.5A2.5 2.5 0 0 1 5.5 3H12l9 9-9 9-9-9z"/><circle cx="8" cy="8" r="1.3" fill="currentColor" stroke="none"/></svg></span> Brand &amp; Footer</summary>
       <div class="cat-body">
         <div class="sublbl">Logo</div>
         <div class="fld"><label>Upload logo image</label><input class="inp" type="file" id="logoFile" accept="image/*" onchange="uploadLogo(this)"></div>
@@ -181,6 +188,15 @@ body.dragging{cursor:grabbing!important;user-select:none}
         <div class="fld"><label>Phone</label><input class="inp" id="fPhone" oninput="applyFooter()" placeholder="+971 4 000 0000"></div>
         <div class="fld"><label>Address</label><input class="inp" id="fAddress" oninput="applyFooter()" placeholder="Dubai, UAE"></div>
         <div class="fld"><label>Legal line</label><input class="inp" id="fLegal" oninput="applyFooter()" placeholder="© 2026 Brand. All rights reserved."></div>
+      </div>
+    </details>
+
+    <details class="cat">
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.2l2.3 2.3 4.7-4.9"/></svg></span> Review</summary>
+      <div class="cat-body">
+        <div class="hint" style="margin:0 0 9px">A quick pre-publish check: missing content, CTA, and SEO basics.</div>
+        <button class="hbtn" style="width:100%;justify-content:center" onclick="runReview()">Run check</button>
+        <div id="reviewOut" style="margin-top:11px"></div>
       </div>
     </details>
 
@@ -371,6 +387,43 @@ function repeatContainer(el){if(!el.querySelector)return null;for(var i=0;i<ITEM
 function addItem(i){var doc=idoc();if(!doc)return;var el=editableKids(doc)[i];if(!el)return;var c=repeatContainer(el);if(!c){toast('This section has no repeatable items');return;}var clone=c.children[c.children.length-1].cloneNode(true);c.appendChild(clone);try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initBlocks();}catch(e){}toast('Item added');}
 function dupSec(i){var doc=idoc();if(!doc)return;var el=editableKids(doc)[i];if(!el)return;var clone=el.cloneNode(true);if(el.nextSibling)el.parentNode.insertBefore(clone,el.nextSibling);else el.parentNode.appendChild(clone);try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initBlocks();}catch(e){}renderSections();toast('Section duplicated');}
 var textEdit=false;
+function runReview(){
+  var doc=idoc(),out=document.getElementById('reviewOut');
+  if(!doc||!doc.body){out.innerHTML='<div class="rv-summary">Review runs on the deployed site.</div>';return;}
+  var issues=[];function add(l,m){issues.push({l:l,m:m});}
+  // Headline
+  var h1s=doc.querySelectorAll('h1'),h1=h1s[0],h1t=h1?h1.textContent.trim():'';
+  if(!h1t)add('fail','No headline (H1). Add a clear hero headline.');
+  else if(h1t.length>70)add('warn','Headline is long ('+h1t.length+' chars). Aim for under 70.');
+  else add('pass','Headline present.');
+  if(h1s.length>1)add('warn',h1s.length+' H1 tags found. Use one main H1 for SEO.');
+  // CTA
+  var ctas=doc.querySelectorAll('.nx-btn-primary,.nx-nav-cta'),weak=['submit','click here','button','primary action','secondary'];
+  var txt=Array.prototype.map.call(ctas,function(b){return b.textContent.trim();}).filter(Boolean);
+  if(!txt.length)add('fail','No call-to-action button found.');
+  else if(txt.some(function(t){return weak.indexOf(t.toLowerCase())>-1;}))add('warn','A CTA uses generic text. Use action words like “Book my call”.');
+  else add('pass','Call-to-action present.');
+  // Meta description
+  var md=doc.querySelector('meta[name="description"]'),mdc=md?(md.getAttribute('content')||'').trim():'';
+  if(!mdc)add('fail','No meta description. Important for search snippets.');
+  else if(mdc.length<50||mdc.length>160)add('warn','Meta description is '+mdc.length+' chars. Aim for 50–160.');
+  else add('pass','Meta description set.');
+  // Title
+  var ti=doc.querySelector('title');if(!ti||!ti.textContent.trim())add('warn','No page title. Add one for SEO.');
+  // Form
+  if(!doc.querySelector('.nx-form'))add('warn','No lead form on the page. Most landing pages need one to capture leads.');
+  // Images alt
+  var noalt=0;doc.querySelectorAll('img').forEach(function(im){if(!im.getAttribute('alt'))noalt++;});
+  if(noalt>0)add('warn',noalt+' image(s) missing alt text. Affects accessibility and SEO.');
+  // Copy length
+  var w=((doc.body.innerText||'').trim().match(/\S+/g)||[]).length;
+  if(w<80)add('warn','Very little copy ('+w+' words). Thin content can hurt SEO and conversions.');
+  // Render
+  var fails=issues.filter(function(i){return i.l==='fail';}).length,warns=issues.filter(function(i){return i.l==='warn';}).length;
+  var head=fails?(fails+' to fix · '+warns+' to review'):(warns?('Looks good · '+warns+' suggestion'+(warns>1?'s':'')):'All clear. Ready to publish.');
+  var ico={pass:'&#10003;',warn:'!',fail:'&#215;'};
+  out.innerHTML='<div class="rv-summary">'+head+'</div>'+issues.map(function(i){return '<div class="rv '+i.l+'"><span class="rv-i">'+ico[i.l]+'</span><span>'+escHtml(i.m)+'</span></div>';}).join('');
+}
 function toggleTextEdit(){var doc=idoc();if(!doc){toast('Editing runs on the deployed site');return;}textEdit=!textEdit;var btn=document.getElementById('textBtn');if(btn)btn.classList.toggle('pri',textEdit);var sel='h1,h2,h3,h4,h5,p,span,a,li,blockquote,cite,summary,strong,em,td,th,.val,.lbl,.nx-cd-num';doc.body.querySelectorAll(sel).forEach(function(e){e.contentEditable=textEdit?'true':'false';});toast(textEdit?'Text editing ON — click any text and type':'Text editing off');}
 function moveSec(i,dir){var doc=idoc();if(!doc)return;var k=editableKids(doc),el=k[i],t=k[i+dir];if(!el||!t)return;if(dir<0)doc.body.insertBefore(el,t);else doc.body.insertBefore(t,el);renderSections();}
 function delSec(i){var doc=idoc();if(!doc)return;var k=editableKids(doc);if(k[i]){k[i].remove();renderSections();toast('Section deleted');}}
