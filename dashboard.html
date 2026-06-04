@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>My Projects — NEXA Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--a:#9354FF;--a2:#E9DDFF;--bg:#f5f5f8;--bd:rgba(0,0,0,.08);--tx:#16162a;--mu:#6e6e88}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+.hd{background:#fff;border-bottom:1px solid var(--bd);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.hd-left{display:flex;align-items:center;gap:11px}
+.nx-wordmark{font-weight:800;font-size:18px;letter-spacing:.5px;color:var(--a)}
+.hd-left span{font-size:11px;color:var(--mu);border-left:1px solid var(--bd);padding-left:11px}
+.hd-right{display:flex;gap:8px}
+.hd-btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:#fff;color:var(--tx);font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.hd-btn:hover{border-color:var(--a);color:var(--a)}
+.hd-btn.pri{background:var(--a);color:#fff;border-color:var(--a)}
+.hd-btn.pri:hover{opacity:.9;color:#fff}
+.intro{padding:24px 32px 6px}
+.intro h1{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:3px}
+.intro p{font-size:13px;color:var(--mu)}
+.stats{display:flex;gap:26px;padding:14px 32px 4px}
+.stat .n{font-size:22px;font-weight:800}
+.stat .l{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}
+.stat .n.soon{color:var(--mu)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:18px 32px 50px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:2px solid var(--bd);border-radius:16px;overflow:hidden;transition:.2s;position:relative}
+.card:hover{border-color:var(--a);box-shadow:0 16px 40px rgba(147,84,255,.12)}
+.thumb{height:200px;overflow:hidden;position:relative;background:#fff;border-bottom:1px solid var(--bd)}
+.thumb iframe{width:1280px;height:900px;border:0;transform:scale(.3);transform-origin:top left;pointer-events:none;background:#fff}
+.badge{position:absolute;top:10px;left:10px;z-index:2;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.92);color:#16162a;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.info{padding:14px 16px}
+.info h3{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.info .meta{font-size:11px;color:var(--mu);margin-bottom:11px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.act{flex:1;min-width:0;padding:7px 8px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:#fff;color:var(--tx);font-family:inherit;text-align:center;text-decoration:none}
+.act:hover{border-color:var(--a);color:var(--a)}
+.act.pri{background:var(--a);color:#fff;border-color:var(--a)}
+.act.pri:hover{opacity:.9;color:#fff}
+.act.del{flex:0 0 auto;padding:7px 10px}
+.act.del:hover{border-color:#e5484d;color:#e5484d}
+.empty{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--mu)}
+.empty h3{font-size:17px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.empty a{color:var(--a);font-weight:600}
+</style>
+</head>
+<body>
+<div class="hd">
+  <div class="hd-left"><span class="nx-wordmark">NEXA</span><span>My Projects</span></div>
+  <div class="hd-right">
+    <a class="hd-btn" href="index.html">Home</a>
+    <a class="hd-btn" href="theme-library/gallery.html">Themes</a>
+    <a class="hd-btn pri" href="templates.html">+ New page</a>
+  </div>
+</div>
+
+<div class="intro">
+  <h1>My Projects</h1>
+  <p>Everything you have built, saved in this browser. Open, preview, download or remove any page.</p>
+</div>
+<div class="stats">
+  <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Projects</div></div>
+  <div class="stat"><div class="n" id="sDrafts">0</div><div class="l">Drafts</div></div>
+  <div class="stat"><div class="n soon" id="sLive">0</div><div class="l">Live · with publishing</div></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+function loadIndex(){try{return JSON.parse(localStorage.getItem('nexa-drafts')||'{}');}catch(e){return{};}}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function withBase(h){return /<base /i.test(h)?h:h.replace(/<head([^>]*)>/i,'<head$1><base href="/templates/">');}
+
+async function selfContained(h){
+  try{
+    var css=await (await fetch('templates/_shared/kit.css')).text();
+    var js=await (await fetch('templates/_shared/kit.js')).text();
+    h=h.replace(/<link[^>]*_shared\/kit\.css[^>]*>/i,'<style>\n'+css+'\n</style>');
+    h=h.replace(/<script[^>]*_shared\/kit\.js[^>]*><\/script>/i,'<script>\n'+js+'\n</'+'script>');
+  }catch(e){}
+  return h;
+}
+function openEditor(tplId,name){location.href='editor.html?t='+encodeURIComponent(tplId)+'&name='+encodeURIComponent(name||'Untitled')+'&restore=1';}
+async function previewProj(key){var h=localStorage.getItem(key);if(!h)return;var url=URL.createObjectURL(new Blob([await selfContained(h)],{type:'text/html'}));window.open(url,'_blank');setTimeout(function(){URL.revokeObjectURL(url);},8000);}
+async function downloadProj(key,name){var h=localStorage.getItem(key);if(!h)return;var url=URL.createObjectURL(new Blob([await selfContained(h)],{type:'text/html'}));var a=document.createElement('a');a.href=url;a.download=(name||'page').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);}
+function delProj(key){var idx=loadIndex();delete idx[key];localStorage.setItem('nexa-drafts',JSON.stringify(idx));localStorage.removeItem(key);render();}
+
+function render(){
+  var idx=loadIndex(),keys=Object.keys(idx).sort(function(a,b){return idx[b].ts-idx[a].ts;});
+  document.getElementById('sTotal').textContent=keys.length;
+  document.getElementById('sDrafts').textContent=keys.length;
+  var g=document.getElementById('grid');
+  if(!keys.length){g.innerHTML='<div class="empty"><h3>No projects yet</h3><p>Start from a <a href="templates.html">template</a>, pick a <a href="theme-library/gallery.html">theme</a>, or <a href="editor.html?t=blank-starter&name=Untitled">build from scratch</a>. Your work autosaves here.</p></div>';return;}
+  g.innerHTML=keys.map(function(k){
+    var d=idx[k],when=new Date(d.ts),t=when.toLocaleDateString()+' '+when.toLocaleTimeString().slice(0,5);
+    var html=withBase(localStorage.getItem(k)||'');
+    return '<div class="card">'
+      +'<div class="thumb"><span class="badge">Draft</span><iframe scrolling="no" srcdoc="'+esc(html)+'" title="'+esc(d.name||'')+' preview"></iframe></div>'
+      +'<div class="info"><h3>'+esc(d.name||d.id||'Untitled')+'</h3><div class="meta">Edited '+t+'</div>'
+      +'<div class="acts">'
+      +'<button class="act pri" onclick="openEditor(\''+esc(d.id)+'\',\''+esc(d.name||'')+'\')">Edit</button>'
+      +'<button class="act" onclick="previewProj(\''+k+'\')">Preview</button>'
+      +'<button class="act" onclick="downloadProj(\''+k+'\',\''+esc(d.name||'')+'\')">Download</button>'
+      +'<button class="act del" title="Delete" onclick="if(confirm(\'Delete this project?\'))delProj(\''+k+'\')">&#215;</button>'
+      +'</div></div></div>';
+  }).join('');
+}
+render();
+</script>
+</body>
+</html>

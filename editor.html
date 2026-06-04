@@ -297,6 +297,7 @@ var FORMS=[['lead-basic','Basic lead'],['consult-detailed','Consultation'],['boo
 var qs=new URLSearchParams(location.search);
 var id=(qs.get('t')||'').replace(/[^a-z0-9-]/gi,'');
 var name=qs.get('name')||prettify(id);
+var restoreReq=qs.get('restore')==='1',restored=false;
 var file=id?('templates/'+id+'.html'):'';
 var iframe=document.getElementById('cv');
 var ready=false, pendingExport=false;
@@ -489,7 +490,7 @@ async function download(html){
 // ---- messages from the template iframe ----
 window.addEventListener('message',function(e){
   var m=e.data;if(!m||typeof m!=='object'||!m.type)return;
-  if(m.type==='nexa:ready'){ready=true;document.getElementById('cvLoad').style.display='none';prefillText();renderSections();startObserver();prefillPageSettings();renderDrafts();renderKits();if(localStorage.getItem(draftKey()))toast('A saved draft for this page exists — see Drafts');}
+  if(m.type==='nexa:ready'){ready=true;document.getElementById('cvLoad').style.display='none';prefillText();renderSections();startObserver();prefillPageSettings();renderDrafts();renderKits();if(restoreReq&&!restored&&localStorage.getItem(draftKey())){restored=true;openDraft(draftKey());}else if(!restoreReq&&localStorage.getItem(draftKey()))toast('A saved draft for this page exists — see Drafts');}
   if(m.type==='nexa:html'&&pendingExport){pendingExport=false;download(m.html);}
 });
 
