@@ -126,6 +126,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
       <button class="dvbtn" onclick="setDevice('390',this)" title="Mobile"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></button>
     </div>
     <button class="hbtn" id="textBtn" onclick="toggleTextEdit()" title="Toggle inline text editing">&#9998; Edit text</button>
+    <button class="hbtn" onclick="previewPage()" title="Preview the page full-screen, as visitors see it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> Preview</button>
     <button class="hbtn pri" onclick="exportHtml()">&#8681; Download HTML</button>
   </div>
 </div>
@@ -842,6 +843,21 @@ function undo(){if(hidx<=0)return;hidx--;restoreHist();}
 function redo(){if(hidx>=hist.length-1)return;hidx++;restoreHist();}
 function updateUndo(){var u=document.getElementById('undoBtn'),r=document.getElementById('redoBtn');if(u)u.disabled=hidx<=0;if(r)r.disabled=hidx>=hist.length-1;}
 document.addEventListener('keydown',function(e){var k=(e.key||'').toLowerCase();if((e.ctrlKey||e.metaKey)&&k==='z'&&!e.shiftKey){e.preventDefault();undo();}else if((e.ctrlKey||e.metaKey)&&(k==='y'||(k==='z'&&e.shiftKey))){e.preventDefault();redo();}});
+
+// Full-page preview of the CURRENT edited page (self-contained, opens in a new tab)
+async function previewPage(){
+  var doc=idoc();if(!doc){toast('Still loading…');return;}
+  var h=cleanExport(doc.documentElement.outerHTML);
+  try{
+    var css=await (await fetch('templates/_shared/kit.css')).text();
+    var js=await (await fetch('templates/_shared/kit.js')).text();
+    h=h.replace(/<link[^>]*_shared\/kit\.css[^>]*>/i,'<style>\n'+css+'\n</style>');
+    h=h.replace(/<script[^>]*_shared\/kit\.js[^>]*><\/script>/i,'<script>\n'+js+'\n<\/script>');
+  }catch(e){}
+  var url=URL.createObjectURL(new Blob(['<!DOCTYPE html>\n'+h],{type:'text/html'}));
+  window.open(url,'_blank');
+  setTimeout(function(){URL.revokeObjectURL(url);},8000);
+}
 
 // Device preview
 function setDevice(w,btn){if(w==='full'){iframe.style.width='100%';iframe.style.maxWidth='';}else{iframe.style.width=w+'px';iframe.style.maxWidth='100%';}iframe.style.margin='0 auto';document.querySelectorAll('.dvbtn').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');}
