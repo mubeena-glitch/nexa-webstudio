@@ -37,9 +37,27 @@
 
   // ───────── 4. Logo override ─────────
   function setLogo(url){
-    document.querySelectorAll('[data-edit="brand"] img, .nx-logo img').forEach(img => {
-      img.src = url;
+    // Works for both image logos and text logos (replaces the text with an image).
+    document.querySelectorAll('.nx-logo').forEach(el => {
+      let img = el.querySelector('img');
+      if(!img){ img = document.createElement('img'); el.textContent = ''; el.appendChild(img); }
+      img.src = url; img.alt = 'Logo'; img.style.height = '32px'; img.style.width = 'auto';
     });
+  }
+
+  // ───────── Custom fonts (Google Fonts) ─────────
+  function setFont(role, family, query){
+    if(query){
+      const id = 'nxf-' + query.replace(/[^a-z0-9]/gi,'');
+      if(!document.getElementById(id)){
+        const l = document.createElement('link');
+        l.id = id; l.rel = 'stylesheet';
+        l.href = 'https://fonts.googleapis.com/css2?family=' + query + '&display=swap';
+        document.head.appendChild(l);
+      }
+    }
+    // Set on <body> (inline) so it overrides any theme's font rule and survives theme switches.
+    document.body.style.setProperty(role === 'display' ? '--font-display' : '--font-body', "'" + family + "', system-ui, sans-serif");
   }
 
   // ───────── 5. Text zone setter (hero copy, footer, etc.) ─────────
@@ -182,6 +200,7 @@
       case 'nexa:set-hero':        return setHero(m.value);
       case 'nexa:set-brand':       return setBrand(m.primary, m.secondary);
       case 'nexa:set-logo':        return setLogo(m.url);
+      case 'nexa:set-font':        return setFont(m.role, m.family, m.query);
       case 'nexa:set-text':        return setText(m.zone, m.fields);
       case 'nexa:set-hero-media':  return setHeroMedia(m.url, m.mediaType);
       case 'nexa:set-benefits':    return setBenefits(m.items);
@@ -271,7 +290,7 @@
   function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); wireForms(root); }
 
   // Expose globals for in-page debugging / non-iframe use
-  window.NEXA = {setTheme,setHero,setBrand,setLogo,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
+  window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
 
   // Auto-init: if loaded with ?edit=1, enable edit mode
   if(location.search.includes('edit=1')) enableEditMode();

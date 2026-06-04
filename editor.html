@@ -139,6 +139,13 @@ body.dragging{cursor:grabbing!important;user-select:none}
     </div>
 
     <div class="grp">
+      <div class="grp-h">&#128396;&#65039; Fonts</div>
+      <div class="fld"><label>Headings</label><select class="inp" id="fontDisplay" onchange="applyFont('display',this)"></select></div>
+      <div class="fld"><label>Body</label><select class="inp" id="fontBody" onchange="applyFont('body',this)"></select></div>
+      <div class="hint">Google Fonts. Applies live and survives theme changes.</div>
+    </div>
+
+    <div class="grp">
       <div class="grp-h">&#9999;&#65039; Hero Copy</div>
       <div class="fld"><label>Eyebrow</label><input class="inp" id="tEyebrow" oninput="applyHeroText()" placeholder="Small label above headline"></div>
       <div class="fld"><label>Headline</label><textarea class="inp" id="tHeadline" oninput="applyHeroText()" placeholder="Main headline"></textarea></div>
@@ -154,7 +161,8 @@ body.dragging{cursor:grabbing!important;user-select:none}
 
     <div class="grp">
       <div class="grp-h">&#127970; Brand &amp; Footer</div>
-      <div class="fld"><label>Logo image URL (optional)</label><input class="inp" id="tLogo" placeholder="https://…/logo.png" onchange="applyLogo()"></div>
+      <div class="fld"><label>Logo image (upload)</label><input class="inp" type="file" id="logoFile" accept="image/*" onchange="uploadLogo(this)"></div>
+      <div class="fld"><label>…or logo image URL</label><input class="inp" id="tLogo" placeholder="https://…/logo.png" onchange="applyLogo()"></div>
       <div class="fld"><label>Email</label><input class="inp" id="fEmail" oninput="applyFooter()" placeholder="hello@brand.com"></div>
       <div class="fld"><label>Phone</label><input class="inp" id="fPhone" oninput="applyFooter()" placeholder="+971 4 000 0000"></div>
       <div class="fld"><label>Address</label><input class="inp" id="fAddress" oninput="applyFooter()" placeholder="Dubai, UAE"></div>
@@ -218,6 +226,12 @@ function applyHeroText(){
   }});
 }
 function applyLogo(){var u=document.getElementById('tLogo').value.trim();if(u)send({type:'nexa:set-logo',url:u});}
+function uploadLogo(input){var f=input.files&&input.files[0];if(!f)return;var r=new FileReader();r.onload=function(){send({type:'nexa:set-logo',url:r.result});toast('Logo applied');};r.readAsDataURL(f);}
+var FONTS_DISPLAY=[['Poppins','Poppins:wght@400;600;700;800;900'],['Montserrat','Montserrat:wght@400;600;700;800'],['Playfair Display','Playfair+Display:wght@400;600;700;800'],['Fraunces','Fraunces:wght@400;600;700'],['Sora','Sora:wght@400;600;700'],['Space Grotesk','Space+Grotesk:wght@400;600;700'],['DM Serif Display','DM+Serif+Display'],['Archivo','Archivo:wght@400;600;700;800'],['Cormorant Garamond','Cormorant+Garamond:wght@500;600;700'],['Bricolage Grotesque','Bricolage+Grotesque:wght@400;600;700;800'],['Outfit','Outfit:wght@400;600;700;800'],['Unbounded','Unbounded:wght@400;600;700;800'],['Manrope','Manrope:wght@400;600;700;800']];
+var FONTS_BODY=[['Poppins','Poppins:wght@300;400;500;600'],['Inter','Inter:wght@400;500;600'],['Manrope','Manrope:wght@400;500;600'],['Work Sans','Work+Sans:wght@400;500;600'],['DM Sans','DM+Sans:wght@400;500;600'],['Source Sans 3','Source+Sans+3:wght@400;500;600'],['IBM Plex Sans','IBM+Plex+Sans:wght@400;500;600'],['Nunito Sans','Nunito+Sans:wght@400;600;700'],['Karla','Karla:wght@400;500;600'],['Outfit','Outfit:wght@400;500;600']];
+function fillFontSel(id,list){var s=document.getElementById(id);if(!s)return;s.innerHTML=list.map(function(f){return '<option value="'+f[0]+'" data-q="'+f[1]+'">'+f[0]+'</option>';}).join('');}
+function populateFonts(){fillFontSel('fontDisplay',FONTS_DISPLAY);fillFontSel('fontBody',FONTS_BODY);}
+function applyFont(role,sel){var opt=sel.selectedOptions[0];send({type:'nexa:set-font',role:role,family:sel.value,query:opt?opt.getAttribute('data-q'):''});toast((role==='display'?'Headings: ':'Body: ')+sel.value);}
 function applyFooter(){send({type:'nexa:set-footer',data:{
   email:document.getElementById('fEmail').value,
   phone:document.getElementById('fPhone').value,
@@ -551,6 +565,7 @@ if(!id){
   document.getElementById('openBtn').href=file;
   populateAddTpl();
   renderPalette();
+  populateFonts();
   iframe.src=file;
   // Safety net: if the iframe never posts ready (older cache), hide loader after load.
   iframe.addEventListener('load',function(){setTimeout(function(){if(!ready){document.getElementById('cvLoad').style.display='none';ready=true;prefillText();}renderSections();},600);});
