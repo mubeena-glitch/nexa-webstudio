@@ -59,6 +59,12 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--tx);overf
 .fld label{display:block;font-size:11px;font-weight:600;color:var(--mu);margin-bottom:4px}
 .inp{width:100%;padding:8px 11px;border:1.5px solid var(--bd);border-radius:8px;font-size:12px;font-family:inherit;outline:none;color:var(--tx)}
 .inp:focus{border-color:var(--a)}
+.fm-field{border:1.5px solid var(--bd);border-radius:10px;padding:9px 10px 4px;margin-bottom:9px;background:#fff}
+.fm-field .srow{margin-bottom:9px;border:0;padding:0}
+.fm-check{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--mu);cursor:pointer}
+.fm-check input{width:auto;margin:0;accent-color:var(--a)}
+.nx-flash{animation:nxflash 1.15s ease}
+@keyframes nxflash{0%,100%{box-shadow:0 0 0 0 rgba(147,84,255,0)}25%,55%{box-shadow:0 0 0 3px var(--a2)}}
 textarea.inp{resize:vertical;min-height:54px;line-height:1.5}
 .color-row{display:flex;gap:10px}
 .color-cell{flex:1}
@@ -170,13 +176,65 @@ body.dragging{cursor:grabbing!important;user-select:none}
         <div class="fld"><label>Headline</label><textarea class="inp" id="tHeadline" oninput="applyHeroText()" placeholder="Main headline"></textarea></div>
         <div class="fld"><label>Subhead</label><textarea class="inp" id="tSubhead" oninput="applyHeroText()" placeholder="Supporting sentence"></textarea></div>
         <div class="fld"><label>Button text</label><input class="inp" id="tCta" oninput="applyHeroText()" placeholder="e.g. Book a call"></div>
-        <div class="sublbl">Lead form</div>
-        <div class="chips" id="formChips"></div>
-        <div class="hint">Swaps the form fields and CTA for a ready-made bundle.</div>
         <div class="sublbl">Language &amp; direction</div>
         <div class="fld"><label>Language</label><select class="inp" id="langSel" onchange="applyLang(this)"><option value="en">English (LTR)</option><option value="ar">Arabic (RTL)</option></select></div>
         <div class="fld" id="dialectFld" style="display:none"><label>Arabic dialect / region</label><select class="inp" id="dialectSel"><option>Modern Standard (MSA)</option><option>Gulf / Khaleeji</option><option>Egyptian</option><option>Levantine</option></select></div>
         <div class="hint">RTL layout and an Arabic font apply now. Type or paste your Arabic copy; AI-translate arrives with the AI add-on.</div>
+      </div>
+    </details>
+
+    <details class="cat" id="cat-form" ontoggle="onFormCatToggle(this)">
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="17" y2="13"/><line x1="7" y1="17" x2="12" y2="17"/></svg></span> Lead Form</summary>
+      <div class="cat-body">
+        <div class="hint" style="margin:0 0 9px">Build your form: add, rename, reorder or remove fields, and choose where the leads go.</div>
+        <div class="sublbl">Quick start</div>
+        <div class="chips" id="formChips"></div>
+        <div class="sublbl">Heading</div>
+        <div class="fld"><label>Title</label><input class="inp" id="fmTitle" oninput="formMetaChange()" placeholder="Get in touch"></div>
+        <div class="fld"><label>Subtext</label><input class="inp" id="fmSub" oninput="formMetaChange()" placeholder="We reply within 2 business hours."></div>
+        <div class="fld"><label>Button text</label><input class="inp" id="fmCta" oninput="formMetaChange()" placeholder="Request a call back"></div>
+        <div class="sublbl">Fields</div>
+        <div id="fmFields"></div>
+        <div class="add-wrap"><button class="hbtn add-btn" onclick="formAddField()">&#43; Add field</button></div>
+        <div class="sublbl">Where leads go</div>
+        <div class="fld"><label>Form action URL (optional)</label><input class="inp" id="fmAction" oninput="formMetaChange()" placeholder="https://…/submit"></div>
+        <div class="hint">Leave blank to show a built-in thank-you message. Add a URL (CRM, Zapier, Formspree, HubSpot) to post the lead there.</div>
+      </div>
+    </details>
+
+    <details class="cat" id="cat-responsive">
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></span> Responsive</summary>
+      <div class="cat-body">
+        <div class="hint" id="respDesktop" style="margin:0">Switch to <b>Tablet</b> or <b>Mobile</b> in the top bar, then click an element to make device-specific tweaks. Desktop is your base layout.</div>
+        <div id="respPanel" style="display:none">
+          <div class="hint" id="respScope" style="margin:0 0 4px"></div>
+          <div class="hint" id="respEl" style="margin:0 0 6px">No element selected.</div>
+          <div id="respControls" style="display:none">
+            <label class="fm-check" style="margin:10px 0"><input type="checkbox" id="rHide" onchange="respChange()"> Hide on this device</label>
+            <div class="sublbl">Text alignment</div>
+            <div class="chips" id="rAlign"></div>
+            <div class="sublbl">Font size (px)</div>
+            <div class="fld"><input class="inp" type="number" id="rSize" min="8" max="120" oninput="respChange()" placeholder="auto"></div>
+            <label class="fm-check"><input type="checkbox" id="rStack" onchange="respChange()"> Stack contents in one column</label>
+            <button class="hbtn" style="width:100%;justify-content:center;margin-top:12px" onclick="respClear()">Clear this element&rsquo;s overrides</button>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="cat" id="cat-layout">
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="18" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="18" rx="1.5"/></svg></span> Layout</summary>
+      <div class="cat-body">
+        <div class="hint" style="margin:0 0 9px">Add a <b>Columns</b> block from Add Blocks, then click a columns row here to set the count, width ratio and gap. Drag blocks into a column to fill it. Columns stack on mobile automatically.</div>
+        <div class="hint" id="layNone" style="margin:0">No columns row selected. Click one on the page.</div>
+        <div id="layPanel" style="display:none">
+          <div class="sublbl">Number of columns</div>
+          <div class="chips" id="layCount"></div>
+          <div class="sublbl">Width ratio</div>
+          <div class="chips" id="layRatio"></div>
+          <div class="sublbl">Gap</div>
+          <div class="chips" id="layGap"></div>
+        </div>
       </div>
     </details>
 
@@ -261,6 +319,23 @@ body.dragging{cursor:grabbing!important;user-select:none}
     </details>
 
     <details class="cat">
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span> Custom Code</summary>
+      <div class="cat-body">
+        <div class="hint" style="margin:0 0 9px">Add fonts, styles, chat widgets, tracking or any embed code. Custom styles preview live; scripts run on your published &amp; preview page, not inside this editor. Baked into the download.</div>
+        <div class="sublbl">External CSS (CDN link)</div>
+        <div class="fld"><textarea class="inp" id="ccCssUrl" oninput="applyCustomCode()" placeholder="https://cdn.example.com/style.css&#10;One stylesheet URL per line"></textarea></div>
+        <div class="sublbl">External JS (CDN link)</div>
+        <div class="fld"><textarea class="inp" id="ccJsUrl" oninput="applyCustomCode()" placeholder="https://cdn.example.com/widget.js&#10;One script URL per line"></textarea></div>
+        <div class="sublbl">Custom CSS</div>
+        <div class="fld"><textarea class="inp" id="ccCss" oninput="applyCustomCode()" placeholder=".my-class { color: #9354FF; }" style="font-family:ui-monospace,Menlo,Consolas,monospace;min-height:70px"></textarea></div>
+        <div class="sublbl">Custom HTML — inside &lt;head&gt;</div>
+        <div class="fld"><textarea class="inp" id="ccHead" oninput="applyCustomCode()" placeholder="Meta tags, site verification, head scripts" style="font-family:ui-monospace,Menlo,Consolas,monospace"></textarea></div>
+        <div class="sublbl">Custom HTML — before &lt;/body&gt;</div>
+        <div class="fld"><textarea class="inp" id="ccBody" oninput="applyCustomCode()" placeholder="Chat widget, embeds, body-end scripts" style="font-family:ui-monospace,Menlo,Consolas,monospace"></textarea></div>
+      </div>
+    </details>
+
+    <details class="cat">
       <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h7"/></svg></span> Drafts <span class="cat-meta" id="saveStatus"></span></summary>
       <div class="cat-body">
         <div class="hint" style="margin:0 0 9px">Your edits autosave in this browser. Reopen a draft any time.</div>
@@ -322,7 +397,7 @@ function markChip(elId,val){var box=document.getElementById(elId);box.querySelec
 
 chipRow('themeChips',THEMES,function(v){send({type:'nexa:set-theme',value:v});});
 chipRow('heroChips',HEROES,function(v){send({type:'nexa:set-hero',value:v});});
-chipRow('formChips',FORMS,function(v){send({type:'nexa:set-form',bundle:v});toast('Form swapped to &ldquo;'+v+'&rdquo;');});
+chipRow('formChips',FORMS,function(v){formModel=bundleToModel(v);renderFormBuilder();pushForm();toast('Loaded the &ldquo;'+v+'&rdquo; form — now edit the fields');});
 
 // ---- apply handlers ----
 function applyBrand(){send({type:'nexa:set-brand',primary:document.getElementById('cPrimary').value,secondary:document.getElementById('cSecondary').value});}
@@ -341,6 +416,7 @@ var imgPick=false,selImg=null;
 function toggleImgPick(){
   var doc=idoc();if(!doc){toast('Image editing runs on the deployed site');return;}
   imgPick=!imgPick;var btn=document.getElementById('imgPickBtn');if(btn)btn.classList.toggle('pri',imgPick);
+  syncMode();
   var st=doc.getElementById('nx-pick-style');
   if(imgPick){
     if(!st){st=doc.createElement('style');st.id='nx-pick-style';st.textContent='img{cursor:crosshair}img:hover{outline:2px dashed #9354FF;outline-offset:2px}';doc.head.appendChild(st);}
@@ -358,7 +434,7 @@ function selectImage(img){
 }
 function clearImgSel(){if(selImg)selImg.classList.remove('nx-sel');selImg=null;var p=document.getElementById('imgPanel');if(p)p.style.display='none';}
 // Strip editor-only artifacts (selection, edit flags, pick styles) from any export/draft
-function cleanExport(h){return h.replace(/ contenteditable="(?:true|false)"/gi,'').replace(/\s*\bnx-sel\b/g,'').replace(/<style id="nx-sel-style">[\s\S]*?<\/style>/i,'').replace(/<style id="nx-pick-style">[\s\S]*?<\/style>/i,'');}
+function cleanExport(h){return h.replace(/ contenteditable="(?:true|false)"/gi,'').replace(/\s*\bnx-sel\b/g,'').replace(/\s*\bnx-selected\b/g,'').replace(/\s*\bnx-select-mode\b/g,'').replace(/\s*\bnx-col-drop\b/g,'').replace(/ data-nx-form-model="[^"]*"/gi,'').replace(/<script[^>]*id="nx-responsive-model"[^>]*>[\s\S]*?<\/script>/i,'').replace(/<style id="nx-sel-style">[\s\S]*?<\/style>/i,'').replace(/<style id="nx-pick-style">[\s\S]*?<\/style>/i,'');}
 function encodeCanvas(cv){try{return cv.toDataURL('image/webp',0.82);}catch(e){return cv.toDataURL('image/jpeg',0.85);}}
 function loadImg(src,cb){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){cb(im);};im.onerror=function(){cb(null);};im.src=src;}
 function applyImgAlt(){if(selImg)selImg.setAttribute('alt',(document.getElementById('imgAlt').value||''));}
@@ -469,6 +545,151 @@ function applyFooter(){send({type:'nexa:set-footer',data:{
   legal:document.getElementById('fLegal').value
 }});}
 
+// ---- Lead-form builder: add / edit / reorder / remove fields, set destination ----
+var FIELD_TYPES=[['text','Text'],['email','Email'],['tel','Phone'],['number','Number'],['date','Date'],['time','Time'],['url','URL'],['select','Dropdown'],['textarea','Message'],['checkbox','Checkbox / consent']];
+var formModel=null;
+function setIfVal(id,v){var e=document.getElementById(id);if(e&&v!=null)e.value=v;}
+function escAttrV(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+function slugName(s){return (s||'field').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'field';}
+function defaultFormModel(){return {title:'Get in touch',sub:'We reply within 2 business hours.',cta:'Request a call back',action:'',fields:[
+  {type:'text',label:'Full name',required:true},
+  {type:'email',label:'Email address',required:true},
+  {type:'tel',label:'Phone number',required:true}
+]};}
+function bundleToModel(key){
+  try{var b=iframe.contentWindow.NEXA.FORM_BUNDLES[key];
+    if(b)return {title:b.title,sub:b.sub,cta:b.cta,action:'',fields:b.fields.map(function(f){return {type:f.type,label:f.placeholder||f.name,required:!!f.required,rows:f.rows,options:f.options?f.options.slice():undefined};})};
+  }catch(e){}
+  return defaultFormModel();
+}
+function readFormModel(){
+  var doc=idoc();if(!doc)return null;var f=doc.querySelector('[data-edit="form"]');if(!f)return null;
+  if(f.dataset.nxFormModel){try{return JSON.parse(f.dataset.nxFormModel);}catch(e){}}
+  var inputs=f.querySelectorAll('input,select,textarea');if(!inputs.length)return null;
+  var h3=f.querySelector('h3'),sub=f.querySelector('.form-sub'),btn=f.querySelector('button');
+  var model={title:h3?h3.textContent.trim():'Get in touch',sub:sub?sub.textContent.trim():'',cta:btn?btn.textContent.trim():'Submit',action:f.querySelector('form')&&f.querySelector('form').getAttribute('action')||'',fields:[]};
+  Array.prototype.forEach.call(inputs,function(el){
+    var t=el.type;if(t==='hidden'||t==='submit')return;
+    var tag=el.tagName.toLowerCase();
+    var type=tag==='textarea'?'textarea':(tag==='select'?'select':(t==='checkbox'?'checkbox':(t||'text')));
+    var label=el.getAttribute('aria-label')||el.getAttribute('placeholder')||el.name||'';
+    if(type==='checkbox'){var sp=el.parentNode&&el.parentNode.querySelector('span');if(sp)label=sp.textContent.trim();}
+    var fld={type:type,label:label,required:el.hasAttribute('required')};
+    if(type==='select'){fld.options=Array.prototype.map.call(el.options,function(o){return o.textContent;}).filter(function(x,i){return !(i===0&&/^select/i.test(x.trim()));});}
+    model.fields.push(fld);
+  });
+  return model;
+}
+function ensureFormModel(){if(!formModel)formModel=readFormModel()||defaultFormModel();return formModel;}
+function pushForm(){var m=ensureFormModel();m.fields.forEach(function(f,i){if(!f.name)f.name=slugName(f.label)||('field'+i);});send({type:'nexa:set-form-model',model:m});scheduleAutosave();}
+function onFormCatToggle(d){if(!d.open)return;var doc=idoc();var f=doc&&doc.querySelector('[data-edit="form"]');var empty=!f||!f.querySelector('input,select,textarea');ensureFormModel();renderFormBuilder();if(empty)pushForm();}
+function renderFormBuilder(){
+  var m=ensureFormModel();
+  setIfVal('fmTitle',m.title);setIfVal('fmSub',m.sub);setIfVal('fmCta',m.cta);setIfVal('fmAction',m.action||'');
+  var box=document.getElementById('fmFields');if(!box)return;
+  box.innerHTML=m.fields.map(function(f,i){
+    var typeOpts=FIELD_TYPES.map(function(t){return '<option value="'+t[0]+'"'+(t[0]===f.type?' selected':'')+'>'+t[1]+'</option>';}).join('');
+    return '<div class="fm-field">'+
+      '<div class="srow"><span class="sname">'+escHtml(f.label||'(field)')+'</span>'+
+        '<button class="sx" title="Move up" '+(i===0?'disabled':'')+' onclick="formMoveField('+i+',-1)">&#9650;</button>'+
+        '<button class="sx" title="Move down" '+(i===m.fields.length-1?'disabled':'')+' onclick="formMoveField('+i+',1)">&#9660;</button>'+
+        '<button class="sx del" title="Remove field" onclick="formDelField('+i+')">&#215;</button></div>'+
+      '<div class="fld"><label>Label</label><input class="inp" value="'+escAttrV(f.label||'')+'" oninput="formFieldChange('+i+',\'label\',this.value)"></div>'+
+      '<div class="color-row"><div class="color-cell"><label>Type</label><select class="inp" onchange="formFieldChange('+i+',\'type\',this.value)">'+typeOpts+'</select></div>'+
+      '<div class="color-cell"><label>&nbsp;</label><label class="fm-check"><input type="checkbox" '+(f.required?'checked':'')+' onchange="formFieldChange('+i+',\'required\',this.checked)"> Required</label></div></div>'+
+      (f.type==='select'?'<div class="fld"><label>Options (one per line)</label><textarea class="inp" oninput="formFieldChange('+i+',\'optionsText\',this.value)">'+escHtml((f.options||[]).join('\n'))+'</textarea></div>':'')+
+    '</div>';
+  }).join('');
+}
+function formMetaChange(){var m=ensureFormModel();m.title=val('fmTitle');m.sub=val('fmSub');m.cta=val('fmCta');m.action=val('fmAction').trim();pushForm();}
+function formFieldChange(i,key,v){var m=ensureFormModel(),f=m.fields[i];if(!f)return;
+  if(key==='optionsText'){f.options=v.split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean);pushForm();return;}
+  if(key==='label'){f.label=v;f.name=slugName(v);pushForm();var row=document.getElementById('fmFields').children[i];if(row){var sn=row.querySelector('.sname');if(sn)sn.textContent=v||'(field)';}return;}
+  if(key==='type'){f.type=v;if(v!=='select')delete f.options;else if(!f.options||!f.options.length)f.options=['Option 1','Option 2'];renderFormBuilder();pushForm();return;}
+  if(key==='required'){f.required=!!v;pushForm();return;}
+}
+function formAddField(){var m=ensureFormModel();m.fields.push({type:'text',label:'New field',required:false});renderFormBuilder();pushForm();toast('Field added');}
+function formDelField(i){var m=ensureFormModel();m.fields.splice(i,1);renderFormBuilder();pushForm();}
+function formMoveField(i,d){var m=ensureFormModel(),t=i+d;if(t<0||t>=m.fields.length)return;var x=m.fields.splice(i,1)[0];m.fields.splice(t,0,x);renderFormBuilder();pushForm();}
+function prefillForm(){formModel=readFormModel();if(formModel)renderFormBuilder();}
+
+// ---- Per-breakpoint (responsive) overrides: tablet ≤900px, mobile ≤600px ----
+// Overrides are written as device-scoped CSS in <style id="nx-responsive"> (kept on export);
+// the editor-only model lives in an inert JSON node (stripped on export).
+var curDevice='full',respEl=null;
+function bpName(){return curDevice==='390'?'mobile':(curDevice==='820'?'tablet':'');}
+function respModelGet(){var doc=idoc();if(!doc)return {};var J=doc.getElementById('nx-responsive-model');if(!J)return {};try{return JSON.parse(J.textContent||'{}');}catch(e){return {};}}
+function respModelSet(model){var doc=idoc();if(!doc)return;var J=doc.getElementById('nx-responsive-model');if(!J){J=doc.createElement('script');J.type='application/json';J.id='nx-responsive-model';doc.head.appendChild(J);}J.textContent=JSON.stringify(model);buildResponsiveCss(model);scheduleAutosave();}
+function respRule(id,o){var d='';
+  if(o.hide)d+='display:none!important;';
+  if(o.align)d+='text-align:'+o.align+'!important;';
+  if(o.size)d+='font-size:'+o.size+'px!important;';
+  if(o.stack)d+='flex-direction:column!important;grid-template-columns:1fr!important;';
+  return d?('[data-nx-id="'+id+'"]{'+d+'}'):'';}
+function buildResponsiveCss(model){var doc=idoc();if(!doc)return;
+  var S=doc.getElementById('nx-responsive');if(!S){S=doc.createElement('style');S.id='nx-responsive';doc.head.appendChild(S);}
+  var tablet='',mobile='';
+  Object.keys(model).forEach(function(id){var o=model[id];if(o.tablet)tablet+=respRule(id,o.tablet);if(o.mobile)mobile+=respRule(id,o.mobile);});
+  S.textContent=(tablet?'@media (max-width:900px){'+tablet+'}':'')+(mobile?'@media (max-width:600px){'+mobile+'}':'');}
+function ensureNxId(el){var id=el.getAttribute('data-nx-id');if(id)return id;var doc=idoc(),max=0;
+  doc.querySelectorAll('[data-nx-id]').forEach(function(n){var m=/^n(\d+)$/.exec(n.getAttribute('data-nx-id')||'');if(m)max=Math.max(max,+m[1]);});
+  id='n'+(max+1);el.setAttribute('data-nx-id',id);return id;}
+function respLabel(el){var t=el.tagName.toLowerCase();var c=(el.className||'').toString().trim().split(/\s+/)[0];return t+(c?'.'+c:'');}
+function onDeviceChange(){var bp=bpName();
+  document.getElementById('respDesktop').style.display=bp?'none':'';
+  document.getElementById('respPanel').style.display=bp?'':'none';
+  if(bp){document.getElementById('respScope').innerHTML='Editing <b>'+(bp==='mobile'?'Mobile':'Tablet')+'</b> overrides only. Pick an element on the page.';respSelect();}
+}
+function respSelect(){var doc=idoc();if(!doc)return;var el=doc.querySelector('.nx-selected');respEl=el||null;
+  var info=document.getElementById('respEl'),ctr=document.getElementById('respControls');
+  if(!el){info.textContent='No element selected. Click something on the page.';ctr.style.display='none';return;}
+  info.innerHTML='Selected: <b>'+escHtml(respLabel(el))+'</b>';ctr.style.display='';
+  var id=el.getAttribute('data-nx-id'),o=(id&&respModelGet()[id]&&respModelGet()[id][bpName()])||{};
+  document.getElementById('rHide').checked=!!o.hide;
+  markChip('rAlign',o.align||'');
+  document.getElementById('rSize').value=o.size||'';
+  try{document.getElementById('rSize').placeholder=Math.round(parseFloat(iframe.contentWindow.getComputedStyle(el).fontSize))||'auto';}catch(e){}
+  document.getElementById('rStack').checked=!!o.stack;
+}
+function respChange(){var bp=bpName();if(!bp)return;if(!respEl){toast('Pick an element on the page first');return;}
+  var id=ensureNxId(respEl),model=respModelGet();model[id]=model[id]||{};
+  var o={};
+  if(document.getElementById('rHide').checked)o.hide=true;
+  var al=document.querySelector('#rAlign .chip.ac');if(al&&al.getAttribute('data-v'))o.align=al.getAttribute('data-v');
+  var sz=parseFloat(document.getElementById('rSize').value);if(sz)o.size=sz;
+  if(document.getElementById('rStack').checked)o.stack=true;
+  if(Object.keys(o).length)model[id][bp]=o;else{delete model[id][bp];if(!Object.keys(model[id]).length)delete model[id];}
+  respModelSet(model);
+}
+function respClear(){if(!respEl)return;var id=respEl.getAttribute('data-nx-id');if(id){var model=respModelGet();if(model[id]){delete model[id][bpName()];if(!Object.keys(model[id]).length)delete model[id];respModelSet(model);}}respSelect();toast('Overrides cleared for '+bpName());}
+chipRow('rAlign',[['','Default'],['left','Left'],['center','Centre'],['right','Right']],function(v){respChange();});
+
+// ---- Layout: columns count / width ratio / gap for a selected .nx-cols row ----
+var layEl=null;
+function laySelect(){var doc=idoc();if(!doc)return;var sel=doc.querySelector('.nx-selected');
+  var el=sel?(sel.classList&&sel.classList.contains('nx-cols')?sel:(sel.closest?sel.closest('.nx-cols'):null)):null;
+  layEl=el||null;
+  document.getElementById('layNone').style.display=el?'none':'';
+  document.getElementById('layPanel').style.display=el?'':'none';
+  if(el)layBuildChips(parseInt(el.getAttribute('data-cols')||'2',10)||2,el);
+}
+function layBuildChips(n,el){
+  chipRow('layCount',[['2','2'],['3','3'],['4','4']],function(v){laySetCount(parseInt(v,10));});markChip('layCount',String(n));
+  var ratios=n===2?[['repeat(2,minmax(0,1fr))','50 / 50'],['3fr 2fr','60 / 40'],['2fr 3fr','40 / 60'],['7fr 3fr','70 / 30']]
+            :n===3?[['repeat(3,minmax(0,1fr))','Equal'],['2fr 1fr 1fr','Wide left'],['1fr 1fr 2fr','Wide right']]
+            :[['repeat(4,minmax(0,1fr))','Equal']];
+  chipRow('layRatio',ratios,function(v){if(layEl){layEl.style.setProperty('--nx-tmpl',v);scheduleAutosave();}});
+  markChip('layRatio',(el.style.getPropertyValue('--nx-tmpl')||('repeat('+n+',minmax(0,1fr))')).trim());
+  chipRow('layGap',[['16px','Small'],['24px','Medium'],['40px','Large']],function(v){if(layEl){layEl.style.setProperty('--nx-gap',v);scheduleAutosave();}});
+  markChip('layGap',(el.style.getPropertyValue('--nx-gap')||'24px').trim());
+}
+function laySetCount(n){if(!layEl)return;var doc=idoc();
+  var cur=layEl.querySelectorAll(':scope > .nx-col').length;
+  for(var i=cur;i<n;i++){var c=doc.createElement('div');c.className='nx-col';c.innerHTML='<h4>New column</h4><p>Edit or drop a block here.</p>';layEl.appendChild(c);}
+  layEl.setAttribute('data-cols',n);layEl.style.setProperty('--nx-cols',n);layEl.style.setProperty('--nx-tmpl','repeat('+n+',minmax(0,1fr))');
+  layBuildChips(n,layEl);scheduleAutosave();toast(n+' columns'+(cur>n?' (extra cells wrap below)':''));
+}
+
 // ---- export ----
 function exportHtml(){if(!ready){toast('Template still loading…');return;}pendingExport=true;send({type:'nexa:get-html'});toast('Preparing download…');}
 async function download(html){
@@ -480,6 +701,7 @@ async function download(html){
     html=html.replace(/<script[^>]*_shared\/kit\.js[^>]*><\/script>/i,'<script>\n'+js+'\n<\/script>');
   }catch(e){/* fall back to relative refs */}
   html=cleanExport(html);
+  html=bakeCustomCode(html);
   var tk=buildTracking();if(tk)html=html.replace(/<\/head>/i,tk+'</head>');
   var blob=new Blob(['<!DOCTYPE html>\n'+html],{type:'text/html'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(id||'template')+'-edited.html';
@@ -487,10 +709,51 @@ async function download(html){
   toast('Downloaded &mdash; self-contained, opens anywhere');
 }
 
+// ---- click-to-edit: route a canvas selection to the right drawer field ----
+// Tell the template which interaction mode is active (select / text / image).
+function syncMode(){send({type:'nexa:set-mode',mode:imgPick?'image':(textEdit?'text':'select')});}
+// Open a drawer category by a word in its summary (e.g. "Content", "Brand").
+function openCat(label){
+  var cats=document.querySelectorAll('details.cat');label=label.toLowerCase();
+  for(var i=0;i<cats.length;i++){var s=cats[i].querySelector('summary');
+    if(s&&s.textContent.toLowerCase().indexOf(label)>-1){cats[i].open=true;try{cats[i].scrollIntoView({behavior:'smooth',block:'nearest'});}catch(e){}return cats[i];}}
+  return null;
+}
+function flash(el){if(!el)return;el.classList.remove('nx-flash');void el.offsetWidth;el.classList.add('nx-flash');}
+function focusField(inputId){
+  var el=document.getElementById(inputId);if(!el)return;
+  flash(el);try{el.focus({preventScroll:true});}catch(e){el.focus();}
+  try{el.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+  if((el.tagName==='INPUT'||el.tagName==='TEXTAREA')&&el.select)try{el.select();}catch(e){}
+}
+function routeSelect(m){
+  if(curDevice!=='full'){openCat('Responsive');respSelect();return;} // device mode → responsive overrides
+  if(m.kind==='hero-text'){
+    openCat('Content');var map={eyebrow:'tEyebrow',headline:'tHeadline',subhead:'tSubhead',cta:'tCta'};
+    if(map[m.field])focusField(map[m.field]);
+  } else if(m.kind==='footer'){
+    openCat('Brand');var fm={email:'fEmail',phone:'fPhone',address:'fAddress',legal:'fLegal'};
+    if(m.field&&fm[m.field])focusField(fm[m.field]);
+  } else if(m.kind==='form'){
+    var c=openCat('Lead Form');if(c)onFormCatToggle(c);
+    flash(document.getElementById('fmFields'));
+  } else if(m.kind==='image'){
+    openCat('Images');var doc=idoc();if(doc){var im=doc.querySelector('img.nx-selected');if(im)selectImage(im);}
+  } else if(m.kind==='columns'){
+    openCat('Layout');laySelect();
+  } else if(m.kind==='brand'){
+    openCat('Brand');
+  } else if(m.kind==='section'){
+    openCat('Sections');
+    if(typeof m.index==='number'&&m.index>-1){var rows=document.getElementById('secList').children,r=rows[m.index];if(r){flash(r);try{r.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}}}
+  }
+}
+
 // ---- messages from the template iframe ----
 window.addEventListener('message',function(e){
   var m=e.data;if(!m||typeof m!=='object'||!m.type)return;
-  if(m.type==='nexa:ready'){ready=true;document.getElementById('cvLoad').style.display='none';prefillText();renderSections();startObserver();prefillPageSettings();renderDrafts();renderKits();if(restoreReq&&!restored&&localStorage.getItem(draftKey())){restored=true;openDraft(draftKey());}else if(!restoreReq&&localStorage.getItem(draftKey()))toast('A saved draft for this page exists — see Drafts');}
+  if(m.type==='nexa:ready'){ready=true;document.getElementById('cvLoad').style.display='none';prefillText();renderSections();startObserver();prefillPageSettings();prefillCustomCode();prefillForm();buildResponsiveCss(respModelGet());onDeviceChange();renderDrafts();renderKits();syncMode();if(restoreReq&&!restored&&localStorage.getItem(draftKey())){restored=true;openDraft(draftKey());}else if(!restoreReq&&localStorage.getItem(draftKey()))toast('A saved draft for this page exists — see Drafts');}
+  if(m.type==='nexa:select')routeSelect(m);
   if(m.type==='nexa:html'&&pendingExport){pendingExport=false;download(m.html);}
 });
 
@@ -617,7 +880,7 @@ function runReview(){
   var ico={pass:'&#10003;',warn:'!',fail:'&#215;'};
   out.innerHTML='<div class="rv-summary">'+head+'</div>'+issues.map(function(i){return '<div class="rv '+i.l+'"><span class="rv-i">'+ico[i.l]+'</span><span>'+escHtml(i.m)+'</span></div>';}).join('');
 }
-function toggleTextEdit(){var doc=idoc();if(!doc){toast('Editing runs on the deployed site');return;}textEdit=!textEdit;var btn=document.getElementById('textBtn');if(btn)btn.classList.toggle('pri',textEdit);var sel='h1,h2,h3,h4,h5,p,span,a,li,blockquote,cite,summary,strong,em,td,th,.val,.lbl,.nx-cd-num';doc.body.querySelectorAll(sel).forEach(function(e){e.contentEditable=textEdit?'true':'false';});toast(textEdit?'Text editing ON — click any text and type':'Text editing off');}
+function toggleTextEdit(){var doc=idoc();if(!doc){toast('Editing runs on the deployed site');return;}textEdit=!textEdit;var btn=document.getElementById('textBtn');if(btn)btn.classList.toggle('pri',textEdit);syncMode();var sel='h1,h2,h3,h4,h5,p,span,a,li,blockquote,cite,summary,strong,em,td,th,.val,.lbl,.nx-cd-num';doc.body.querySelectorAll(sel).forEach(function(e){e.contentEditable=textEdit?'true':'false';});toast(textEdit?'Text editing ON — click any text and type':'Text editing off');}
 function moveSec(i,dir){var doc=idoc();if(!doc)return;var k=editableKids(doc),el=k[i],t=k[i+dir];if(!el||!t)return;if(dir<0)doc.body.insertBefore(el,t);else doc.body.insertBefore(t,el);renderSections();}
 function delSec(i){var doc=idoc();if(!doc)return;var k=editableKids(doc);if(k[i]){k[i].remove();renderSections();toast('Section deleted');}}
 function toggleAdd(){var p=document.getElementById('addPanel');p.style.display=(p.style.display==='block')?'none':'block';}
@@ -727,8 +990,19 @@ var BLOCKS=[
    html:'<section class="nx-section"><div class="container"><div class="nx-video"><iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ" title="Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div></section>'}
 ];
 
+// ---- Layout: multi-column rows (grid) ----
+BLOCKS.push(
+  {key:'cols2',label:'2 columns',
+   svg:'<rect class="wf-box" x="6" y="7" width="16" height="16" rx="2"/><rect class="wf-box" x="26" y="7" width="16" height="16" rx="2"/>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-cols" data-cols="2" style="--nx-cols:2"><div class="nx-col"><h3>Column one</h3><p>Edit this text, or drag a block into this column.</p></div><div class="nx-col"><h3>Column two</h3><p>Edit this text, or drag a block into this column.</p></div></div></div></section>'},
+  {key:'cols3',label:'3 columns',
+   svg:'<rect class="wf-box" x="5" y="8" width="11" height="14" rx="2"/><rect class="wf-box" x="18.5" y="8" width="11" height="14" rx="2"/><rect class="wf-box" x="32" y="8" width="11" height="14" rx="2"/>',
+   html:'<section class="nx-section"><div class="container"><div class="nx-cols" data-cols="3" style="--nx-cols:3"><div class="nx-col"><h4>Column one</h4><p>Edit or drop a block here.</p></div><div class="nx-col"><h4>Column two</h4><p>Edit or drop a block here.</p></div><div class="nx-col"><h4>Column three</h4><p>Edit or drop a block here.</p></div></div></div></section>'}
+);
+
 // Palette groups (performance-marketer taxonomy)
 var GROUPS=[
+  {name:'Layout',keys:['cols2','cols3']},
   {name:'Convert',keys:['leadform','stickybar','countdown','announce','cta']},
   {name:'Content',keys:['split-left','split-right','cards','steps','pricing','compare','checklist','faq']},
   {name:'Social proof',keys:['quote','reviews','guarantee','logos','stats']},
@@ -749,7 +1023,17 @@ function renderPalette(){
 }
 function blockLabel(key){var b=BLOCKS.find(function(x){return x.key===key;});return b?b.label:'Block';}
 
-var ghost=null,dropIdx=null,dropInHero=false,dragKey=null;
+var ghost=null,dropIdx=null,dropInHero=false,dragKey=null,dropCol=null;
+function clearDropCol(){if(dropCol){dropCol.classList.remove('nx-col-drop');dropCol=null;}}
+function cellAtPoint(x,y){var doc=idoc();if(!doc)return null;var ir=iframe.getBoundingClientRect();if(x<ir.left||x>ir.right||y<ir.top||y>ir.bottom)return null;var el=doc.elementFromPoint(x-ir.left,y-ir.top);return el&&el.closest?el.closest('.nx-col'):null;}
+function insertBlockIntoCell(key,cell){
+  var doc=idoc();if(!doc)return;var b=BLOCKS.find(function(x){return x.key===key;});if(!b)return;
+  var wrap=doc.createElement('div');wrap.innerHTML=b.html.trim();var node=wrap.firstElementChild;if(!node)return;
+  cell.appendChild(node);
+  try{if(iframe.contentWindow.NEXA)iframe.contentWindow.NEXA.initBlocks();}catch(e){}
+  renderSections();toast(b.label+' added to column');
+  try{node.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+}
 function startDrag(key,e){
   e.preventDefault();
   dropIdx=null;dragKey=key;
@@ -765,14 +1049,15 @@ function startDrag(key,e){
   }
   function up(){
     document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);
-    var idx=dropIdx,inHero=dropInHero;cleanupDrag();
+    var idx=dropIdx,inHero=dropInHero,cell=dropCol;cleanupDrag();
     if(inHero){placeFormInHero();}
+    else if(cell){insertBlockIntoCell(key,cell);}
     else if(moved)insertBlockAt(key,idx);else insertBlockAt(key,null);
   }
   document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
 }
 function posGhost(x,y){if(ghost){ghost.style.left=x+'px';ghost.style.top=y+'px';}}
-function cleanupDrag(){if(ghost){ghost.remove();ghost=null;}document.body.classList.remove('dragging');iframe.style.pointerEvents='';var dl=document.getElementById('dropLine');if(dl)dl.style.display='none';var hd=document.getElementById('heroDrop');if(hd)hd.style.display='none';dropIdx=null;dropInHero=false;dragKey=null;}
+function cleanupDrag(){if(ghost){ghost.remove();ghost=null;}document.body.classList.remove('dragging');iframe.style.pointerEvents='';var dl=document.getElementById('dropLine');if(dl)dl.style.display='none';var hd=document.getElementById('heroDrop');if(hd)hd.style.display='none';clearDropCol();dropIdx=null;dropInHero=false;dragKey=null;}
 function heroRectVp(){var doc=idoc();if(!doc)return null;var h=doc.querySelector('.nx-hero');if(!h)return null;var ir=iframe.getBoundingClientRect(),r=h.getBoundingClientRect();return {left:ir.left+r.left,top:ir.top+r.top,right:ir.left+r.right,bottom:ir.top+r.bottom,width:r.width};}
 function placeFormInHero(){
   var doc=idoc();if(!doc)return;var hero=doc.querySelector('.nx-hero');if(!hero){insertBlockAt('leadform',null);return;}
@@ -795,7 +1080,7 @@ function gapPositions(){
 }
 function updateDrop(x,y){
   var canvas=document.querySelector('.canvas'),cr=canvas.getBoundingClientRect(),dl=document.getElementById('dropLine'),hd=document.getElementById('heroDrop');
-  dropInHero=false;hd.style.display='none';
+  dropInHero=false;hd.style.display='none';clearDropCol();
   if(x<cr.left||x>cr.right||y<cr.top||y>cr.bottom){dl.style.display='none';dropIdx=null;return;}
   // Lead form dragged over the hero → offer "drop into hero"
   if(dragKey==='leadform'){
@@ -807,6 +1092,8 @@ function updateDrop(x,y){
       return;
     }
   }
+  var cell=cellAtPoint(x,y);
+  if(cell){dropCol=cell;cell.classList.add('nx-col-drop');dl.style.display='none';dropIdx=null;return;}
   var gaps=gapPositions();if(!gaps.length){dropIdx=0;return;}
   var best=gaps[0],bd=Math.abs(y-gaps[0].y);
   gaps.forEach(function(g){var d=Math.abs(y-g.y);if(d<bd){bd=d;best=g;}});
@@ -855,13 +1142,14 @@ async function previewPage(){
     h=h.replace(/<link[^>]*_shared\/kit\.css[^>]*>/i,'<style>\n'+css+'\n</style>');
     h=h.replace(/<script[^>]*_shared\/kit\.js[^>]*><\/script>/i,'<script>\n'+js+'\n<\/script>');
   }catch(e){}
+  h=bakeCustomCode(h);
   var url=URL.createObjectURL(new Blob(['<!DOCTYPE html>\n'+h],{type:'text/html'}));
   window.open(url,'_blank');
   setTimeout(function(){URL.revokeObjectURL(url);},8000);
 }
 
 // Device preview
-function setDevice(w,btn){if(w==='full'){iframe.style.width='100%';iframe.style.maxWidth='';}else{iframe.style.width=w+'px';iframe.style.maxWidth='100%';}iframe.style.margin='0 auto';document.querySelectorAll('.dvbtn').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');}
+function setDevice(w,btn){if(w==='full'){iframe.style.width='100%';iframe.style.maxWidth='';}else{iframe.style.width=w+'px';iframe.style.maxWidth='100%';}iframe.style.margin='0 auto';document.querySelectorAll('.dvbtn').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');curDevice=w;onDeviceChange();}
 
 // Page settings (title / meta / OG / favicon) — live edits to the iframe head
 function ensureMeta(doc,attr,key,content){if(content==null||content==='')return;var el=doc.head.querySelector('meta['+attr+'="'+key+'"]');if(!el){el=doc.createElement('meta');el.setAttribute(attr,key);doc.head.appendChild(el);}el.setAttribute('content',content);}
@@ -879,6 +1167,51 @@ function buildTracking(){var gtm=val('tkGtm').trim(),ga=val('tkGa').trim(),px=va
   if(gtm)h+='<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","'+gtm+'");<\/script>';
   if(px)h+='<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","'+px+'");fbq("track","PageView");<\/script>';
   return h;}
+
+// Custom code — external CSS/JS, custom CSS/HTML. Persisted in an inert JSON
+// node (travels with drafts); custom CSS previews live; everything bakes on export.
+function ccLines(id){return (val(id)||'').split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean);}
+function ccAttr(u){return (u||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+function ccConfig(){return {cssUrls:ccLines('ccCssUrl'),jsUrls:ccLines('ccJsUrl'),css:val('ccCss'),head:val('ccHead'),body:val('ccBody')};}
+function applyCustomCode(){
+  var doc=idoc();if(!doc)return;
+  var cfg=ccConfig();
+  var J=doc.getElementById('nx-custom-code');
+  if(!J){J=doc.createElement('script');J.type='application/json';J.id='nx-custom-code';doc.head.appendChild(J);}
+  J.textContent=JSON.stringify(cfg).replace(/</g,'\\u003c'); // escape < so an embedded closing script tag cannot break the node
+  // Live preview: custom CSS + external stylesheets only (scripts/HTML bake on export).
+  var L=doc.getElementById('nx-custom-css-live');
+  if(!L){L=doc.createElement('style');L.id='nx-custom-css-live';doc.head.appendChild(L);}
+  L.textContent=cfg.css||'';
+  Array.prototype.slice.call(doc.head.querySelectorAll('link[data-nx-cc-link]')).forEach(function(n){n.remove();});
+  cfg.cssUrls.forEach(function(u){var lk=doc.createElement('link');lk.rel='stylesheet';lk.href=u;lk.setAttribute('data-nx-cc-link','1');doc.head.appendChild(lk);});
+  scheduleAutosave();
+}
+function prefillCustomCode(){
+  var doc=idoc();if(!doc)return;var J=doc.getElementById('nx-custom-code');if(!J)return;
+  var cfg;try{cfg=JSON.parse(J.textContent||'{}');}catch(e){return;}
+  var s=function(id,v){var e=document.getElementById(id);if(e&&v!=null)e.value=v;};
+  s('ccCssUrl',(cfg.cssUrls||[]).join('\n'));s('ccJsUrl',(cfg.jsUrls||[]).join('\n'));
+  s('ccCss',cfg.css);s('ccHead',cfg.head);s('ccBody',cfg.body);
+  applyCustomCode();
+}
+// Strip editor-only custom-code nodes and inject the real markup into head / body-end.
+function bakeCustomCode(html){
+  var cfg=ccConfig();
+  html=html.replace(/<script[^>]*id="nx-custom-code"[^>]*>[\s\S]*?<\/script>/i,'')
+           .replace(/<style[^>]*id="nx-custom-css-live"[^>]*>[\s\S]*?<\/style>/i,'')
+           .replace(/<link[^>]*data-nx-cc-link[^>]*>/ig,'');
+  var head='';
+  cfg.cssUrls.forEach(function(u){head+='\n<link rel="stylesheet" href="'+ccAttr(u)+'">';});
+  if(cfg.css)head+='\n<style>\n'+cfg.css+'\n</style>';
+  if(cfg.head)head+='\n'+cfg.head;
+  if(head)html=html.replace(/<\/head>/i,head+'\n</head>');
+  var body='';
+  if(cfg.body)body+='\n'+cfg.body;
+  cfg.jsUrls.forEach(function(u){body+='\n<script src="'+ccAttr(u)+'"><\/script>';});
+  if(body)html=html.replace(/<\/body>/i,body+'\n</body>');
+  return html;
+}
 
 // Brand kit presets (localStorage)
 function selPair(id){var s=document.getElementById(id);if(!s||!s.selectedOptions[0])return['',''];return[s.value,s.selectedOptions[0].getAttribute('data-q')||''];}
