@@ -8,6 +8,11 @@
 (function(){
   'use strict';
 
+  // ───────── 0. Small HTML helpers ─────────
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function escAttr(s){return esc(s).replace(/"/g,'&quot;');}
+  function slug(s){return String(s||'field').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'field';}
+
   // ───────── 1. Theme switcher ─────────
   const THEMES = ['editorial','minimal','conversion','luxury','dark'];
   function setTheme(t){
@@ -154,31 +159,57 @@
     }
   };
 
-  function setForm(bundleKey){
+  // Render a full form from a model: {title, sub, cta, foot, action, method, fields:[{type,name,label,placeholder,required,rows,options}]}.
+  // The model is stashed on the form (data-nx-form-model) so the editor can re-open and edit it.
+  function renderForm(model){
     const form = document.querySelector('[data-edit="form"]');
     if(!form) return;
-    const b = FORM_BUNDLES[bundleKey] || FORM_BUNDLES['lead-basic'];
-    let html = `<h3 data-field="title">${b.title}</h3>`;
-    html += `<p class="form-sub" data-field="sub">${b.sub}</p>`;
-    html += `<form onsubmit="return false">`;
-    b.fields.forEach(f => {
-      const label = f.placeholder || f.name;
+    model = model || {};
+    const fields = model.fields || [];
+    let html = '';
+    if(model.title != null && model.title !== '') html += `<h3 data-field="title">${esc(model.title)}</h3>`;
+    if(model.sub != null && model.sub !== '')     html += `<p class="form-sub" data-field="sub">${esc(model.sub)}</p>`;
+    const act = model.action
+      ? ` action="${escAttr(model.action)}" method="${escAttr(model.method || 'POST')}"`
+      : ' onsubmit="return false"';
+    html += `<form${act}>`;
+    fields.forEach(f => {
+      const label = f.label || f.placeholder || f.name || '';
+      const name  = f.name || slug(label);
+      const ph    = f.placeholder != null ? f.placeholder : label;
+      const req   = f.required ? ' required' : '';
       if(f.type === 'select'){
-        html += `<select class="nx-select" name="${f.name}" aria-label="${f.name}"${f.required?' required':''}>`;
-        html += `<option value="" disabled selected>Select…</option>`;
-        f.options.forEach(opt => html += `<option>${opt}</option>`);
+        html += `<select class="nx-select" name="${escAttr(name)}" aria-label="${escAttr(label)}"${req}>`;
+        html += `<option value="" disabled selected>${esc(ph || label || 'Select…')}</option>`;
+        (f.options || []).forEach(opt => html += `<option>${esc(opt)}</option>`);
         html += `</select>`;
       } else if(f.type === 'textarea'){
-        html += `<textarea class="nx-textarea" name="${f.name}" placeholder="${f.placeholder}" aria-label="${label}" rows="${f.rows||3}"${f.required?' required':''}></textarea>`;
+        html += `<textarea class="nx-textarea" name="${escAttr(name)}" placeholder="${escAttr(ph)}" aria-label="${escAttr(label)}" rows="${f.rows||3}"${req}></textarea>`;
+      } else if(f.type === 'checkbox'){
+        html += `<label class="nx-check"><input type="checkbox" name="${escAttr(name)}"${req}> <span>${esc(label)}</span></label>`;
       } else {
-        html += `<input class="nx-input" type="${f.type}" name="${f.name}" placeholder="${f.placeholder||''}" aria-label="${label}"${f.required?' required':''}>`;
+        html += `<input class="nx-input" type="${escAttr(f.type || 'text')}" name="${escAttr(name)}" placeholder="${escAttr(ph)}" aria-label="${escAttr(label)}"${req}>`;
       }
     });
-    html += `<button class="nx-btn nx-btn-primary" data-field="cta">${b.cta}</button>`;
-    html += `<p class="form-foot">We respect your privacy. No spam.</p>`;
+    html += `<button class="nx-btn nx-btn-primary" data-field="cta">${esc(model.cta || 'Submit')}</button>`;
+    if(model.foot !== '') html += `<p class="form-foot">${esc(model.foot || 'We respect your privacy. No spam.')}</p>`;
     html += `</form>`;
     form.innerHTML = html;
-    wireForms(form);
+    try { form.dataset.nxFormModel = JSON.stringify(model); } catch(e){}
+    if(!model.action) wireForms(form);   // real endpoint → let it submit; otherwise client-side thank-you
+  }
+
+  // Preset bundles → model → renderForm.
+  function setForm(bundleKey){
+    const b = FORM_BUNDLES[bundleKey] || FORM_BUNDLES['lead-basic'];
+    renderForm({
+      title: b.title, sub: b.sub, cta: b.cta, action: '',
+      fields: b.fields.map(f => ({
+        type: f.type, name: f.name, label: f.placeholder || f.name,
+        required: !!f.required, rows: f.rows,
+        options: f.options ? f.options.slice() : undefined
+      }))
+    });
   }
 
   // ───────── 9. Footer setter ─────────
@@ -205,6 +236,91 @@
     });
   }
 
+  // ───────── 10b. Click-to-edit selection ─────────
+  // The editor sets the mode: 'select' (click routes to a drawer field),
+  // 'text' (inline contentEditable editing) or 'image' (image picker owns clicks).
+  var nxMode = 'select';
+  var nxSel = null;
+  var TOP_TAGS = ['SECTION','NAV','FOOTER','HEADER','ASIDE','DIV'];
+
+  function setMode(mode){
+    nxMode = mode || 'select';
+    document.body.classList.toggle('nx-select-mode', nxMode === 'select');
+    if(nxMode !== 'select') clearSelected();
+  }
+  function clearSelected(){ if(nxSel){ nxSel.classList.remove('nx-selected'); nxSel = null; } }
+  function markSelected(el){ clearSelected(); if(el){ el.classList.add('nx-selected'); nxSel = el; } }
+
+  function topLevelSections(){
+    return Array.prototype.filter.call(document.body.children, function(el){
+      return TOP_TAGS.indexOf(el.tagName) > -1;
+    });
+  }
+  function topLevelOf(el){
+    var n = el;
+    while(n && n.parentNode !== document.body) n = n.parentNode;
+    return (n && n.parentNode === document.body) ? n : null;
+  }
+
+  // Decide what the user clicked and which drawer field it maps to.
+  function describe(el){
+    var img = el.closest('img');
+    if(img) return { node: img, kind: 'image' };
+
+    var fld = el.closest('[data-field]');
+    if(fld){
+      var field = fld.getAttribute('data-field');
+      var zoneEl = fld.closest('[data-edit]');
+      var zone = zoneEl ? zoneEl.getAttribute('data-edit') : '';
+      if(zone === 'hero-copy') return { node: fld, kind: 'hero-text', field: field };
+      if(zone === 'footer')    return { node: fld, kind: 'footer', field: field };
+      // form title / sub / cta and anything else → treat as the form
+    }
+
+    var form = el.closest('[data-edit="form"]') || el.closest('.nx-form');
+    if(form) return { node: form, kind: 'form' };
+
+    if(el.closest('[data-edit="benefits"]')) {
+      var sec0 = topLevelOf(el);
+      return { node: sec0 || el, kind: 'section', index: sec0 ? topLevelSections().indexOf(sec0) : -1 };
+    }
+
+    var cols = el.closest('.nx-cols');
+    if(cols) return { node: cols, kind: 'columns' };
+
+    var brand = el.closest('[data-edit="brand"]') || el.closest('nav');
+    if(brand) return { node: brand, kind: 'brand' };
+
+    var foot = el.closest('footer');
+    if(foot) return { node: foot, kind: 'footer' };
+
+    var sec = topLevelOf(el);
+    if(sec){
+      var idx = topLevelSections().indexOf(sec);
+      if(idx > -1) return { node: sec, kind: 'section', index: idx };
+    }
+    return null;
+  }
+
+  function onSelectClick(e){
+    if(nxMode !== 'select') return;            // text / image modes own their clicks
+    if(e.target && e.target.isContentEditable) return;
+    var d = describe(e.target);
+    if(!d) return;
+    e.preventDefault();
+    e.stopPropagation();
+    markSelected(d.node);
+    var msg = { type: 'nexa:select', kind: d.kind };
+    if(d.field != null) msg.field = d.field;
+    if(d.index != null) msg.index = d.index;
+    window.parent.postMessage(msg, '*');
+  }
+
+  function enableSelect(){
+    document.addEventListener('click', onSelectClick, true);
+    setMode('select');
+  }
+
   // ───────── 11. PostMessage API (editor drawer → template iframe) ─────────
   window.addEventListener('message', evt => {
     const m = evt.data;
@@ -221,8 +337,10 @@
       case 'nexa:set-hero-media':  return setHeroMedia(m.url, m.mediaType);
       case 'nexa:set-benefits':    return setBenefits(m.items);
       case 'nexa:set-form':        return setForm(m.bundle);
+      case 'nexa:set-form-model':  return renderForm(m.model);
       case 'nexa:set-footer':      return setFooter(m.data);
       case 'nexa:enable-edit':     return enableEditMode();
+      case 'nexa:set-mode':        return setMode(m.mode);
       case 'nexa:init-carousels':  return initCarousels();
       case 'nexa:init-blocks':     return initBlocks();
       case 'nexa:get-html':
@@ -306,7 +424,7 @@
   function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); wireForms(root); }
 
   // Expose globals for in-page debugging / non-iframe use
-  window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,addFont,setDir,setText,setHeroMedia,setBenefits,setForm,setFooter,enableEditMode,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
+  window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,addFont,setDir,setText,setHeroMedia,setBenefits,setForm,renderForm,setFooter,enableEditMode,setMode,enableSelect,clearSelected,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
 
   // Auto-init: if loaded with ?edit=1, enable edit mode
   if(location.search.includes('edit=1')) enableEditMode();
@@ -314,8 +432,9 @@
   // Wire any interactive blocks present on initial load
   initBlocks();
 
-  // Tell parent the template is ready
+  // In the editor iframe, turn on click-to-edit selection and tell parent we're ready.
   if(window.parent !== window){
+    enableSelect();
     window.parent.postMessage({type:'nexa:ready'}, '*');
   }
 })();

@@ -751,6 +751,40 @@ body.nx-edit-mode [data-edit]:hover::before{opacity:1}
 [dir="rtl"] .nx-faq summary{flex-direction:row-reverse}
 [dir="rtl"] .nx-benefit-icon,[dir="rtl"] .nx-test-avatar{margin-left:0}
 
+/* ============================================================
+   10. CLICK-TO-EDIT SELECTION (editor canvas)
+   Active when body has .nx-select-mode (set by the editor).
+   Lets the user click any element to open its field in the drawer.
+   ============================================================ */
+body.nx-select-mode [data-edit],
+body.nx-select-mode [data-field],
+body.nx-select-mode img,
+body.nx-select-mode .nx-btn,
+body.nx-select-mode section,
+body.nx-select-mode footer,
+body.nx-select-mode nav{cursor:pointer}
+body.nx-select-mode [data-edit]:hover,
+body.nx-select-mode [data-field]:hover,
+body.nx-select-mode img:hover{outline:2px dashed var(--brand-primary,#9354FF);outline-offset:3px}
+.nx-selected,
+body.nx-select-mode .nx-selected:hover{outline:3px solid var(--brand-primary,#9354FF)!important;outline-offset:3px!important;border-radius:3px}
+
+/* ============================================================
+   Columns / grid layout (editor "Layout" blocks)
+   Width + count + gap are driven by inline custom properties so
+   media queries can still override them. Auto-stacks on mobile.
+   ============================================================ */
+.nx-cols{display:grid;grid-template-columns:var(--nx-tmpl,repeat(var(--nx-cols,2),minmax(0,1fr)));gap:var(--nx-gap,24px);align-items:start}
+.nx-col{min-width:0}
+.nx-col>*+*{margin-top:12px}
+@media(max-width:600px){.nx-cols{grid-template-columns:1fr}}
+/* editor drag-drop target highlight (stripped on export) */
+.nx-col-drop{outline:3px dashed var(--brand-primary,#9354FF);outline-offset:-4px;background:rgba(147,84,255,.07)}
+
+/* Consent / checkbox form field */
+.nx-check{display:flex;align-items:flex-start;gap:9px;font-size:var(--fs-sm);color:var(--ink-mute);line-height:1.5;text-align:left;margin:2px 0 4px}
+.nx-check input{width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--brand-primary)}
+
 /* Form success (thank-you) state */
 .nx-form-success{text-align:center;padding:var(--sp-4) 0}
 .nx-form-tick{width:56px;height:56px;border-radius:50%;background:var(--brand-accent);color:var(--brand-primary);font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-4)}
