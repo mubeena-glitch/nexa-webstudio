@@ -781,6 +781,22 @@ body.nx-select-mode .nx-selected:hover{outline:3px solid var(--brand-primary,#93
 /* editor drag-drop target highlight (stripped on export) */
 .nx-col-drop{outline:3px dashed var(--brand-primary,#9354FF);outline-offset:-4px;background:rgba(147,84,255,.07)}
 
+/* Pop-up / modal (hidden until .nx-popup-open is added) */
+.nx-popup{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.nx-popup.nx-popup-open{display:flex}
+.nx-popup-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.nx-popup-box{position:relative;background:#fff;border-radius:16px;padding:34px 30px;max-width:460px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
+.nx-popup-box h3{font-family:var(--font-display);font-weight:var(--display-weight);font-size:var(--fs-h3);margin-bottom:10px}
+.nx-popup-box p{color:var(--ink-mute);margin-bottom:18px}
+.nx-popup-box form{display:flex;flex-direction:column;gap:10px}
+.nx-popup-close{position:absolute;top:12px;right:14px;width:30px;height:30px;border:0;background:transparent;font-size:24px;line-height:1;color:var(--ink-mute);cursor:pointer;border-radius:8px}
+.nx-popup-close:hover{background:var(--brand-accent)}
+
+/* Multi-step form layout */
+.nx-fnav{display:flex;gap:10px;margin-top:4px}
+.nx-fnav .nx-btn{flex:1}
+.nx-fstep[hidden]{display:none}
+
 /* Consent / checkbox form field */
 .nx-check{display:flex;align-items:flex-start;gap:9px;font-size:var(--fs-sm);color:var(--ink-mute);line-height:1.5;text-align:left;margin:2px 0 4px}
 .nx-check input{width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--brand-primary)}

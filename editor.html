@@ -193,6 +193,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
         <div class="fld"><label>Title</label><input class="inp" id="fmTitle" oninput="formMetaChange()" placeholder="Get in touch"></div>
         <div class="fld"><label>Subtext</label><input class="inp" id="fmSub" oninput="formMetaChange()" placeholder="We reply within 2 business hours."></div>
         <div class="fld"><label>Button text</label><input class="inp" id="fmCta" oninput="formMetaChange()" placeholder="Request a call back"></div>
+        <div class="fld"><label>Steps (multi-step form)</label><input class="inp" type="number" id="fmSteps" min="1" max="6" value="1" oninput="formMetaChange()"></div>
         <div class="sublbl">Fields</div>
         <div id="fmFields"></div>
         <div class="add-wrap"><button class="hbtn add-btn" onclick="formAddField()">&#43; Add field</button></div>
@@ -234,6 +235,20 @@ body.dragging{cursor:grabbing!important;user-select:none}
           <div class="chips" id="layRatio"></div>
           <div class="sublbl">Gap</div>
           <div class="chips" id="layGap"></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="cat" id="cat-popup" ontoggle="onPopupCatToggle(this)">
+      <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="7" y="9" width="10" height="2" rx="1" fill="currentColor" stroke="none"/><rect x="7" y="13" width="6" height="2" rx="1" fill="currentColor" stroke="none"/></svg></span> Pop-up</summary>
+      <div class="cat-body">
+        <div class="hint" style="margin:0 0 9px">Add a <b>Pop-up</b> block from Add Blocks, then click it here to set when it appears. It stays visible in the editor for editing; on your live page it follows the trigger below.</div>
+        <div class="hint" id="popNone" style="margin:0">No pop-up on this page yet. Add one from Add Blocks.</div>
+        <div id="popPanel" style="display:none">
+          <div class="sublbl">Show it…</div>
+          <div class="chips" id="popTrigger"></div>
+          <div class="fld" id="popDelayFld"><label>Delay (seconds)</label><input class="inp" type="number" id="popDelay" min="0" max="120" oninput="popChange()"></div>
+          <button class="hbtn" style="width:100%;justify-content:center;margin-top:6px" onclick="popReveal()">Show pop-up in editor</button>
         </div>
       </div>
     </details>
@@ -304,7 +319,16 @@ body.dragging{cursor:grabbing!important;user-select:none}
         <div class="fld"><label>Meta description</label><textarea class="inp" id="psDesc" oninput="applyPageSettings()" placeholder="50–160 characters for search snippets"></textarea></div>
         <div class="fld"><label>Social share image (OG) URL</label><input class="inp" id="psOg" oninput="applyPageSettings()" placeholder="https://…/share.jpg"></div>
         <div class="fld"><label>Favicon URL</label><input class="inp" id="psFav" oninput="applyPageSettings()" placeholder="https://…/favicon.png"></div>
-        <div class="hint">Sets the page title, search snippet, social-share preview and tab icon.</div>
+        <div class="fld"><label>Canonical URL</label><input class="inp" id="psCanonical" oninput="applyPageSettings()" placeholder="https://yourdomain.com/page"></div>
+        <div class="hint">Sets the page title, search snippet, social-share preview, tab icon and canonical link.</div>
+        <div class="sublbl">Structured data (Schema.org)</div>
+        <div class="fld"><label>Insert a template</label><select class="inp" id="psSchemaType" onchange="insertSchemaTemplate(this.value)"><option value="">Choose a type…</option><option value="Organization">Organisation</option><option value="LocalBusiness">Local Business</option><option value="Product">Product</option><option value="Service">Service</option><option value="FAQPage">FAQ</option></select></div>
+        <div class="fld"><label>JSON-LD</label><textarea class="inp" id="psSchema" oninput="applyPageSettings()" placeholder="Paste or generate JSON-LD" style="font-family:ui-monospace,Menlo,Consolas,monospace;min-height:90px"></textarea></div>
+        <div class="hint">Baked into the page &lt;head&gt; as a schema script for rich search results.</div>
+        <div class="sublbl">Search-engine files</div>
+        <button class="hbtn" style="width:100%;justify-content:center" onclick="downloadRobots()">Download robots.txt</button>
+        <button class="hbtn" style="width:100%;justify-content:center;margin-top:7px" onclick="downloadSitemap()">Download sitemap.xml</button>
+        <div class="hint">Generated from the canonical URL. Upload both to your site root.</div>
       </div>
     </details>
 
@@ -434,7 +458,7 @@ function selectImage(img){
 }
 function clearImgSel(){if(selImg)selImg.classList.remove('nx-sel');selImg=null;var p=document.getElementById('imgPanel');if(p)p.style.display='none';}
 // Strip editor-only artifacts (selection, edit flags, pick styles) from any export/draft
-function cleanExport(h){return h.replace(/ contenteditable="(?:true|false)"/gi,'').replace(/\s*\bnx-sel\b/g,'').replace(/\s*\bnx-selected\b/g,'').replace(/\s*\bnx-select-mode\b/g,'').replace(/\s*\bnx-col-drop\b/g,'').replace(/ data-nx-form-model="[^"]*"/gi,'').replace(/<script[^>]*id="nx-responsive-model"[^>]*>[\s\S]*?<\/script>/i,'').replace(/<style id="nx-sel-style">[\s\S]*?<\/style>/i,'').replace(/<style id="nx-pick-style">[\s\S]*?<\/style>/i,'');}
+function cleanExport(h){return h.replace(/ contenteditable="(?:true|false)"/gi,'').replace(/\s*\bnx-sel\b/g,'').replace(/\s*\bnx-selected\b/g,'').replace(/\s*\bnx-select-mode\b/g,'').replace(/\s*\bnx-col-drop\b/g,'').replace(/\s*\bnx-popup-open\b/g,'').replace(/ data-nx-form-model="[^"]*"/gi,'').replace(/<script[^>]*id="nx-responsive-model"[^>]*>[\s\S]*?<\/script>/i,'').replace(/<style id="nx-sel-style">[\s\S]*?<\/style>/i,'').replace(/<style id="nx-pick-style">[\s\S]*?<\/style>/i,'');}
 function encodeCanvas(cv){try{return cv.toDataURL('image/webp',0.82);}catch(e){return cv.toDataURL('image/jpeg',0.85);}}
 function loadImg(src,cb){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){cb(im);};im.onerror=function(){cb(null);};im.src=src;}
 function applyImgAlt(){if(selImg)selImg.setAttribute('alt',(document.getElementById('imgAlt').value||''));}
@@ -546,7 +570,7 @@ function applyFooter(){send({type:'nexa:set-footer',data:{
 }});}
 
 // ---- Lead-form builder: add / edit / reorder / remove fields, set destination ----
-var FIELD_TYPES=[['text','Text'],['email','Email'],['tel','Phone'],['number','Number'],['date','Date'],['time','Time'],['url','URL'],['select','Dropdown'],['textarea','Message'],['checkbox','Checkbox / consent']];
+var FIELD_TYPES=[['text','Text'],['email','Email'],['tel','Phone'],['number','Number'],['date','Date'],['time','Time'],['url','URL'],['select','Dropdown'],['textarea','Message'],['checkbox','Checkbox / consent'],['file','File upload'],['hidden','Hidden field']];
 var formModel=null;
 function setIfVal(id,v){var e=document.getElementById(id);if(e&&v!=null)e.value=v;}
 function escAttrV(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
@@ -581,32 +605,48 @@ function readFormModel(){
   return model;
 }
 function ensureFormModel(){if(!formModel)formModel=readFormModel()||defaultFormModel();return formModel;}
-function pushForm(){var m=ensureFormModel();m.fields.forEach(function(f,i){if(!f.name)f.name=slugName(f.label)||('field'+i);});send({type:'nexa:set-form-model',model:m});scheduleAutosave();}
+function fieldName(f,i){return f.type==='hidden'?((f.label||'').trim().replace(/\s+/g,'_')||('field'+i)):(slugName(f.label)||('field'+i));}
+function pushForm(){var m=ensureFormModel();m.fields.forEach(function(f,i){if(!f.name)f.name=fieldName(f,i);});send({type:'nexa:set-form-model',model:m});scheduleAutosave();}
 function onFormCatToggle(d){if(!d.open)return;var doc=idoc();var f=doc&&doc.querySelector('[data-edit="form"]');var empty=!f||!f.querySelector('input,select,textarea');ensureFormModel();renderFormBuilder();if(empty)pushForm();}
 function renderFormBuilder(){
   var m=ensureFormModel();
   setIfVal('fmTitle',m.title);setIfVal('fmSub',m.sub);setIfVal('fmCta',m.cta);setIfVal('fmAction',m.action||'');
   var box=document.getElementById('fmFields');if(!box)return;
+  var steps=Math.max(1,parseInt(m.steps,10)||1);
+  setIfVal('fmSteps',String(steps));
   box.innerHTML=m.fields.map(function(f,i){
     var typeOpts=FIELD_TYPES.map(function(t){return '<option value="'+t[0]+'"'+(t[0]===f.type?' selected':'')+'>'+t[1]+'</option>';}).join('');
+    var others=m.fields.filter(function(g,j){return j!==i&&g.type!=='hidden'&&g.label;});
+    var condOpts='<option value="">Always show</option>'+others.map(function(g){var n=g.name||slugName(g.label);return '<option value="'+escAttrV(n)+'"'+(f.showIfField===n?' selected':'')+'>'+escHtml(g.label)+'</option>';}).join('');
+    var stepOpts='';for(var s=1;s<=steps;s++)stepOpts+='<option value="'+s+'"'+(((f.step||1)===s)?' selected':'')+'>Step '+s+'</option>';
     return '<div class="fm-field">'+
       '<div class="srow"><span class="sname">'+escHtml(f.label||'(field)')+'</span>'+
         '<button class="sx" title="Move up" '+(i===0?'disabled':'')+' onclick="formMoveField('+i+',-1)">&#9650;</button>'+
         '<button class="sx" title="Move down" '+(i===m.fields.length-1?'disabled':'')+' onclick="formMoveField('+i+',1)">&#9660;</button>'+
         '<button class="sx del" title="Remove field" onclick="formDelField('+i+')">&#215;</button></div>'+
-      '<div class="fld"><label>Label</label><input class="inp" value="'+escAttrV(f.label||'')+'" oninput="formFieldChange('+i+',\'label\',this.value)"></div>'+
+      '<div class="fld"><label>'+(f.type==='hidden'?'Name':'Label')+'</label><input class="inp" value="'+escAttrV(f.label||'')+'" oninput="formFieldChange('+i+',\'label\',this.value)"></div>'+
       '<div class="color-row"><div class="color-cell"><label>Type</label><select class="inp" onchange="formFieldChange('+i+',\'type\',this.value)">'+typeOpts+'</select></div>'+
-      '<div class="color-cell"><label>&nbsp;</label><label class="fm-check"><input type="checkbox" '+(f.required?'checked':'')+' onchange="formFieldChange('+i+',\'required\',this.checked)"> Required</label></div></div>'+
+      (f.type==='hidden'?'<div class="color-cell"><label>Value</label><input class="inp" value="'+escAttrV(f.value||'')+'" oninput="formFieldChange('+i+',\'value\',this.value)"></div>':'<div class="color-cell"><label>&nbsp;</label><label class="fm-check"><input type="checkbox" '+(f.required?'checked':'')+' onchange="formFieldChange('+i+',\'required\',this.checked)"> Required</label></div>')+
+      '</div>'+
       (f.type==='select'?'<div class="fld"><label>Options (one per line)</label><textarea class="inp" oninput="formFieldChange('+i+',\'optionsText\',this.value)">'+escHtml((f.options||[]).join('\n'))+'</textarea></div>':'')+
+      (f.type==='file'?'<div class="fld"><label>Accept (optional, e.g. .pdf,image/*)</label><input class="inp" value="'+escAttrV(f.accept||'')+'" oninput="formFieldChange('+i+',\'accept\',this.value)"></div>':'')+
+      (steps>1&&f.type!=='hidden'?'<div class="fld"><label>Step</label><select class="inp" onchange="formFieldChange('+i+',\'step\',this.value)">'+stepOpts+'</select></div>':'')+
+      (f.type!=='hidden'?'<div class="fld"><label>Show only if</label><select class="inp" onchange="formFieldChange('+i+',\'showIfField\',this.value)">'+condOpts+'</select></div>'+
+        (f.showIfField?'<div class="fld"><label>…equals (blank = any value)</label><input class="inp" value="'+escAttrV(f.showIfValue||'')+'" oninput="formFieldChange('+i+',\'showIfValue\',this.value)"></div>':''):'')+
     '</div>';
   }).join('');
 }
-function formMetaChange(){var m=ensureFormModel();m.title=val('fmTitle');m.sub=val('fmSub');m.cta=val('fmCta');m.action=val('fmAction').trim();pushForm();}
+function formMetaChange(){var m=ensureFormModel();m.title=val('fmTitle');m.sub=val('fmSub');m.cta=val('fmCta');m.action=val('fmAction').trim();var st=Math.max(1,parseInt(val('fmSteps'),10)||1);if(st!==m.steps){m.steps=st;renderFormBuilder();}pushForm();}
 function formFieldChange(i,key,v){var m=ensureFormModel(),f=m.fields[i];if(!f)return;
   if(key==='optionsText'){f.options=v.split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean);pushForm();return;}
-  if(key==='label'){f.label=v;f.name=slugName(v);pushForm();var row=document.getElementById('fmFields').children[i];if(row){var sn=row.querySelector('.sname');if(sn)sn.textContent=v||'(field)';}return;}
-  if(key==='type'){f.type=v;if(v!=='select')delete f.options;else if(!f.options||!f.options.length)f.options=['Option 1','Option 2'];renderFormBuilder();pushForm();return;}
+  if(key==='label'){f.label=v;f.name=fieldName(f,i);pushForm();var row=document.getElementById('fmFields').children[i];if(row){var sn=row.querySelector('.sname');if(sn)sn.textContent=v||'(field)';}return;}
+  if(key==='type'){f.type=v;if(v!=='select')delete f.options;else if(!f.options||!f.options.length)f.options=['Option 1','Option 2'];if(v==='hidden'){delete f.required;delete f.showIfField;delete f.showIfValue;}renderFormBuilder();pushForm();return;}
   if(key==='required'){f.required=!!v;pushForm();return;}
+  if(key==='value'){f.value=v;pushForm();return;}
+  if(key==='accept'){f.accept=v;pushForm();return;}
+  if(key==='step'){f.step=parseInt(v,10)||1;pushForm();return;}
+  if(key==='showIfField'){f.showIfField=v;if(!v)delete f.showIfValue;renderFormBuilder();pushForm();return;}
+  if(key==='showIfValue'){f.showIfValue=v;pushForm();return;}
 }
 function formAddField(){var m=ensureFormModel();m.fields.push({type:'text',label:'New field',required:false});renderFormBuilder();pushForm();toast('Field added');}
 function formDelField(i){var m=ensureFormModel();m.fields.splice(i,1);renderFormBuilder();pushForm();}
@@ -690,6 +730,28 @@ function laySetCount(n){if(!layEl)return;var doc=idoc();
   layBuildChips(n,layEl);scheduleAutosave();toast(n+' columns'+(cur>n?' (extra cells wrap below)':''));
 }
 
+// ---- Pop-up trigger settings for a selected .nx-popup ----
+var popEl=null;
+function onPopupCatToggle(d){if(d.open)popSelect();}
+function popSelect(){var doc=idoc();if(!doc)return;
+  var sel=doc.querySelector('.nx-selected');
+  var el=sel?(sel.classList&&sel.classList.contains('nx-popup')?sel:(sel.closest?sel.closest('.nx-popup'):null)):null;
+  if(!el)el=doc.querySelector('.nx-popup');
+  popEl=el||null;
+  document.getElementById('popNone').style.display=el?'none':'';
+  document.getElementById('popPanel').style.display=el?'':'none';
+  if(!el)return;
+  var trig=el.getAttribute('data-nx-popup-trigger')||'delay';
+  chipRow('popTrigger',[['load','On load'],['delay','After delay'],['exit','Exit intent'],['click','On click']],function(v){popChange();});
+  markChip('popTrigger',trig);
+  document.getElementById('popDelay').value=el.getAttribute('data-nx-popup-delay')||'5';
+  document.getElementById('popDelayFld').style.display=trig==='delay'?'':'none';
+}
+function popChange(){if(!popEl)return;var t=document.querySelector('#popTrigger .chip.ac');var trig=t?t.getAttribute('data-v'):'delay';
+  popEl.setAttribute('data-nx-popup-trigger',trig);popEl.setAttribute('data-nx-popup-delay',val('popDelay')||'5');
+  document.getElementById('popDelayFld').style.display=trig==='delay'?'':'none';scheduleAutosave();}
+function popReveal(){if(popEl){popEl.classList.add('nx-popup-open');toast('Pop-up shown — edit it, then close to dismiss');}}
+
 // ---- export ----
 function exportHtml(){if(!ready){toast('Template still loading…');return;}pendingExport=true;send({type:'nexa:get-html'});toast('Preparing download…');}
 async function download(html){
@@ -739,6 +801,8 @@ function routeSelect(m){
     flash(document.getElementById('fmFields'));
   } else if(m.kind==='image'){
     openCat('Images');var doc=idoc();if(doc){var im=doc.querySelector('img.nx-selected');if(im)selectImage(im);}
+  } else if(m.kind==='popup'){
+    openCat('Pop-up');popSelect();
   } else if(m.kind==='columns'){
     openCat('Layout');laySelect();
   } else if(m.kind==='brand'){
@@ -997,13 +1061,16 @@ BLOCKS.push(
    html:'<section class="nx-section"><div class="container"><div class="nx-cols" data-cols="2" style="--nx-cols:2"><div class="nx-col"><h3>Column one</h3><p>Edit this text, or drag a block into this column.</p></div><div class="nx-col"><h3>Column two</h3><p>Edit this text, or drag a block into this column.</p></div></div></div></section>'},
   {key:'cols3',label:'3 columns',
    svg:'<rect class="wf-box" x="5" y="8" width="11" height="14" rx="2"/><rect class="wf-box" x="18.5" y="8" width="11" height="14" rx="2"/><rect class="wf-box" x="32" y="8" width="11" height="14" rx="2"/>',
-   html:'<section class="nx-section"><div class="container"><div class="nx-cols" data-cols="3" style="--nx-cols:3"><div class="nx-col"><h4>Column one</h4><p>Edit or drop a block here.</p></div><div class="nx-col"><h4>Column two</h4><p>Edit or drop a block here.</p></div><div class="nx-col"><h4>Column three</h4><p>Edit or drop a block here.</p></div></div></div></section>'}
+   html:'<section class="nx-section"><div class="container"><div class="nx-cols" data-cols="3" style="--nx-cols:3"><div class="nx-col"><h4>Column one</h4><p>Edit or drop a block here.</p></div><div class="nx-col"><h4>Column two</h4><p>Edit or drop a block here.</p></div><div class="nx-col"><h4>Column three</h4><p>Edit or drop a block here.</p></div></div></div></section>'},
+  {key:'popup',label:'Pop-up',
+   svg:'<rect class="wf-mut" x="3" y="4" width="42" height="22" rx="2" opacity=".25"/><rect class="wf-box" x="12" y="8" width="24" height="15" rx="2"/><rect class="wf-acc" x="16" y="17" width="16" height="3.5" rx="1.5"/><rect class="wf-mut" x="16" y="11" width="13" height="2.5" rx="1"/>',
+   html:'<div class="nx-popup" data-nx-popup-trigger="delay" data-nx-popup-delay="5" hidden><div class="nx-popup-overlay"></div><div class="nx-popup-box"><button class="nx-popup-close" type="button" aria-label="Close">&times;</button><h3>Wait — before you go!</h3><p>Get 10% off your first order. Enter your email to claim it.</p><form onsubmit="return false"><input class="nx-input" type="email" placeholder="Email address" aria-label="Email address" required><button class="nx-btn nx-btn-primary">Get my discount</button></form></div></div>'}
 );
 
 // Palette groups (performance-marketer taxonomy)
 var GROUPS=[
   {name:'Layout',keys:['cols2','cols3']},
-  {name:'Convert',keys:['leadform','stickybar','countdown','announce','cta']},
+  {name:'Convert',keys:['leadform','popup','stickybar','countdown','announce','cta']},
   {name:'Content',keys:['split-left','split-right','cards','steps','pricing','compare','checklist','faq']},
   {name:'Social proof',keys:['quote','reviews','guarantee','logos','stats']},
   {name:'Media',keys:['gallery','carousel','media','video']}
@@ -1158,8 +1225,38 @@ function applyPageSettings(){var doc=idoc();if(!doc)return;var t=val('psTitle'),
   if(d){ensureMeta(doc,'name','description',d);ensureMeta(doc,'property','og:description',d);}
   ensureMeta(doc,'property','og:image',og);
   if(fav){var l=doc.head.querySelector('link[rel="icon"]');if(!l){l=doc.createElement('link');l.setAttribute('rel','icon');doc.head.appendChild(l);}l.setAttribute('href',fav);}
+  // Canonical
+  var can=val('psCanonical').trim(),cl=doc.head.querySelector('link[rel="canonical"]');
+  if(can){if(!cl){cl=doc.createElement('link');cl.setAttribute('rel','canonical');doc.head.appendChild(cl);}cl.setAttribute('href',can);ensureMeta(doc,'property','og:url',can);}
+  else if(cl)cl.remove();
+  // Structured data (JSON-LD) — kept on export
+  var sc=val('psSchema').trim(),sl=doc.getElementById('nx-schema');
+  if(sc){if(!sl){sl=doc.createElement('script');sl.type='application/ld+json';sl.id='nx-schema';doc.head.appendChild(sl);}sl.textContent=sc.replace(/</g,'\\u003c');}
+  else if(sl)sl.remove();
   scheduleAutosave();}
-function prefillPageSettings(){var doc=idoc();if(!doc)return;var t=doc.querySelector('title'),d=doc.querySelector('meta[name="description"]');if(t&&document.getElementById('psTitle'))document.getElementById('psTitle').value=(t.textContent||'').trim();if(d&&document.getElementById('psDesc'))document.getElementById('psDesc').value=d.getAttribute('content')||'';}
+function prefillPageSettings(){var doc=idoc();if(!doc)return;
+  var t=doc.querySelector('title'),d=doc.querySelector('meta[name="description"]');
+  if(t&&document.getElementById('psTitle'))document.getElementById('psTitle').value=(t.textContent||'').trim();
+  if(d&&document.getElementById('psDesc'))document.getElementById('psDesc').value=d.getAttribute('content')||'';
+  var cl=doc.head.querySelector('link[rel="canonical"]');if(cl&&document.getElementById('psCanonical'))document.getElementById('psCanonical').value=cl.getAttribute('href')||'';
+  var sl=doc.getElementById('nx-schema');if(sl&&document.getElementById('psSchema'))document.getElementById('psSchema').value=(sl.textContent||'').replace(/\\u003c/g,'<');}
+// Schema.org JSON-LD starter templates
+function insertSchemaTemplate(type){if(!type)return;
+  var title=val('psTitle')||'Your business',url=val('psCanonical')||'https://yourdomain.com';
+  var T={
+    Organization:{'@context':'https://schema.org','@type':'Organization',name:title,url:url,logo:url+'/logo.png',sameAs:['https://www.linkedin.com/company/your-co','https://www.instagram.com/your-co']},
+    LocalBusiness:{'@context':'https://schema.org','@type':'LocalBusiness',name:title,url:url,telephone:'+971 4 000 0000',address:{'@type':'PostalAddress',streetAddress:'Street','addressLocality':'Dubai',addressCountry:'AE'},openingHours:'Mo-Fr 09:00-18:00'},
+    Product:{'@context':'https://schema.org','@type':'Product',name:title,description:val('psDesc')||'Product description',offers:{'@type':'Offer',price:'0.00',priceCurrency:'AED',availability:'https://schema.org/InStock'}},
+    Service:{'@context':'https://schema.org','@type':'Service',name:title,provider:{'@type':'Organization',name:title},areaServed:'AE',description:val('psDesc')||'Service description'},
+    FAQPage:{'@context':'https://schema.org','@type':'FAQPage',mainEntity:[{'@type':'Question',name:'Your question?',acceptedAnswer:{'@type':'Answer',text:'Your answer.'}}]}
+  };
+  var el=document.getElementById('psSchema');if(el&&T[type]){el.value=JSON.stringify(T[type],null,2);applyPageSettings();toast(type+' schema inserted — edit the details');}
+  document.getElementById('psSchemaType').value='';}
+// robots.txt / sitemap.xml generators (based on the canonical URL)
+function siteOrigin(){var c=val('psCanonical').trim();if(!c){toast('Set a Canonical URL first (Page & SEO)');return null;}try{return new URL(c);}catch(e){toast('Canonical URL is not valid');return null;}}
+function downloadText(name,content,mime){var blob=new Blob([content],{type:mime||'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);}
+function downloadRobots(){var u=siteOrigin();if(!u)return;downloadText('robots.txt','User-agent: *\nAllow: /\nSitemap: '+u.origin+'/sitemap.xml\n','text/plain');toast('robots.txt downloaded');}
+function downloadSitemap(){var u=siteOrigin();if(!u)return;var loc=u.href;var xml='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>'+loc.replace(/&/g,'&amp;')+'</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>\n';downloadText('sitemap.xml',xml,'application/xml');toast('sitemap.xml downloaded');}
 
 // Marketing tracking — built and injected into the exported HTML
 function buildTracking(){var gtm=val('tkGtm').trim(),ga=val('tkGa').trim(),px=val('tkPixel').trim(),h='';

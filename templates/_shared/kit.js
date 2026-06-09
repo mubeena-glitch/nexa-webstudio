@@ -159,44 +159,110 @@
     }
   };
 
-  // Render a full form from a model: {title, sub, cta, foot, action, method, fields:[{type,name,label,placeholder,required,rows,options}]}.
+  // One field's markup. Hidden fields render bare; everything else is wrapped in
+  // .nx-field so conditional show/hide can target the whole field.
+  function fieldHtml(f){
+    const label = f.label || f.placeholder || f.name || '';
+    const name  = f.name || slug(label);
+    if(f.type === 'hidden') return `<input type="hidden" name="${escAttr(name)}" value="${escAttr(f.value||'')}">`;
+    const ph  = f.placeholder != null ? f.placeholder : label;
+    const req = f.required ? ' required' : '';
+    let inner;
+    if(f.type === 'select'){
+      inner = `<select class="nx-select" name="${escAttr(name)}" aria-label="${escAttr(label)}"${req}>`
+        + `<option value="" disabled selected>${esc(ph || label || 'Select…')}</option>`
+        + (f.options||[]).map(o => `<option>${esc(o)}</option>`).join('')
+        + `</select>`;
+    } else if(f.type === 'textarea'){
+      inner = `<textarea class="nx-textarea" name="${escAttr(name)}" placeholder="${escAttr(ph)}" aria-label="${escAttr(label)}" rows="${f.rows||3}"${req}></textarea>`;
+    } else if(f.type === 'checkbox'){
+      inner = `<label class="nx-check"><input type="checkbox" name="${escAttr(name)}"${req}> <span>${esc(label)}</span></label>`;
+    } else if(f.type === 'file'){
+      inner = `<input class="nx-input" type="file" name="${escAttr(name)}" aria-label="${escAttr(label)}"${f.accept?` accept="${escAttr(f.accept)}"`:''}${req}>`;
+    } else {
+      inner = `<input class="nx-input" type="${escAttr(f.type||'text')}" name="${escAttr(name)}" placeholder="${escAttr(ph)}" aria-label="${escAttr(label)}"${req}>`;
+    }
+    const cond = f.showIfField ? ` data-show-if-field="${escAttr(f.showIfField)}" data-show-if-value="${escAttr(f.showIfValue||'')}"` : '';
+    return `<div class="nx-field"${cond}>${inner}</div>`;
+  }
+
+  // Render a full form from a model:
+  // {title, sub, cta, foot, action, method, steps, fields:[{type,name,label,placeholder,required,rows,options,value,accept,step,showIfField,showIfValue}]}.
   // The model is stashed on the form (data-nx-form-model) so the editor can re-open and edit it.
   function renderForm(model){
     const form = document.querySelector('[data-edit="form"]');
     if(!form) return;
     model = model || {};
     const fields = model.fields || [];
+    const steps  = Math.max(1, parseInt(model.steps, 10) || 1);
+    const hasFile = fields.some(f => f.type === 'file');
     let html = '';
     if(model.title != null && model.title !== '') html += `<h3 data-field="title">${esc(model.title)}</h3>`;
     if(model.sub != null && model.sub !== '')     html += `<p class="form-sub" data-field="sub">${esc(model.sub)}</p>`;
     const act = model.action
-      ? ` action="${escAttr(model.action)}" method="${escAttr(model.method || 'POST')}"`
+      ? ` action="${escAttr(model.action)}" method="${escAttr(model.method || 'POST')}"${hasFile?' enctype="multipart/form-data"':''}`
       : ' onsubmit="return false"';
-    html += `<form${act}>`;
-    fields.forEach(f => {
-      const label = f.label || f.placeholder || f.name || '';
-      const name  = f.name || slug(label);
-      const ph    = f.placeholder != null ? f.placeholder : label;
-      const req   = f.required ? ' required' : '';
-      if(f.type === 'select'){
-        html += `<select class="nx-select" name="${escAttr(name)}" aria-label="${escAttr(label)}"${req}>`;
-        html += `<option value="" disabled selected>${esc(ph || label || 'Select…')}</option>`;
-        (f.options || []).forEach(opt => html += `<option>${esc(opt)}</option>`);
-        html += `</select>`;
-      } else if(f.type === 'textarea'){
-        html += `<textarea class="nx-textarea" name="${escAttr(name)}" placeholder="${escAttr(ph)}" aria-label="${escAttr(label)}" rows="${f.rows||3}"${req}></textarea>`;
-      } else if(f.type === 'checkbox'){
-        html += `<label class="nx-check"><input type="checkbox" name="${escAttr(name)}"${req}> <span>${esc(label)}</span></label>`;
-      } else {
-        html += `<input class="nx-input" type="${escAttr(f.type || 'text')}" name="${escAttr(name)}" placeholder="${escAttr(ph)}" aria-label="${escAttr(label)}"${req}>`;
+    html += `<form${act} data-steps="${steps}">`;
+    const cta = `<button class="nx-btn nx-btn-primary" data-field="cta">${esc(model.cta || 'Submit')}</button>`;
+    if(steps > 1){
+      for(let s = 1; s <= steps; s++){
+        html += `<div class="nx-fstep" data-step="${s}"${s>1?' hidden':''}>`;
+        fields.filter(f => (f.step||1) === s).forEach(f => html += fieldHtml(f));
+        html += `<div class="nx-fnav">`;
+        if(s > 1)     html += `<button type="button" class="nx-btn nx-btn-ghost" data-fstep="back">Back</button>`;
+        if(s < steps) html += `<button type="button" class="nx-btn nx-btn-primary" data-fstep="next">Next</button>`;
+        else          html += cta;
+        html += `</div></div>`;
       }
-    });
-    html += `<button class="nx-btn nx-btn-primary" data-field="cta">${esc(model.cta || 'Submit')}</button>`;
+    } else {
+      fields.forEach(f => html += fieldHtml(f));
+      html += cta;
+    }
     if(model.foot !== '') html += `<p class="form-foot">${esc(model.foot || 'We respect your privacy. No spam.')}</p>`;
     html += `</form>`;
     form.innerHTML = html;
     try { form.dataset.nxFormModel = JSON.stringify(model); } catch(e){}
     if(!model.action) wireForms(form);   // real endpoint → let it submit; otherwise client-side thank-you
+    wireSteps(form);
+    wireConditions(form);
+  }
+
+  // Multi-step navigation: show one step at a time, validate before advancing.
+  function wireSteps(form){
+    const steps = form.querySelectorAll('.nx-fstep');
+    if(steps.length < 2) return;
+    let cur = 0;
+    function show(i){ steps.forEach((s, k) => { s.hidden = k !== i; }); cur = i; }
+    form.querySelectorAll('[data-fstep="next"]').forEach(b => b.addEventListener('click', () => {
+      const els = steps[cur].querySelectorAll('input,select,textarea');
+      for(const el of els){ if(!el.disabled && el.required && !el.checkValidity()){ el.reportValidity(); return; } }
+      if(cur < steps.length - 1) show(cur + 1);
+    }));
+    form.querySelectorAll('[data-fstep="back"]').forEach(b => b.addEventListener('click', () => { if(cur > 0) show(cur - 1); }));
+    show(0);
+  }
+
+  // Conditional logic: show a field only when another field has a given value
+  // (blank target value = "show when the controlling field has any value").
+  function wireConditions(form){
+    const conds = form.querySelectorAll('[data-show-if-field]');
+    if(!conds.length) return;
+    function evalAll(){
+      conds.forEach(w => {
+        const fname = w.getAttribute('data-show-if-field');
+        const fval  = w.getAttribute('data-show-if-value') || '';
+        let ctrl = null;
+        try { ctrl = form.querySelector('[name="' + (window.CSS && CSS.escape ? CSS.escape(fname) : fname) + '"]'); } catch(e){}
+        let v = '';
+        if(ctrl){ v = ctrl.type === 'checkbox' ? (ctrl.checked ? 'true' : '') : ctrl.value; }
+        const show = fval ? (v === fval) : !!v;
+        w.style.display = show ? '' : 'none';
+        w.querySelectorAll('input,select,textarea').forEach(el => { el.disabled = !show; });
+      });
+    }
+    form.addEventListener('change', evalAll);
+    form.addEventListener('input', evalAll);
+    evalAll();
   }
 
   // Preset bundles → model → renderForm.
@@ -285,6 +351,9 @@
       return { node: sec0 || el, kind: 'section', index: sec0 ? topLevelSections().indexOf(sec0) : -1 };
     }
 
+    var pop = el.closest('.nx-popup');
+    if(pop) return { node: pop, kind: 'popup' };
+
     var cols = el.closest('.nx-cols');
     if(cols) return { node: cols, kind: 'columns' };
 
@@ -305,6 +374,7 @@
   function onSelectClick(e){
     if(nxMode !== 'select') return;            // text / image modes own their clicks
     if(e.target && e.target.isContentEditable) return;
+    if(e.target && e.target.closest && e.target.closest('[data-fstep]')) return; // multi-step nav works in canvas
     var d = describe(e.target);
     if(!d) return;
     e.preventDefault();
@@ -420,8 +490,29 @@
     });
   }
 
+  // ───────── Pop-ups / modals ─────────
+  // Hidden by default (hidden attr stays on for export); shown by adding .nx-popup-open.
+  // In the editor canvas the popup is revealed so it can be edited.
+  function initPopups(root){
+    (root || document).querySelectorAll('.nx-popup').forEach(p => {
+      if(p._nxInit) return; p._nxInit = true;
+      const editor = window.parent !== window;
+      const show = () => p.classList.add('nx-popup-open');
+      const hide = () => p.classList.remove('nx-popup-open');
+      const closeBtn = p.querySelector('.nx-popup-close'), overlay = p.querySelector('.nx-popup-overlay');
+      if(closeBtn) closeBtn.addEventListener('click', hide);
+      if(overlay) overlay.addEventListener('click', hide);
+      if(editor){ show(); return; }            // editable in the canvas
+      const trig = p.getAttribute('data-nx-popup-trigger') || 'delay';
+      if(trig === 'load') show();
+      else if(trig === 'delay'){ const d = parseFloat(p.getAttribute('data-nx-popup-delay') || '5'); setTimeout(show, d * 1000); }
+      else if(trig === 'exit'){ document.addEventListener('mouseout', e => { if(e.clientY <= 0 && !p._shown){ p._shown = true; show(); } }); }
+      else if(trig === 'click'){ document.addEventListener('click', e => { const t = e.target.closest && e.target.closest('[data-nx-popup-open],a[href="#popup"]'); if(t){ e.preventDefault(); show(); } }); }
+    });
+  }
+
   // Umbrella initialiser — safe to call repeatedly (guards via _nxInit)
-  function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); wireForms(root); }
+  function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); wireForms(root); initPopups(root); }
 
   // Expose globals for in-page debugging / non-iframe use
   window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,addFont,setDir,setText,setHeroMedia,setBenefits,setForm,renderForm,setFooter,enableEditMode,setMode,enableSelect,clearSelected,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
