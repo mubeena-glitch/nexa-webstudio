@@ -133,6 +133,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
     </div>
     <button class="hbtn" id="textBtn" onclick="toggleTextEdit()" title="Toggle inline text editing">&#9998; Edit text</button>
     <button class="hbtn" onclick="previewPage()" title="Preview the page full-screen, as visitors see it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> Preview</button>
+    <button class="hbtn" id="publishBtn" onclick="publishPage()" title="Publish to Vercel — hosting, SSL and CDN included" style="display:none">&#8599; Publish</button>
     <button class="hbtn pri" onclick="exportHtml()">&#8681; Download HTML</button>
   </div>
 </div>
@@ -399,7 +400,7 @@ var name=qs.get('name')||prettify(id);
 var restoreReq=qs.get('restore')==='1',restored=false;
 var file=id?('templates/'+id+'.html'):'';
 var iframe=document.getElementById('cv');
-var ready=false, pendingExport=false;
+var ready=false, pendingExport=false, pendingPublish=false;
 
 function prettify(s){return (s||'Template').replace(/^[0-9]+-/,'').replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
 function toast(m){var t=document.getElementById('toast');t.innerHTML=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show');},1900);}
@@ -754,8 +755,8 @@ function popReveal(){if(popEl){popEl.classList.add('nx-popup-open');toast('Pop-u
 
 // ---- export ----
 function exportHtml(){if(!ready){toast('Template still loading…');return;}pendingExport=true;send({type:'nexa:get-html'});toast('Preparing download…');}
-async function download(html){
-  // Inline the shared kit so the downloaded file renders anywhere (self-contained).
+// Assemble the final, self-contained page (inline kit, clean editor artifacts, bake custom code + tracking).
+async function assemble(html){
   try{
     var css=await (await fetch('templates/_shared/kit.css')).text();
     var js=await (await fetch('templates/_shared/kit.js')).text();
@@ -765,10 +766,32 @@ async function download(html){
   html=cleanExport(html);
   html=bakeCustomCode(html);
   var tk=buildTracking();if(tk)html=html.replace(/<\/head>/i,tk+'</head>');
-  var blob=new Blob(['<!DOCTYPE html>\n'+html],{type:'text/html'});
+  return '<!DOCTYPE html>\n'+html;
+}
+async function download(html){
+  var full=await assemble(html);
+  var blob=new Blob([full],{type:'text/html'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(id||'template')+'-edited.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
   toast('Downloaded &mdash; self-contained, opens anywhere');
+}
+// Publish to Vercel (hosting + SSL + CDN). Needs VERCEL_TOKEN configured server-side.
+function checkPublishConfig(){
+  fetch('/api/publish').then(function(r){return r.json();}).then(function(d){
+    if(d&&d.configured){var b=document.getElementById('publishBtn');if(b)b.style.display='';}
+  }).catch(function(){/* endpoint absent (e.g. static preview) — keep button hidden */});
+}
+function publishPage(){if(!ready){toast('Still loading…');return;}pendingPublish=true;send({type:'nexa:get-html'});toast('Preparing to publish…');}
+async function doPublish(rawHtml){
+  var full=await assemble(rawHtml);
+  toast('Publishing to Vercel…');
+  try{
+    var r=await fetch('/api/publish',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({html:full,name:(id||name)})});
+    var d=await r.json().catch(function(){return{error:'Unexpected response from the publish service.'};});
+    if(!r.ok)throw new Error(d.error||('Error '+r.status));
+    if(d.url){toast('Published! Opening '+d.url);try{window.open(d.url,'_blank','noopener');}catch(e){}try{navigator.clipboard&&navigator.clipboard.writeText(d.url);}catch(e){}}
+    else toast('Published, but no URL was returned.');
+  }catch(e){toast(e.message);}
 }
 
 // ---- click-to-edit: route a canvas selection to the right drawer field ----
@@ -819,6 +842,7 @@ window.addEventListener('message',function(e){
   if(m.type==='nexa:ready'){ready=true;document.getElementById('cvLoad').style.display='none';prefillText();renderSections();startObserver();prefillPageSettings();prefillCustomCode();prefillForm();buildResponsiveCss(respModelGet());onDeviceChange();renderDrafts();renderKits();syncMode();if(restoreReq&&!restored&&localStorage.getItem(draftKey())){restored=true;openDraft(draftKey());}else if(!restoreReq&&localStorage.getItem(draftKey()))toast('A saved draft for this page exists — see Drafts');}
   if(m.type==='nexa:select')routeSelect(m);
   if(m.type==='nexa:html'&&pendingExport){pendingExport=false;download(m.html);}
+  if(m.type==='nexa:html'&&pendingPublish){pendingPublish=false;doPublish(m.html);}
 });
 
 // Pre-fill the hero-copy and footer inputs by reading the loaded template (same-origin on deploy).
@@ -1343,6 +1367,7 @@ if(!id){
   populateFonts();
   renderKits();
   renderDrafts();
+  checkPublishConfig();
   iframe.src=file;
   // Safety net: if the iframe never posts ready (older cache), hide loader after load.
   iframe.addEventListener('load',function(){setTimeout(function(){if(!ready){document.getElementById('cvLoad').style.display='none';ready=true;prefillText();}renderSections();},600);});
