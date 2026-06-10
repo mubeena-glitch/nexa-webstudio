@@ -71,6 +71,27 @@
     // Let the default [data-theme] block stop competing; record mode for any conditional styling.
     b.removeAttribute('data-theme');
     b.setAttribute('data-theme-mode', m.mode || 'light');
+    // ── Phase 3: adopt the theme's signature layout language ──
+    var pl = m.preferredLayouts || {}, rc = m.recipes || {};
+    var navName = String(pl.nav || rc.nav || '');
+    b.setAttribute('data-nav-style', /cent/i.test(navName) ? 'centred' : 'split');
+    var cardName = String(rc.card || '');
+    b.setAttribute('data-card-style',
+      /glass|glow|neon/i.test(cardName) ? 'glass'
+      : /border|ruled|hairline|outline|clean/i.test(cardName) ? 'bordered'
+      : /soft|round|fill/i.test(cardName) ? 'soft'
+      : 'elevated');
+    var btnName = String(rc.button || '');
+    b.setAttribute('data-btn-style', /outline|ghost|underline|rule/i.test(btnName) ? 'outline' : 'solid');
+    // Hero layout — map the theme's hero archetype to a kit hero, guarded by available content.
+    var heroName = String(pl.hero || ''), hero = document.querySelector('.nx-hero');
+    if (hero) {
+      var want = /form|booking|widget|search|enquir/i.test(heroName) ? 'form-right'
+        : /full-?bleed|immersive|overlay|statement|masthead|campaign|big-?number|impact|marquee|oversized|big-?type|center|centre|glow|kinetic/i.test(heroName) ? 'centred'
+        : 'image-split';
+      if (want === 'image-split' && !hero.querySelector('.nx-hero-media img')) want = 'centred';
+      setHero(want);
+    }
     injectFontLinks(m.fontLinks);
   }
 

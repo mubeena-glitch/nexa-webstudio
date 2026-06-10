@@ -189,7 +189,8 @@ body{
   border-bottom:1px solid var(--line);
 }
 body[data-theme="luxury"] .nx-nav,
-body[data-theme="dark"] .nx-nav{
+body[data-theme="dark"] .nx-nav,
+body[data-theme-mode="dark"] .nx-nav{
   background:rgba(12,16,24,.85);
 }
 .nx-nav .container{
@@ -806,3 +807,49 @@ body.nx-select-mode .nx-selected:hover{outline:3px solid var(--brand-primary,#93
 .nx-form-tick{width:56px;height:56px;border-radius:50%;background:var(--brand-accent);color:var(--brand-primary);font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-4)}
 .nx-form-success h3{font-family:var(--font-display);font-weight:var(--display-weight);font-size:var(--fs-h3);margin-bottom:var(--sp-2)}
 .nx-form-success p{color:var(--ink-mute);font-size:var(--fs-sm)}
+
+/* ============================================================
+   PHASE 3 — Theme layout adoption (data-* set by applyManifest)
+   Lets an applied Theme Library theme adopt its signature layout
+   language (nav / cards / buttons) on top of its design tokens.
+   ============================================================ */
+
+/* Nav — centred wordmark (logo over a centred link row) */
+body[data-nav-style="centred"] .nx-nav .container{
+  flex-direction:column;gap:var(--sp-3);justify-content:center;text-align:center;
+}
+body[data-nav-style="centred"] .nx-logo{font-size:22px}
+body[data-nav-style="centred"] .nx-nav-links{order:3;justify-content:center}
+body[data-nav-style="centred"] .nx-nav-cta{order:2}
+
+/* Card recipes — applied to benefit / testimonial / pricing cards */
+body[data-card-style="bordered"] .nx-benefit,
+body[data-card-style="bordered"] .nx-test,
+body[data-card-style="bordered"] .nx-price{background:transparent;border:1px solid var(--line);box-shadow:none}
+body[data-card-style="bordered"] .nx-benefit:hover,
+body[data-card-style="bordered"] .nx-test:hover{box-shadow:none;border-color:var(--brand-primary);transform:translateY(-2px)}
+
+body[data-card-style="elevated"] .nx-benefit,
+body[data-card-style="elevated"] .nx-test,
+body[data-card-style="elevated"] .nx-price{background:var(--surface);border:none;box-shadow:var(--shadow-md)}
+
+body[data-card-style="soft"] .nx-benefit,
+body[data-card-style="soft"] .nx-test,
+body[data-card-style="soft"] .nx-price{background:var(--surface-2);border:none;box-shadow:none}
+
+body[data-card-style="glass"] .nx-benefit,
+body[data-card-style="glass"] .nx-test,
+body[data-card-style="glass"] .nx-price{
+  background:color-mix(in srgb, var(--surface) 62%, transparent);
+  border:1px solid var(--line);box-shadow:var(--shadow-md);backdrop-filter:blur(10px);
+}
+
+/* Button fill — outline primary (for ghost/outline/underline recipes) */
+body[data-btn-style="outline"] .nx-btn-primary,
+body[data-btn-style="outline"] .nx-nav-cta{
+  background:transparent;color:var(--brand-primary);border:1.5px solid var(--brand-primary);
+}
+body[data-btn-style="outline"] .nx-btn-primary:hover,
+body[data-btn-style="outline"] .nx-nav-cta:hover{
+  background:var(--brand-primary);color:var(--on-primary,#fff);
+}
