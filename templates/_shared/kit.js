@@ -20,6 +20,60 @@
     document.body.setAttribute('data-theme', t);
   }
 
+  // ───────── 1b. Rich theme (design-token manifest from the Theme Library) ─────────
+  // Maps a manifest's tokens onto the kit.css CSS variables and loads its fonts,
+  // so any template can wear any of the 21 library themes. Set on <body> (inline)
+  // so it overrides the [data-theme] block and survives quick-style switches.
+  function _col(v){
+    if(v == null) return null;
+    v = String(v).trim();
+    return /^\d+\s+\d+\s+\d+$/.test(v) ? 'rgb(' + v + ')' : v; // "R G B" triplet → rgb(); else pass through (hex/rgb/etc.)
+  }
+  function injectFontLinks(links){
+    if(!links || !links.length) return;
+    links.forEach(function(href){
+      if(!href) return;
+      if(document.head.querySelector('link[data-nexa-themefont][href="' + href + '"]')) return;
+      var l = document.createElement('link');
+      l.rel = 'stylesheet'; l.href = href; l.setAttribute('data-nexa-themefont','1');
+      document.head.appendChild(l);
+    });
+  }
+  function applyManifest(m){
+    if(!m || typeof m !== 'object') return;
+    var b = document.body, S = function(k,v){ if(v != null && v !== '') b.style.setProperty(k, v); };
+    var t = m.tokens || {}, c = t.color || {}, ty = t.type || {}, rd = t.radius || {}, sh = t.shadow || {}, sp = t.space || {}, mo = t.motion || {};
+    // Colour
+    S('--surface',   _col(c.bg));
+    S('--surface-2', _col(c.surface || c.surface2));
+    S('--ink',       _col(c.ink));
+    S('--ink-mute',  _col(c.muted));
+    S('--line',      _col(c.line));
+    S('--brand-primary',   _col(c.primary));
+    S('--brand-secondary', _col(c.accent || c.accent2 || c.primary));
+    S('--on-primary',      _col(c.onPrimary || c.onprimary));
+    if(c.primary){
+      var p = String(c.primary).trim();
+      S('--brand-accent', /^\d+\s+\d+\s+\d+$/.test(p) ? 'rgb(' + p + ' / 0.12)' : p);
+    }
+    if(c.bg) S('--hero-bg', 'linear-gradient(135deg,' + _col(c.surface || c.bg) + ' 0%,' + _col(c.bg) + ' 60%)');
+    // Type
+    S('--font-display', ty.display);
+    S('--font-body',    ty.body);
+    if(ty.weights){ S('--display-weight', ty.weights.displayBold || ty.weights.display); S('--body-weight', ty.weights.body); }
+    // Radius / shadow / space / motion
+    S('--button-radius', rd.button);
+    S('--r-lg', rd.card);
+    S('--shadow-md', sh.card);
+    S('--shadow-lg', sh.elevated);
+    S('--sec-pad', sp.section); S('--section-rhythm', sp.section); S('--gutter', sp.gutter);
+    if(mo.ease && mo.duration) S('--t-base', mo.duration + ' ' + mo.ease);
+    // Let the default [data-theme] block stop competing; record mode for any conditional styling.
+    b.removeAttribute('data-theme');
+    b.setAttribute('data-theme-mode', m.mode || 'light');
+    injectFontLinks(m.fontLinks);
+  }
+
   // ───────── 2. Hero layout switcher ─────────
   const HERO_LAYOUTS = ['form-right','video','image-split','centred'];
   function setHero(layout){
@@ -397,6 +451,7 @@
     if(!m || typeof m !== 'object' || !m.type) return;
     switch(m.type){
       case 'nexa:set-theme':       return setTheme(m.value);
+      case 'nexa:apply-manifest':  return applyManifest(m.manifest);
       case 'nexa:set-hero':        return setHero(m.value);
       case 'nexa:set-brand':       return setBrand(m.primary, m.secondary);
       case 'nexa:set-logo':        return setLogo(m.url);
@@ -515,7 +570,7 @@
   function initBlocks(root){ initCarousels(root); initCountdowns(root); wireDismiss(root); wireForms(root); initPopups(root); }
 
   // Expose globals for in-page debugging / non-iframe use
-  window.NEXA = {setTheme,setHero,setBrand,setLogo,setFont,addFont,setDir,setText,setHeroMedia,setBenefits,setForm,renderForm,setFooter,enableEditMode,setMode,enableSelect,clearSelected,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
+  window.NEXA = {setTheme,applyManifest,setHero,setBrand,setLogo,setFont,addFont,setDir,setText,setHeroMedia,setBenefits,setForm,renderForm,setFooter,enableEditMode,setMode,enableSelect,clearSelected,initCarousels,initCountdowns,initBlocks,FORM_BUNDLES,THEMES,HERO_LAYOUTS};
 
   // Auto-init: if loaded with ?edit=1, enable edit mode
   if(location.search.includes('edit=1')) enableEditMode();

@@ -206,7 +206,7 @@ body[data-theme="dark"] .nx-nav{
 .nx-nav-links a:hover{color:var(--brand-primary)}
 .nx-nav-cta{
   padding:10px 22px;
-  background:var(--brand-primary);color:#fff;
+  background:var(--brand-primary);color:var(--on-primary,#fff);
   border-radius:var(--button-radius);
   font-weight:600;font-size:var(--fs-sm);
   transition:transform var(--t-fast),box-shadow var(--t-fast);
@@ -250,10 +250,10 @@ body[data-theme="dark"] .nx-nav{
   font-weight:600;font-size:var(--fs-sm);
   transition:transform var(--t-fast),box-shadow var(--t-fast),background var(--t-fast);
 }
-.nx-btn-primary{background:var(--brand-primary);color:#fff}
+.nx-btn-primary{background:var(--brand-primary);color:var(--on-primary,#fff)}
 .nx-btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
 .nx-btn-ghost{background:transparent;color:var(--brand-primary);border:1.5px solid var(--brand-primary)}
-.nx-btn-ghost:hover{background:var(--brand-primary);color:#fff}
+.nx-btn-ghost:hover{background:var(--brand-primary);color:var(--on-primary,#fff)}
 
 /* Hero layout 1: form-right (default for lead-gen) */
 .nx-hero[data-hero="form-right"] .container{grid-template-columns:1.1fr .9fr}
@@ -290,7 +290,7 @@ body[data-theme="dark"] .nx-nav{
 .nx-sticky-cta{
   position:fixed;bottom:var(--sp-4);left:50%;transform:translateX(-50%);
   z-index:40;padding:14px 28px;
-  background:var(--brand-primary);color:#fff;
+  background:var(--brand-primary);color:var(--on-primary,#fff);
   border-radius:var(--r-pill);
   box-shadow:var(--shadow-lg);
   font-weight:600;font-size:var(--fs-sm);
@@ -593,7 +593,7 @@ body[data-theme="dark"] .nx-form{
   display:flex;align-items:center;justify-content:center;
   transition:all var(--t-fast);
 }
-.nx-social a:hover{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+.nx-social a:hover{background:var(--brand-primary);color:var(--on-primary,#fff);border-color:var(--brand-primary)}
 @media(max-width:840px){.nx-footer-grid{grid-template-columns:1fr 1fr}.nx-footer-brand{grid-column:1/-1}}
 
 /* ============================================================
@@ -612,7 +612,7 @@ body.nx-edit-mode [data-edit].nx-edit-focus{
 body.nx-edit-mode [data-edit]::before{
   content:attr(data-edit);
   position:absolute;
-  background:var(--brand-primary);color:#fff;
+  background:var(--brand-primary);color:var(--on-primary,#fff);
   font-size:10px;padding:2px 8px;border-radius:4px;
   font-family:var(--font-body);
   transform:translateY(-100%);
@@ -666,14 +666,14 @@ body.nx-edit-mode [data-edit]:hover::before{opacity:1}
 .nx-carousel-dot.active{background:var(--brand-primary)}
 
 /* Sticky CTA bar (fixed, dismissible) */
-.nx-stickybar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--brand-primary);color:#fff;display:flex;align-items:center;justify-content:center;gap:var(--sp-5);padding:14px 48px 14px var(--gutter);box-shadow:0 -8px 24px rgba(0,0,0,.14);flex-wrap:wrap}
+.nx-stickybar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--brand-primary);color:var(--on-primary,#fff);display:flex;align-items:center;justify-content:center;gap:var(--sp-5);padding:14px 48px 14px var(--gutter);box-shadow:0 -8px 24px rgba(0,0,0,.14);flex-wrap:wrap}
 .nx-stickybar strong{font-family:var(--font-display);font-weight:700}
 .nx-stickybar .nx-btn{background:#fff;color:var(--brand-primary)}
 .nx-stickybar-close{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:20px;cursor:pointer;opacity:.7;line-height:1}
 .nx-stickybar-close:hover{opacity:1}
 
 /* Announcement bar (top strip, dismissible) */
-.nx-announce{background:var(--brand-primary);color:#fff;text-align:center;padding:10px 40px;font-size:var(--fs-sm);position:relative}
+.nx-announce{background:var(--brand-primary);color:var(--on-primary,#fff);text-align:center;padding:10px 40px;font-size:var(--fs-sm);position:relative}
 .nx-announce a{text-decoration:underline;font-weight:600}
 .nx-announce-close{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:17px;cursor:pointer;opacity:.7;line-height:1}
 .nx-announce-close:hover{opacity:1}
@@ -688,7 +688,7 @@ body.nx-edit-mode [data-edit]:hover::before{opacity:1}
 .nx-pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-5);align-items:start}
 .nx-price{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--sp-6);text-align:center}
 .nx-price.featured{border-color:var(--brand-primary);box-shadow:var(--shadow-md);position:relative}
-.nx-price.featured::before{content:'Most popular';position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--brand-primary);color:#fff;font-size:var(--fs-xs);font-weight:600;padding:3px 12px;border-radius:var(--r-pill)}
+.nx-price.featured::before{content:'Most popular';position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--brand-primary);color:var(--on-primary,#fff);font-size:var(--fs-xs);font-weight:600;padding:3px 12px;border-radius:var(--r-pill)}
 .nx-price h4{font-family:var(--font-display);font-size:var(--fs-h3);font-weight:700;margin-bottom:var(--sp-2)}
 .nx-price .amt{font-family:var(--font-display);font-weight:var(--display-weight);font-size:var(--fs-display);color:var(--ink);line-height:1;margin:var(--sp-3) 0}
 .nx-price .amt span{font-size:var(--fs-sm);color:var(--ink-mute);font-weight:400}
@@ -708,7 +708,7 @@ body.nx-edit-mode [data-edit]:hover::before{opacity:1}
 /* How-it-works steps */
 .nx-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-5)}
 .nx-step{text-align:center}
-.nx-step-num{width:48px;height:48px;border-radius:50%;background:var(--brand-primary);color:#fff;font-family:var(--font-display);font-weight:700;font-size:var(--fs-h3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-3)}
+.nx-step-num{width:48px;height:48px;border-radius:50%;background:var(--brand-primary);color:var(--on-primary,#fff);font-family:var(--font-display);font-weight:700;font-size:var(--fs-h3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-3)}
 .nx-step h4{font-family:var(--font-display);font-weight:700;font-size:var(--fs-h3);margin-bottom:var(--sp-2)}
 .nx-step p{font-size:var(--fs-sm);color:var(--ink-mute)}
 @media(max-width:840px){.nx-steps{grid-template-columns:1fr}}

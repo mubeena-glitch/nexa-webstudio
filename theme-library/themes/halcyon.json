@@ -3,7 +3,16 @@
   "name": "Halcyon",
   "family": "minimal",
   "sector": "Wellness / spa",
-  "tags": ["light", "calm", "organic", "sage", "wellness", "serene", "spa", "image-led"],
+  "tags": [
+    "light",
+    "calm",
+    "organic",
+    "sage",
+    "wellness",
+    "serene",
+    "spa",
+    "image-led"
+  ],
   "mode": "light",
   "tokens": {
     "color": {
@@ -22,21 +31,49 @@
       "body": "'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif",
       "mono": "'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif",
       "scaleRatio": 1.28,
-      "weights": { "display": 500, "displayBold": 600, "body": 400, "label": 500, "bold": 600 },
+      "weights": {
+        "display": 500,
+        "displayBold": 600,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
       "displayCase": "none",
       "displayTracking": "-0.018em"
     },
-    "space": { "base": 8, "section": "clamp(96px, 12vw, 176px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "airy" },
-    "radius": { "card": "26px", "button": "999px", "input": "16px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(96px, 12vw, 176px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "26px",
+      "button": "999px",
+      "input": "16px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 24px 50px -34px rgb(72 84 70 / 0.32)",
       "elevated": "0 44px 90px -46px rgb(72 84 70 / 0.40)",
       "philosophy": "soft"
     },
-    "motion": { "ease": "cubic-bezier(0.33, 1, 0.68, 1)", "duration": "820ms", "character": "calm" },
-    "imagery": { "treatment": "rounded", "ratio": "4:5", "filter": "none" }
+    "motion": {
+      "ease": "cubic-bezier(0.33, 1, 0.68, 1)",
+      "duration": "820ms",
+      "character": "calm"
+    },
+    "imagery": {
+      "treatment": "rounded",
+      "ratio": "4:5",
+      "filter": "none"
+    }
   },
-  "recipes": { "button": "pill-solid", "card": "soft", "nav": "minimal-inline-pill" },
+  "recipes": {
+    "button": "pill-solid",
+    "card": "soft",
+    "nav": "minimal-inline-pill"
+  },
   "preferredLayouts": {
     "hero": "calm-full-bleed-editorial",
     "intention": "centered-affirmation",
@@ -46,5 +83,8 @@
     "practitioners": "gentle-card-trio",
     "testimonials": "single-soft-rotator",
     "cta": "image-backed-soft-band"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+  ]
 }

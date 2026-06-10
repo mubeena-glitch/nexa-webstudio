@@ -3,7 +3,14 @@
   "name": "Verdant",
   "family": "minimal",
   "sector": "Sustainability / nonprofit",
-  "tags": ["earthy", "editorial", "hopeful", "image-rich", "organic", "impact"],
+  "tags": [
+    "earthy",
+    "editorial",
+    "hopeful",
+    "image-rich",
+    "organic",
+    "impact"
+  ],
   "mode": "light",
   "tokens": {
     "color": {
@@ -21,21 +28,49 @@
       "display": "'Newsreader', Georgia, 'Times New Roman', serif",
       "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
       "scaleRatio": 1.26,
-      "weights": { "display": 400, "displayBold": 500, "body": 400, "label": 600, "bold": 600 },
+      "weights": {
+        "display": 400,
+        "displayBold": 500,
+        "body": 400,
+        "label": 600,
+        "bold": 600
+      },
       "displayCase": "none",
       "displayTracking": "-0.01em"
     },
-    "space": { "base": 8, "section": "clamp(84px, 11vw, 156px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "airy" },
-    "radius": { "card": "20px", "button": "999px", "input": "12px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(84px, 11vw, 156px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "20px",
+      "button": "999px",
+      "input": "12px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 24px 50px -30px rgb(31 51 32 / 0.42)",
       "elevated": "0 44px 84px -38px rgb(31 51 32 / 0.50)",
       "philosophy": "soft"
     },
-    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "680ms", "character": "calm" },
-    "imagery": { "treatment": "rounded", "ratio": "4:3", "filter": "saturate(1.04) contrast(1.02)" }
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "680ms",
+      "character": "calm"
+    },
+    "imagery": {
+      "treatment": "rounded",
+      "ratio": "4:3",
+      "filter": "saturate(1.04) contrast(1.02)"
+    }
   },
-  "recipes": { "button": "solid-pill", "card": "soft-elevated", "nav": "split-donate" },
+  "recipes": {
+    "button": "solid-pill",
+    "card": "soft-elevated",
+    "nav": "split-donate"
+  },
   "preferredLayouts": {
     "nav": "split-logo-donate",
     "hero": "editorial-big-number-impact",
@@ -48,5 +83,9 @@
     "partners": "wordmark-row",
     "cta": "image-band-donate",
     "footer": "multi-column-newsletter"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+  ]
 }

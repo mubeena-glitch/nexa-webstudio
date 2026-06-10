@@ -3,7 +3,17 @@
   "name": "Bastion",
   "family": "corporate",
   "sector": "Legal / professional",
-  "tags": ["light", "legal", "law-firm", "professional-services", "authoritative", "classic", "editorial", "navy", "burgundy"],
+  "tags": [
+    "light",
+    "legal",
+    "law-firm",
+    "professional-services",
+    "authoritative",
+    "classic",
+    "editorial",
+    "navy",
+    "burgundy"
+  ],
   "mode": "light",
   "tokens": {
     "color": {
@@ -22,21 +32,49 @@
       "display": "'Cormorant Garamond', 'Times New Roman', Georgia, serif",
       "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
       "scaleRatio": 1.32,
-      "weights": { "display": 500, "displaySemibold": 600, "body": 400, "label": 500, "bold": 600 },
+      "weights": {
+        "display": 500,
+        "displaySemibold": 600,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
       "displayCase": "none",
       "displayTracking": "0em"
     },
-    "space": { "base": 8, "section": "clamp(96px, 12vw, 168px)", "gutter": "clamp(22px, 5vw, 72px)", "density": "airy" },
-    "radius": { "card": "4px", "button": "3px", "input": "3px", "pill": "2px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(96px, 12vw, 168px)",
+      "gutter": "clamp(22px, 5vw, 72px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "4px",
+      "button": "3px",
+      "input": "3px",
+      "pill": "2px"
+    },
     "shadow": {
       "card": "0 1px 2px rgb(22 35 58 / 0.05), 0 12px 28px -18px rgb(22 35 58 / 0.20)",
       "elevated": "0 2px 4px rgb(22 35 58 / 0.06), 0 28px 56px -22px rgb(22 35 58 / 0.28)",
       "philosophy": "hairline"
     },
-    "motion": { "ease": "cubic-bezier(0.33, 1, 0.68, 1)", "duration": "640ms", "character": "calm" },
-    "imagery": { "treatment": "framed", "ratio": "4:5", "filter": "none" }
+    "motion": {
+      "ease": "cubic-bezier(0.33, 1, 0.68, 1)",
+      "duration": "640ms",
+      "character": "calm"
+    },
+    "imagery": {
+      "treatment": "framed",
+      "ratio": "4:5",
+      "filter": "none"
+    }
   },
-  "recipes": { "button": "solid-square", "card": "hairline", "nav": "split-serif" },
+  "recipes": {
+    "button": "solid-square",
+    "card": "hairline",
+    "nav": "split-serif"
+  },
   "preferredLayouts": {
     "nav": "split-serif-topbar",
     "hero": "framed-serif-editorial-masthead",
@@ -49,5 +87,9 @@
     "recognition": "bar-membership-row",
     "cta": "formal-band-phone",
     "footer": "multi-column-disclaimer"
-  }
+  },
+  "fontLinks": [
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap",
+    "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+  ]
 }

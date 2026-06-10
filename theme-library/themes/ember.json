@@ -3,7 +3,14 @@
   "name": "Ember",
   "family": "luxury",
   "sector": "Restaurant / hospitality",
-  "tags": ["warm", "earthy", "editorial", "luxury", "appetizing", "image-rich"],
+  "tags": [
+    "warm",
+    "earthy",
+    "editorial",
+    "luxury",
+    "appetizing",
+    "image-rich"
+  ],
   "mode": "light",
   "tokens": {
     "color": {
@@ -21,21 +28,49 @@
       "display": "'DM Serif Display', Georgia, 'Times New Roman', serif",
       "body": "'Albert Sans', ui-sans-serif, system-ui, sans-serif",
       "scaleRatio": 1.28,
-      "weights": { "display": 400, "displayBold": 400, "body": 400, "label": 600, "bold": 700 },
+      "weights": {
+        "display": 400,
+        "displayBold": 400,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
       "displayCase": "none",
       "displayTracking": "0em"
     },
-    "space": { "base": 8, "section": "clamp(80px, 10vw, 148px)", "gutter": "clamp(20px, 5vw, 60px)", "density": "airy" },
-    "radius": { "card": "16px", "button": "12px", "input": "10px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(80px, 10vw, 148px)",
+      "gutter": "clamp(20px, 5vw, 60px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "16px",
+      "button": "12px",
+      "input": "10px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 22px 48px -28px rgb(43 27 20 / 0.45)",
       "elevated": "0 40px 80px -36px rgb(43 27 20 / 0.55)",
       "philosophy": "soft"
     },
-    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "640ms", "character": "fluid" },
-    "imagery": { "treatment": "full-bleed", "ratio": "4:5", "filter": "saturate(1.05) contrast(1.02)" }
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "640ms",
+      "character": "fluid"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:5",
+      "filter": "saturate(1.05) contrast(1.02)"
+    }
   },
-  "recipes": { "button": "solid-warm", "card": "soft-elevated", "nav": "centered-wordmark" },
+  "recipes": {
+    "button": "solid-warm",
+    "card": "soft-elevated",
+    "nav": "centered-wordmark"
+  },
   "preferredLayouts": {
     "nav": "centered-wordmark-bar",
     "hero": "full-bleed-photo-overlay-parallax",
@@ -49,8 +84,18 @@
   },
   "motion": {
     "library": "gsap",
-    "plugins": ["ScrollTrigger"],
-    "techniques": ["hero-ken-burns-parallax", "scrolltrigger-batch-reveals", "dish-hover-scale", "heritage-count-up"],
+    "plugins": [
+      "ScrollTrigger"
+    ],
+    "techniques": [
+      "hero-ken-burns-parallax",
+      "scrolltrigger-batch-reveals",
+      "dish-hover-scale",
+      "heritage-count-up"
+    ],
     "fallback": "guarded-by-window.gsap-and-reduced-motion; full render without gsap"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Albert+Sans:wght@400;500;600;700&display=swap"
+  ]
 }

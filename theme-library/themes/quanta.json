@@ -3,7 +3,16 @@
   "name": "Quanta",
   "family": "vibrant",
   "sector": "Crypto / Web3",
-  "tags": ["web3", "crypto", "defi", "neon", "futuristic", "glassmorphism", "dark", "protocol"],
+  "tags": [
+    "web3",
+    "crypto",
+    "defi",
+    "neon",
+    "futuristic",
+    "glassmorphism",
+    "dark",
+    "protocol"
+  ],
   "mode": "dark",
   "tokens": {
     "color": {
@@ -23,21 +32,49 @@
       "body": "'Geist', ui-sans-serif, system-ui, sans-serif",
       "mono": "'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace",
       "scaleRatio": 1.333,
-      "weights": { "display": 700, "displayBold": 800, "body": 400, "label": 600, "bold": 700 },
+      "weights": {
+        "display": 700,
+        "displayBold": 800,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
       "displayCase": "none",
       "displayTracking": "-0.025em"
     },
-    "space": { "base": 8, "section": "clamp(88px, 11vw, 168px)", "gutter": "clamp(20px, 5vw, 56px)", "density": "balanced" },
-    "radius": { "card": "20px", "button": "12px", "input": "12px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(88px, 11vw, 168px)",
+      "gutter": "clamp(20px, 5vw, 56px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "20px",
+      "button": "12px",
+      "input": "12px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 24px 60px -30px rgb(0 0 0 / 0.7)",
       "elevated": "0 0 0 1px rgb(124 92 255 / 0.35), 0 30px 80px -40px rgb(124 92 255 / 0.5)",
       "philosophy": "glow"
     },
-    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "560ms", "character": "energetic" },
-    "imagery": { "treatment": "masked", "ratio": "1:1", "filter": "saturate" }
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "560ms",
+      "character": "energetic"
+    },
+    "imagery": {
+      "treatment": "masked",
+      "ratio": "1:1",
+      "filter": "saturate"
+    }
   },
-  "recipes": { "button": "solid", "card": "glass", "nav": "split" },
+  "recipes": {
+    "button": "solid",
+    "card": "glass",
+    "nav": "split"
+  },
   "preferredLayouts": {
     "hero": "centered-immersive-glass",
     "market": "live-ticker-grid",
@@ -49,5 +86,8 @@
     "ecosystem": "glow-logo-grid",
     "cta": "glow-band",
     "footer": "dark-newsletter"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+  ]
 }

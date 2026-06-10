@@ -3,7 +3,14 @@
   "name": "Chalk",
   "family": "vibrant",
   "sector": "Education / EdTech",
-  "tags": ["friendly", "bright", "image-rich", "playful", "approachable", "learning"],
+  "tags": [
+    "friendly",
+    "bright",
+    "image-rich",
+    "playful",
+    "approachable",
+    "learning"
+  ],
   "mode": "light",
   "tokens": {
     "color": {
@@ -21,21 +28,49 @@
       "display": "'Gabarito', ui-sans-serif, system-ui, sans-serif",
       "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
       "scaleRatio": 1.27,
-      "weights": { "display": 600, "displayBold": 700, "body": 400, "label": 600, "bold": 600 },
+      "weights": {
+        "display": 600,
+        "displayBold": 700,
+        "body": 400,
+        "label": 600,
+        "bold": 600
+      },
       "displayCase": "none",
       "displayTracking": "-0.02em"
     },
-    "space": { "base": 8, "section": "clamp(80px, 10vw, 144px)", "gutter": "clamp(20px, 5vw, 60px)", "density": "balanced" },
-    "radius": { "card": "24px", "button": "999px", "input": "16px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(80px, 10vw, 144px)",
+      "gutter": "clamp(20px, 5vw, 60px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "24px",
+      "button": "999px",
+      "input": "16px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 18px 44px -22px rgb(35 48 74 / 0.28)",
       "elevated": "0 36px 72px -30px rgb(35 48 74 / 0.36)",
       "philosophy": "soft"
     },
-    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "560ms", "character": "energetic" },
-    "imagery": { "treatment": "rounded", "ratio": "4:3", "filter": "saturate(1.06) contrast(1.02)" }
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "560ms",
+      "character": "energetic"
+    },
+    "imagery": {
+      "treatment": "rounded",
+      "ratio": "4:3",
+      "filter": "saturate(1.06) contrast(1.02)"
+    }
   },
-  "recipes": { "button": "solid-pill", "card": "soft-elevated", "nav": "split-cta" },
+  "recipes": {
+    "button": "solid-pill",
+    "card": "soft-elevated",
+    "nav": "split-cta"
+  },
   "preferredLayouts": {
     "nav": "split-logo-cta",
     "hero": "playful-learner-floating-ui-blobs",
@@ -48,5 +83,9 @@
     "testimonials": "quote-photo-cards",
     "cta": "bright-band-enroll",
     "footer": "multi-column-newsletter"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Gabarito:wght@500;600;700;800;900&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+  ]
 }

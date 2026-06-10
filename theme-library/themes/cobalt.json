@@ -3,7 +3,14 @@
   "name": "Cobalt",
   "family": "corporate",
   "sector": "Healthcare / medical",
-  "tags": ["clinical", "trustworthy", "accessible", "calm", "image-rich", "healthcare"],
+  "tags": [
+    "clinical",
+    "trustworthy",
+    "accessible",
+    "calm",
+    "image-rich",
+    "healthcare"
+  ],
   "mode": "light",
   "tokens": {
     "color": {
@@ -21,21 +28,49 @@
       "display": "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif",
       "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
       "scaleRatio": 1.24,
-      "weights": { "display": 600, "displayBold": 700, "body": 400, "label": 600, "bold": 700 },
+      "weights": {
+        "display": 600,
+        "displayBold": 700,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
       "displayCase": "none",
       "displayTracking": "-0.02em"
     },
-    "space": { "base": 8, "section": "clamp(72px, 9vw, 132px)", "gutter": "clamp(20px, 5vw, 56px)", "density": "airy" },
-    "radius": { "card": "16px", "button": "14px", "input": "12px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(72px, 9vw, 132px)",
+      "gutter": "clamp(20px, 5vw, 56px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "16px",
+      "button": "14px",
+      "input": "12px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 18px 40px -28px rgb(13 42 63 / 0.28)",
       "elevated": "0 34px 70px -34px rgb(13 42 63 / 0.34)",
       "philosophy": "soft"
     },
-    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "560ms", "character": "calm" },
-    "imagery": { "treatment": "rounded", "ratio": "4:3", "filter": "saturate(1.02) brightness(1.02)" }
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "560ms",
+      "character": "calm"
+    },
+    "imagery": {
+      "treatment": "rounded",
+      "ratio": "4:3",
+      "filter": "saturate(1.02) brightness(1.02)"
+    }
   },
-  "recipes": { "button": "solid-rounded", "card": "soft-elevated", "nav": "split-utility" },
+  "recipes": {
+    "button": "solid-rounded",
+    "card": "soft-elevated",
+    "nav": "split-utility"
+  },
   "preferredLayouts": {
     "utility": "phone-portal-bar",
     "nav": "split-logo-book",
@@ -49,5 +84,9 @@
     "testimonials": "patient-quote-soft",
     "cta": "calm-appointment-band",
     "footer": "locations-hours-newsletter"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
+  ]
 }

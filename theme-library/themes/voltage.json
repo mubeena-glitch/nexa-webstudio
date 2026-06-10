@@ -3,7 +3,15 @@
   "name": "Voltage",
   "family": "bold",
   "sector": "Creative agency",
-  "tags": ["maximalist", "kinetic", "high-contrast", "editorial", "agency", "grid-breaking", "loud"],
+  "tags": [
+    "maximalist",
+    "kinetic",
+    "high-contrast",
+    "editorial",
+    "agency",
+    "grid-breaking",
+    "loud"
+  ],
   "mode": "dark",
   "tokens": {
     "color": {
@@ -23,21 +31,49 @@
       "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
       "mono": "'General Sans', ui-monospace, monospace",
       "scaleRatio": 1.5,
-      "weights": { "display": 700, "displayBold": 800, "body": 400, "label": 600, "bold": 700 },
+      "weights": {
+        "display": 700,
+        "displayBold": 800,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
       "displayCase": "upper",
       "displayTracking": "-0.03em"
     },
-    "space": { "base": 8, "section": "clamp(96px, 12vw, 180px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "balanced" },
-    "radius": { "card": "4px", "button": "999px", "input": "4px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(96px, 12vw, 180px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "4px",
+      "button": "999px",
+      "input": "4px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 0 0 0 rgb(0 0 0 / 0)",
       "elevated": "0 40px 90px -50px rgb(0 0 0 / 0.8)",
       "philosophy": "none"
     },
-    "motion": { "ease": "cubic-bezier(0.2, 0.9, 0.1, 1)", "duration": "560ms", "character": "energetic" },
-    "imagery": { "treatment": "full-bleed", "ratio": "4:5", "filter": "saturate" }
+    "motion": {
+      "ease": "cubic-bezier(0.2, 0.9, 0.1, 1)",
+      "duration": "560ms",
+      "character": "energetic"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:5",
+      "filter": "saturate"
+    }
   },
-  "recipes": { "button": "solid", "card": "borderless", "nav": "split" },
+  "recipes": {
+    "button": "solid",
+    "card": "borderless",
+    "nav": "split"
+  },
   "preferredLayouts": {
     "hero": "kinetic-headline-marquee",
     "marquee": "oversized-scroll",
@@ -48,5 +84,9 @@
     "stats": "punchy-countup",
     "cta": "fullbleed-colorblock",
     "footer": "bold-wordmark"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Anton&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+  ]
 }

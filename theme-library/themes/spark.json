@@ -3,7 +3,15 @@
   "name": "Spark",
   "family": "vibrant",
   "sector": "E-commerce / retail",
-  "tags": ["ecommerce", "retail", "vibrant", "conversion", "product-led", "energetic", "shop"],
+  "tags": [
+    "ecommerce",
+    "retail",
+    "vibrant",
+    "conversion",
+    "product-led",
+    "energetic",
+    "shop"
+  ],
   "mode": "light",
   "tokens": {
     "color": {
@@ -23,21 +31,49 @@
       "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
       "mono": "'General Sans', ui-monospace, monospace",
       "scaleRatio": 1.333,
-      "weights": { "display": 600, "displayBold": 700, "body": 400, "label": 600, "bold": 700 },
+      "weights": {
+        "display": 600,
+        "displayBold": 700,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
       "displayCase": "none",
       "displayTracking": "-0.02em"
     },
-    "space": { "base": 8, "section": "clamp(72px, 9vw, 132px)", "gutter": "clamp(20px, 5vw, 56px)", "density": "balanced" },
-    "radius": { "card": "18px", "button": "999px", "input": "14px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(72px, 9vw, 132px)",
+      "gutter": "clamp(20px, 5vw, 56px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "18px",
+      "button": "999px",
+      "input": "14px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 10px 30px -16px rgb(26 20 48 / 0.22)",
       "elevated": "0 30px 70px -30px rgb(255 59 107 / 0.35)",
       "philosophy": "soft"
     },
-    "motion": { "ease": "cubic-bezier(0.22, 1, 0.36, 1)", "duration": "520ms", "character": "energetic" },
-    "imagery": { "treatment": "rounded", "ratio": "4:5", "filter": "saturate" }
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "520ms",
+      "character": "energetic"
+    },
+    "imagery": {
+      "treatment": "rounded",
+      "ratio": "4:5",
+      "filter": "saturate"
+    }
   },
-  "recipes": { "button": "solid", "card": "elevated", "nav": "split" },
+  "recipes": {
+    "button": "solid",
+    "card": "elevated",
+    "nav": "split"
+  },
   "preferredLayouts": {
     "promobar": "scrolling-offer-strip",
     "hero": "gradient-mesh-product-hero",
@@ -49,5 +85,9 @@
     "reviews": "customer-photo-cards",
     "newsletter": "offer-email-capture",
     "footer": "shop-mega-footer"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
+  ]
 }

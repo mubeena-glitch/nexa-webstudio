@@ -257,8 +257,10 @@ body.dragging{cursor:grabbing!important;user-select:none}
     <details class="cat">
       <summary><span class="cat-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c4 4.5 6 7.6 6 10.5a6 6 0 0 1-12 0C6 10.6 8 7.5 12 3z"/></svg></span> Design</summary>
       <div class="cat-body">
-        <div class="sublbl">Theme</div>
+        <div class="sublbl">Quick style</div>
         <div class="chips" id="themeChips"></div>
+        <div class="sublbl">Theme Library <span style="font-weight:400;color:var(--mut,#888)">— full design themes</span></div>
+        <div class="chips" id="libThemeChips"></div>
         <div class="sublbl">Hero layout</div>
         <div class="chips" id="heroChips"></div>
         <div class="sublbl">Brand colours</div>
@@ -423,9 +425,31 @@ function chipRow(elId,items,onPick,group){
 }
 function markChip(elId,val){var box=document.getElementById(elId);box.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('ac',c.getAttribute('data-v')===val);});}
 
-chipRow('themeChips',THEMES,function(v){send({type:'nexa:set-theme',value:v});});
+chipRow('themeChips',THEMES,function(v){send({type:'nexa:set-theme',value:v});clearChips('libThemeChips');});
 chipRow('heroChips',HEROES,function(v){send({type:'nexa:set-hero',value:v});});
 chipRow('formChips',FORMS,function(v){formModel=bundleToModel(v);renderFormBuilder();pushForm();toast('Loaded the &ldquo;'+v+'&rdquo; form — now edit the fields');});
+
+function clearChips(elId){var b=document.getElementById(elId);if(b)b.querySelectorAll('.chip').forEach(function(x){x.classList.remove('ac');});}
+
+// ---- Theme Library: 21 rich design-token themes, applied as a manifest ----
+(function loadThemeLibrary(){
+  fetch('theme-library/catalog.json').then(function(r){return r.json();}).then(function(cat){
+    var box=document.getElementById('libThemeChips');
+    if(!box||!cat.themes)return;
+    box.innerHTML=cat.themes.map(function(t){return '<div class="chip" data-v="'+t.id+'" title="'+escAttrV((t.sector||'')+' · '+(t.mode||''))+'">'+escHtml(t.name)+'</div>';}).join('');
+    box.querySelectorAll('.chip').forEach(function(c){
+      c.onclick=function(){
+        var idv=c.getAttribute('data-v');
+        clearChips('libThemeChips');clearChips('themeChips');
+        c.classList.add('ac');
+        fetch('theme-library/themes/'+idv+'.json').then(function(r){return r.json();}).then(function(man){
+          send({type:'nexa:apply-manifest',manifest:man});
+          toast('Applied the &ldquo;'+escHtml(c.textContent)+'&rdquo; theme');
+        }).catch(function(){toast('Could not load that theme (works on the deployed site)');});
+      };
+    });
+  }).catch(function(){});
+})();
 
 // ---- apply handlers ----
 function applyBrand(){send({type:'nexa:set-brand',primary:document.getElementById('cPrimary').value,secondary:document.getElementById('cSecondary').value});}

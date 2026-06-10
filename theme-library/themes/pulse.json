@@ -3,7 +3,15 @@
   "name": "Pulse",
   "family": "bold",
   "sector": "Fitness / sports",
-  "tags": ["fitness", "athletic", "high-energy", "dark", "gym", "bold", "image-rich"],
+  "tags": [
+    "fitness",
+    "athletic",
+    "high-energy",
+    "dark",
+    "gym",
+    "bold",
+    "image-rich"
+  ],
   "mode": "dark",
   "tokens": {
     "color": {
@@ -23,21 +31,49 @@
       "body": "'General Sans', ui-sans-serif, system-ui, sans-serif",
       "mono": "'JetBrains Mono', ui-monospace, monospace",
       "scaleRatio": 1.5,
-      "weights": { "display": 700, "displayBold": 800, "body": 400, "label": 600, "bold": 700 },
+      "weights": {
+        "display": 700,
+        "displayBold": 800,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
       "displayCase": "upper",
       "displayTracking": "-0.02em"
     },
-    "space": { "base": 8, "section": "clamp(88px, 11vw, 168px)", "gutter": "clamp(20px, 5vw, 64px)", "density": "balanced" },
-    "radius": { "card": "6px", "button": "4px", "input": "4px", "pill": "999px" },
+    "space": {
+      "base": 8,
+      "section": "clamp(88px, 11vw, 168px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "6px",
+      "button": "4px",
+      "input": "4px",
+      "pill": "999px"
+    },
     "shadow": {
       "card": "0 24px 60px -40px rgb(0 0 0 / 0.75)",
       "elevated": "0 40px 90px -45px rgb(0 0 0 / 0.85)",
       "philosophy": "glow"
     },
-    "motion": { "ease": "cubic-bezier(0.2, 0.9, 0.1, 1)", "duration": "520ms", "character": "energetic" },
-    "imagery": { "treatment": "full-bleed", "ratio": "4:5", "filter": "saturate" }
+    "motion": {
+      "ease": "cubic-bezier(0.2, 0.9, 0.1, 1)",
+      "duration": "520ms",
+      "character": "energetic"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:5",
+      "filter": "saturate"
+    }
   },
-  "recipes": { "button": "solid", "card": "elevated", "nav": "split" },
+  "recipes": {
+    "button": "solid",
+    "card": "elevated",
+    "nav": "split"
+  },
   "preferredLayouts": {
     "hero": "fullbleed-athlete-angled-oversized-headline",
     "marquee": "scrolling-keyword-strip",
@@ -50,5 +86,9 @@
     "testimonials": "transformation-quote-cards",
     "cta": "fullbleed-colorblock",
     "footer": "bold-wordmark"
-  }
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
+  ]
 }
