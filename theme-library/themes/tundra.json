@@ -1,0 +1,93 @@
+{
+  "id": "tundra",
+  "name": "Tundra",
+  "family": "modern",
+  "sector": "Outdoor / Adventure Gear",
+  "tags": [
+    "light",
+    "outdoor",
+    "adventure",
+    "rugged",
+    "grotesk",
+    "signal-orange",
+    "gear"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "244 245 243",
+      "surface": "236 238 235",
+      "surface2": "227 230 226",
+      "ink": "28 33 33",
+      "muted": "94 104 104",
+      "line": "212 216 213",
+      "primary": "45 56 56",
+      "onPrimary": "244 245 243",
+      "accent": "232 92 30",
+      "accent2": "62 122 110"
+    },
+    "type": {
+      "display": "'Archivo', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Inter', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Spline Sans Mono', ui-monospace, monospace",
+      "scaleRatio": 1.28,
+      "weights": {
+        "display": 700,
+        "displayBold": 800,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.02em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(84px, 10vw, 144px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "14px",
+      "button": "10px",
+      "input": "10px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(28 33 33 / 0.05), 0 10px 26px -14px rgb(28 33 33 / 0.2)",
+      "elevated": "0 2px 5px rgb(28 33 33 / 0.06), 0 26px 52px -18px rgb(28 33 33 / 0.3)",
+      "philosophy": "crisp"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "480ms",
+      "character": "snappy"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "16:10",
+      "filter": "contrast(1.04) saturate(1.02)"
+    }
+  },
+  "recipes": {
+    "button": "solid-rounded",
+    "card": "bordered",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "full-bleed-overlay",
+    "trusted": "logo-bar",
+    "screenshot": "kit-band",
+    "features": "alternating-splits",
+    "bento": "capability-grid",
+    "integrations": "field-grid",
+    "stats": "band-countup",
+    "pricing": "membership-tiers",
+    "testimonial": "single-quote-photo",
+    "cta": "expedition-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap"
+  ]
+}

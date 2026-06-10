@@ -1,0 +1,93 @@
+{
+  "id": "bloom",
+  "name": "Bloom",
+  "family": "minimal",
+  "sector": "Skincare / beauty",
+  "tags": [
+    "light",
+    "skincare",
+    "beauty",
+    "blush",
+    "rose",
+    "organic",
+    "minimal"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "253 247 244",
+      "surface": "248 238 234",
+      "surface2": "243 230 226",
+      "ink": "58 42 42",
+      "muted": "138 114 110",
+      "line": "232 216 211",
+      "primary": "196 110 110",
+      "onPrimary": "255 255 255",
+      "accent": "196 110 110",
+      "accent2": "138 154 122"
+    },
+    "type": {
+      "display": "'Fraunces', 'Times New Roman', Georgia, serif",
+      "body": "'Outfit', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Outfit', ui-monospace, monospace",
+      "scaleRatio": 1.27,
+      "weights": {
+        "display": 400,
+        "displayBold": 500,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.015em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(84px, 11vw, 152px)",
+      "gutter": "clamp(20px, 5vw, 68px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "26px",
+      "button": "999px",
+      "input": "16px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(58 42 42 / 0.04), 0 16px 40px -20px rgb(196 110 110 / 0.24)",
+      "elevated": "0 2px 6px rgb(58 42 42 / 0.05), 0 34px 64px -24px rgb(196 110 110 / 0.34)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "580ms",
+      "character": "organic"
+    },
+    "imagery": {
+      "treatment": "rounded-organic",
+      "ratio": "4:5",
+      "filter": "saturate(1.02) brightness(1.01)"
+    }
+  },
+  "recipes": {
+    "button": "pill-solid",
+    "card": "soft-rounded",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "blush-split-product",
+    "trusted": "press-bar",
+    "ritual": "numbered-steps",
+    "features": "ingredient-cards",
+    "showcase": "product-band",
+    "stats": "minimal-band",
+    "testimonial": "single-quote-photo",
+    "pricing": "product-trio",
+    "cta": "soft-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap",
+    "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap"
+  ]
+}

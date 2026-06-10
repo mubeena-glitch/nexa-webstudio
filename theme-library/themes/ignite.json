@@ -1,0 +1,94 @@
+{
+  "id": "ignite",
+  "name": "Ignite",
+  "family": "bold",
+  "sector": "Growth marketing agency",
+  "tags": [
+    "light",
+    "agency",
+    "marketing",
+    "orange",
+    "magenta",
+    "bold",
+    "conversion"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "255 255 255",
+      "surface": "250 246 244",
+      "surface2": "245 238 236",
+      "ink": "23 18 26",
+      "muted": "112 104 116",
+      "line": "232 224 226",
+      "primary": "240 86 42",
+      "onPrimary": "255 255 255",
+      "accent": "240 86 42",
+      "accent2": "214 33 122"
+    },
+    "type": {
+      "display": "'Clash Display', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Satoshi', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Space Mono', ui-monospace, monospace",
+      "scaleRatio": 1.34,
+      "weights": {
+        "display": 600,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.025em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(92px, 12vw, 168px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "spacious"
+    },
+    "radius": {
+      "card": "20px",
+      "button": "999px",
+      "input": "14px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(23 18 26 / 0.04), 0 10px 30px -14px rgb(23 18 26 / 0.16)",
+      "elevated": "0 2px 4px rgb(23 18 26 / 0.06), 0 28px 56px -18px rgb(23 18 26 / 0.22)",
+      "philosophy": "punchy"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration": "480ms",
+      "character": "energetic"
+    },
+    "imagery": {
+      "treatment": "duotone-edge",
+      "ratio": "4:3",
+      "filter": "saturate(1.05)"
+    }
+  },
+  "recipes": {
+    "button": "solid-pill",
+    "card": "outline-pop",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "oversized-headline-gradient",
+    "trusted": "logo-marquee",
+    "screenshot": "tilted-frame",
+    "features": "alternating-splits",
+    "bento": "service-grid",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "gradient-band"
+  },
+  "fontLinks": [
+    "https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=satoshi@400,500,700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
+  ]
+}

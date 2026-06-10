@@ -1,0 +1,93 @@
+{
+  "id": "aria",
+  "name": "Aria",
+  "family": "vibrant",
+  "sector": "Music Streaming / Artist",
+  "tags": [
+    "dark",
+    "music",
+    "streaming",
+    "violet",
+    "gradient",
+    "artist",
+    "rounded"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "16 14 22",
+      "surface": "25 22 34",
+      "surface2": "34 30 46",
+      "ink": "244 240 252",
+      "muted": "168 160 188",
+      "line": "48 42 64",
+      "primary": "167 110 255",
+      "onPrimary": "16 14 22",
+      "accent": "167 110 255",
+      "accent2": "255 110 196"
+    },
+    "type": {
+      "display": "'Clash Display', 'Poppins', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, monospace",
+      "scaleRatio": 1.3,
+      "weights": {
+        "display": 500,
+        "displayBold": 600,
+        "body": 400,
+        "label": 500,
+        "bold": 700
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.02em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(84px, 11vw, 148px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "22px",
+      "button": "999px",
+      "input": "16px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px -18px rgb(167 110 255 / 0.35)",
+      "elevated": "0 2px 4px rgb(0 0 0 / 0.5), 0 32px 64px -20px rgb(167 110 255 / 0.5)",
+      "philosophy": "glow"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "460ms",
+      "character": "fluid"
+    },
+    "imagery": {
+      "treatment": "framed",
+      "ratio": "1:1",
+      "filter": "saturate(1.1)"
+    }
+  },
+  "recipes": {
+    "button": "pill-gradient",
+    "card": "soft-glow",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "split-player",
+    "trusted": "logo-bar",
+    "features": "bento-glow",
+    "releases": "card-grid",
+    "player": "now-playing-band",
+    "stats": "band-countup",
+    "testimonial": "single-quote-photo",
+    "pricing": "two-tier-highlight",
+    "cta": "gradient-band"
+  },
+  "fontLinks": [
+    "https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+  ]
+}

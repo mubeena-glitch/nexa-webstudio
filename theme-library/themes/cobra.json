@@ -1,0 +1,92 @@
+{
+  "id": "cobra",
+  "name": "Cobra",
+  "family": "bold",
+  "sector": "Esports / Streetwear",
+  "tags": [
+    "dark",
+    "esports",
+    "streetwear",
+    "acid-green",
+    "aggressive",
+    "gaming",
+    "condensed"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "8 9 7",
+      "surface": "17 19 15",
+      "surface2": "24 27 21",
+      "ink": "240 244 236",
+      "muted": "150 158 142",
+      "line": "40 45 35",
+      "primary": "178 255 61",
+      "onPrimary": "8 9 7",
+      "accent": "178 255 61",
+      "accent2": "255 71 87"
+    },
+    "type": {
+      "display": "'Anton', 'Archivo', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Archivo', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Space Mono', ui-monospace, monospace",
+      "scaleRatio": 1.34,
+      "weights": {
+        "display": 400,
+        "displayBold": 400,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
+      "displayCase": "uppercase",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(80px, 10vw, 140px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "dense"
+    },
+    "radius": {
+      "card": "4px",
+      "button": "2px",
+      "input": "2px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(0 0 0 / 0.5), 0 12px 28px -14px rgb(0 0 0 / 0.7)",
+      "elevated": "0 2px 4px rgb(0 0 0 / 0.6), 0 28px 56px -18px rgb(0 0 0 / 0.85)",
+      "philosophy": "hard"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration": "380ms",
+      "character": "aggressive"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "16:9",
+      "filter": "contrast(1.1) saturate(1.1)"
+    }
+  },
+  "recipes": {
+    "button": "sharp-solid",
+    "card": "bordered-hard",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "full-bleed-statement",
+    "trusted": "logo-bar",
+    "screenshot": "full-width-band",
+    "features": "bento-aggressive",
+    "roster": "card-grid",
+    "stats": "band-countup",
+    "schedule": "list-rows",
+    "testimonial": "single-quote-photo",
+    "cta": "hard-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+  ]
+}

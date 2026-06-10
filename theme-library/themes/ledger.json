@@ -1,0 +1,92 @@
+{
+  "id": "ledger",
+  "name": "Ledger",
+  "family": "corporate",
+  "sector": "Crypto Exchange / Trading",
+  "tags": [
+    "dark",
+    "crypto",
+    "trading",
+    "emerald",
+    "data-dense",
+    "fintech",
+    "grotesk"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "11 14 13",
+      "surface": "18 23 21",
+      "surface2": "25 31 28",
+      "ink": "233 240 237",
+      "muted": "142 156 150",
+      "line": "37 46 42",
+      "primary": "16 223 138",
+      "onPrimary": "6 12 10",
+      "accent": "16 223 138",
+      "accent2": "245 188 66"
+    },
+    "type": {
+      "display": "'Space Grotesk', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Inter', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'IBM Plex Mono', ui-monospace, monospace",
+      "scaleRatio": 1.26,
+      "weights": {
+        "display": 500,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.025em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(80px, 10vw, 140px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "dense"
+    },
+    "radius": {
+      "card": "12px",
+      "button": "8px",
+      "input": "8px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -14px rgb(0 0 0 / 0.6)",
+      "elevated": "0 2px 4px rgb(0 0 0 / 0.5), 0 26px 52px -18px rgb(0 0 0 / 0.75)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "400ms",
+      "character": "precise"
+    },
+    "imagery": {
+      "treatment": "framed",
+      "ratio": "16:10",
+      "filter": "none"
+    }
+  },
+  "recipes": {
+    "button": "solid-rounded",
+    "card": "bordered-soft",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "split-ticker-dashboard",
+    "trusted": "logo-bar",
+    "markets": "data-table",
+    "features": "alternating-splits",
+    "security": "tile-grid",
+    "stats": "band-countup",
+    "testimonial": "single-quote-photo",
+    "pricing": "fee-tier-table",
+    "cta": "soft-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  ]
+}

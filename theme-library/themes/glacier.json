@@ -1,0 +1,94 @@
+{
+  "id": "glacier",
+  "name": "Glacier",
+  "family": "minimal",
+  "sector": "Medical aesthetics / dermatology",
+  "tags": [
+    "light",
+    "minimal",
+    "glacier-blue",
+    "clinical",
+    "dermatology",
+    "aesthetics",
+    "clean"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "250 252 254",
+      "surface": "242 247 251",
+      "surface2": "234 241 247",
+      "ink": "23 38 50",
+      "muted": "98 116 130",
+      "line": "219 230 238",
+      "primary": "44 134 184",
+      "onPrimary": "255 255 255",
+      "accent": "44 134 184",
+      "accent2": "92 178 178"
+    },
+    "type": {
+      "display": "'Cabinet Grotesk', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Inter', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'IBM Plex Mono', ui-monospace, monospace",
+      "scaleRatio": 1.25,
+      "weights": {
+        "display": 500,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.015em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(86px, 11vw, 148px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "16px",
+      "button": "10px",
+      "input": "10px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(23 38 50 / 0.04), 0 12px 28px -16px rgb(23 38 50 / 0.14)",
+      "elevated": "0 2px 4px rgb(23 38 50 / 0.05), 0 28px 54px -20px rgb(23 38 50 / 0.20)",
+      "philosophy": "crisp"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "460ms",
+      "character": "calm"
+    },
+    "imagery": {
+      "treatment": "clean-framed",
+      "ratio": "4:5",
+      "filter": "cool"
+    }
+  },
+  "recipes": {
+    "button": "solid-rounded",
+    "card": "clean-bordered",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "clinical-split-image",
+    "trusted": "logo-bar",
+    "screenshot": "full-bleed-image",
+    "features": "alternating-splits",
+    "bento": "treatment-grid",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "soft-band"
+  },
+  "fontLinks": [
+    "https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  ]
+}

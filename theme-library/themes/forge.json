@@ -1,0 +1,93 @@
+{
+  "id": "forge",
+  "name": "Forge",
+  "family": "corporate",
+  "sector": "Industrial / manufacturing",
+  "tags": [
+    "dark",
+    "industrial",
+    "manufacturing",
+    "amber",
+    "steel",
+    "heavy",
+    "engineering"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "18 20 23",
+      "surface": "26 29 33",
+      "surface2": "36 40 45",
+      "ink": "228 231 235",
+      "muted": "146 153 162",
+      "line": "48 53 60",
+      "primary": "245 166 35",
+      "onPrimary": "20 16 6",
+      "accent": "245 166 35",
+      "accent2": "120 196 224"
+    },
+    "type": {
+      "display": "'Archivo', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Archivo', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Space Mono', ui-monospace, monospace",
+      "scaleRatio": 1.27,
+      "weights": {
+        "display": 700,
+        "displayBold": 800,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
+      "displayCase": "uppercase",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(84px, 10vw, 148px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "4px",
+      "button": "2px",
+      "input": "2px",
+      "pill": "4px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(0 0 0 / 0.5), 0 12px 30px -16px rgb(0 0 0 / 0.65)",
+      "elevated": "0 2px 6px rgb(0 0 0 / 0.55), 0 30px 60px -22px rgb(0 0 0 / 0.78)",
+      "philosophy": "hard"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.65, 0, 0.35, 1)",
+      "duration": "400ms",
+      "character": "mechanical"
+    },
+    "imagery": {
+      "treatment": "framed",
+      "ratio": "16:10",
+      "filter": "steel-contrast"
+    }
+  },
+  "recipes": {
+    "button": "solid-square",
+    "card": "bordered-grid",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "split-spec-panel",
+    "trusted": "logo-bar",
+    "capabilities": "numbered-grid",
+    "features": "alternating-splits",
+    "showcase": "full-width-band",
+    "stats": "band-countup",
+    "process": "stepped-timeline",
+    "testimonial": "single-quote-photo",
+    "cta": "soft-band",
+    "footer": "bigmark"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+  ]
+}

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Forge — NEXA Theme Preview (Industrial / Manufacturing)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     FORGE — design tokens (mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 18 20 23;
+    --color-surface: 26 29 33;
+    --color-surface-2: 36 40 45;
+    --color-ink: 228 231 235;
+    --color-muted: 146 153 162;
+    --color-line: 48 53 60;
+    --color-primary: 245 166 35;    /* industrial amber */
+    --color-on-primary: 20 16 6;
+    --color-accent: 245 166 35;
+    --color-accent2: 120 196 224;   /* steel blue */
+
+    --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Space Mono", ui-monospace, monospace;
+
+    --space-section: clamp(84px, 10vw, 148px);
+    --gutter: clamp(20px, 5vw, 64px);
+    --ease: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur: 400ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1260px; margin: 0 auto; padding-inline: var(--gutter); }
+  .mono { font-family: var(--font-mono); }
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; }
+
+  .disp { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.04; }
+  .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--color-primary)); display: inline-flex; align-items: center; gap: 10px; }
+  .label::before { content: ""; width: 18px; height: 2px; background: rgb(var(--color-primary)); }
+  .label.center { justify-content: center; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18px); }
+
+  #progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 80; background: rgb(var(--color-primary)); }
+
+  /* buttons — square, hard */
+  .btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; padding: 14px 24px; border-radius: 2px; border: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-ghost { border-color: rgb(var(--color-line)); color: rgb(var(--color-ink)); background: transparent; }
+  .btn-ghost:hover { border-color: rgb(var(--color-primary)); color: rgb(var(--color-primary)); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============ NAV ============ */
+  header.nav { position: sticky; top: 0; z-index: 70; background: rgb(var(--color-bg) / .85); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color var(--dur) var(--ease); }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 66px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 20px; letter-spacing: 0.04em; }
+  .wordmark .glyph { width: 30px; height: 30px; border-radius: 2px; display: grid; place-items: center; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 0.06em; color: rgb(var(--color-muted)); position: relative; transition: color var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-actions { display: flex; align-items: center; gap: 14px; }
+  .nav-actions .phone { font-family: var(--font-mono); font-size: 13px; color: rgb(var(--color-ink)); }
+  .nav-actions .btn { padding: 10px 18px; }
+  @media (max-width: 920px) { .nav-links, .nav-actions .phone { display: none; } }
+
+  /* ============ HERO — split spec panel ============ */
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid rgb(var(--color-line)); }
+  .blueprint { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgb(var(--color-line) / .6) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--color-line) / .6) 1px, transparent 1px); background-size: 40px 40px; -webkit-mask-image: radial-gradient(120% 100% at 70% 30%, #000 0%, transparent 78%); mask-image: radial-gradient(120% 100% at 70% 30%, #000 0%, transparent 78%); opacity: .55; }
+  .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(36px, 5vw, 72px); align-items: stretch; min-height: 80vh; }
+  @media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero-text { display: flex; flex-direction: column; justify-content: center; padding-block: clamp(56px, 8vw, 110px); }
+  .hero-tag { display: inline-flex; align-items: center; gap: 9px; padding: 6px 12px; border: 1px solid rgb(var(--color-line)); border-radius: 2px; background: rgb(var(--color-surface)); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--color-accent2)); width: max-content; }
+  .hero h1 { font-size: clamp(42px, 6vw, 78px); margin: 22px 0 0; max-width: 14ch; }
+  .hero h1 .accent { color: rgb(var(--color-primary)); }
+  .hero .lead { margin: 22px 0 0; max-width: 46ch; }
+  .hero-cta { display: flex; gap: 14px; margin-top: 32px; flex-wrap: wrap; }
+  .hero-figures { display: flex; gap: 40px; margin-top: 40px; flex-wrap: wrap; }
+  .hero-figures .f .n { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1; }
+  .hero-figures .f .n .u { color: rgb(var(--color-primary)); }
+  .hero-figures .f .l { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 8px; }
+
+  /* spec image panel */
+  .hero-panel { position: relative; overflow: hidden; min-height: 60vh; border-left: 1px solid rgb(var(--color-line)); }
+  .hero-panel img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.9) contrast(1.12) brightness(.7); }
+  .hero-panel .corner { position: absolute; width: 22px; height: 22px; border: 2px solid rgb(var(--color-primary)); }
+  .hero-panel .corner.tl { top: 18px; left: 18px; border-right: none; border-bottom: none; }
+  .hero-panel .corner.br { bottom: 18px; right: 18px; border-left: none; border-top: none; }
+  .hero-panel .specbox { position: absolute; left: 18px; bottom: 18px; right: 18px; background: rgb(var(--color-bg) / .82); backdrop-filter: blur(6px); border: 1px solid rgb(var(--color-line)); padding: 16px 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .hero-panel .specbox .s .l { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .hero-panel .specbox .s .v { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin-top: 3px; }
+  .hero-panel .specbox .s .v.amber { color: rgb(var(--color-primary)); }
+  @media (max-width: 980px) { .hero-panel { border-left: none; border-top: 1px solid rgb(var(--color-line)); } }
+
+  /* ============ LOGO BAR ============ */
+  .logos { padding: clamp(40px, 5vw, 64px) 0; border-bottom: 1px solid rgb(var(--color-line)); }
+  .logos .cap { text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 5vw, 58px); flex-wrap: wrap; margin-top: 26px; }
+  .logo-row .lm { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 17px; color: rgb(var(--color-muted)); opacity: .72; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .logo-row .lm:hover { opacity: 1; color: rgb(var(--color-ink)); }
+  .logo-row .lm svg { color: rgb(var(--color-primary)); }
+
+  /* ============ CAPABILITIES — numbered grid ============ */
+  .caps { padding: var(--space-section) 0; }
+  .caps-head { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; margin-bottom: 48px; }
+  @media (max-width: 760px) { .caps-head { grid-template-columns: 1fr; } }
+  .caps-head h2 { font-size: clamp(30px, 3.6vw, 46px); margin-top: 14px; max-width: 18ch; }
+  .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgb(var(--color-line)); border: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 880px) { .cap-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .cap-grid { grid-template-columns: 1fr; } }
+  .cap { background: rgb(var(--color-bg)); padding: 32px 28px; display: flex; flex-direction: column; gap: 12px; transition: background var(--dur) var(--ease); }
+  .cap:hover { background: rgb(var(--color-surface)); }
+  .cap .no { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; color: rgb(var(--color-primary)); }
+  .cap .ci { width: 44px; height: 44px; border-radius: 2px; background: rgb(var(--color-surface-2)); color: rgb(var(--color-primary)); display: grid; place-items: center; }
+  .cap h3 { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 18px; }
+  .cap p { color: rgb(var(--color-muted)); font-size: 14px; }
+
+  /* ============ ALTERNATING SPLITS ============ */
+  .splits { padding: 0 0 var(--space-section); }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; padding: clamp(48px, 6vw, 84px) 0; }
+  .split + .split { border-top: 1px solid rgb(var(--color-line)); }
+  .split:nth-child(even) .split-media { order: 2; }
+  .split:nth-child(even) .split-text { order: 1; }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split .split-media, .split .split-text { order: 0 !important; } }
+  .split-text h2 { font-size: clamp(26px, 3vw, 38px); margin: 16px 0 14px; max-width: 18ch; }
+  .split-text .lead { max-width: 44ch; }
+  .checks { list-style: none; margin-top: 24px; display: grid; gap: 13px; }
+  .checks li { display: flex; align-items: flex-start; gap: 11px; font-size: 15px; }
+  .checks li .ck { flex: none; width: 22px; height: 22px; border-radius: 2px; background: rgb(var(--color-primary) / .16); color: rgb(var(--color-primary)); display: grid; place-items: center; margin-top: 1px; }
+  .split-media { position: relative; }
+  .split-media .ph { border: 1px solid rgb(var(--color-line)); border-radius: 4px; overflow: hidden; aspect-ratio: 16/11; }
+  .split-media .ph img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.9) contrast(1.1) brightness(.82); }
+  .split-media .tagchip { position: absolute; bottom: 16px; left: 16px; padding: 8px 13px; border-radius: 2px; background: rgb(var(--color-bg) / .92); backdrop-filter: blur(6px); border: 1px solid rgb(var(--color-line)); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; }
+  .split-media .tagchip .dot { width: 8px; height: 8px; border-radius: 999px; background: rgb(var(--color-primary)); }
+
+  /* ============ SHOWCASE BAND — wide image ============ */
+  .showcase { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .5); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .showcase .head { text-align: center; max-width: 640px; margin: 0 auto 46px; }
+  .showcase .head h2 { font-size: clamp(28px, 3.4vw, 44px); margin: 14px 0 12px; }
+  .showcase .frame { max-width: 1120px; margin: 0 auto; border: 1px solid rgb(var(--color-line)); border-radius: 4px; overflow: hidden; position: relative; }
+  .showcase .frame img { width: 100%; aspect-ratio: 16/8; object-fit: cover; filter: saturate(.92) contrast(1.08) brightness(.84); }
+  .showcase .frame .ov { position: absolute; inset: 0; background: linear-gradient(0deg, rgb(18 20 23 / .8), transparent 55%); }
+  .showcase .frame .cap { position: absolute; left: 24px; bottom: 22px; }
+  .showcase .frame .cap .t { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 22px; }
+  .showcase .frame .cap .d { font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-accent2)); margin-top: 4px; }
+
+  /* ============ STATS BAND ============ */
+  .metrics { padding: clamp(64px, 7vw, 96px) 0; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgb(var(--color-line)); border: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 760px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
+  .metric { background: rgb(var(--color-bg)); padding: clamp(36px, 5vw, 56px) 24px; text-align: center; }
+  .metric .num { font-family: var(--font-display); font-weight: 800; font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -0.02em; line-height: 1; }
+  .metric .num .suf { color: rgb(var(--color-primary)); }
+  .metric .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 12px; }
+
+  /* ============ PROCESS — stepped timeline ============ */
+  .process { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .5); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .process .head { max-width: 600px; margin-bottom: 48px; }
+  .process .head h2 { font-size: clamp(28px, 3.4vw, 44px); margin: 14px 0 12px; }
+  .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 880px) { .timeline { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .timeline { grid-template-columns: 1fr; } }
+  .tstep { border: 1px solid rgb(var(--color-line)); border-radius: 4px; background: rgb(var(--color-bg)); padding: 24px; border-top: 3px solid rgb(var(--color-primary)); }
+  .tstep .no { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; color: rgb(var(--color-accent2)); }
+  .tstep h3 { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 17px; margin: 12px 0 8px; }
+  .tstep p { color: rgb(var(--color-muted)); font-size: 14px; }
+
+  /* ============ TESTIMONIAL ============ */
+  .quote { padding: var(--space-section) 0; }
+  .quote-grid { display: grid; grid-template-columns: 280px 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; max-width: 980px; margin: 0 auto; }
+  @media (max-width: 760px) { .quote-grid { grid-template-columns: 1fr; text-align: center; } }
+  .quote-photo { border: 1px solid rgb(var(--color-line)); border-radius: 4px; overflow: hidden; aspect-ratio: 4/5; }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.92) contrast(1.06) brightness(.86); }
+  .quote blockquote { font-family: var(--font-display); font-weight: 600; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.32; }
+  .quote blockquote .hl { color: rgb(var(--color-primary)); }
+  .quote .by { margin-top: 22px; }
+  .quote .by .n { font-weight: 700; text-transform: uppercase; font-family: var(--font-display); }
+  .quote .by .r { font-family: var(--font-mono); color: rgb(var(--color-muted)); font-size: 13px; }
+
+  /* ============ CTA ============ */
+  .cta { padding: var(--space-section) 0; }
+  .cta-card { position: relative; overflow: hidden; border: 1px solid rgb(var(--color-line)); border-radius: 4px; padding: clamp(44px, 6vw, 80px); text-align: center; background: rgb(var(--color-surface)); }
+  .cta-card::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgb(var(--color-line) / .5) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--color-line) / .5) 1px, transparent 1px); background-size: 40px 40px; -webkit-mask-image: radial-gradient(80% 120% at 50% 0%, #000, transparent 70%); mask-image: radial-gradient(80% 120% at 50% 0%, #000, transparent 70%); opacity: .5; }
+  .cta-card h2 { position: relative; font-size: clamp(30px, 3.6vw, 48px); }
+  .cta-card p { position: relative; color: rgb(var(--color-muted)); margin: 16px auto 0; max-width: 48ch; }
+  .cta-card .cta-actions { position: relative; display: flex; gap: 14px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+
+  /* ============ FOOTER ============ */
+  footer { padding: clamp(56px, 7vw, 88px) 0 36px; border-top: 1px solid rgb(var(--color-line)); }
+  .foot-top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 36px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wordmark { margin-bottom: 14px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 34ch; }
+  .foot-col h4 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 14px; }
+  .foot-col a { display: block; color: rgb(var(--color-muted)); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-ink)); }
+  .bigmark { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: clamp(56px, 16vw, 220px); letter-spacing: 0.02em; line-height: 1; text-align: center; padding-top: 56px; color: rgb(var(--color-ink) / .9); }
+  .bigmark span { color: rgb(var(--color-primary)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 36px; padding-top: 24px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; }
+  .foot-bot .cp { font-family: var(--font-mono); color: rgb(var(--color-muted)); font-size: 12px; }
+  .foot-bot .soc { display: flex; gap: 10px; }
+  .foot-bot .soc a { width: 36px; height: 36px; border-radius: 2px; border: 1px solid rgb(var(--color-line)); display: grid; place-items: center; color: rgb(var(--color-muted)); transition: all var(--dur) var(--ease); }
+  .foot-bot .soc a:hover { color: rgb(var(--color-primary)); border-color: rgb(var(--color-primary) / .5); }
+
+  .ribbon { position: fixed; right: 14px; bottom: 14px; z-index: 90; font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); padding: 8px 13px; border-radius: 2px; opacity: .95; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#" aria-label="Forge home">
+      <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 20v-5h6v5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+      Forge
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#sectors">Sectors</a>
+      <a href="#process">Process</a>
+      <a href="#facility">Facility</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <span class="phone">+44 161 555 0142</span>
+      <a class="btn btn-primary magnetic" href="#">Request a quote</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="hero">
+  <div class="blueprint" aria-hidden="true"></div>
+  <div class="hero-grid wrap">
+    <div class="hero-text">
+      <span class="hero-tag" data-hero>ISO 9001 · AS9100 · UKAS Accredited</span>
+      <h1 class="disp" data-hero>Precision <span class="accent">metalwork</span>, built to tolerance, built to last.</h1>
+      <p class="lead" data-hero>Forge is a contract manufacturer for the energy, aerospace, and rail sectors. We machine, fabricate, and finish critical components from a single facility in Manchester, with full traceability on every part.</p>
+      <div class="hero-cta" data-hero>
+        <a class="btn btn-primary magnetic" href="#">Request a quote <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#capabilities">Our capabilities</a>
+      </div>
+      <div class="hero-figures" data-hero>
+        <div class="f"><div class="n"><span class="count" data-to="42">0</span><span class="u">yr</span></div><div class="l">In operation</div></div>
+        <div class="f"><div class="n">±<span class="count" data-to="5">0</span><span class="u">µm</span></div><div class="l">Machining tolerance</div></div>
+        <div class="f"><div class="n"><span class="count" data-to="99.6" data-dec="1">0</span><span class="u">%</span></div><div class="l">On-time delivery</div></div>
+      </div>
+    </div>
+    <div class="hero-panel" data-hero-media>
+      <img src="https://images.unsplash.com/photo-1565043666747-69f6646db940?w=1100&q=80&auto=format&fit=crop" alt="A CNC machine cutting a metal component" />
+      <span class="corner tl" aria-hidden="true"></span>
+      <span class="corner br" aria-hidden="true"></span>
+      <div class="specbox">
+        <div class="s"><div class="l">Material</div><div class="v">Ti-6Al-4V</div></div>
+        <div class="s"><div class="l">Finish</div><div class="v">Ra 0.4</div></div>
+        <div class="s"><div class="l">Status</div><div class="v amber">In spec</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== LOGO BAR ======================== -->
+<section class="logos">
+  <div class="wrap">
+    <p class="cap" data-reveal>Trusted by manufacturers across the UK and Europe</p>
+    <div class="logo-row" data-batch>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l4 7-4 4-4-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> Hargreave</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="1" stroke="currentColor" stroke-width="2"/></svg> Brindale</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg> Kestrel Rail</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18c4-12 12-12 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Aerolux</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Verra Energy</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M5 12l5-5M5 12l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Tindall</span>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CAPABILITIES =================== -->
+<section class="caps" id="capabilities">
+  <div class="wrap">
+    <div class="caps-head" data-reveal>
+      <div>
+        <span class="label">What we do</span>
+        <h2 class="disp">Six in-house capabilities, one quality system</h2>
+      </div>
+      <a class="btn btn-ghost" href="#">Download capability sheet</a>
+    </div>
+    <div class="cap-grid" data-batch>
+      <div class="cap"><span class="no">01 / CNC</span><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><h3>CNC Machining</h3><p>Five-axis milling and turning for complex geometries in steel, titanium, and aluminium alloys.</p></div>
+      <div class="cap"><span class="no">02 / FAB</span><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 17l6-6 4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Fabrication</h3><p>Heavy plate cutting, forming, and assembly of structural and pressure-rated weldments.</p></div>
+      <div class="cap"><span class="no">03 / WELD</span><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2v8M12 14v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><h3>Coded Welding</h3><p>TIG and MIG welding to BS EN ISO 3834, carried out by coded welders with full procedure records.</p></div>
+      <div class="cap"><span class="no">04 / NDT</span><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M16 16l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><h3>Inspection &amp; NDT</h3><p>CMM inspection, dye penetrant, and ultrasonic testing with first-article reports on every batch.</p></div>
+      <div class="cap"><span class="no">05 / FIN</span><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 20h16M7 20V8l5-4 5 4v12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><h3>Surface Finishing</h3><p>Anodising, powder coating, and passivation handled in-house to keep lead times short.</p></div>
+      <div class="cap"><span class="no">06 / ASM</span><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><path d="M11 7h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><h3>Sub-Assembly</h3><p>Mechanical assembly, kitting, and final test, shipped ready to fit straight onto your line.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ALTERNATING SPLITS ================= -->
+<section class="splits" id="sectors">
+  <div class="wrap">
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=900&q=80&auto=format&fit=crop" alt="An engineer inspecting a machined part on the shop floor" loading="lazy"></div>
+        <span class="tagchip"><span class="dot"></span> Full traceability</span>
+      </div>
+      <div class="split-text">
+        <span class="label">Aerospace &amp; Defence</span>
+        <h2 class="disp">Flight-critical parts, documented to the gram</h2>
+        <p class="lead">From bracketry to structural components, we machine to AS9100 with material certificates and inspection records that follow every part through its life.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Material certs and heat-lot tracking</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> First-article inspection reports</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Controlled, audited supply chain</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&q=80&auto=format&fit=crop" alt="Heavy steel fabrication in a manufacturing facility" loading="lazy"></div>
+        <span class="tagchip"><span class="dot"></span> Up to 12 tonnes</span>
+      </div>
+      <div class="split-text">
+        <span class="label">Energy &amp; Rail</span>
+        <h2 class="disp">Heavy fabrication that holds up under load</h2>
+        <p class="lead">Pressure-rated weldments, frames, and structural assemblies for substations, depots, and rolling stock, fabricated and tested before they leave the floor.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Coded welding to ISO 3834</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Load and pressure testing in-house</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Network Rail approved processes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHOWCASE BAND ================= -->
+<section class="showcase" id="facility">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="label center">Inside the plant</span>
+      <h2 class="disp">A 4,000 square metre facility, running two shifts</h2>
+      <p class="lead">Forty machines under one roof, scheduled around the clock to keep your lead times short.</p>
+    </div>
+    <div class="frame" data-reveal>
+      <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&q=80&auto=format&fit=crop" alt="Wide view of a busy modern manufacturing shop floor" loading="lazy">
+      <div class="ov" aria-hidden="true"></div>
+      <div class="cap"><div class="t">Manchester Works</div><div class="d">40 machines · 2 shifts · 4,000 m²</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS BAND ================= -->
+<section class="metrics">
+  <div class="wrap">
+    <div class="metrics-grid" data-batch>
+      <div class="metric"><div class="num"><span class="count" data-to="40">0</span></div><div class="lbl">Machines on site</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="99.6" data-dec="1">0</span><span class="suf">%</span></div><div class="lbl">On-time delivery</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="2">0</span></div><div class="lbl">Shifts per day</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="12">0</span><span class="suf">t</span></div><div class="lbl">Max lift capacity</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROCESS ================= -->
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="label">How we work</span>
+      <h2 class="disp">From enquiry to delivery, in four controlled stages</h2>
+      <p class="lead">A single project engineer owns your job from quote to dispatch, so you always know who to call.</p>
+    </div>
+    <div class="timeline" data-batch>
+      <div class="tstep"><div class="no">STAGE 01</div><h3>Quote &amp; review</h3><p>We assess drawings, materials, and tolerances, then return a fixed quote with a clear lead time.</p></div>
+      <div class="tstep"><div class="no">STAGE 02</div><h3>Plan &amp; programme</h3><p>CAM programming, fixturing, and a first-article plan are signed off before any metal is cut.</p></div>
+      <div class="tstep"><div class="no">STAGE 03</div><h3>Make &amp; inspect</h3><p>Parts are machined, welded, and finished in-house, with inspection built into every stage.</p></div>
+      <div class="tstep"><div class="no">STAGE 04</div><h3>Certify &amp; ship</h3><p>Final inspection, full documentation, and dispatch, packed to protect critical surfaces.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIAL ================= -->
+<section class="quote">
+  <div class="wrap">
+    <div class="quote-grid" data-reveal>
+      <div class="quote-photo"><img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=600&q=80&auto=format&fit=crop" alt="Portrait of Daniel Okafor, Head of Procurement" loading="lazy"></div>
+      <div>
+        <blockquote>Forge took on a part three other shops had failed, hit the tolerance first time, and have <span class="hl">never missed a delivery date since</span>.</blockquote>
+        <div class="by"><div class="n">Daniel Okafor</div><div class="r">Head of Procurement, Kestrel Rail</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta" id="contact">
+  <div class="wrap">
+    <div class="cta-card" data-reveal>
+      <h2 class="disp">Send us a drawing, get a quote in 48 hours</h2>
+      <p>Upload a STEP file or a PDF and our engineers will come back with pricing, lead time, and any recommendations to make the part easier to manufacture.</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary magnetic" href="#">Request a quote <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#">Book a facility visit</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="wordmark" href="#"><span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 20v-5h6v5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span> Forge</a>
+        <p>Precision metalwork and contract manufacturing for the energy, aerospace, and rail sectors. Manchester, United Kingdom.</p>
+      </div>
+      <div class="foot-col"><h4>Capabilities</h4><a href="#">CNC machining</a><a href="#">Fabrication</a><a href="#">Welding</a><a href="#">Finishing</a><a href="#">Inspection</a></div>
+      <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Accreditations</a><a href="#">Careers</a><a href="#">News</a><a href="#">Contact</a></div>
+      <div class="foot-col"><h4>Resources</h4><a href="#">Capability sheet</a><a href="#">Material guide</a><a href="#">Terms of supply</a><a href="#">Sustainability</a></div>
+    </div>
+    <div class="bigmark">FOR<span>GE</span></div>
+    <div class="foot-bot">
+      <span class="cp">© 2026 Forge Engineering Ltd · Company No. 04412208</span>
+      <div class="soc">
+        <a href="#" aria-label="Forge on LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2"/><path d="M7 10v6M7 7v.01M11 16v-3a2 2 0 014 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <a href="#" aria-label="Forge on X"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <a href="#" aria-label="Forge on YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="3" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · Forge · industrial</div>
+
+<!-- ===== GSAP (CDN) ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm = gsap.matchMedia();
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 24, autoAlpha: 0, duration: 0.7, stagger: 0.09 })
+          .from('[data-hero-media]', { x: 36, autoAlpha: 0, duration: 0.9 }, '-=0.5');
+
+    gsap.set('[data-reveal]', { y: 26, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.12, ease: 'power3.out', overwrite: true }); }
+    });
+
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 22, autoAlpha: 0 });
+      ScrollTrigger.create({ trigger: grid, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.07, ease: 'power3.out' }); } });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-hero-media], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0, x: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+      if (reduced) { el.textContent = to.toFixed(dec); return; }
+      ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          var obj = { v: 0 };
+          gsap.to(obj, { v: to, duration: 1.4, ease: 'power2.out',
+            onUpdate: function () { el.textContent = obj.v.toFixed(dec); },
+            onComplete: function () { el.textContent = to.toFixed(dec); } });
+        } });
+    });
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.2, y: (e.clientY - r.top - r.height / 2) * 0.3, duration: 0.4, ease: 'power3' });
+      });
+      btn.addEventListener('pointerleave', function () { gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power3' }); });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-reveal],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=forge&name=Forge" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

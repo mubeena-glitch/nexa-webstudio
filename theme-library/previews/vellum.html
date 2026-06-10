@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vellum — NEXA Theme Preview (Publishing / Independent Press)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     VELLUM — design tokens (1:1 mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 247 242 231;
+    --color-surface: 242 235 221;
+    --color-surface-2: 236 227 210;
+    --color-ink: 33 29 24;
+    --color-muted: 112 102 88;
+    --color-line: 221 210 190;
+    --color-primary: 33 29 24;
+    --color-on-primary: 247 242 231;
+    --color-accent: 138 30 36;     /* deep claret */
+    --color-accent2: 168 130 62;   /* aged gilt */
+
+    --font-display: "Fraunces", "Georgia", serif;
+    --font-body: "Newsreader", "Georgia", serif;
+    --font-mono: "Spline Sans Mono", ui-monospace, monospace;
+    --display-tracking: -0.01em;
+
+    --space-section: clamp(92px, 11vw, 156px);
+    --gutter: clamp(22px, 5vw, 72px);
+
+    --radius-card: 4px;
+    --radius-button: 2px;
+    --radius-input: 2px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(33 29 24 / 0.05), 0 10px 28px -16px rgb(33 29 24 / 0.22);
+    --shadow-elevated: 0 2px 6px rgb(33 29 24 / 0.07), 0 30px 60px -24px rgb(33 29 24 / 0.34);
+
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 640ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  /* faint paper grain */
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+    background-image: radial-gradient(rgb(33 29 24 / .035) 1px, transparent 1px);
+    background-size: 4px 4px;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: var(--gutter); }
+  .narrow { max-width: 840px; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .serif { font-family: var(--font-display); font-weight: 400; letter-spacing: var(--display-tracking); line-height: 1.06; }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.26em;
+    text-transform: uppercase; color: rgb(var(--color-accent));
+  }
+  .eyebrow.center { display: block; text-align: center; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(17px, 1.4vw, 20px); font-style: italic; }
+  .rule { height: 1px; background: rgb(var(--color-line)); border: 0; }
+  .drop::first-letter {
+    font-family: var(--font-display); font-weight: 500; float: left;
+    font-size: 4.2em; line-height: .76; padding: 6px 12px 0 0; color: rgb(var(--color-accent));
+  }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 3px; }
+
+  #progress { position: fixed; top: 0; left: 0; height: 2px; width: 0%; z-index: 80; background: rgb(var(--color-accent)); }
+
+  /* ---------- buttons (recipe: ink-rule) ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono);
+    font-weight: 500; font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+    padding: 14px 26px; border-radius: var(--radius-button); border: 1px solid rgb(var(--color-ink));
+    cursor: pointer; white-space: nowrap;
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .btn-primary { background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); }
+  .btn-primary:hover { background: rgb(var(--color-accent)); border-color: rgb(var(--color-accent)); transform: translateY(-2px); }
+  .btn-ghost { background: transparent; color: rgb(var(--color-ink)); }
+  .btn-ghost:hover { background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* link underline draw */
+  .ln { position: relative; }
+  .ln::after { content: ""; position: absolute; left: 0; bottom: -3px; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform var(--dur) var(--ease); }
+  .ln:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  /* ============================================================
+     NAV — serif-centred wordmark with rule
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 70;
+    background: rgb(var(--color-bg) / .9);
+    backdrop-filter: saturate(120%) blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); }
+  .nav-inner { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; height: 78px; }
+  .nav-links { display: flex; align-items: center; gap: 28px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .nav-links a { color: rgb(var(--color-muted)); transition: color var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-links.right { justify-content: flex-end; }
+  .wordmark { text-align: center; }
+  .wordmark .name { font-family: var(--font-display); font-weight: 500; font-size: 26px; letter-spacing: .02em; }
+  .wordmark .est { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .34em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 1px; }
+  @media (max-width: 880px) { .nav-inner { grid-template-columns: 1fr auto; } .nav-links.left { display: none; } .nav-links.right a:not(:last-child) { display: none; } }
+
+  /* ============================================================
+     HERO — editorial split, cover plate right
+     ============================================================ */
+  .hero { padding: clamp(56px, 8vw, 104px) 0 clamp(64px, 9vw, 120px); position: relative; }
+  .hero-grid { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: clamp(40px, 6vw, 88px); align-items: center; }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(46px, 7vw, 88px); line-height: .98; letter-spacing: -0.015em; margin: 18px 0 0; max-width: 13ch; }
+  .hero h1 em { font-style: italic; color: rgb(var(--color-accent)); }
+  .hero .lead { margin: 26px 0 0; max-width: 42ch; }
+  .hero-cta { display: flex; gap: 16px; margin-top: 34px; flex-wrap: wrap; }
+  .hero-meta { display: flex; gap: 28px; margin-top: 38px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .hero-meta span b { display: block; font-family: var(--font-display); font-size: 26px; letter-spacing: 0; text-transform: none; color: rgb(var(--color-ink)); }
+
+  /* stacked book cover plate */
+  .cover-stage { position: relative; perspective: 1500px; }
+  .cover {
+    position: relative; aspect-ratio: 3/4; border-radius: 4px 6px 6px 4px; overflow: hidden;
+    box-shadow: var(--shadow-elevated); border: 1px solid rgb(var(--color-line));
+  }
+  .cover img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.12) contrast(1.02); }
+  .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, rgb(33 29 24 / .04) 0 5%, transparent 6% 94%, rgb(33 29 24 / .12)); }
+  .cover-back { position: absolute; inset: 16px -14px -16px 16px; border-radius: 4px; background: rgb(var(--color-surface-2)); box-shadow: var(--shadow-card); z-index: -1; border: 1px solid rgb(var(--color-line)); }
+  .cover-tag {
+    position: absolute; left: -18px; bottom: 34px; z-index: 3;
+    background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-card);
+    padding: 12px 16px; max-width: 220px;
+  }
+  .cover-tag .t { font-family: var(--font-display); font-style: italic; font-size: 16px; }
+  .cover-tag .by { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 4px; }
+
+  /* ============================================================
+     PRESS QUOTES BAR
+     ============================================================ */
+  .press { padding: clamp(28px, 4vw, 44px) 0; border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface) / .55); }
+  .press-row { display: flex; align-items: center; justify-content: space-between; gap: clamp(24px, 5vw, 56px); flex-wrap: wrap; }
+  .press-row .pq { font-family: var(--font-display); font-style: italic; font-size: clamp(14px, 1.4vw, 17px); color: rgb(var(--color-muted)); display: flex; align-items: center; gap: 10px; }
+  .press-row .pq b { font-style: normal; color: rgb(var(--color-ink)); }
+  .press-row .pq .star { color: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     EDITORIAL — ruled columns essay
+     ============================================================ */
+  .essay { padding: var(--space-section) 0; }
+  .essay-head { max-width: 720px; margin: 0 auto 56px; text-align: center; }
+  .essay-head h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 4vw, 50px); margin: 16px 0 0; }
+  .columns { columns: 2; column-gap: clamp(36px, 5vw, 64px); column-rule: 1px solid rgb(var(--color-line)); max-width: 980px; margin: 0 auto; }
+  @media (max-width: 720px) { .columns { columns: 1; } }
+  .columns p { margin-bottom: 18px; break-inside: avoid; }
+  .columns p:first-of-type { break-after: avoid; }
+
+  /* ============================================================
+     CATALOGUE — book grid
+     ============================================================ */
+  .catalogue { padding: var(--space-section) 0; border-top: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface) / .4); }
+  .cat-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .cat-head h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(28px, 3.6vw, 44px); }
+  .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(20px, 3vw, 36px); }
+  @media (max-width: 880px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 460px) { .cat-grid { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; } }
+  .book { display: flex; flex-direction: column; }
+  .book .plate { position: relative; aspect-ratio: 3/4; overflow: hidden; border-radius: 3px; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-card); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+  .book:hover .plate { transform: translateY(-6px); box-shadow: var(--shadow-elevated); }
+  .book .plate img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.1) contrast(1.02); }
+  .book .plate .badge { position: absolute; top: 10px; left: 10px; font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); padding: 4px 8px; }
+  .book .ttl { font-family: var(--font-display); font-style: italic; font-size: 18px; margin-top: 14px; }
+  .book .auth { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 5px; }
+  .book .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 14px; color: rgb(var(--color-muted)); }
+  .book .meta .pr { font-family: var(--font-display); color: rgb(var(--color-ink)); }
+
+  /* ============================================================
+     FEATURE SPREAD — author + craft, full band
+     ============================================================ */
+  .spread { padding: var(--space-section) 0; }
+  .spread-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 5vw, 80px); align-items: center; }
+  @media (max-width: 880px) { .spread-grid { grid-template-columns: 1fr; } }
+  .spread-media { position: relative; }
+  .spread-media .ph { aspect-ratio: 4/5; overflow: hidden; border-radius: 4px; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); }
+  .spread-media .ph img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.14) contrast(1.02); }
+  .spread-text h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(28px, 3.6vw, 46px); margin: 16px 0 18px; max-width: 16ch; }
+  .craft { list-style: none; margin-top: 28px; display: grid; gap: 0; }
+  .craft li { display: grid; grid-template-columns: auto 1fr; gap: 18px; padding: 20px 0; border-top: 1px solid rgb(var(--color-line)); }
+  .craft li .no { font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-accent)); padding-top: 4px; }
+  .craft li h3 { font-family: var(--font-display); font-weight: 500; font-size: 19px; }
+  .craft li p { color: rgb(var(--color-muted)); font-size: 16px; margin-top: 4px; }
+
+  /* ============================================================
+     FIGURES BAND
+     ============================================================ */
+  .figures { padding: clamp(64px, 8vw, 108px) 0; border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface-2) / .5); }
+  .fig-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; text-align: center; }
+  @media (max-width: 720px) { .fig-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 0; } }
+  .fig { padding: 0 20px; }
+  .fig + .fig { border-left: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 720px) { .fig:nth-child(odd) { border-left: 0; } }
+  .fig .num { font-family: var(--font-display); font-weight: 500; font-size: clamp(38px, 5vw, 62px); letter-spacing: -0.02em; line-height: 1; }
+  .fig .num .suf { color: rgb(var(--color-accent)); }
+  .fig .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 12px; }
+
+  /* ============================================================
+     TESTIMONIAL — pull quote with portrait
+     ============================================================ */
+  .quote { padding: var(--space-section) 0; }
+  .quote-grid { display: grid; grid-template-columns: 260px 1fr; gap: clamp(36px, 5vw, 64px); align-items: center; max-width: 960px; margin: 0 auto; }
+  @media (max-width: 720px) { .quote-grid { grid-template-columns: 1fr; text-align: center; } }
+  .quote-photo { aspect-ratio: 4/5; overflow: hidden; border-radius: 4px; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.16) contrast(1.02); }
+  .quote blockquote { font-family: var(--font-display); font-weight: 400; font-style: italic; font-size: clamp(22px, 2.8vw, 34px); line-height: 1.34; }
+  .quote blockquote .hl { color: rgb(var(--color-accent)); }
+  .quote .by { margin-top: 24px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .quote .by b { color: rgb(var(--color-ink)); }
+
+  /* ============================================================
+     MEMBERSHIP TIERS
+     ============================================================ */
+  .members { padding: var(--space-section) 0; border-top: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface) / .4); }
+  .members-head { text-align: center; max-width: 600px; margin: 0 auto 54px; }
+  .members-head h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 4vw, 48px); margin: 16px 0 0; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; max-width: 1000px; margin: 0 auto; border: 1px solid rgb(var(--color-line)); background: rgb(var(--color-bg)); }
+  @media (max-width: 820px) { .tiers { grid-template-columns: 1fr; max-width: 440px; } }
+  .tier { padding: 36px 32px; display: flex; flex-direction: column; gap: 8px; }
+  .tier + .tier { border-left: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 820px) { .tier + .tier { border-left: 0; border-top: 1px solid rgb(var(--color-line)); } }
+  .tier.pop { background: rgb(var(--color-surface-2) / .6); }
+  .tier .tn { font-family: var(--font-display); font-style: italic; font-size: 22px; }
+  .tier .desc { color: rgb(var(--color-muted)); font-size: 15px; min-height: 48px; }
+  .tier .price { font-family: var(--font-display); font-weight: 500; font-size: 46px; letter-spacing: -0.02em; margin: 14px 0 2px; }
+  .tier .price span { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .tier ul { list-style: none; display: grid; gap: 12px; margin: 20px 0 26px; }
+  .tier ul li { display: flex; gap: 11px; font-size: 15px; align-items: flex-start; }
+  .tier ul li svg { flex: none; color: rgb(var(--color-accent)); margin-top: 5px; }
+  .tier .btn { width: 100%; justify-content: center; margin-top: auto; }
+
+  /* ============================================================
+     COLOPHON CTA BAND
+     ============================================================ */
+  .cta { padding: var(--space-section) 0; }
+  .cta-card { position: relative; overflow: hidden; padding: clamp(48px, 7vw, 92px); text-align: center; color: rgb(var(--color-on-primary)); background: rgb(var(--color-ink)); border-radius: 4px; }
+  .cta-card::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgb(247 242 231 / .05) 1px, transparent 1px); background-size: 5px 5px; pointer-events: none; }
+  .cta-card .eyebrow { color: rgb(var(--color-accent2)); position: relative; }
+  .cta-card h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(32px, 4.4vw, 56px); margin: 18px auto 0; max-width: 18ch; position: relative; }
+  .cta-card p { color: rgb(247 242 231 / .76); font-style: italic; margin: 18px auto 0; max-width: 46ch; position: relative; }
+  .cta-card .cta-actions { display: flex; gap: 16px; justify-content: center; margin-top: 34px; flex-wrap: wrap; position: relative; }
+  .cta-card .btn-white { background: rgb(var(--color-on-primary)); color: rgb(var(--color-ink)); border-color: rgb(var(--color-on-primary)); }
+  .cta-card .btn-white:hover { background: rgb(var(--color-accent2)); border-color: rgb(var(--color-accent2)); color: rgb(var(--color-ink)); }
+  .cta-card .btn-line { border-color: rgb(247 242 231 / .4); color: rgb(var(--color-on-primary)); }
+  .cta-card .btn-line:hover { border-color: rgb(var(--color-on-primary)); background: transparent; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: clamp(60px, 8vw, 96px) 0 40px; border-top: 1px solid rgb(var(--color-line)); }
+  .foot-top { display: grid; grid-template-columns: 1.7fr repeat(3, 1fr); gap: 40px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .name { font-family: var(--font-display); font-weight: 500; font-size: 26px; margin-bottom: 12px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 16px; font-style: italic; max-width: 34ch; margin-bottom: 20px; }
+  .news { display: flex; gap: 8px; max-width: 360px; }
+  .news input { flex: 1; padding: 12px 14px; border-radius: var(--radius-input); border: 1px solid rgb(var(--color-line)); font-family: var(--font-body); font-size: 15px; background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); }
+  .news input::placeholder { color: rgb(var(--color-muted)); }
+  .news .btn { padding: 12px 18px; }
+  .foot-col h4 { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 16px; }
+  .foot-col a { display: block; color: rgb(var(--color-ink)); font-size: 15px; padding: 5px 0; }
+  .foot-col a:hover { color: rgb(var(--color-accent)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 52px; padding-top: 26px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: rgb(var(--color-muted)); }
+
+  /* ribbon */
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em;
+    background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); padding: 8px 13px; border-radius: 999px;
+    box-shadow: var(--shadow-elevated); opacity: .92;
+  }
+  .ribbon b { color: rgb(var(--color-accent2)); }
+
+  /* reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <nav class="nav-links left" aria-label="Primary">
+      <a class="ln" href="#catalogue">Catalogue</a>
+      <a class="ln" href="#imprints">Imprints</a>
+      <a class="ln" href="#about">The Press</a>
+    </nav>
+    <a class="wordmark" href="#" aria-label="Vellum Press home">
+      <span class="name">Vellum</span>
+      <span class="est">Independent Press · est. 1991</span>
+    </a>
+    <nav class="nav-links right" aria-label="Secondary">
+      <a class="ln" href="#members">Membership</a>
+      <a class="btn btn-primary magnetic" href="#catalogue">Browse books</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <span class="eyebrow" data-hero>Autumn list · Volume XXXIV</span>
+      <h1 class="serif" data-hero>Books made to be <em>kept</em>, not merely read.</h1>
+      <p class="lead" data-hero>Vellum is an independent press publishing literary fiction, essays, and translated work in editions built to last a lifetime on the shelf.</p>
+      <div class="hero-cta" data-hero>
+        <a class="btn btn-primary magnetic" href="#catalogue">Explore the catalogue <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#members">Join the reading society</a>
+      </div>
+      <div class="hero-meta" data-hero>
+        <span><b>312</b>Titles in print</span>
+        <span><b>27</b>Languages translated</span>
+        <span><b>9</b>Literary prizes</span>
+      </div>
+    </div>
+
+    <div class="hero-media" data-hero-media>
+      <div class="cover-stage" data-tilt>
+        <div class="cover-back" aria-hidden="true"></div>
+        <figure class="cover">
+          <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=900&q=80" alt="A hardback book resting on a wooden table beside a window">
+        </figure>
+        <div class="cover-tag" data-float>
+          <div class="t">The Lantern Keepers</div>
+          <div class="by">A novel by Iris Vandermeer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== PRESS QUOTES ======================== -->
+<section class="press">
+  <div class="wrap press-row" data-batch>
+    <span class="pq"><span class="star">&#9733;&#9733;&#9733;&#9733;&#9733;</span> &ldquo;Quietly essential.&rdquo; <b>The Paris Review</b></span>
+    <span class="pq">&ldquo;A press that still believes in the book as an object.&rdquo; <b>Guardian Books</b></span>
+    <span class="pq">&ldquo;Beautifully made, fiercely chosen.&rdquo; <b>Literary Hub</b></span>
+  </div>
+</section>
+
+<!-- ======================== ESSAY ======================== -->
+<section class="essay" id="about">
+  <div class="wrap">
+    <div class="essay-head" data-reveal>
+      <span class="eyebrow center">A note from the editors</span>
+      <h2 class="serif">On the patience of making books</h2>
+    </div>
+    <div class="columns" data-reveal>
+      <p class="drop">We began in a single rented room above a bookshop, persuaded that the printed page deserved more care than the market was willing to give it. Three decades on, the conviction has not softened. Every title we publish is read aloud at least once before it goes to press, because a sentence that stumbles in the ear will stumble on the page.</p>
+      <p>Our editors work slowly and argue often. We commission translations that take years, not seasons, and we pay for them properly. Paper is chosen by hand, the cloth on our hardbacks sourced from the same mill in the north for twenty years, and the typesetting is done by people who can tell you why a comma matters.</p>
+      <p>None of this is nostalgia. It is simply the belief that a reader who has paid attention deserves a book that has paid attention back. We would rather publish twelve volumes a year that endure than a hundred that are forgotten by spring.</p>
+      <p>If that sounds like a slow way to run a publishing house, it is. We have made our peace with it, and so, we hope, will you, somewhere around the third chapter, when the noise of the world falls away and only the page remains.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== CATALOGUE ======================== -->
+<section class="catalogue" id="catalogue">
+  <div class="wrap">
+    <div class="cat-head" data-reveal>
+      <div>
+        <span class="eyebrow">New &amp; notable</span>
+        <h2 class="serif">This season&rsquo;s list</h2>
+      </div>
+      <a class="ln mono" href="#" style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgb(var(--color-accent))">View all 312 titles &#8594;</a>
+    </div>
+    <div class="cat-grid" data-batch>
+      <article class="book">
+        <a class="plate" href="#"><span class="badge">New</span><img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&w=600&q=80" alt="Cover of a literary novel on a plain surface" loading="lazy"></a>
+        <div class="ttl">The Lantern Keepers</div>
+        <div class="auth">Iris Vandermeer</div>
+        <div class="meta"><span>Novel · 384pp</span><span class="pr">&pound;18</span></div>
+      </article>
+      <article class="book">
+        <a class="plate" href="#"><img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" alt="A hardback book with a textured cloth cover" loading="lazy"></a>
+        <div class="ttl">Salt and Almanac</div>
+        <div class="auth">Tomas Eira</div>
+        <div class="meta"><span>Essays · 256pp</span><span class="pr">&pound;15</span></div>
+      </article>
+      <article class="book">
+        <a class="plate" href="#"><span class="badge">Translated</span><img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80" alt="An open book resting on a stack of older volumes" loading="lazy"></a>
+        <div class="ttl">The Quiet Harbour</div>
+        <div class="auth">Lina Sørensen</div>
+        <div class="meta"><span>Fiction · 312pp</span><span class="pr">&pound;16</span></div>
+      </article>
+      <article class="book">
+        <a class="plate" href="#"><img src="https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=600&q=80" alt="A book lying open with sunlight across the pages" loading="lazy"></a>
+        <div class="ttl">Field Notes for a Long Winter</div>
+        <div class="auth">Margaret Ó Conaill</div>
+        <div class="meta"><span>Memoir · 298pp</span><span class="pr">&pound;17</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SPREAD ======================== -->
+<section class="spread" id="imprints">
+  <div class="wrap spread-grid">
+    <div class="spread-media" data-reveal>
+      <div class="ph"><img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=900&q=80" alt="A person reading at a desk surrounded by manuscripts" loading="lazy"></div>
+    </div>
+    <div class="spread-text" data-reveal>
+      <span class="eyebrow">How a book is made here</span>
+      <h2 class="serif">From manuscript to keepsake</h2>
+      <p class="lead">Every stage is deliberate. We treat the object and the text as one inseparable thing.</p>
+      <ul class="craft">
+        <li><span class="no">01</span><div><h3>Read aloud, then again</h3><p>Each manuscript is voiced in full before acquisition, so cadence and clarity decide what we publish.</p></div></li>
+        <li><span class="no">02</span><div><h3>Set by hand, kerned by eye</h3><p>Our compositors choose the face, the leading, and the margins to suit the book, never a house template.</p></div></li>
+        <li><span class="no">03</span><div><h3>Sewn, not glued</h3><p>Hardbacks are section-sewn and cloth-bound at the same northern mill we have used for twenty years.</p></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FIGURES ======================== -->
+<section class="figures">
+  <div class="wrap fig-grid" data-batch>
+    <div class="fig"><div class="num"><span class="count" data-to="312">0</span></div><div class="lbl">Titles in print</div></div>
+    <div class="fig"><div class="num"><span class="count" data-to="34">0</span></div><div class="lbl">Years publishing</div></div>
+    <div class="fig"><div class="num"><span class="count" data-to="27">0</span></div><div class="lbl">Languages translated</div></div>
+    <div class="fig"><div class="num"><span class="count" data-to="9">0</span><span class="suf">+</span></div><div class="lbl">Literary prizes won</div></div>
+  </div>
+</section>
+
+<!-- ======================== TESTIMONIAL ======================== -->
+<section class="quote">
+  <div class="wrap quote-grid">
+    <div class="quote-photo" data-reveal>
+      <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80" alt="Portrait of a reader holding a hardback book" loading="lazy">
+    </div>
+    <div data-reveal>
+      <blockquote class="serif">&ldquo;I have shelves full of books I will never reread. My <span class="hl">Vellum editions</span> are the ones I keep returning to, and the only ones I would carry out of a burning house.&rdquo;</blockquote>
+      <div class="by"><b>Eleanor Marsh</b> &nbsp;·&nbsp; Critic and founding member of the Reading Society</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== MEMBERSHIP ======================== -->
+<section class="members" id="members">
+  <div class="wrap">
+    <div class="members-head" data-reveal>
+      <span class="eyebrow center">The Reading Society</span>
+      <h2 class="serif">Become a member of the press</h2>
+    </div>
+    <div class="tiers" data-batch>
+      <div class="tier">
+        <div class="tn">Reader</div>
+        <div class="desc">For those who simply want first sight of every new book we publish.</div>
+        <div class="price">&pound;0<span> / always</span></div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Seasonal catalogue by post</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Early notice of new titles</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Members&rsquo; reading notes</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Join free</a>
+      </div>
+      <div class="tier pop">
+        <div class="tn">Subscriber</div>
+        <div class="desc">A new hardback delivered to your door every month, chosen by our editors.</div>
+        <div class="price">&pound;14<span> / month</span></div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> One signed first edition monthly</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Twenty per cent off the catalogue</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Invitations to author evenings</li>
+        </ul>
+        <a class="btn btn-primary" href="#">Subscribe</a>
+      </div>
+      <div class="tier">
+        <div class="tn">Patron</div>
+        <div class="desc">Support the press directly and help us commission the work that matters.</div>
+        <div class="price">&pound;40<span> / month</span></div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in Subscriber</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Your name in every colophon</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Annual archive print, hand-numbered</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Become a patron</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== CTA ======================== -->
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-card" data-reveal>
+      <span class="eyebrow">The colophon</span>
+      <h2 class="serif">Begin a shelf worth keeping</h2>
+      <p>Take the first book home this week. We will set the rest aside, season by season, for as long as you care to read.</p>
+      <div class="cta-actions">
+        <a class="btn btn-white magnetic" href="#catalogue">Browse the catalogue</a>
+        <a class="btn btn-line" href="#members">Join the society</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="name">Vellum</div>
+        <p>An independent press for books made to be kept. Published with patience since 1991.</p>
+        <form class="news" onsubmit="return false">
+          <input type="email" placeholder="Your email for the seasonal list" aria-label="Email address">
+          <button class="btn btn-primary" type="submit">Sign up</button>
+        </form>
+      </div>
+      <div class="foot-col">
+        <h4>Catalogue</h4>
+        <a href="#">Fiction</a><a href="#">Essays</a><a href="#">Poetry</a><a href="#">Translation</a>
+      </div>
+      <div class="foot-col">
+        <h4>The Press</h4>
+        <a href="#">Our story</a><a href="#">Editors</a><a href="#">Submissions</a><a href="#">Stockists</a>
+      </div>
+      <div class="foot-col">
+        <h4>Visit</h4>
+        <a href="#">The bookshop</a><a href="#">Author events</a><a href="#">Contact</a><a href="#">Press kit</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>&copy; 1991&ndash;2026 Vellum Press. Set in Fraunces &amp; Newsreader.</span>
+      <span>London &nbsp;·&nbsp; Printed on acid-free paper</span>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · <b>Vellum</b> · publishing</div>
+
+<!-- ======================== GSAP ======================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var nav = document.getElementById('nav');
+  var progress = document.getElementById('progress');
+  function onScroll() {
+    var st = window.pageYOffset || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+  var mm = gsap.matchMedia();
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    /* hero entrance — stately fade-rise */
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.12 })
+          .from('[data-hero-media]', { y: 40, autoAlpha: 0, duration: 1.1 }, '-=0.6')
+          .from('[data-float]', { y: 20, autoAlpha: 0, duration: 0.8 }, '-=0.5');
+
+    /* gentle parallax tilt on cover */
+    var stage = document.querySelector('[data-tilt]');
+    if (stage && finePointer) {
+      var cover = stage.querySelector('.cover');
+      var qrx = gsap.quickTo(cover, 'rotationY', { duration: 0.7, ease: 'power3' });
+      var qry = gsap.quickTo(cover, 'rotationX', { duration: 0.7, ease: 'power3' });
+      stage.addEventListener('pointermove', function (e) {
+        var r = stage.getBoundingClientRect();
+        qrx(((e.clientX - r.left) / r.width - 0.5) * 12);
+        qry(((e.clientY - r.top) / r.height - 0.5) * -10);
+      });
+      stage.addEventListener('pointerleave', function () { qrx(0); qry(0); });
+    }
+
+    /* scrubbed parallax drift on cover stage */
+    gsap.to('[data-tilt] .cover-back', { yPercent: 8, ease: 'none',
+      scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true } });
+
+    /* reveals */
+    gsap.set('[data-reveal]', { y: 30, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.12, ease: 'power3.out', overwrite: true }); }
+    });
+
+    /* batched grid children */
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 26, autoAlpha: 0 });
+      ScrollTrigger.create({ trigger: grid, start: 'top 86%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.85, stagger: 0.1, ease: 'power3.out' }); } });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-hero-media], [data-float], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      if (reduced) { el.textContent = to; return; }
+      ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true,
+        onEnter: function () { var o = { v: 0 }; gsap.to(o, { v: to, duration: 1.5, ease: 'power2.out',
+          onUpdate: function () { el.textContent = Math.round(o.v); }, onComplete: function () { el.textContent = to; } }); } });
+    });
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.2, y: (e.clientY - r.top - r.height / 2) * 0.3, duration: 0.4, ease: 'power3' });
+      });
+      btn.addEventListener('pointerleave', function () { gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power3' }); });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,p,li,[data-hero],[data-reveal],[data-batch] > *';
+  function isHidden(el){ var cs=getComputedStyle(el); if(cs.visibility==='hidden') return true; if(parseFloat(cs.opacity)<0.06) return true; return false; }
+  function force(el){ if(!isHidden(el)) return; el.style.setProperty('opacity','1','important'); el.style.setProperty('visibility','visible','important'); el.style.setProperty('transform','none','important'); }
+  var els; try{ els=[].slice.call(document.querySelectorAll(SEL)); }catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,p')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){ ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1500); } }); },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){ els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); }); },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=vellum&name=Vellum" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

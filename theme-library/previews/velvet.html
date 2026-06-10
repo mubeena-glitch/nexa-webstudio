@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Velvet — NEXA Theme Preview (Nightclub &amp; Lounge)</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     VELVET — design tokens (mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 16 8 28;
+    --color-surface: 26 14 44;
+    --color-surface-2: 38 20 62;
+    --color-ink: 245 236 255;
+    --color-muted: 182 158 208;
+    --color-line: 58 36 86;
+    --color-primary: 236 64 168;     /* magenta */
+    --color-on-primary: 16 6 22;
+    --color-accent: 236 64 168;
+    --color-accent2: 150 92 255;     /* violet */
+
+    --font-display: "Clash Display", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+
+    --maxw: 1280px;
+    --section: clamp(88px, 12vw, 168px);
+    --gutter: clamp(20px, 5vw, 72px);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 520ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 6px; }
+
+  .disp { font-family: var(--font-display); font-weight: 600; line-height: 1.02; letter-spacing: -0.02em; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(var(--color-primary)); }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18px); }
+  .glow-txt { text-shadow: 0 0 28px rgb(var(--color-primary) / .55); }
+
+  #progress { position: fixed; top: 0; left: 0; height: 2px; width: 0%; z-index: 90; background: linear-gradient(90deg, rgb(var(--color-accent2)), rgb(var(--color-primary))); box-shadow: 0 0 12px rgb(var(--color-primary)); }
+
+  .glow { position:absolute; border-radius:50%; filter: blur(100px); pointer-events:none; z-index:0; }
+
+  /* buttons */
+  .btn { display:inline-flex; align-items:center; gap: 9px; font-family: var(--font-body); font-weight: 700; font-size: 14px; letter-spacing: 0.02em; padding: 14px 26px; border-radius: 999px; border: 1px solid transparent; cursor: pointer; white-space:nowrap; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease); }
+  .btn-primary { background: rgb(var(--color-primary)); color: #fff; box-shadow: 0 0 0 0 rgb(var(--color-primary) / .6), 0 10px 36px -8px rgb(var(--color-primary) / .8); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 26px 2px rgb(var(--color-primary) / .7), 0 16px 44px -8px rgb(var(--color-primary)); }
+  .btn-ghost { border-color: rgb(var(--color-accent2) / .5); color: rgb(var(--color-ink)); background: rgb(var(--color-accent2) / .08); }
+  .btn-ghost:hover { border-color: rgb(var(--color-accent2)); transform: translateY(-2px); box-shadow: 0 0 22px -2px rgb(var(--color-accent2) / .6); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* NAV */
+  header.nav { position: sticky; top: 0; z-index: 70; background: rgb(var(--color-bg) / .7); backdrop-filter: blur(16px); border-bottom: 1px solid transparent; transition: border-color var(--dur) var(--ease); }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); }
+  .nav-inner { display:flex; align-items:center; justify-content:space-between; gap:24px; height: 74px; }
+  .wordmark { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: 0.02em; }
+  .wordmark .o { color: rgb(var(--color-primary)); text-shadow: 0 0 16px rgb(var(--color-primary)); }
+  .nav-links { display:flex; gap: 32px; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: rgb(var(--color-muted)); transition: color var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  @media (max-width: 880px){ .nav-links, .nav-actions .btn-ghost { display:none; } }
+
+  /* HERO */
+  .hero { position: relative; min-height: 100svh; display:flex; align-items:flex-end; overflow:hidden; }
+  .hero .bg { position:absolute; inset: -8% 0; z-index:0; }
+  .hero .bg img { width:100%; height:100%; object-fit: cover; filter: saturate(1.2) contrast(1.08) brightness(.5); will-change: transform; }
+  .hero .veil { position:absolute; inset:0; z-index:1; background: linear-gradient(180deg, rgb(16 8 28 / .6) 0%, rgb(16 8 28 / .2) 35%, rgb(16 8 28 / .92) 100%); }
+  .hero .glow.a { width: 560px; height: 560px; background: rgb(var(--color-primary)); top: 6%; left: -140px; opacity:.5; z-index:1; }
+  .hero .glow.b { width: 480px; height: 480px; background: rgb(var(--color-accent2)); top: 0; right: -120px; opacity:.45; z-index:1; }
+  .hero .content { position: relative; z-index: 2; width:100%; padding-block: clamp(60px, 12vh, 130px); }
+  .hero .tonight { display:inline-flex; align-items:center; gap: 10px; font-size: 12px; font-weight:600; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-ink)); border: 1px solid rgb(var(--color-primary) / .5); background: rgb(var(--color-primary) / .12); padding: 8px 16px; border-radius: 999px; }
+  .hero .tonight .pulse { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--color-primary)); box-shadow: 0 0 12px rgb(var(--color-primary)); animation: pulse 1.6s var(--ease) infinite; }
+  @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(.7);} }
+  .hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(52px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; margin-top: 26px; max-width: 13ch; }
+  .hero h1 .g { background: linear-gradient(100deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .row { display:flex; justify-content: space-between; align-items: flex-end; gap: 30px; margin-top: 38px; flex-wrap:wrap; }
+  .hero .desc { max-width: 40ch; color: rgb(var(--color-ink) / .86); font-size: 16px; }
+  .hero .ctrow { display:flex; gap: 14px; flex-wrap:wrap; }
+
+  /* MARQUEE */
+  .marq { border-block: 1px solid rgb(var(--color-line)); overflow:hidden; background: rgb(var(--color-surface) / .4); }
+  .marq .track { display:flex; gap: 50px; width: max-content; padding: 18px 0; animation: scroll 26s linear infinite; }
+  .marq span { font-family: var(--font-display); font-weight: 600; font-size: 22px; color: rgb(var(--color-ink)); white-space:nowrap; }
+  .marq span::before { content:"✶"; color: rgb(var(--color-primary)); margin-right: 50px; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* SECTION HEAD */
+  .sec { padding-block: var(--section); position: relative; }
+  .sec-head { display:flex; justify-content:space-between; align-items:flex-end; gap: 24px; flex-wrap:wrap; }
+  .sec-head h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(32px, 5vw, 68px); line-height: 1.0; letter-spacing: -0.02em; }
+  .sec-head p { margin-top: 12px; max-width: 44ch; }
+
+  /* RESIDENTS GRID */
+  .residents { display:grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: clamp(40px, 5vw, 64px); }
+  @media (max-width: 980px){ .residents { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px){ .residents { grid-template-columns: 1fr; } }
+  .dj { position: relative; border-radius: 20px; overflow:hidden; aspect-ratio: 3/4; }
+  .dj img { width:100%; height:100%; object-fit: cover; filter: saturate(1.1) brightness(.82); transition: transform 1.2s var(--ease), filter .6s var(--ease); }
+  .dj:hover img { transform: scale(1.06); filter: saturate(1.25) brightness(.95); }
+  .dj .vt { position:absolute; inset:0; background: linear-gradient(180deg, transparent 40%, rgb(16 8 28 / .9)); }
+  .dj .meta { position:absolute; left: 18px; right: 18px; bottom: 18px; z-index: 1; }
+  .dj .meta .nm { font-family: var(--font-display); font-weight: 600; font-size: 22px; }
+  .dj .meta .gr { font-size: 12px; color: rgb(var(--color-primary)); letter-spacing: 0.14em; text-transform: uppercase; margin-top: 4px; }
+  .dj .badge { position:absolute; top: 14px; left: 14px; z-index:1; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; background: rgb(var(--color-accent2) / .85); color:#fff; padding: 5px 10px; border-radius: 999px; }
+
+  /* GALLERY */
+  .gallery-sec { background: rgb(var(--color-surface) / .35); border-block: 1px solid rgb(var(--color-line)); }
+  .gallery { display:grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 13vw; gap: 12px; margin-top: clamp(40px, 5vw, 60px); }
+  @media (max-width: 880px){ .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 46vw; } }
+  .gallery figure { position: relative; overflow:hidden; border-radius: 14px; }
+  .gallery img { width:100%; height:100%; object-fit: cover; filter: saturate(1.1) brightness(.85); transition: transform 1.4s var(--ease), filter .6s var(--ease); }
+  .gallery figure:hover img { transform: scale(1.05); filter: saturate(1.25) brightness(1); }
+  .g-a { grid-column: span 4; grid-row: span 2; }
+  .g-b { grid-column: span 2; grid-row: span 1; }
+  .g-c { grid-column: span 2; grid-row: span 1; }
+  .g-d { grid-column: span 2; grid-row: span 2; }
+  .g-e { grid-column: span 2; grid-row: span 1; }
+  .g-f { grid-column: span 2; grid-row: span 1; }
+  @media (max-width: 880px){ .g-a,.g-b,.g-c,.g-d,.g-e,.g-f { grid-column: span 2; grid-row: span 1; } .g-a,.g-d { grid-row: span 2; } }
+
+  /* LINE-UP TABLE */
+  .lineup .list { margin-top: clamp(40px, 5vw, 60px); border-top: 1px solid rgb(var(--color-line)); }
+  .ev { display:grid; grid-template-columns: 92px 1fr auto auto; gap: 24px; align-items:center; padding: 26px 8px; border-bottom: 1px solid rgb(var(--color-line)); transition: background var(--dur) var(--ease), padding-inline var(--dur) var(--ease); }
+  .ev:hover { background: rgb(var(--color-surface) / .6); padding-inline: 18px; }
+  .ev .date { font-family: var(--font-display); font-weight: 600; line-height: 1; }
+  .ev .date .d { font-size: 30px; }
+  .ev .date .m { font-size: 12px; color: rgb(var(--color-primary)); letter-spacing: 0.12em; text-transform: uppercase; }
+  .ev .info h3 { font-family: var(--font-display); font-weight: 600; font-size: 22px; }
+  .ev .info p { font-size: 13.5px; color: rgb(var(--color-muted)); margin-top: 4px; }
+  .ev .tag { font-size: 11px; font-weight:700; letter-spacing: 0.12em; text-transform:uppercase; color: rgb(var(--color-accent2)); }
+  @media (max-width: 720px){ .ev { grid-template-columns: 72px 1fr; } .ev .tag, .ev .btn { display:none; } }
+
+  /* STATS */
+  .stats { border-block: 1px solid rgb(var(--color-line)); position: relative; overflow:hidden; }
+  .stats .glow.s { width: 600px; height: 360px; background: rgb(var(--color-accent2)); top: -180px; left: 50%; transform: translateX(-50%); opacity:.3; }
+  .stats .grid { position:relative; z-index:1; display:grid; grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 760px){ .stats .grid { grid-template-columns: repeat(2, 1fr); } }
+  .stats .cell { padding: clamp(44px, 7vh, 88px) 24px; text-align:center; border-right: 1px solid rgb(var(--color-line)); }
+  .stats .cell:last-child { border-right:none; }
+  @media (max-width: 760px){ .stats .cell:nth-child(2){ border-right:none; } .stats .cell:nth-child(-n+2){ border-bottom: 1px solid rgb(var(--color-line)); } }
+  .stats .n { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 5.5vw, 72px); letter-spacing: -0.02em; }
+  .stats .n .u { color: rgb(var(--color-primary)); }
+  .stats .l { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 14px; }
+
+  /* PRESS */
+  .press { text-align:center; }
+  .press .quote { font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 4vw, 52px); line-height: 1.2; max-width: 22ch; margin: 0 auto; }
+  .press .quote em { font-style: normal; color: rgb(var(--color-primary)); }
+  .press .by { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(var(--color-accent2)); margin-top: 28px; }
+
+  /* RSVP CTA */
+  .rsvp { position: relative; overflow:hidden; }
+  .rsvp .bg { position:absolute; inset:0; z-index:0; }
+  .rsvp .bg img { width:100%; height:100%; object-fit: cover; filter: saturate(1.1) brightness(.4); will-change: transform; }
+  .rsvp .veil { position:absolute; inset:0; z-index:1; background: linear-gradient(180deg, rgb(16 8 28 / .85), rgb(16 8 28 / .7)); }
+  .rsvp .inner { position: relative; z-index: 2; text-align:center; padding-block: clamp(80px, 14vh, 180px); padding-inline: var(--gutter); }
+  .rsvp h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(34px, 6vw, 84px); line-height: 1.0; letter-spacing: -0.02em; }
+  .rsvp h2 .g { background: linear-gradient(100deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); -webkit-background-clip:text; background-clip:text; color: transparent; }
+  .rsvp p { color: rgb(var(--color-ink) / .86); margin: 18px auto 0; max-width: 46ch; }
+  .rsvp form { display:flex; gap: 10px; max-width: 480px; margin: 34px auto 0; flex-wrap:wrap; justify-content:center; }
+  .rsvp input { flex:1; min-width: 240px; background: rgb(var(--color-surface) / .8); border: 1px solid rgb(var(--color-line)); color: rgb(var(--color-ink)); padding: 15px 18px; font-size: 15px; font-family: var(--font-body); border-radius: 14px; outline:none; }
+  .rsvp input::placeholder { color: rgb(var(--color-muted)); }
+  .rsvp input:focus-visible { border-color: rgb(var(--color-primary)); box-shadow: 0 0 0 3px rgb(var(--color-primary) / .25); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid rgb(var(--color-line)); padding-block: 60px 40px; }
+  .foot { display:grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 36px; }
+  @media (max-width: 760px){ .foot { grid-template-columns: 1fr 1fr; gap: 36px 24px; } }
+  .foot p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 32ch; margin-top: 14px; }
+  .foot h4 { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 16px; }
+  .foot a { display:block; font-size: 14px; color: rgb(var(--color-muted)); padding: 6px 0; transition: color var(--dur) var(--ease); }
+  .foot a:hover { color: rgb(var(--color-primary)); }
+  .bigmark { font-family: var(--font-display); font-weight: 700; font-size: clamp(56px, 17vw, 240px); letter-spacing: -0.03em; line-height: 1; text-align:center; padding-top: 60px; background: linear-gradient(180deg, rgb(var(--color-ink)), rgb(var(--color-primary)/.4)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .legal { display:flex; justify-content:space-between; padding-top: 28px; margin-top: 30px; border-top: 1px solid rgb(var(--color-line)); font-size: 12.5px; color: rgb(var(--color-muted)); flex-wrap:wrap; gap: 12px; }
+
+  .ribbon { position: fixed; bottom: 0; right: 0; z-index: 95; background: rgb(var(--color-primary)); color: #fff; font-family: var(--font-body); font-weight:700; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 14px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+  <div id="progress"></div>
+  <div class="ribbon">NEXA Theme · Velvet · nightlife</div>
+
+  <header class="nav" id="hdr">
+    <div class="wrap nav-inner">
+      <a class="wordmark" href="#">Velvet<span class="o">.</span></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#residents">Residents</a>
+        <a href="#gallery">The Room</a>
+        <a href="#lineup">What's On</a>
+        <a href="#tables">Tables</a>
+      </nav>
+      <div class="nav-actions" style="display:flex;gap:12px;align-items:center;">
+        <a href="#" class="btn btn-ghost">Guest list</a>
+        <a href="#tables" class="btn btn-primary">Book a table <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Velvet, after dark">
+    <div class="bg"><img id="heroImg" src="https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?w=1900&q=80&auto=format&fit=crop" alt="A crowded nightclub bathed in magenta and violet light" /></div>
+    <div class="veil"></div>
+    <div class="glow a"></div>
+    <div class="glow b"></div>
+    <div class="content wrap">
+      <span class="tonight" data-reveal><span class="pulse"></span>Open tonight · doors at 11pm</span>
+      <h1 data-reveal>Where the night <span class="g">never quite ends.</span></h1>
+      <div class="row">
+        <p class="desc" data-reveal>Three rooms, a resident roster that reads like a festival bill, and a sound system tuned until four in the morning. Welcome to the late hours.</p>
+        <div class="ctrow" data-reveal>
+          <a href="#lineup" class="btn btn-primary">See what's on <span class="arrow">→</span></a>
+          <a href="#tables" class="btn btn-ghost">Reserve a table</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marq" aria-hidden="true">
+    <div class="track">
+      <span>House</span><span>Disco</span><span>Late Sets</span><span>Live Vocals</span><span>Open till 4am</span><span>Three Rooms</span>
+      <span>House</span><span>Disco</span><span>Late Sets</span><span>Live Vocals</span><span>Open till 4am</span><span>Three Rooms</span>
+    </div>
+  </div>
+
+  <!-- RESIDENTS -->
+  <section class="sec" id="residents">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal>
+          <span class="eyebrow">The residents</span>
+          <h2 style="margin-top:14px;">The faces behind the floor.</h2>
+        </div>
+        <p class="lead" data-reveal>A rotating cast of selectors who have made Velvet their second home. Catch them most weekends across all three rooms.</p>
+      </div>
+      <div class="residents">
+        <article class="dj" data-reveal><span class="badge">Resident</span><img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=700&q=80&auto=format&fit=crop" alt="A DJ performing under coloured lights" loading="lazy"><div class="vt"></div><div class="meta"><div class="nm">Noor Halabi</div><div class="gr">Deep House</div></div></article>
+        <article class="dj" data-reveal><span class="badge">Resident</span><img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=700&q=80&auto=format&fit=crop" alt="A DJ at the decks in a smoky room" loading="lazy"><div class="vt"></div><div class="meta"><div class="nm">Theo Mensah</div><div class="gr">Disco · Edits</div></div></article>
+        <article class="dj" data-reveal><span class="badge">Resident</span><img src="https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=700&q=80&auto=format&fit=crop" alt="A performer silhouetted against stage light" loading="lazy"><div class="vt"></div><div class="meta"><div class="nm">Sable</div><div class="gr">Live Vocals</div></div></article>
+        <article class="dj" data-reveal><span class="badge">Resident</span><img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=700&q=80&auto=format&fit=crop" alt="A DJ raising a hand to the crowd" loading="lazy"><div class="vt"></div><div class="meta"><div class="nm">Kai Renner</div><div class="gr">Late Techno</div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="sec gallery-sec" id="gallery">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal>
+          <span class="eyebrow">The room</span>
+          <h2 style="margin-top:14px;">Step inside.</h2>
+        </div>
+        <a href="#" class="btn btn-ghost" data-reveal>Plan a visit <span class="arrow">→</span></a>
+      </div>
+      <div class="gallery">
+        <figure class="g-a" data-tile><img src="https://images.unsplash.com/photo-1545128485-c400e7702796?w=1100&q=80&auto=format&fit=crop" alt="The main room packed under a wash of pink light" loading="lazy"></figure>
+        <figure class="g-b" data-tile><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80&auto=format&fit=crop" alt="A singer on stage with a microphone" loading="lazy"></figure>
+        <figure class="g-c" data-tile><img src="https://images.unsplash.com/photo-1438557068880-c5f474830377?w=700&q=80&auto=format&fit=crop" alt="Hands raised on the dance floor" loading="lazy"></figure>
+        <figure class="g-d" data-tile><img src="https://images.unsplash.com/photo-1551370863-f9c1ba7e3a30?w=700&q=80&auto=format&fit=crop" alt="A bartender mixing cocktails in neon light" loading="lazy"></figure>
+        <figure class="g-e" data-tile><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=700&q=80&auto=format&fit=crop" alt="A close view of stage lighting rigs" loading="lazy"></figure>
+        <figure class="g-f" data-tile><img src="https://images.unsplash.com/photo-1598387993441-a364f854c3e1?w=700&q=80&auto=format&fit=crop" alt="A lounge booth lit in violet" loading="lazy"></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- LINE-UP -->
+  <section class="sec lineup" id="lineup">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal>
+          <span class="eyebrow">What's on</span>
+          <h2 style="margin-top:14px;">The weeks ahead.</h2>
+        </div>
+        <p class="lead" data-reveal>Tickets release on the first of each month. Members get first refusal, then the general list opens.</p>
+      </div>
+      <div class="list">
+        <div class="ev" data-reveal><div class="date"><div class="d">14</div><div class="m">Jun</div></div><div class="info"><h3>Midnight Disco with Theo Mensah</h3><p>Main Room · 11pm till late</p></div><div class="tag">Selling fast</div><a href="#" class="btn btn-ghost">Tickets</a></div>
+        <div class="ev" data-reveal><div class="date"><div class="d">20</div><div class="m">Jun</div></div><div class="info"><h3>Sable, Live · Vocal House Night</h3><p>The Velvet Room · doors 10pm</p></div><div class="tag">Limited</div><a href="#" class="btn btn-ghost">Tickets</a></div>
+        <div class="ev" data-reveal><div class="date"><div class="d">27</div><div class="m">Jun</div></div><div class="info"><h3>After Hours with Kai Renner</h3><p>Basement · midnight till 4am</p></div><div class="tag">On sale</div><a href="#" class="btn btn-ghost">Tickets</a></div>
+        <div class="ev" data-reveal><div class="date"><div class="d">05</div><div class="m">Jul</div></div><div class="info"><h3>Velvet Pride · All Rooms Open</h3><p>Whole venue · 9pm till late</p></div><div class="tag">New</div><a href="#" class="btn btn-ghost">Tickets</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="glow s"></div>
+    <div class="grid">
+      <div class="cell" data-reveal><div class="n"><span data-count="3">0</span></div><div class="l">Rooms, one ticket</div></div>
+      <div class="cell" data-reveal><div class="n"><span data-count="60">0</span><span class="u">+</span></div><div class="l">Residents and guests</div></div>
+      <div class="cell" data-reveal><div class="n"><span data-count="4">0</span><span class="u">am</span></div><div class="l">Last call, every weekend</div></div>
+      <div class="cell" data-reveal><div class="n"><span data-count="12">0</span></div><div class="l">Years on the floor</div></div>
+    </div>
+  </section>
+
+  <!-- PRESS -->
+  <section class="sec press">
+    <div class="wrap">
+      <p class="quote disp" data-reveal>“The best <em>late room</em> in the city, and it isn't close.”</p>
+      <div class="by" data-reveal>Mixmag · Club of the Year</div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section class="rsvp" id="tables">
+    <div class="bg" aria-hidden="true"><img class="parallax-img" src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=1600&q=80&auto=format&fit=crop" alt="" loading="lazy"></div>
+    <div class="veil"></div>
+    <div class="inner">
+      <h2 class="disp" data-reveal>Join the <span class="g">guest list.</span></h2>
+      <p data-reveal>Priority entry, table offers, and first access to every line-up before it goes public. Drop your email and we will keep you in the loop.</p>
+      <form data-reveal onsubmit="return false">
+        <label for="rsvpEmail" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+        <input id="rsvpEmail" type="email" placeholder="your@email.com" />
+        <button type="submit" class="btn btn-primary">Get on the list <span class="arrow">→</span></button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <a class="wordmark" href="#">Velvet<span class="o">.</span></a>
+          <p>Three rooms, late hours, and a sound system worth the trip. The corner of the night that stays open.</p>
+        </div>
+        <div><h4>Visit</h4><a href="#">What's On</a><a href="#">Tables</a><a href="#">Guest List</a><a href="#">Membership</a></div>
+        <div><h4>The Venue</h4><a href="#">The Rooms</a><a href="#">Private Hire</a><a href="#">Residents</a><a href="#">Careers</a></div>
+        <div><h4>Follow</h4><a href="#">Instagram</a><a href="#">Resident Advisor</a><a href="#">SoundCloud</a><a href="#">Newsletter</a></div>
+      </div>
+      <div class="bigmark">VELVET</div>
+      <div class="legal">
+        <span>© 2026 Velvet Late Lounge</span>
+        <span>Built with NEXA Web Studio</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+  (function () {
+    const hdr = document.getElementById('hdr'), prog = document.getElementById('progress');
+    const onScroll = () => {
+      hdr.classList.toggle('scrolled', scrollY > 30);
+      const h = document.documentElement;
+      prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+    };
+    onScroll();
+    addEventListener('scroll', onScroll, { passive: true });
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasGSAP = !!(window.gsap && window.ScrollTrigger);
+
+    const runCount = (el) => {
+      const target = parseFloat(el.dataset.count);
+      if (reducedMotion) { el.textContent = target; return; }
+      const t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - t0) / 1500, 1), v = target * (1 - Math.pow(1 - p, 3));
+        el.textContent = Math.round(v);
+        if (p < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    };
+
+    if (!hasGSAP || reducedMotion) {
+      const cIO = new IntersectionObserver((es) => {
+        es.forEach(e => { if (e.isIntersecting) { runCount(e.target); cIO.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      document.querySelectorAll('[data-count]').forEach(el => cIO.observe(el));
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    const ease = 'power3.out';
+    const mm = gsap.matchMedia();
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      // hero intro
+      gsap.set('.hero [data-reveal]', { opacity: 0, y: 30 });
+      gsap.to('.hero [data-reveal]', { opacity: 1, y: 0, duration: 1.1, ease, stagger: 0.14, delay: 0.15 });
+
+      // hero parallax
+      gsap.to('#heroImg', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+      // reveals
+      gsap.set('[data-reveal]:not(.hero [data-reveal])', { opacity: 0, y: 34 });
+      ScrollTrigger.batch('[data-reveal]:not(.hero [data-reveal])', {
+        start: 'top 88%',
+        onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 1.0, ease, stagger: 0.09, overwrite: true }),
+        once: true
+      });
+
+      // gallery tiles
+      gsap.set('[data-tile]', { clipPath: 'inset(0 0 100% 0)' });
+      ScrollTrigger.batch('[data-tile]', {
+        start: 'top 90%',
+        onEnter: (els) => gsap.to(els, { clipPath: 'inset(0 0 0% 0)', duration: 1.2, ease, stagger: 0.08, overwrite: true }),
+        once: true
+      });
+
+      // rsvp parallax
+      gsap.utils.toArray('.parallax-img').forEach((img) => {
+        gsap.fromTo(img, { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: img.closest('section') || img, start: 'top bottom', end: 'bottom top', scrub: true } });
+      });
+
+      gsap.utils.toArray('[data-count]').forEach((el) => {
+        ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => runCount(el) });
+      });
+    });
+
+    if (matchMedia('(pointer:fine)').matches) {
+      document.querySelectorAll('.btn-primary').forEach(b => {
+        b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * 0.14, y: (e.clientY - r.top - r.height / 2) * 0.22, duration: 0.4, ease: 'power2.out' }); });
+        b.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, duration: 0.5, ease: 'power2.out' }));
+      });
+    }
+  })();
+  </script>
+  <script>
+  /* === NEXA visibility failsafe === */
+  (function(){
+    var SEL='h1,h2,h3,h4,p,li,[data-reveal],[data-tile]';
+    function isHidden(el){
+      var cs=getComputedStyle(el);
+      if(cs.visibility==='hidden') return true;
+      if(parseFloat(cs.opacity)<0.06) return true;
+      var cp=cs.clipPath||cs.webkitClipPath||'';
+      if(/inset\([^)]*100%/.test(cp)) return true;
+      return false;
+    }
+    function force(el){
+      if(!isHidden(el)) return;
+      el.style.setProperty('opacity','1','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('transform','none','important');
+      el.style.setProperty('clip-path','none','important');
+      el.style.setProperty('-webkit-clip-path','none','important');
+    }
+    var els;
+    try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+    catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,p')); }
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(ents){
+        ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+      },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+      els.forEach(function(el){ io.observe(el); });
+    } else { els.forEach(force); }
+    window.addEventListener('load',function(){ setTimeout(function(){
+      els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+    },2600); });
+  })();
+  </script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=velvet&name=Velvet" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glacier — NEXA Theme Preview (Medical Aesthetics / Dermatology)</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     GLACIER — design tokens (1:1 mirror of glacier.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 250 252 254;
+    --color-surface: 242 247 251;
+    --color-surface-2: 234 241 247;
+    --color-ink: 23 38 50;
+    --color-muted: 98 116 130;
+    --color-line: 219 230 238;
+    --color-primary: 44 134 184;
+    --color-on-primary: 255 255 255;
+    --color-accent: 44 134 184;
+    --color-accent2: 92 178 178;
+
+    --font-display: "Cabinet Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --display-tracking: -0.015em;
+
+    --space-section: clamp(86px, 11vw, 148px);
+    --gutter: clamp(20px, 5vw, 64px);
+
+    --radius-card: 16px;
+    --radius-button: 10px;
+    --radius-input: 10px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(23 38 50 / 0.04), 0 12px 28px -16px rgb(23 38 50 / 0.14);
+    --shadow-elevated: 0 2px 4px rgb(23 38 50 / 0.05), 0 28px 54px -20px rgb(23 38 50 / 0.20);
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 460ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgb(var(--color-primary));
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ""; width: 22px; height: 1px; background: rgb(var(--color-primary)); }
+  .eyebrow.center { justify-content: center; }
+  .disp { font-family: var(--font-display); font-weight: 700; letter-spacing: var(--display-tracking); line-height: 1.06; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18px); }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 6px; }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 80;
+    background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2)));
+  }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-body);
+    font-weight: 600; font-size: 15px; padding: 13px 24px; border-radius: var(--radius-button);
+    border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+      background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary));
+    box-shadow: 0 1px 2px rgb(23 38 50 / .1), 0 10px 22px -10px rgb(var(--color-primary) / .55); }
+  .btn-primary:hover { box-shadow: 0 2px 4px rgb(23 38 50 / .12), 0 16px 30px -10px rgb(var(--color-primary) / .65); transform: translateY(-2px); }
+  .btn-ghost { border-color: rgb(var(--color-line)); color: rgb(var(--color-ink)); background: rgb(var(--color-bg)); box-shadow: var(--shadow-card); }
+  .btn-ghost:hover { border-color: rgb(var(--color-primary) / .45); transform: translateY(-2px); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     NAV
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 70;
+    background: rgb(var(--color-bg) / .82);
+    backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); box-shadow: 0 1px 0 rgb(var(--color-line) / .6); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 70px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; }
+  .wordmark .glyph {
+    width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center;
+    background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent2)));
+    color: #fff; box-shadow: 0 6px 14px -6px rgb(var(--color-primary) / .7);
+  }
+  .nav-links { display: flex; align-items: center; gap: 30px; }
+  .nav-links a { font-size: 15px; color: rgb(var(--color-muted)); font-weight: 500; position: relative; transition: color var(--dur) var(--ease); }
+  .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -6px; height: 1.5px; background: rgb(var(--color-primary)); transition: right var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-links a:hover::after { right: 0; }
+  .nav-actions { display: flex; align-items: center; gap: 14px; }
+  .nav-actions .signin { font-size: 15px; font-weight: 600; color: rgb(var(--color-ink)); }
+  .nav-actions .btn { padding: 10px 18px; }
+  @media (max-width: 900px) { .nav-links, .nav-actions .signin { display: none; } }
+
+  /* ============================================================
+     HERO — clinical split, calm, image with credentials bar below
+     ============================================================ */
+  .hero { position: relative; padding-top: clamp(48px, 7vw, 88px); padding-bottom: clamp(48px, 7vw, 88px); overflow: hidden; }
+  .hero-wash { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(50% 46% at 84% 14%, rgb(var(--color-accent2) / .14), transparent 70%),
+      radial-gradient(46% 50% at 4% 70%, rgb(var(--color-primary) / .08), transparent 72%); }
+  .hero-grid { position: relative; display: grid; grid-template-columns: 1.04fr 0.96fr; gap: clamp(36px, 5vw, 70px); align-items: center; }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 9px; padding: 7px 15px 7px 9px;
+    border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-pill);
+    background: rgb(var(--color-bg)); box-shadow: var(--shadow-card); font-size: 13px; font-weight: 500;
+  }
+  .hero-pill .tag { font-family: var(--font-mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); }
+  .hero h1 { font-size: clamp(40px, 5.4vw, 66px); margin: 22px 0 0; max-width: 15ch; }
+  .hero h1 .accent { color: rgb(var(--color-primary)); }
+  .hero .lead { margin: 20px 0 0; max-width: 46ch; }
+  .hero-cta { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+  .hero-creds { display: flex; align-items: center; gap: 22px; margin-top: 30px; flex-wrap: wrap; }
+  .hero-creds .cd { display: inline-flex; align-items: center; gap: 9px; font-size: 13px; color: rgb(var(--color-muted)); font-weight: 500; }
+  .hero-creds .cd svg { color: rgb(var(--color-primary)); }
+
+  .hero-media { position: relative; }
+  .hero-frame { position: relative; border-radius: var(--radius-card); overflow: hidden; aspect-ratio: 4/5; box-shadow: var(--shadow-elevated); border: 1px solid rgb(var(--color-line)); }
+  .hero-frame img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-card {
+    position: absolute; left: -16px; bottom: 30px; z-index: 4; display: grid; gap: 9px;
+    background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); border-radius: 14px; padding: 16px 18px; box-shadow: var(--shadow-elevated); min-width: 188px;
+  }
+  .hero-card .hl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .hero-card .row { display: flex; align-items: center; gap: 10px; }
+  .hero-card .av { width: 30px; height: 30px; border-radius: 999px; background-size: cover; background-position: center; }
+  .hero-card .nm { font-size: 13px; font-weight: 600; }
+  .hero-card .rl { font-size: 11px; color: rgb(var(--color-muted)); }
+  .hero-card .meter { height: 6px; border-radius: 999px; background: rgb(var(--color-surface-2)); overflow: hidden; }
+  .hero-card .meter span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); width: 88%; }
+  .hero-card .mt { font-size: 11px; color: rgb(var(--color-muted)); }
+  .hero-chip {
+    position: absolute; right: -14px; top: 32px; z-index: 4; display: flex; align-items: center; gap: 11px;
+    background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); border-radius: 14px; padding: 12px 16px; box-shadow: var(--shadow-elevated);
+  }
+  .hero-chip .ic { width: 38px; height: 38px; border-radius: 11px; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); display: grid; place-items: center; }
+  .hero-chip .ti { font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .hero-chip .su { font-size: 11px; color: rgb(var(--color-muted)); }
+  @media (max-width: 540px) { .hero-card { left: 4px; } .hero-chip { right: 2px; } }
+
+  /* ============================================================
+     CREDENTIAL / LOGO BAR
+     ============================================================ */
+  .logos { padding: 4px 0 4px; }
+  .logos .cap { text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 5vw, 56px); flex-wrap: wrap; margin-top: 24px; }
+  .logo-row .lm { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; color: rgb(var(--color-muted)); opacity: .76; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .logo-row .lm:hover { opacity: 1; color: rgb(var(--color-ink)); }
+  .logo-row .lm svg { color: rgb(var(--color-primary)); }
+
+  /* ============================================================
+     TREATMENT GRID (bento alternative)
+     ============================================================ */
+  .treat { padding: var(--space-section) 0; }
+  .treat-head { text-align: center; max-width: 620px; margin: 0 auto 48px; }
+  .treat-head h2 { font-size: clamp(30px, 3.6vw, 46px); margin: 16px 0 12px; }
+  .treat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 880px) { .treat-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .treat-grid { grid-template-columns: 1fr; } }
+  .tcard {
+    border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-bg));
+    padding: 26px 24px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 11px;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .tcard:hover { transform: translateY(-4px); box-shadow: var(--shadow-elevated); border-color: rgb(var(--color-primary) / .35); }
+  .tcard .ci { width: 48px; height: 48px; border-radius: 13px; background: rgb(var(--color-primary) / .1); color: rgb(var(--color-primary)); display: grid; place-items: center; }
+  .tcard h3 { font-family: var(--font-display); font-weight: 700; font-size: 19px; }
+  .tcard p { color: rgb(var(--color-muted)); font-size: 14.5px; }
+  .tcard .meta { margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: rgb(var(--color-muted)); }
+  .tcard .meta .du { color: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     RESULTS SHOWCASE (full-bleed image band)
+     ============================================================ */
+  .results { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .6); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .results-grid { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: clamp(36px, 5vw, 72px); align-items: center; }
+  @media (max-width: 920px) { .results-grid { grid-template-columns: 1fr; } }
+  .results-text h2 { font-size: clamp(28px, 3.4vw, 42px); margin: 16px 0 14px; max-width: 16ch; }
+  .results-text .lead { max-width: 44ch; }
+  .res-list { list-style: none; margin-top: 26px; display: grid; gap: 16px; }
+  .res-list li { display: flex; gap: 14px; align-items: flex-start; }
+  .res-list .rn { flex: none; width: 34px; height: 34px; border-radius: 10px; background: rgb(var(--color-primary) / .1); color: rgb(var(--color-primary)); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 14px; }
+  .res-list .rt { font-weight: 600; font-size: 15px; }
+  .res-list .rd { color: rgb(var(--color-muted)); font-size: 14px; }
+  .results-media { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .results-media .rm { border-radius: var(--radius-card); overflow: hidden; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-card); position: relative; aspect-ratio: 4/5; }
+  .results-media .rm img { width: 100%; height: 100%; object-fit: cover; }
+  .results-media .rm .lab { position: absolute; left: 12px; top: 12px; padding: 5px 11px; border-radius: 999px; background: rgb(var(--color-bg) / .94); font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: rgb(var(--color-primary)); box-shadow: var(--shadow-card); }
+  .results-media .rm:nth-child(2) { margin-top: 30px; }
+
+  /* ============================================================
+     ALTERNATING SPLITS
+     ============================================================ */
+  .splits { padding: var(--space-section) 0; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; padding: clamp(40px, 6vw, 72px) 0; }
+  .split + .split { border-top: 1px solid rgb(var(--color-line)); }
+  .split:nth-child(even) .split-media { order: 2; }
+  .split:nth-child(even) .split-text { order: 1; }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split .split-media, .split .split-text { order: 0 !important; } }
+  .split-text h2 { font-size: clamp(28px, 3.2vw, 38px); margin: 16px 0 14px; max-width: 17ch; }
+  .split-text .lead { max-width: 44ch; }
+  .checks { list-style: none; margin-top: 24px; display: grid; gap: 13px; }
+  .checks li { display: flex; align-items: flex-start; gap: 11px; font-size: 15px; }
+  .checks li .ck { flex: none; width: 22px; height: 22px; border-radius: 999px; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); display: grid; place-items: center; margin-top: 1px; }
+  .split-media { position: relative; }
+  .split-media .ph { border-radius: var(--radius-card); border: 1px solid rgb(var(--color-line)); overflow: hidden; box-shadow: var(--shadow-elevated); aspect-ratio: 5/4; }
+  .split-media .ph img { width: 100%; height: 100%; object-fit: cover; }
+  .split-media .tagchip { position: absolute; bottom: 16px; left: 16px; padding: 8px 13px; border-radius: 999px; background: rgb(var(--color-bg) / .95); border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-card); font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+  .split-media .tagchip .dot { width: 8px; height: 8px; border-radius: 999px; background: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     STATS BAND
+     ============================================================ */
+  .metrics { padding: clamp(60px, 7vw, 92px) 0; background: rgb(var(--color-primary) / .06); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; text-align: center; }
+  @media (max-width: 760px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; } }
+  .metric .num { font-family: var(--font-display); font-weight: 800; font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -0.02em; line-height: 1; }
+  .metric .num .suf { color: rgb(var(--color-primary)); }
+  .metric .lbl { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 10px; }
+
+  /* ============================================================
+     PRICING
+     ============================================================ */
+  .pricing { padding: var(--space-section) 0; }
+  .pricing-head { text-align: center; max-width: 600px; margin: 0 auto 50px; }
+  .pricing-head h2 { font-size: clamp(30px, 3.6vw, 44px); margin: 16px 0 12px; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; align-items: stretch; }
+  @media (max-width: 900px) { .tiers { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+  .tier { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-bg)); padding: 30px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 8px; transition: transform var(--dur) var(--ease); }
+  .tier.pop { border-color: rgb(var(--color-primary)); box-shadow: var(--shadow-elevated); position: relative; transform: translateY(-8px); }
+  @media (max-width: 900px) { .tier.pop { transform: none; } }
+  .tier .badge-pop { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; background: rgb(var(--color-primary)); color: #fff; padding: 5px 13px; border-radius: 999px; }
+  .tier .tn { font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+  .tier .desc { color: rgb(var(--color-muted)); font-size: 13px; min-height: 38px; }
+  .tier .price { font-family: var(--font-display); font-weight: 800; font-size: 44px; letter-spacing: -0.02em; margin: 12px 0 2px; }
+  .tier .price span { font-size: 15px; font-weight: 500; color: rgb(var(--color-muted)); }
+  .tier ul { list-style: none; display: grid; gap: 11px; margin: 18px 0 22px; }
+  .tier ul li { display: flex; gap: 10px; font-size: 14px; align-items: flex-start; }
+  .tier ul li svg { flex: none; color: rgb(var(--color-accent2)); margin-top: 3px; }
+  .tier .btn { width: 100%; justify-content: center; margin-top: auto; }
+
+  /* ============================================================
+     TESTIMONIAL
+     ============================================================ */
+  .quote { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .6); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .quote-grid { display: grid; grid-template-columns: 280px 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; max-width: 980px; margin: 0 auto; }
+  @media (max-width: 760px) { .quote-grid { grid-template-columns: 1fr; text-align: center; } }
+  .quote-photo { border-radius: var(--radius-card); overflow: hidden; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); aspect-ratio: 4/5; }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .quote blockquote { font-family: var(--font-display); font-weight: 500; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.32; letter-spacing: -0.01em; }
+  .quote blockquote .hl { color: rgb(var(--color-primary)); }
+  .quote .by { margin-top: 22px; }
+  .quote .by .n { font-weight: 600; }
+  .quote .by .r { color: rgb(var(--color-muted)); font-size: 14px; }
+  .quote .stars { color: rgb(var(--color-primary)); margin-bottom: 18px; display: inline-flex; gap: 4px; }
+
+  /* ============================================================
+     CTA
+     ============================================================ */
+  .cta { padding: var(--space-section) 0; }
+  .cta-card { position: relative; overflow: hidden; border-radius: 24px; padding: clamp(44px, 6vw, 80px); text-align: center; color: #fff; background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(18 86 124)); box-shadow: var(--shadow-elevated); }
+  .cta-card::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 82% 12%, rgb(var(--color-accent2) / .45), transparent 48%); pointer-events: none; }
+  .cta-card h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 3.6vw, 48px); letter-spacing: -0.02em; position: relative; }
+  .cta-card p { color: rgb(255 255 255 / .85); margin: 16px auto 0; max-width: 46ch; position: relative; }
+  .cta-card .cta-actions { display: flex; gap: 14px; justify-content: center; margin-top: 30px; flex-wrap: wrap; position: relative; }
+  .cta-card .btn-white { background: #fff; color: rgb(var(--color-primary)); }
+  .cta-card .btn-white:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -10px rgb(0 0 0 / .35); }
+  .cta-card .btn-line { border-color: rgb(255 255 255 / .45); color: #fff; background: transparent; }
+  .cta-card .btn-line:hover { border-color: #fff; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: clamp(56px, 7vw, 88px) 0 40px; border-top: 1px solid rgb(var(--color-line)); }
+  .foot-top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 36px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wordmark { margin-bottom: 14px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 32ch; margin-bottom: 18px; }
+  .news { display: flex; gap: 8px; max-width: 340px; }
+  .news input { flex: 1; padding: 12px 15px; border-radius: var(--radius-input); border: 1px solid rgb(var(--color-line)); font-family: var(--font-body); font-size: 14px; background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); }
+  .news input::placeholder { color: rgb(var(--color-muted)); }
+  .news .btn { padding: 12px 16px; }
+  .foot-col h4 { font-family: var(--font-display); font-weight: 700; font-size: 14px; margin-bottom: 14px; }
+  .foot-col a { display: block; color: rgb(var(--color-muted)); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-ink)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; }
+  .foot-bot .cp { color: rgb(var(--color-muted)); font-size: 13px; }
+  .foot-bot .soc { display: flex; gap: 10px; }
+  .foot-bot .soc a { width: 36px; height: 36px; border-radius: 9px; border: 1px solid rgb(var(--color-line)); display: grid; place-items: center; color: rgb(var(--color-muted)); transition: all var(--dur) var(--ease); }
+  .foot-bot .soc a:hover { color: rgb(var(--color-primary)); border-color: rgb(var(--color-primary) / .4); }
+
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em;
+    background: rgb(var(--color-ink)); color: #fff; padding: 8px 13px; border-radius: 999px;
+    box-shadow: var(--shadow-elevated); opacity: .92;
+  }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#" aria-label="Lumière Dermatology home">
+      <span class="glyph" aria-hidden="true">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3c2.5 3.5 5 6 5 9a5 5 0 11-10 0c0-3 2.5-5.5 5-9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </span>
+      Lumière
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#treatments">Treatments</a>
+      <a href="#results">Results</a>
+      <a href="#approach">Our approach</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#reviews">Reviews</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="signin" href="#">Patient login</a>
+      <a class="btn btn-primary magnetic" href="#">Book consultation</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="hero">
+  <div class="hero-wash" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <span class="hero-pill" data-hero><span class="tag">CQC</span> Registered and consultant-led clinic</span>
+      <h1 class="disp" data-hero>Clear, healthy skin, <span class="accent">guided by experts</span>.</h1>
+      <p class="lead" data-hero>Lumière is a consultant-led dermatology and aesthetics clinic. Every treatment begins with a proper skin assessment, so you get a plan built for your skin, not a one-size menu.</p>
+      <div class="hero-cta" data-hero>
+        <a class="btn btn-primary magnetic" href="#">Book a consultation <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#treatments">View treatments</a>
+      </div>
+      <div class="hero-creds" data-hero>
+        <span class="cd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> GMC-registered dermatologists</span>
+        <span class="cd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> 14 years in practice</span>
+        <span class="cd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg> 4.9 patient rating</span>
+      </div>
+    </div>
+
+    <div class="hero-media" data-hero-media>
+      <div class="hero-frame" data-parallax-stage>
+        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=900&q=80" alt="Dermatologist examining a patient&#39;s skin under clinic lighting">
+      </div>
+      <div class="hero-card" aria-hidden="true" data-parallax="22">
+        <span class="hl">Skin assessment</span>
+        <div class="row">
+          <span class="av" style="background-image:url('https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=80&q=80')"></span>
+          <span><span class="nm">Dr Amara Khan</span><br><span class="rl">Consultant dermatologist</span></span>
+        </div>
+        <span class="meter"><span></span></span>
+        <span class="mt">Hydration &amp; barrier &middot; 88% improved</span>
+      </div>
+      <div class="hero-chip" aria-hidden="true" data-parallax="34">
+        <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg></span>
+        <span><span class="ti">Same-week</span><br><span class="su">Consult appointments</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== LOGO BAR ======================== -->
+<section class="logos">
+  <div class="wrap">
+    <p class="cap" data-reveal>Accredited and featured by</p>
+    <div class="logo-row" data-batch>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 6 .8-4.5 4.2L18 20l-6-3.4L6 20l1.5-6.9L3 8.8 9 8l3-6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save Face</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3c2.5 3.5 5 6 5 9a5 5 0 11-10 0c0-3 2.5-5.5 5-9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> BAD</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v10M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> CQC</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/></svg> JCCP</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> GMC</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 16c4-10 12-10 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Vogue</span>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TREATMENT GRID =================== -->
+<section class="treat" id="treatments">
+  <div class="wrap">
+    <div class="treat-head" data-reveal>
+      <span class="eyebrow center">Treatments</span>
+      <h2 class="disp">Evidence-led care for every skin concern</h2>
+      <p class="lead">From medical dermatology to refined aesthetics, each treatment is delivered by a registered clinician and tailored at consultation.</p>
+    </div>
+    <div class="treat-grid" data-batch>
+      <article class="tcard">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg></span>
+        <h3>Acne &amp; scarring</h3>
+        <p>Prescription-grade plans, peels and laser resurfacing to calm active acne and soften old scarring.</p>
+        <span class="meta"><span>Medical</span><span class="du">45 min</span></span>
+      </article>
+      <article class="tcard">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3>Pigmentation</h3>
+        <p>Targeted light therapy and topical regimes that fade sun damage and even out skin tone safely.</p>
+        <span class="meta"><span>Aesthetic</span><span class="du">30 min</span></span>
+      </article>
+      <article class="tcard">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12c3-6 11-6 14 0-3 6-11 6-14 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.4" stroke="currentColor" stroke-width="2"/></svg></span>
+        <h3>Mole checks</h3>
+        <p>Full-body dermoscopy and digital mapping for early detection and complete peace of mind.</p>
+        <span class="meta"><span>Medical</span><span class="du">40 min</span></span>
+      </article>
+      <article class="tcard">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-7-10a5 5 0 0110-1 5 5 0 0110 1c0 5.5-7 10-7 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+        <h3>Skin rejuvenation</h3>
+        <p>Microneedling, polynucleotides and bespoke facials that rebuild collagen and restore glow.</p>
+        <span class="meta"><span>Aesthetic</span><span class="du">60 min</span></span>
+      </article>
+      <article class="tcard">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 20l8-16 8 16" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M7 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3>Anti-wrinkle</h3>
+        <p>Subtle, natural-looking results from clinicians who prioritise restraint over overcorrection.</p>
+        <span class="meta"><span>Aesthetic</span><span class="du">20 min</span></span>
+      </article>
+      <article class="tcard">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3>Eczema &amp; rosacea</h3>
+        <p>Long-term management for inflammatory conditions, with regimes that actually fit your routine.</p>
+        <span class="meta"><span>Medical</span><span class="du">45 min</span></span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- =================== RESULTS SHOWCASE =================== -->
+<section class="results" id="results">
+  <div class="wrap">
+    <div class="results-grid">
+      <div class="results-text" data-reveal>
+        <span class="eyebrow">Real outcomes</span>
+        <h2 class="disp">Visible results, measured at every visit</h2>
+        <p class="lead">We photograph and grade your skin at each appointment, so progress is something you can see rather than something we simply claim.</p>
+        <ul class="res-list">
+          <li><span class="rn">01</span><span><span class="rt">Assess</span><br><span class="rd">A clinical skin analysis maps texture, tone and barrier health.</span></span></li>
+          <li><span class="rn">02</span><span><span class="rt">Treat</span><br><span class="rd">A staged plan, reviewed and adjusted as your skin responds.</span></span></li>
+          <li><span class="rn">03</span><span><span class="rt">Maintain</span><br><span class="rd">A simple at-home routine to protect the results long term.</span></span></li>
+        </ul>
+      </div>
+      <div class="results-media" data-reveal>
+        <div class="rm"><span class="lab">Week 0</span><img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=600&q=80" alt="Close-up of skin texture at the start of a treatment course" loading="lazy"></div>
+        <div class="rm"><span class="lab">Week 12</span><img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80" alt="Close-up of clearer, more even skin after a treatment course" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== ALTERNATING SPLITS =================== -->
+<section class="splits" id="approach">
+  <div class="wrap">
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=80" alt="Calm modern dermatology consultation room with clinical equipment" loading="lazy"></div>
+        <span class="tagchip"><span class="dot"></span> Consultant-led, always</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow">Our approach</span>
+        <h2 class="disp">A diagnosis first, a treatment second</h2>
+        <p class="lead">Too much of the industry sells treatments before it understands the skin. We start with a proper medical assessment and only recommend what will genuinely help.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Every plan signed off by a registered dermatologist</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Honest advice, including when to do nothing at all</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Transparent pricing agreed before any treatment</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&w=900&q=80" alt="Clinician preparing a gentle skin treatment in a bright clinic" loading="lazy"></div>
+        <span class="tagchip"><span class="dot"></span> Safety first</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow">Standards</span>
+        <h2 class="disp">Held to medical, not cosmetic, standards</h2>
+        <p class="lead">Our clinic is registered, audited and run to the same standards you would expect from a hospital, because skin is medicine, not a beauty afterthought.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Single-use, sterile consumables on every procedure</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Detailed aftercare and a direct line to your clinician</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Full medical records kept securely for every visit</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =================== STATS BAND =================== -->
+<section class="metrics">
+  <div class="wrap">
+    <div class="metrics-grid" data-batch>
+      <div class="metric"><div class="num"><span class="count" data-to="22000" data-dec="0">22000</span><span class="suf">+</span></div><div class="lbl">Treatments delivered</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="14" data-dec="0">14</span></div><div class="lbl">Years in practice</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="96" data-dec="0">96</span><span class="suf">%</span></div><div class="lbl">Would recommend us</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="4.9" data-dec="1">4.9</span><span class="suf">/5</span></div><div class="lbl">Average patient rating</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PRICING =================== -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="pricing-head" data-reveal>
+      <span class="eyebrow center">Consultations</span>
+      <h2 class="disp">Clear pricing, no pressure to proceed</h2>
+      <p class="lead">Your consultation fee is redeemable against any treatment booked within thirty days.</p>
+    </div>
+    <div class="tiers" data-batch>
+      <div class="tier">
+        <span class="tn">Skin consult</span>
+        <span class="desc">A focused assessment for one concern.</span>
+        <div class="price">£95</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 30-minute assessment</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Written treatment plan</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Redeemable against treatment</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Book consult</a>
+      </div>
+      <div class="tier pop">
+        <span class="badge-pop">Most booked</span>
+        <span class="tn">Full skin review</span>
+        <span class="desc">A complete dermatology workup.</span>
+        <div class="price">£160</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 60-minute consultant appointment</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Digital skin analysis and photos</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Staged plan with at-home routine</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Follow-up review included</li>
+        </ul>
+        <a class="btn btn-primary magnetic" href="#">Book review</a>
+      </div>
+      <div class="tier">
+        <span class="tn">Mole check</span>
+        <span class="desc">Full-body dermoscopy screening.</span>
+        <div class="price">£190</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Full-body examination</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Digital mole mapping</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Same-day written report</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Book check</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TESTIMONIAL =================== -->
+<section class="quote" id="reviews">
+  <div class="wrap">
+    <div class="quote-grid">
+      <div class="quote-photo" data-reveal><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" alt="Portrait of a content patient with clear, healthy skin" loading="lazy"></div>
+      <div data-reveal>
+        <span class="stars" aria-label="Five out of five">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+        </span>
+        <blockquote class="disp">After years of being sold products that never worked, Lumière actually <span class="hl">diagnosed the cause</span>. Three months on, my skin is calmer than it has been in a decade.</blockquote>
+        <div class="by">
+          <div class="n">Priya Sharma</div>
+          <div class="r">Patient, treated for rosacea</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CTA =================== -->
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-card" data-reveal>
+      <h2>Start with a proper skin assessment</h2>
+      <p>Book a consultation with one of our registered dermatologists and leave with a plan built for your skin. Same-week appointments are usually available.</p>
+      <div class="cta-actions">
+        <a class="btn btn-white magnetic" href="#">Book a consultation</a>
+        <a class="btn btn-line" href="#treatments">Explore treatments</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="wordmark" href="#" aria-label="Lumière Dermatology home">
+          <span class="glyph" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3c2.5 3.5 5 6 5 9a5 5 0 11-10 0c0-3 2.5-5.5 5-9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+          Lumière
+        </a>
+        <p>A consultant-led dermatology and aesthetics clinic. Evidence-based skin care, delivered to medical standards.</p>
+        <form class="news" onsubmit="return false">
+          <input type="email" aria-label="Email address" placeholder="Email for skin-care guides" />
+          <button class="btn btn-primary" type="submit">Sign up</button>
+        </form>
+      </div>
+      <div class="foot-col">
+        <h4>Treatments</h4>
+        <a href="#">Acne &amp; scarring</a><a href="#">Pigmentation</a><a href="#">Mole checks</a><a href="#">Rejuvenation</a><a href="#">Anti-wrinkle</a>
+      </div>
+      <div class="foot-col">
+        <h4>Clinic</h4>
+        <a href="#">Our approach</a><a href="#">Meet the team</a><a href="#">Results</a><a href="#">Pricing</a><a href="#">Reviews</a>
+      </div>
+      <div class="foot-col">
+        <h4>Patients</h4>
+        <a href="#">Book online</a><a href="#">Aftercare</a><a href="#">Finance options</a><a href="#">Privacy</a><a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span class="cp">© 2026 Lumière Dermatology &amp; Skin. CQC registered.</span>
+      <div class="soc">
+        <a href="#" aria-label="Lumière on Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Lumière on LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2"/><path d="M7 10v6M7 7v.01M11 16v-3a2 2 0 014 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <a href="#" aria-label="Lumière on Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 8h2V5h-2c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h2.2l.8-3H14V8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · Glacier · dermatology</div>
+
+<!-- ===== GSAP (CDN) ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm = gsap.matchMedia();
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 24, autoAlpha: 0, duration: 0.7, stagger: 0.09 })
+          .from('[data-hero-media]', { y: 34, autoAlpha: 0, scale: 0.97, duration: 0.9 }, '-=0.45');
+
+    var stage = document.querySelector('[data-parallax-stage]');
+    var layers = gsap.utils.toArray('[data-parallax]');
+    if (stage && finePointer && layers.length) {
+      var hero = document.getElementById('hero');
+      var qx = layers.map(function (el) {
+        return { el: el, depth: parseFloat(el.getAttribute('data-parallax')) || 16,
+          sx: gsap.quickTo(el, 'x', { duration: 0.6, ease: 'power3' }),
+          sy: gsap.quickTo(el, 'y', { duration: 0.6, ease: 'power3' }) };
+      });
+      hero.addEventListener('pointermove', function (e) {
+        var r = hero.getBoundingClientRect();
+        var nx = (e.clientX - r.left) / r.width - 0.5;
+        var ny = (e.clientY - r.top) / r.height - 0.5;
+        qx.forEach(function (l) { l.sx(nx * l.depth); l.sy(ny * l.depth); });
+      });
+      hero.addEventListener('pointerleave', function () { qx.forEach(function (l) { l.sx(0); l.sy(0); }); });
+    }
+
+    gsap.set('[data-reveal]', { y: 26, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.12, ease: 'power3.out', overwrite: true }); }
+    });
+
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 22, autoAlpha: 0 });
+      ScrollTrigger.create({
+        trigger: grid, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.65, stagger: 0.07, ease: 'power3.out' }); }
+      });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-hero-media], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+      if (reduced) { el.textContent = to.toFixed(dec); return; }
+      ScrollTrigger.create({
+        trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          var obj = { v: 0 };
+          gsap.to(obj, { v: to, duration: 1.4, ease: 'power2.out',
+            onUpdate: function () { el.textContent = obj.v.toFixed(dec); },
+            onComplete: function () { el.textContent = to.toFixed(dec); } });
+        }
+      });
+    });
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.22, y: (e.clientY - r.top - r.height / 2) * 0.3, duration: 0.4, ease: 'power3' });
+      });
+      btn.addEventListener('pointerleave', function () { gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power3' }); });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-reveal],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,p')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=glacier&name=Glacier" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Onyx — NEXA Theme Preview (Luxury Watches &amp; Jewellery)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     ONYX — design tokens (mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 5 5 6;
+    --color-surface: 16 16 18;
+    --color-surface-2: 24 24 27;
+    --color-ink: 242 238 230;
+    --color-muted: 150 145 134;
+    --color-line: 44 42 40;
+    --color-primary: 210 178 116;   /* champagne gold */
+    --color-on-primary: 10 9 7;
+    --color-accent: 210 178 116;
+    --color-accent2: 166 137 84;
+
+    --font-display: "Playfair Display", "Didot", Georgia, serif;
+    --font-body: "Jost", ui-sans-serif, system-ui, sans-serif;
+
+    --maxw: 1380px;
+    --gutter: clamp(22px, 5vw, 84px);
+    --ratio: 4 / 5;
+    --tile-gap: 12px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); font-family: var(--font-body); font-weight: 300; line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 1px solid rgb(var(--color-primary)); outline-offset: 4px; }
+
+  .serif { font-family: var(--font-display); font-weight: 400; line-height: 1.04; }
+  .label { font-family: var(--font-body); font-weight: 500; font-size: 11px; letter-spacing: 0.38em; text-transform: uppercase; }
+  .gold { color: rgb(var(--color-primary)); }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+
+  #prog { position: fixed; top: 0; left: 0; height: 1px; width: 0; background: rgb(var(--color-primary)); z-index: 90; }
+
+  .ln { position: relative; display: inline-block; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; padding-bottom: 4px; }
+  .ln::after { content:""; position:absolute; left:0; bottom:0; width:100%; height:1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .6s var(--ease); }
+  .ln:hover::after, .ln:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+
+  .btn { display:inline-flex; align-items:center; gap: 14px; font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; padding: 18px 36px; border: 1px solid rgb(var(--color-ink)); color: rgb(var(--color-ink)); background: transparent; cursor: pointer; transition: background .55s var(--ease), color .55s var(--ease), border-color .55s var(--ease); }
+  .btn:hover { background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); }
+  .btn-gold { border-color: rgb(var(--color-primary)); color: rgb(var(--color-primary)); }
+  .btn-gold:hover { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-fill { background: rgb(var(--color-primary)); border-color: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-fill:hover { background: transparent; color: rgb(var(--color-primary)); }
+
+  /* ============ NAV — centred wordmark over rule ============ */
+  .announce { text-align:center; padding: 9px; font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: rgb(var(--color-muted)); border-bottom: 1px solid rgb(var(--color-line)); }
+  header { position: sticky; top: 0; z-index: 80; transition: background .6s var(--ease), border-color .6s var(--ease); border-bottom: 1px solid transparent; }
+  header.stuck { background: rgb(var(--color-bg) / .85); backdrop-filter: blur(14px); border-bottom-color: rgb(var(--color-line)); }
+  .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding-block: 26px; transition: padding-block .6s var(--ease); }
+  header.stuck .nav { padding-block: 16px; }
+  .nav .left { display:flex; gap: 34px; }
+  .nav .right { display:flex; gap: 34px; justify-content: flex-end; align-items:center; }
+  .nav .wordmark { font-family: var(--font-display); font-weight: 500; font-size: 28px; letter-spacing: 0.5em; text-transform: uppercase; text-align:center; padding-left: 0.5em; }
+  @media (max-width: 880px) { .nav { grid-template-columns: auto 1fr; } .nav .left, .nav .right .ln:not(.gold) { display:none; } .nav .wordmark { text-align:left; grid-column:1; } .nav .right { grid-column:2; } }
+
+  /* ============ HERO — full-bleed editorial ============ */
+  .hero { position: relative; height: 100svh; min-height: 640px; overflow: hidden; }
+  .hero .media { position:absolute; inset: -12% 0 -12% 0; }
+  .hero .media img { width:100%; height:100%; object-fit: cover; filter: contrast(1.06) brightness(.78); will-change: transform; }
+  .hero .scrim { position:absolute; inset:0; background: linear-gradient(180deg, rgb(5 5 6 / .55) 0%, transparent 30%, transparent 52%, rgb(5 5 6 / .9) 100%); }
+  .hero .content { position:absolute; inset: 0; display:flex; flex-direction: column; justify-content: flex-end; align-items:center; text-align:center; padding: var(--gutter); padding-bottom: clamp(54px, 10vh, 120px); }
+  .hero .eyebrow { letter-spacing: 0.52em; }
+  .hero h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(50px, 9vw, 142px); line-height: 0.96; margin-top: 24px; max-width: 16ch; overflow: hidden; }
+  .hero h1 .line { display: block; }
+  .hero h1 em { font-style: italic; color: rgb(var(--color-primary)); }
+  .hero .desc { max-width: 38ch; color: rgb(var(--color-ink) / .82); font-size: 15px; margin: 28px auto 0; }
+  .hero .ctrow { display:flex; gap: 18px; margin-top: 38px; flex-wrap:wrap; justify-content:center; }
+  .scrolldown { position:absolute; left: 50%; bottom: 22px; transform: translateX(-50%); font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: rgb(var(--color-ink)/.7); display:flex; flex-direction:column; align-items:center; gap: 12px; }
+  .scrolldown::after { content:""; width:1px; height: 52px; background: linear-gradient(rgb(var(--color-primary)), transparent); animation: drop 2.2s var(--ease) infinite; }
+  @keyframes drop { 0%{ transform: scaleY(0); transform-origin: top;} 45%{ transform: scaleY(1); transform-origin: top;} 55%{ transform: scaleY(1); transform-origin: bottom;} 100%{ transform: scaleY(0); transform-origin: bottom;} }
+
+  /* ============ STRIP ============ */
+  .strip { border-block: 1px solid rgb(var(--color-line)); overflow: hidden; }
+  .strip .track { display:flex; gap: 64px; width: max-content; padding: 20px 0; animation: scroll 40s linear infinite; }
+  .strip span { font-family: var(--font-display); font-style: italic; font-size: 19px; color: rgb(var(--color-muted)); white-space: nowrap; }
+  .strip span::before { content:"◆"; color: rgb(var(--color-primary)); font-style: normal; margin-right: 64px; font-size: 9px; vertical-align: middle; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* ============ MANIFESTO ============ */
+  .manifesto { padding-block: clamp(96px, 16vh, 200px); }
+  .manifesto .grid { display:grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(30px, 6vw, 120px); align-items: start; }
+  @media (max-width: 880px) { .manifesto .grid { grid-template-columns: 1fr; gap: 36px; } }
+  .manifesto .lead { font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 3.8vw, 56px); line-height: 1.16; }
+  .manifesto .lead em { font-style: italic; color: rgb(var(--color-primary)); }
+  .manifesto .col { color: rgb(var(--color-muted)); font-size: 16px; max-width: 42ch; }
+  .manifesto .col p + p { margin-top: 18px; }
+  .manifesto .col .btn { margin-top: 34px; }
+
+  /* ============ SPREAD ============ */
+  .spread { display:grid; grid-template-columns: 1.05fr 0.95fr; min-height: 90vh; }
+  .spread.flip { grid-template-columns: 0.95fr 1.05fr; }
+  @media (max-width: 880px) { .spread, .spread.flip { grid-template-columns: 1fr; } }
+  .spread .pane-img { position: relative; overflow:hidden; min-height: 58vh; }
+  .spread .pane-img img { width:100%; height:100%; object-fit: cover; filter: contrast(1.06); transition: transform 1.8s var(--ease); will-change: transform; }
+  .spread .pane-txt { display:flex; flex-direction: column; justify-content: center; padding: clamp(44px, 7vw, 116px); }
+  .spread .pane-txt h2 { font-family: var(--font-display); font-size: clamp(36px, 5vw, 78px); line-height: 1.02; }
+  .spread .pane-txt h2 em { font-style: italic; color: rgb(var(--color-primary)); }
+  .spread .pane-txt p { color: rgb(var(--color-muted)); font-size: 16px; max-width: 42ch; margin-top: 26px; }
+  .spread .pane-txt .btn { margin-top: 40px; align-self: flex-start; }
+  .spread .idx { font-family: var(--font-display); font-style: italic; font-size: 15px; color: rgb(var(--color-primary)); margin-bottom: 20px; }
+
+  /* ============ THE ICON — single product feature ============ */
+  .icon-feat { padding-block: clamp(96px, 15vh, 200px); text-align:center; }
+  .icon-feat .label { color: rgb(var(--color-primary)); }
+  .icon-feat h2 { font-family: var(--font-display); font-size: clamp(40px, 6vw, 96px); margin-top: 18px; }
+  .icon-feat .stageimg { position: relative; max-width: 520px; margin: 52px auto 0; }
+  .icon-feat .stageimg .frame { aspect-ratio: 4/5; overflow:hidden; }
+  .icon-feat .stageimg img { width:100%; height:100%; object-fit: cover; will-change: transform; }
+  .icon-feat .stageimg .ring { position:absolute; inset: -30px; border:1px solid rgb(var(--color-line)); pointer-events:none; }
+  .icon-feat .spec { display:flex; gap: 44px; justify-content:center; margin-top: 40px; flex-wrap:wrap; }
+  .icon-feat .spec div .k { font-family: var(--font-display); font-size: 22px; }
+  .icon-feat .spec div .v { font-size: 11px; letter-spacing: 0.2em; text-transform:uppercase; color: rgb(var(--color-muted)); margin-top: 6px; }
+  .icon-feat .price { font-family: var(--font-display); font-size: 28px; margin-top: 36px; }
+  .icon-feat .price span { color: rgb(var(--color-muted)); font-size: 12px; display:block; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px; }
+  .icon-feat .btn { margin-top: 30px; }
+
+  /* ============ MOSAIC ============ */
+  .mosaic { display:grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 15vw; gap: var(--tile-gap); padding-inline: var(--gutter); padding-bottom: clamp(80px,14vh,170px); }
+  @media (max-width: 880px) { .mosaic { grid-template-columns: repeat(2,1fr); grid-auto-rows: 54vw; } }
+  .mosaic figure { position: relative; overflow:hidden; }
+  .mosaic img { width:100%; height:100%; object-fit: cover; filter: contrast(1.04); transition: transform 1.6s var(--ease); }
+  .mosaic figure:hover img, .mosaic figure:focus-within img { transform: scale(1.05); }
+  .mosaic figcaption { position:absolute; left:18px; bottom:16px; font-family: var(--font-display); font-style:italic; font-size: 18px; color:#fff; text-shadow: 0 1px 14px rgb(0 0 0 / .6); opacity:0; transform: translateY(8px); transition: all .6s var(--ease); }
+  .mosaic figure:hover figcaption, .mosaic figure:focus-within figcaption { opacity:1; transform:none; }
+  .m-a { grid-column: span 4; grid-row: span 2; }
+  .m-b { grid-column: span 2; grid-row: span 1; }
+  .m-c { grid-column: span 2; grid-row: span 1; }
+  .m-d { grid-column: span 2; grid-row: span 2; }
+  .m-e { grid-column: span 2; grid-row: span 1; }
+  .m-f { grid-column: span 2; grid-row: span 1; }
+  .m-g { grid-column: span 2; grid-row: span 2; }
+  @media (max-width: 880px) { .m-a,.m-b,.m-c,.m-d,.m-e,.m-f,.m-g { grid-column: span 2; grid-row: span 1; } .m-a,.m-d,.m-g { grid-row: span 2; } }
+
+  /* ============ SAVOIR-FAIRE — numbered steps ============ */
+  .savoir { padding-block: clamp(84px,14vh,176px); border-top: 1px solid rgb(var(--color-line)); }
+  .savoir .grid { display:grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(30px,6vw,90px); align-items:center; }
+  @media (max-width: 880px){ .savoir .grid { grid-template-columns: 1fr; } }
+  .savoir .ph { aspect-ratio: 4/5; overflow:hidden; }
+  .savoir .ph img { width:100%; height:100%; object-fit: cover; filter: contrast(1.05); }
+  .savoir h2 { font-family: var(--font-display); font-size: clamp(32px,4.4vw,66px); line-height:1.04; }
+  .savoir h2 em { font-style: italic; color: rgb(var(--color-primary)); }
+  .steps { margin-top: 44px; }
+  .stp { display:flex; gap: 26px; padding: 26px 0; border-top: 1px solid rgb(var(--color-line)); }
+  .stp:last-child { border-bottom: 1px solid rgb(var(--color-line)); }
+  .stp .no { font-family: var(--font-display); font-style: italic; font-size: 22px; color: rgb(var(--color-primary)); flex:none; width: 44px; }
+  .stp h3 { font-family: var(--font-display); font-size: 22px; }
+  .stp p { color: rgb(var(--color-muted)); font-size: 15px; margin-top: 6px; max-width: 48ch; }
+
+  /* ============ HERITAGE STATS ============ */
+  .heritage { border-block: 1px solid rgb(var(--color-line)); }
+  .heritage .grid { display:grid; grid-template-columns: repeat(4,1fr); }
+  @media (max-width: 760px){ .heritage .grid { grid-template-columns: repeat(2,1fr); } }
+  .heritage .cell { padding: clamp(44px,7vh,92px) 30px; text-align:center; border-right: 1px solid rgb(var(--color-line)); }
+  .heritage .cell:last-child { border-right:none; }
+  @media (max-width: 760px){ .heritage .cell:nth-child(2){ border-right:none; } .heritage .cell:nth-child(-n+2){ border-bottom: 1px solid rgb(var(--color-line)); } }
+  .heritage .n { font-family: var(--font-display); font-size: clamp(44px,5.5vw,78px); }
+  .heritage .n .u { color: rgb(var(--color-primary)); font-style: italic; }
+  .heritage .l { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 16px; }
+
+  /* ============ PRESS ============ */
+  .press { padding-block: clamp(96px,16vh,200px); text-align:center; }
+  .press .quote { font-family: var(--font-display); font-style: italic; font-size: clamp(28px, 4vw, 58px); line-height: 1.2; max-width: 22ch; margin: 0 auto; }
+  .press .by { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: rgb(var(--color-primary)); margin-top: 34px; }
+  .press .names { margin-top: 70px; overflow:hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+  .press .names .track { display:flex; gap: 64px; width:max-content; animation: scroll 46s linear infinite; }
+  .press .names span { font-family: var(--font-display); font-size: 26px; color: rgb(var(--color-ink)/.4); transition: color .5s var(--ease); }
+  .press .names span:hover { color: rgb(var(--color-ink)); }
+
+  /* ============ NEWSLETTER ============ */
+  .joinhouse { position: relative; overflow:hidden; }
+  .joinhouse .bg { position:absolute; inset:0; }
+  .joinhouse .bg img { width:100%; height:100%; object-fit: cover; filter: brightness(.36); will-change: transform; }
+  .joinhouse .inner { position: relative; text-align:center; padding-block: clamp(96px,16vh,200px); padding-inline: var(--gutter); }
+  .joinhouse h2 { font-family: var(--font-display); font-size: clamp(34px,5vw,74px); }
+  .joinhouse h2 em { font-style: italic; color: rgb(var(--color-primary)); }
+  .joinhouse p { color: rgb(var(--color-ink)/.8); margin: 18px auto 0; max-width: 46ch; }
+  .joinhouse form { display:flex; gap:0; max-width: 460px; margin: 36px auto 0; border-bottom: 1px solid rgb(var(--color-ink)/.5); }
+  .joinhouse input { flex:1; background: transparent; border:none; color: rgb(var(--color-ink)); padding: 14px 4px; font-size: 15px; font-family: var(--font-body); outline:none; letter-spacing: 0.04em; }
+  .joinhouse input::placeholder { color: rgb(var(--color-ink)/.5); }
+  .joinhouse button { background:none; border:none; color: rgb(var(--color-primary)); cursor:pointer; font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; padding: 0 8px; }
+
+  /* ============ FOOTER ============ */
+  footer { border-top: 1px solid rgb(var(--color-line)); padding-block: 64px 40px; }
+  .foot { display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 36px; }
+  @media (max-width: 760px){ .foot { grid-template-columns: 1fr 1fr; gap: 38px 24px; } }
+  .foot h4 { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 18px; }
+  .foot a { display:block; font-size: 14px; color: rgb(var(--color-muted)); padding: 6px 0; transition: color .4s var(--ease); }
+  .foot a:hover { color: rgb(var(--color-ink)); }
+  .bigmark { font-family: var(--font-display); font-size: clamp(60px, 16vw, 220px); letter-spacing: 0.1em; line-height: 1; text-align:center; padding-top: 70px; color: rgb(var(--color-ink)/.94); }
+  .legal { display:flex; justify-content: space-between; padding-top: 30px; margin-top: 30px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(var(--color-muted)); flex-wrap: wrap; gap: 12px; }
+
+  .ribbon { position: fixed; bottom: 0; right: 0; z-index: 95; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); font-family: var(--font-body); font-weight:500; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 8px 14px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+  <div id="prog"></div>
+  <div class="ribbon">NEXA Theme · Onyx · luxury</div>
+
+  <div class="announce">Complimentary engraving and worldwide delivery on every commission</div>
+
+  <header id="hdr">
+    <nav class="wrap nav" aria-label="Primary">
+      <div class="left">
+        <a href="#timepieces" class="ln">Timepieces</a>
+        <a href="#jewellery" class="ln">Jewellery</a>
+        <a href="#maison" class="ln">The Maison</a>
+      </div>
+      <div class="wordmark">Onyx</div>
+      <div class="right">
+        <a href="#" class="ln">Boutiques</a>
+        <a href="#" class="ln gold">Appointment</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="The Meridian collection">
+    <div class="media"><img id="heroImg" src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1900&q=80&auto=format&fit=crop" alt="A finely crafted mechanical wristwatch photographed against a dark backdrop" /></div>
+    <div class="scrim"></div>
+    <div class="scrolldown" aria-hidden="true">Scroll</div>
+    <div class="content">
+      <span class="label gold" id="heroEyebrow">The Meridian Collection</span>
+      <h1 class="serif"><span class="line">Time, <em>measured</em></span><span class="line">in centuries.</span></h1>
+      <p class="desc" id="heroDesc">Hand-assembled movements, ethically sourced stones, and a finish that takes a master nine months to complete. Made in our atelier, kept for generations.</p>
+      <div class="ctrow">
+        <a href="#timepieces" class="btn" id="heroBtn">View the collection</a>
+        <a href="#savoir" class="btn btn-gold">Our craft</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRIP -->
+  <div class="strip" aria-hidden="true">
+    <div class="track">
+      <span>Geneva</span><span>Since 1908</span><span>In-house movements</span><span>Hand-finished</span><span>Certified diamonds</span><span>Made to order</span>
+      <span>Geneva</span><span>Since 1908</span><span>In-house movements</span><span>Hand-finished</span><span>Certified diamonds</span><span>Made to order</span>
+    </div>
+  </div>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto" id="maison">
+    <div class="wrap grid">
+      <p class="lead" data-reveal>A house founded on a single conviction: that true luxury is <em>measured slowly</em>, finished by hand, and built to outlast its maker.</p>
+      <div class="col" data-reveal>
+        <p>Established in Geneva in 1908, Onyx has spent more than a century perfecting the mechanical watch and the art of the setting. Every movement is assembled, regulated and signed by a single watchmaker.</p>
+        <p>We produce a limited number of pieces each year. Nothing is rushed. Each timepiece carries a guarantee for life, and a service promise that passes to the next owner.</p>
+        <a href="#" class="btn btn-gold">The Onyx philosophy</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPREAD 01 -->
+  <section class="spread" id="timepieces">
+    <div class="pane-img"><img class="parallax-img" src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=1200&q=80&auto=format&fit=crop" alt="A skeleton dial watch revealing its mechanical movement" loading="lazy"></div>
+    <div class="pane-txt">
+      <div class="idx" data-reveal>01 / Timepieces</div>
+      <h2 class="serif" data-reveal>The movement, <em>laid bare.</em></h2>
+      <p data-reveal>Our open-worked calibres expose four hundred components, each chamfered and polished by hand. A seventy-two hour reserve, a tourbillon regulated to within two seconds a day, and a sapphire case back that hides nothing.</p>
+      <a href="#" class="btn" data-reveal>Explore the calibres</a>
+    </div>
+  </section>
+
+  <!-- THE ICON -->
+  <section class="icon-feat">
+    <div class="wrap">
+      <span class="label" data-reveal>The Signature</span>
+      <h2 class="serif" data-reveal>The Meridian Tourbillon.</h2>
+      <div class="stageimg" data-reveal-clip>
+        <span class="ring" aria-hidden="true"></span>
+        <div class="frame"><img class="parallax-img" src="https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=900&q=80&auto=format&fit=crop" alt="The Meridian Tourbillon shown in full detail" /></div>
+      </div>
+      <div class="spec" data-reveal>
+        <div><div class="k serif">72h</div><div class="v">Power reserve</div></div>
+        <div><div class="k serif">18k</div><div class="v">Rose gold case</div></div>
+        <div><div class="k serif">421</div><div class="v">Components</div></div>
+      </div>
+      <div class="price serif" data-reveal><span>Made to order · nine months</span>On request</div>
+      <a href="#" class="btn btn-fill" data-reveal>Request a private viewing</a>
+    </div>
+  </section>
+
+  <!-- SPREAD 02 FLIP -->
+  <section class="spread flip" id="jewellery">
+    <div class="pane-txt">
+      <div class="idx" data-reveal>02 / Jewellery</div>
+      <h2 class="serif" data-reveal>Light, <em>held still.</em></h2>
+      <p data-reveal>Each stone is chosen in person and certified for cut, colour and clarity. Settings are raised by hand so the metal disappears and only the brilliance remains. A high-jewellery collection released once a year, and never repeated.</p>
+      <a href="#" class="btn" data-reveal>The jewellery atelier</a>
+    </div>
+    <div class="pane-img"><img class="parallax-img" src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=80&auto=format&fit=crop" alt="A diamond ring catching the light against a dark surface" loading="lazy"></div>
+  </section>
+
+  <!-- MOSAIC -->
+  <section aria-label="Collection gallery">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding-inline:var(--gutter);padding-block:clamp(70px,11vh,140px) 40px;">
+      <h2 class="serif" data-reveal style="font-size:clamp(30px,4vw,58px)">The Gallery</h2>
+      <a href="#" class="ln" data-reveal style="color:rgb(var(--color-muted))">View all pieces</a>
+    </div>
+    <div class="mosaic">
+      <figure class="m-a" data-tile><img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=1100&q=80&auto=format&fit=crop" alt="A gold watch resting on a dark stone surface" loading="lazy"><figcaption>The Meridian, rose gold</figcaption></figure>
+      <figure class="m-b" data-tile><img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=700&q=80&auto=format&fit=crop" alt="A pair of diamond earrings" loading="lazy"><figcaption>Solitaire earrings</figcaption></figure>
+      <figure class="m-c" data-tile><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=700&q=80&auto=format&fit=crop" alt="A gold bracelet detail" loading="lazy"><figcaption>Cuff, hand-engraved</figcaption></figure>
+      <figure class="m-d" data-tile><img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=700&q=80&auto=format&fit=crop" alt="A watch face close study" loading="lazy"><figcaption>Guilloché dial</figcaption></figure>
+      <figure class="m-e" data-tile><img src="https://images.unsplash.com/photo-1635767798638-3e25273a8236?w=700&q=80&auto=format&fit=crop" alt="A diamond ring in low light" loading="lazy"><figcaption>High jewellery</figcaption></figure>
+      <figure class="m-f" data-tile><img src="https://images.unsplash.com/photo-1620625515032-6ed0c1790c75?w=700&q=80&auto=format&fit=crop" alt="A gold necklace on dark velvet" loading="lazy"><figcaption>The Aurora necklace</figcaption></figure>
+      <figure class="m-g" data-tile><img src="https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?w=900&q=80&auto=format&fit=crop" alt="A luxury watch portrait" loading="lazy"><figcaption>The Heritage chronograph</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- SAVOIR-FAIRE -->
+  <section class="savoir" id="savoir">
+    <div class="wrap grid">
+      <div class="ph" data-reveal-clip><img src="https://images.unsplash.com/photo-1606293459339-aa5d34a7b0e1?w=900&q=80&auto=format&fit=crop" alt="A watchmaker working at the bench under magnification" loading="lazy"></div>
+      <div>
+        <span class="label gold" data-reveal>Savoir-faire</span>
+        <h2 class="serif" data-reveal style="margin-top:18px;">From bench to <em>wrist.</em></h2>
+        <div class="steps">
+          <div class="stp" data-reveal><span class="no serif">I</span><div><h3 class="serif">The design</h3><p>Each piece begins on paper, then in wax, refined over months before a single component is cut.</p></div></div>
+          <div class="stp" data-reveal><span class="no serif">II</span><div><h3 class="serif">The assembly</h3><p>One watchmaker assembles and regulates the calibre, by hand, under the loupe.</p></div></div>
+          <div class="stp" data-reveal><span class="no serif">III</span><div><h3 class="serif">The signature</h3><p>The finished movement is signed, numbered and entered into our register for life.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HERITAGE -->
+  <div class="heritage">
+    <div class="grid">
+      <div class="cell" data-reveal><div class="n serif"><span data-count="116">0</span></div><div class="l">Years in Geneva</div></div>
+      <div class="cell" data-reveal><div class="n serif"><span data-count="9">0</span></div><div class="l">Boutiques worldwide</div></div>
+      <div class="cell" data-reveal><div class="n serif"><span data-count="2">0</span><span class="u">s</span></div><div class="l">Daily precision</div></div>
+      <div class="cell" data-reveal><div class="n serif"><span data-count="100">0</span><span class="u">%</span></div><div class="l">Made by hand</div></div>
+    </div>
+  </div>
+
+  <!-- PRESS -->
+  <section class="press">
+    <div class="wrap">
+      <p class="quote serif" data-reveal>“The most quietly assured watchmaker working today.”</p>
+      <div class="by" data-reveal>Revolution, Spring 2026</div>
+    </div>
+    <div class="names" aria-hidden="true">
+      <div class="track">
+        <span>Revolution</span><span>Hodinkee</span><span>Robb Report</span><span>The Hour Glass</span><span>Monochrome</span><span>QP Magazine</span>
+        <span>Revolution</span><span>Hodinkee</span><span>Robb Report</span><span>The Hour Glass</span><span>Monochrome</span><span>QP Magazine</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="joinhouse">
+    <div class="bg" aria-hidden="true"><img class="parallax-img" src="https://images.unsplash.com/photo-1495856458515-0637185db551?w=1600&q=80&auto=format&fit=crop" alt="" loading="lazy"></div>
+    <div class="inner">
+      <h2 class="serif" data-reveal>Join <em>the register.</em></h2>
+      <p data-reveal>Private previews, first access to each limited series, and an invitation to our annual atelier evening in Geneva. By request only.</p>
+      <form data-reveal onsubmit="return false">
+        <label for="joinEmail" class="label" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+        <input id="joinEmail" type="email" placeholder="Your email address" />
+        <button type="submit">Request</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <h4>Maison Onyx</h4>
+          <p style="color:rgb(var(--color-muted));font-size:14px;max-width:32ch;">Fine watchmaking and high jewellery. Geneva, since 1908. Every piece guaranteed for life.</p>
+        </div>
+        <div><h4>Collections</h4><a href="#">Timepieces</a><a href="#">High Jewellery</a><a href="#">Bridal</a><a href="#">Bespoke</a></div>
+        <div><h4>The Maison</h4><a href="#">Heritage</a><a href="#">Savoir-faire</a><a href="#">Sustainability</a><a href="#">Careers</a></div>
+        <div><h4>Client Care</h4><a href="#">Appointments</a><a href="#">Servicing</a><a href="#">Boutiques</a><a href="#">Contact</a></div>
+      </div>
+      <div class="bigmark serif">ONYX</div>
+      <div class="legal">
+        <span>© 2026 Maison Onyx</span>
+        <span>Built with NEXA Web Studio</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+  (function () {
+    const hdr = document.getElementById('hdr'), prog = document.getElementById('prog');
+    const onScroll = () => {
+      hdr.classList.toggle('stuck', scrollY > 40);
+      const h = document.documentElement;
+      prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+    };
+    onScroll();
+    addEventListener('scroll', onScroll, { passive: true });
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasGSAP = !!(window.gsap && window.ScrollTrigger);
+
+    const runCount = (el) => {
+      const target = parseFloat(el.dataset.count);
+      if (reducedMotion) { el.textContent = target; return; }
+      const t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - t0) / 1500, 1), v = target * (1 - Math.pow(1 - p, 3));
+        el.textContent = Math.round(v);
+        if (p < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    };
+
+    if (!hasGSAP || reducedMotion) {
+      const cIO = new IntersectionObserver((es) => {
+        es.forEach(e => { if (e.isIntersecting) { runCount(e.target); cIO.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      document.querySelectorAll('[data-count]').forEach(el => cIO.observe(el));
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    const easeLux = 'power3.out';
+    const mm = gsap.matchMedia();
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.set('.hero h1 .line', { yPercent: 110 });
+      gsap.set('#heroEyebrow', { letterSpacing: '0.9em', opacity: 0 });
+      gsap.set(['#heroDesc', '#heroBtn'], { opacity: 0, y: 24 });
+
+      const intro = gsap.timeline({ defaults: { ease: easeLux } });
+      intro.to('#heroEyebrow', { letterSpacing: '0.52em', opacity: 1, duration: 1.4 })
+           .to('.hero h1 .line', { yPercent: 0, duration: 1.5, stagger: 0.12 }, '-=1.0')
+           .to(['#heroDesc', '#heroBtn'], { opacity: 1, y: 0, duration: 1.2, stagger: 0.12 }, '-=0.8');
+
+      gsap.to('#heroImg', {
+        yPercent: 16, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      });
+
+      gsap.set('[data-reveal]', { opacity: 0, y: 32 });
+      ScrollTrigger.batch('[data-reveal]', {
+        start: 'top 86%',
+        onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 1.1, ease: easeLux, stagger: 0.09, overwrite: true }),
+        once: true
+      });
+
+      gsap.set('[data-reveal-clip]', { clipPath: 'inset(0 0 100% 0)' });
+      ScrollTrigger.batch('[data-reveal-clip]', {
+        start: 'top 82%',
+        onEnter: (els) => gsap.to(els, { clipPath: 'inset(0 0 0% 0)', duration: 1.4, ease: easeLux, stagger: 0.12, overwrite: true }),
+        once: true
+      });
+
+      gsap.set('[data-tile]', { clipPath: 'inset(0 0 100% 0)' });
+      ScrollTrigger.batch('[data-tile]', {
+        start: 'top 90%',
+        onEnter: (els) => gsap.to(els, { clipPath: 'inset(0 0 0% 0)', duration: 1.3, ease: easeLux, stagger: 0.08, overwrite: true }),
+        once: true
+      });
+
+      gsap.utils.toArray('.parallax-img').forEach((img) => {
+        gsap.fromTo(img, { yPercent: -8 }, {
+          yPercent: 8, ease: 'none',
+          scrollTrigger: { trigger: img.closest('section') || img, start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+      });
+
+      gsap.utils.toArray('[data-count]').forEach((el) => {
+        ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => runCount(el) });
+      });
+    });
+
+    if (matchMedia('(pointer:fine)').matches) {
+      document.querySelectorAll('.btn').forEach(b => {
+        b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * 0.1, y: (e.clientY - r.top - r.height / 2) * 0.16, duration: 0.4, ease: 'power2.out' }); });
+        b.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, duration: 0.5, ease: 'power2.out' }));
+      });
+    }
+  })();
+  </script>
+  <script>
+  /* === NEXA visibility failsafe === */
+  (function(){
+    var SEL='h1,h2,h3,h4,h5,p,li,[data-reveal],[data-reveal-clip],[data-tile]';
+    function isHidden(el){
+      var cs=getComputedStyle(el);
+      if(cs.visibility==='hidden') return true;
+      if(parseFloat(cs.opacity)<0.06) return true;
+      var cp=cs.clipPath||cs.webkitClipPath||'';
+      if(/inset\([^)]*100%/.test(cp)) return true;
+      return false;
+    }
+    function force(el){
+      if(!isHidden(el)) return;
+      el.style.setProperty('opacity','1','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('transform','none','important');
+      el.style.setProperty('clip-path','none','important');
+      el.style.setProperty('-webkit-clip-path','none','important');
+    }
+    var els;
+    try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+    catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,p')); }
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(ents){
+        ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+      },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+      els.forEach(function(el){ io.observe(el); });
+    } else { els.forEach(force); }
+    window.addEventListener('load',function(){ setTimeout(function(){
+      els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+    },2600); });
+  })();
+  </script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=onyx&name=Onyx" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

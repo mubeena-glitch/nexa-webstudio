@@ -1,0 +1,92 @@
+{
+  "id": "cinder",
+  "name": "Cinder",
+  "family": "luxury",
+  "sector": "BBQ / smokehouse",
+  "tags": [
+    "dark",
+    "bbq",
+    "smokehouse",
+    "ember",
+    "amber",
+    "rugged",
+    "hospitality"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "22 18 16",
+      "surface": "33 26 23",
+      "surface2": "45 35 30",
+      "ink": "242 232 222",
+      "muted": "176 156 142",
+      "line": "60 47 40",
+      "primary": "224 78 42",
+      "onPrimary": "20 12 9",
+      "accent": "224 78 42",
+      "accent2": "230 168 70"
+    },
+    "type": {
+      "display": "'Oswald', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Work Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Roboto Mono', ui-monospace, monospace",
+      "scaleRatio": 1.32,
+      "weights": {
+        "display": 600,
+        "displayBold": 700,
+        "body": 400,
+        "label": 600,
+        "bold": 700
+      },
+      "displayCase": "uppercase",
+      "displayTracking": "0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(88px, 11vw, 156px)",
+      "gutter": "clamp(20px, 5vw, 68px)",
+      "density": "generous"
+    },
+    "radius": {
+      "card": "6px",
+      "button": "4px",
+      "input": "4px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(0 0 0 / 0.5), 0 14px 34px -18px rgb(0 0 0 / 0.7)",
+      "elevated": "0 2px 6px rgb(0 0 0 / 0.55), 0 34px 64px -22px rgb(0 0 0 / 0.8)",
+      "philosophy": "rugged"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration": "560ms",
+      "character": "smoky"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:5",
+      "filter": "warm-contrast"
+    }
+  },
+  "recipes": {
+    "button": "solid-slab",
+    "card": "bordered-dark",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "full-bleed-editorial",
+    "trusted": "marquee-strip",
+    "features": "alternating-splits",
+    "menu": "numbered-list",
+    "showcase": "campaign-spread",
+    "stats": "band-countup",
+    "testimonial": "single-quote",
+    "cta": "image-band",
+    "footer": "bigmark"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap"
+  ]
+}

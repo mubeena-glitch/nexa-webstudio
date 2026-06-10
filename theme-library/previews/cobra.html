@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cobra — NEXA Theme Preview (Esports / Streetwear)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     COBRA — design tokens (mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 8 9 7;
+    --color-surface: 17 19 15;
+    --color-surface-2: 24 27 21;
+    --color-ink: 240 244 236;
+    --color-muted: 150 158 142;
+    --color-line: 40 45 35;
+    --color-primary: 178 255 61;   /* acid green */
+    --color-on-primary: 8 9 7;
+    --color-accent: 178 255 61;
+    --color-accent2: 255 71 87;    /* strike red */
+
+    --font-display: "Anton", "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Space Mono", ui-monospace, monospace;
+
+    --maxw: 1280px;
+    --gutter: clamp(20px, 5vw, 64px);
+    --section: clamp(80px, 10vw, 140px);
+
+    --r-card: 4px;
+    --r-btn: 2px;
+
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 380ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: rgb(var(--color-bg)); color: rgb(var(--color-ink));
+    font-family: var(--font-body); font-weight: 400; line-height: 1.55;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  .disp { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; line-height: 0.92; letter-spacing: -0.01em; }
+  .mono { font-family: var(--font-mono); }
+  .acid { color: rgb(var(--color-primary)); }
+  .red { color: rgb(var(--color-accent2)); }
+  .kicker { font-family: var(--font-mono); font-weight: 700; font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(var(--color-primary)); display:inline-flex; align-items:center; gap:10px; }
+  .kicker::before { content:""; width:24px; height:2px; background: rgb(var(--color-primary)); }
+
+  /* scroll progress */
+  #prog { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 90; background: rgb(var(--color-primary)); }
+
+  /* buttons — sharp, hard */
+  .btn { display:inline-flex; align-items:center; gap:10px; font-family: var(--font-mono); font-weight:700; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; padding:16px 26px; border-radius: var(--r-btn); border:2px solid rgb(var(--color-primary)); cursor:pointer; transition: background var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .btn-fill { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-fill:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 rgb(var(--color-accent2)); }
+  .btn-ghost { background: transparent; color: rgb(var(--color-ink)); border-color: rgb(var(--color-line)); }
+  .btn-ghost:hover { border-color: rgb(var(--color-primary)); color: rgb(var(--color-primary)); }
+  .btn .ar { transition: transform var(--dur) var(--ease); }
+  .btn:hover .ar { transform: translateX(4px); }
+
+  /* ============ NAV ============ */
+  header { position: sticky; top: 0; z-index: 80; border-bottom: 1px solid transparent; transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  header.stuck { background: rgb(var(--color-bg) / .9); backdrop-filter: blur(10px); border-bottom-color: rgb(var(--color-line)); }
+  .nav { display:flex; align-items:center; justify-content:space-between; gap:24px; height:72px; }
+  .brand { display:inline-flex; align-items:center; gap:12px; }
+  .brand .mark { width:34px; height:34px; display:grid; place-items:center; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); font-family: var(--font-display); font-size:22px; clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%); }
+  .brand .wm { font-family: var(--font-display); font-size:24px; text-transform:uppercase; letter-spacing:0.04em; }
+  .nav .links { display:flex; gap:30px; }
+  .nav .links a { font-family: var(--font-mono); font-weight:700; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color: rgb(var(--color-muted)); transition: color var(--dur) var(--ease); }
+  .nav .links a:hover { color: rgb(var(--color-primary)); }
+  .nav .act { display:flex; gap:14px; align-items:center; }
+  @media (max-width: 900px){ .nav .links { display:none; } }
+
+  /* ============ HERO ============ */
+  .hero { position: relative; min-height: 92svh; display:flex; align-items:flex-end; overflow:hidden; border-bottom: 2px solid rgb(var(--color-line)); }
+  .hero .bg { position:absolute; inset:0; }
+  .hero .bg img { width:100%; height:100%; object-fit:cover; filter: contrast(1.15) saturate(1.1) brightness(.5); will-change: transform; }
+  .hero .scrim { position:absolute; inset:0; background: linear-gradient(180deg, rgb(8 9 7 / .55) 0%, transparent 40%, rgb(8 9 7 / .95) 100%); }
+  .hero .noise { position:absolute; inset:0; opacity:.06; background-image: repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 3px); mix-blend-mode: overlay; pointer-events:none; }
+  .hero .content { position:relative; padding-block: clamp(40px, 8vh, 90px); }
+  .hero h1 { font-family: var(--font-display); font-size: clamp(64px, 13vw, 200px); text-transform:uppercase; line-height:0.84; }
+  .hero h1 .l { display:block; overflow:hidden; }
+  .hero h1 .l span { display:inline-block; }
+  .hero h1 .out { -webkit-text-stroke: 2px rgb(var(--color-primary)); color: transparent; }
+  .hero .row { display:flex; align-items:flex-end; justify-content:space-between; gap:30px; margin-top:34px; flex-wrap:wrap; }
+  .hero .desc { max-width: 42ch; color: rgb(var(--color-ink) / .82); font-size:16px; }
+  .hero .cta { display:flex; gap:14px; flex-wrap:wrap; }
+  .hero .tag { position:absolute; top: clamp(28px,6vh,70px); right: var(--gutter); font-family: var(--font-mono); font-weight:700; font-size:11px; letter-spacing:0.3em; text-transform:uppercase; color: rgb(var(--color-primary)); writing-mode: vertical-rl; }
+  @media (max-width: 900px){ .hero .tag { display:none; } }
+
+  /* ============ MARQUEE ============ */
+  .strip { border-bottom: 2px solid rgb(var(--color-line)); overflow:hidden; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .strip .track { display:flex; gap:48px; width:max-content; padding:14px 0; animation: scroll 26s linear infinite; }
+  .strip span { font-family: var(--font-display); font-size:22px; text-transform:uppercase; white-space:nowrap; letter-spacing:0.02em; }
+  .strip span::before { content:"//"; margin-right:48px; font-family: var(--font-mono); font-weight:700; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* ============ ROSTER ============ */
+  .roster { padding-block: var(--section); }
+  .sec-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:48px; }
+  .sec-head h2 { font-family: var(--font-display); font-size: clamp(40px, 6vw, 88px); text-transform:uppercase; }
+  .sec-head p { color: rgb(var(--color-muted)); max-width: 38ch; }
+  .players { display:grid; grid-template-columns: repeat(4, 1fr); gap:2px; background: rgb(var(--color-line)); border:2px solid rgb(var(--color-line)); }
+  @media (max-width: 980px){ .players { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 560px){ .players { grid-template-columns: 1fr; } }
+  .player { position:relative; background: rgb(var(--color-surface)); overflow:hidden; }
+  .player .ph { aspect-ratio: 3/4; overflow:hidden; }
+  .player .ph img { width:100%; height:100%; object-fit:cover; filter: grayscale(.6) contrast(1.1); transition: filter .7s var(--ease), transform 1.2s var(--ease); }
+  .player:hover .ph img { filter: grayscale(0) contrast(1.1); transform: scale(1.05); }
+  .player .meta { position:absolute; inset:auto 0 0 0; padding:18px; background: linear-gradient(transparent, rgb(8 9 7 / .92)); }
+  .player .ign { font-family: var(--font-display); font-size:28px; text-transform:uppercase; line-height:1; }
+  .player .role { font-family: var(--font-mono); font-weight:700; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color: rgb(var(--color-primary)); margin-top:6px; }
+  .player .num { position:absolute; top:12px; left:14px; font-family: var(--font-display); font-size:46px; color: rgb(var(--color-ink) / .12); line-height:1; }
+
+  /* ============ DROP / SHOWCASE ============ */
+  .drop { padding-block: var(--section); border-top: 2px solid rgb(var(--color-line)); }
+  .drop .grid { display:grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items:center; }
+  @media (max-width: 900px){ .drop .grid { grid-template-columns: 1fr; } }
+  .drop .visual { position:relative; }
+  .drop .visual .frame { aspect-ratio: 4/5; overflow:hidden; border:2px solid rgb(var(--color-primary)); }
+  .drop .visual .frame img { width:100%; height:100%; object-fit:cover; will-change: transform; }
+  .drop .visual .badge { position:absolute; top:-18px; right:-12px; background: rgb(var(--color-accent2)); color:#fff; font-family: var(--font-display); font-size:18px; text-transform:uppercase; padding:10px 16px; transform: rotate(6deg); }
+  .drop h3 { font-family: var(--font-display); font-size: clamp(34px, 5vw, 72px); text-transform:uppercase; margin-top:18px; }
+  .drop p { color: rgb(var(--color-muted)); margin-top:20px; max-width: 44ch; }
+  .drop .price { font-family: var(--font-mono); font-weight:700; font-size:22px; margin-top:24px; }
+  .drop .price s { color: rgb(var(--color-muted)); margin-right:12px; }
+
+  /* ============ BENTO FEATURES ============ */
+  .bento { padding-block: var(--section); border-top: 2px solid rgb(var(--color-line)); }
+  .bento .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; }
+  @media (max-width: 900px){ .bento .grid { grid-template-columns: 1fr; } }
+  .cell { background: rgb(var(--color-surface)); border:2px solid rgb(var(--color-line)); border-radius: var(--r-card); padding:28px; transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .cell:hover { border-color: rgb(var(--color-primary)); transform: translateY(-3px); }
+  .cell.wide { grid-column: span 2; }
+  @media (max-width: 900px){ .cell.wide { grid-column: auto; } }
+  .cell .ic { width:46px; height:46px; display:grid; place-items:center; background: rgb(var(--color-surface-2)); border:2px solid rgb(var(--color-primary)); color: rgb(var(--color-primary)); font-family: var(--font-display); font-size:22px; margin-bottom:18px; }
+  .cell h4 { font-family: var(--font-display); font-size:24px; text-transform:uppercase; }
+  .cell p { color: rgb(var(--color-muted)); margin-top:10px; font-size:15px; }
+
+  /* ============ STATS ============ */
+  .stats { border-block: 2px solid rgb(var(--color-line)); background: rgb(var(--color-surface)); }
+  .stats .grid { display:grid; grid-template-columns: repeat(4,1fr); }
+  @media (max-width: 760px){ .stats .grid { grid-template-columns: repeat(2,1fr); } }
+  .stats .cell { padding: clamp(40px,7vh,80px) 24px; text-align:center; border-right: 2px solid rgb(var(--color-line)); }
+  .stats .cell:last-child { border-right:none; }
+  @media (max-width: 760px){ .stats .cell:nth-child(2){ border-right:none; } .stats .cell:nth-child(-n+2){ border-bottom: 2px solid rgb(var(--color-line)); } }
+  .stats .n { font-family: var(--font-display); font-size: clamp(46px,6vw,84px); color: rgb(var(--color-primary)); line-height:1; }
+  .stats .n .u { color: rgb(var(--color-ink)); }
+  .stats .l { font-family: var(--font-mono); font-weight:700; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color: rgb(var(--color-muted)); margin-top:16px; }
+
+  /* ============ SCHEDULE ============ */
+  .schedule { padding-block: var(--section); }
+  .matches { border-top: 2px solid rgb(var(--color-line)); }
+  .match { display:grid; grid-template-columns: auto 1fr auto auto; gap:24px; align-items:center; padding:24px 8px; border-bottom: 2px solid rgb(var(--color-line)); transition: background var(--dur) var(--ease); }
+  .match:hover { background: rgb(var(--color-surface)); }
+  .match .date { font-family: var(--font-mono); font-weight:700; font-size:13px; letter-spacing:0.1em; color: rgb(var(--color-primary)); }
+  .match .vs { font-family: var(--font-display); font-size:24px; text-transform:uppercase; }
+  .match .comp { font-family: var(--font-mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color: rgb(var(--color-muted)); }
+  .match .live { font-family: var(--font-mono); font-weight:700; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color: rgb(var(--color-accent2)); }
+  @media (max-width: 760px){ .match { grid-template-columns: 1fr auto; row-gap:8px; } .match .comp { grid-column:1 / -1; } }
+
+  /* ============ TESTIMONIAL ============ */
+  .quote { padding-block: var(--section); border-top: 2px solid rgb(var(--color-line)); }
+  .quote .grid { display:grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(28px,5vw,72px); align-items:center; }
+  @media (max-width: 900px){ .quote .grid { grid-template-columns: 1fr; } }
+  .quote .ph { aspect-ratio: 1; overflow:hidden; border:2px solid rgb(var(--color-primary)); }
+  .quote .ph img { width:100%; height:100%; object-fit:cover; filter: grayscale(.4) contrast(1.1); }
+  .quote blockquote { font-family: var(--font-display); font-size: clamp(26px,3.4vw,52px); text-transform:uppercase; line-height:1.05; }
+  .quote .by { font-family: var(--font-mono); font-weight:700; font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color: rgb(var(--color-primary)); margin-top:24px; }
+
+  /* ============ FINAL CTA ============ */
+  .final { position:relative; overflow:hidden; border-top: 2px solid rgb(var(--color-line)); }
+  .final .bg { position:absolute; inset:0; }
+  .final .bg img { width:100%; height:100%; object-fit:cover; filter: brightness(.32) contrast(1.1); will-change: transform; }
+  .final .inner { position:relative; text-align:center; padding-block: var(--section); }
+  .final h2 { font-family: var(--font-display); font-size: clamp(48px,9vw,140px); text-transform:uppercase; line-height:0.9; }
+  .final p { color: rgb(var(--color-ink) / .85); max-width: 46ch; margin: 22px auto 0; }
+  .final .cta { display:flex; gap:14px; justify-content:center; margin-top:34px; flex-wrap:wrap; }
+
+  /* ============ FOOTER ============ */
+  footer { border-top: 2px solid rgb(var(--color-line)); padding-block: 60px 36px; }
+  .foot { display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:36px; }
+  @media (max-width: 760px){ .foot { grid-template-columns: 1fr 1fr; gap:34px 22px; } }
+  .foot h5 { font-family: var(--font-mono); font-weight:700; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color: rgb(var(--color-muted)); margin-bottom:16px; }
+  .foot a { display:block; font-size:14px; color: rgb(var(--color-muted)); padding:6px 0; transition: color var(--dur) var(--ease); }
+  .foot a:hover { color: rgb(var(--color-primary)); }
+  .bigmark { font-family: var(--font-display); font-size: clamp(64px,18vw,260px); text-transform:uppercase; text-align:center; line-height:0.9; padding-top:50px; color: rgb(var(--color-ink) / .9); -webkit-text-stroke: 1px rgb(var(--color-line)); }
+  .legal { display:flex; justify-content:space-between; padding-top:28px; margin-top:28px; border-top: 2px solid rgb(var(--color-line)); font-family: var(--font-mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color: rgb(var(--color-muted)); flex-wrap:wrap; gap:12px; }
+
+  .ribbon { position: fixed; bottom: 0; right: 0; z-index: 95; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); font-family: var(--font-mono); font-weight:700; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; padding:8px 14px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+  <div id="prog"></div>
+  <div class="ribbon">NEXA Theme · Cobra · esports</div>
+
+  <header id="hdr">
+    <nav class="wrap nav" aria-label="Primary">
+      <a href="#" class="brand"><span class="mark">C</span><span class="wm">Cobra</span></a>
+      <div class="links">
+        <a href="#roster">Roster</a>
+        <a href="#drop">Shop</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#bento">Academy</a>
+      </div>
+      <div class="act">
+        <a href="#schedule" class="btn btn-ghost">Watch Live</a>
+        <a href="#drop" class="btn btn-fill">Shop Drop <span class="ar">&#8594;</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Cobra esports">
+    <div class="bg"><img id="heroImg" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1900&q=80&auto=format&fit=crop" alt="An esports arena lit in green with players at their stations" /></div>
+    <div class="scrim"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="tag" aria-hidden="true">Region · EMEA · Tier One</div>
+    <div class="wrap content">
+      <span class="kicker" id="heroKick">Season 09 · Now Competing</span>
+      <h1><span class="l"><span class="hl">Strike</span></span><span class="l"><span class="out hl">First.</span></span></h1>
+      <div class="row">
+        <p class="desc" id="heroDesc">Cobra is a competition house built for the highest tiers of play. Five rosters, one mindset: take the round before it starts.</p>
+        <div class="cta">
+          <a href="#roster" class="btn btn-fill" id="heroBtn">Meet the Roster <span class="ar">&#8594;</span></a>
+          <a href="#drop" class="btn btn-ghost">Shop the Kit</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="strip" aria-hidden="true">
+    <div class="track">
+      <span>Valorant</span><span>League</span><span>CS2</span><span>Apex</span><span>Rocket League</span><span>Streetwear Drops</span>
+      <span>Valorant</span><span>League</span><span>CS2</span><span>Apex</span><span>Rocket League</span><span>Streetwear Drops</span>
+    </div>
+  </div>
+
+  <!-- ROSTER -->
+  <section class="roster" id="roster">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="kicker" data-reveal>The Squad</span>
+          <h2 data-reveal style="margin-top:14px;">Active Roster</h2>
+        </div>
+        <p data-reveal>Five players, one bench coach, zero passengers. This is the line-up carrying the Cobra banner into the autumn split.</p>
+      </div>
+      <div class="players">
+        <article class="player" data-reveal><span class="num">01</span><div class="ph"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=720&q=80&auto=format&fit=crop" alt="Player Vex at a gaming station wearing a headset" loading="lazy"></div><div class="meta"><div class="ign">Vex</div><div class="role">Duelist · IGL</div></div></article>
+        <article class="player" data-reveal><span class="num">02</span><div class="ph"><img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=720&q=80&auto=format&fit=crop" alt="Player Rune focused at a keyboard" loading="lazy"></div><div class="meta"><div class="ign">Rune</div><div class="role">Controller</div></div></article>
+        <article class="player" data-reveal><span class="num">03</span><div class="ph"><img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=720&q=80&auto=format&fit=crop" alt="Player Kobra mid-game under stage lighting" loading="lazy"></div><div class="meta"><div class="ign">Kobra</div><div class="role">Entry Fragger</div></div></article>
+        <article class="player" data-reveal><span class="num">04</span><div class="ph"><img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?w=720&q=80&auto=format&fit=crop" alt="Player Nyx at a streaming setup" loading="lazy"></div><div class="meta"><div class="ign">Nyx</div><div class="role">Sentinel</div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- DROP -->
+  <section class="drop" id="drop">
+    <div class="wrap grid">
+      <div class="visual" data-reveal-clip>
+        <span class="badge">Drop 04</span>
+        <div class="frame"><img class="parallax-img" src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=1000&q=80&auto=format&fit=crop" alt="A green and black streetwear hoodie photographed on a dark backdrop"></div>
+      </div>
+      <div>
+        <span class="kicker" data-reveal>Limited Run</span>
+        <h3 data-reveal>Venom Pro Hoodie</h3>
+        <p data-reveal>The kit our players wear on stage, cut for the street. Heavyweight 400gsm loopback cotton, acid-green taping and a print run capped at five hundred pieces. When it sells out, it stays out.</p>
+        <div class="price mono" data-reveal><s>£95</s> <span class="acid">£72</span></div>
+        <div style="display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;" data-reveal>
+          <a href="#" class="btn btn-fill">Add to Bag <span class="ar">&#8594;</span></a>
+          <a href="#" class="btn btn-ghost">Size Guide</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENTO -->
+  <section class="bento" id="bento">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="kicker" data-reveal>The Programme</span>
+          <h2 data-reveal style="margin-top:14px;">Built To Win</h2>
+        </div>
+        <p data-reveal>Performance is not luck. It is a system: structured scrims, real coaching and the facilities to back it up.</p>
+      </div>
+      <div class="grid">
+        <div class="cell wide" data-reveal>
+          <div class="ic">A</div>
+          <h4>Academy Pathway</h4>
+          <p>A full ladder from open trials to the main stage. Promising amateurs train alongside the senior roster and earn their slot on merit, never reputation.</p>
+        </div>
+        <div class="cell" data-reveal>
+          <div class="ic">B</div>
+          <h4>Performance Lab</h4>
+          <p>Sleep, nutrition and reaction-time tracking baked into every week, so players peak when it counts.</p>
+        </div>
+        <div class="cell" data-reveal>
+          <div class="ic">C</div>
+          <h4>VOD Review</h4>
+          <p>Every match dissected frame by frame with the analyst desk before the next series.</p>
+        </div>
+        <div class="cell wide" data-reveal>
+          <div class="ic">D</div>
+          <h4>Creator Studio</h4>
+          <p>An in-house broadcast suite for streams, drops and content. The brand and the team are built in the same room, on the same schedule.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="grid">
+      <div class="cell" data-reveal><div class="n disp"><span data-count="14">0</span></div><div class="l">Trophies lifted</div></div>
+      <div class="cell" data-reveal><div class="n disp"><span data-count="68">0</span><span class="u">%</span></div><div class="l">Map win rate</div></div>
+      <div class="cell" data-reveal><div class="n disp"><span data-count="2">0</span><span class="u">.4M</span></div><div class="l">Community members</div></div>
+      <div class="cell" data-reveal><div class="n disp"><span data-count="9">0</span></div><div class="l">Seasons competing</div></div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <section class="schedule" id="schedule">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="kicker" data-reveal>Fixtures</span>
+          <h2 data-reveal style="margin-top:14px;">Next Up</h2>
+        </div>
+        <p data-reveal>Catch every series live on the channels below. Times shown in your local zone on match day.</p>
+      </div>
+      <div class="matches">
+        <div class="match" data-reveal><span class="date">FRI 14 JUN</span><span class="vs">Cobra <span class="acid">vs</span> Eclipse GG</span><span class="comp">Ascent League · Week 6</span><span class="live">● Live</span></div>
+        <div class="match" data-reveal><span class="date">SUN 16 JUN</span><span class="vs">Cobra <span class="acid">vs</span> Northwind</span><span class="comp">Ascent League · Week 6</span><span class="live" style="color:rgb(var(--color-muted))">20:00</span></div>
+        <div class="match" data-reveal><span class="date">WED 19 JUN</span><span class="vs">Cobra <span class="acid">vs</span> Halcyon Esports</span><span class="comp">Cup Quarter Final</span><span class="live" style="color:rgb(var(--color-muted))">19:30</span></div>
+        <div class="match" data-reveal><span class="date">SAT 22 JUN</span><span class="vs">Cobra <span class="acid">vs</span> Riptide</span><span class="comp">Ascent League · Week 7</span><span class="live" style="color:rgb(var(--color-muted))">18:00</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="quote">
+    <div class="wrap grid">
+      <div class="ph" data-reveal-clip><img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=900&q=80&auto=format&fit=crop" alt="The Cobra head coach courtside at an event" loading="lazy"></div>
+      <div>
+        <span class="kicker" data-reveal>From The Bench</span>
+        <blockquote data-reveal style="margin-top:18px;">We don't recruit talent. We build it, then we let it off the leash.</blockquote>
+        <div class="by" data-reveal>Mara Quinn · Head Coach</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final">
+    <div class="bg" aria-hidden="true"><img class="parallax-img" src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=1700&q=80&auto=format&fit=crop" alt="" loading="lazy"></div>
+    <div class="wrap inner">
+      <h2 data-reveal>Join The<br>Strike Team</h2>
+      <p data-reveal>Trials are open across all five titles. Send your tracker, your VODs and your worst habits. We will sort out the rest.</p>
+      <div class="cta" data-reveal>
+        <a href="#" class="btn btn-fill">Apply For Trials <span class="ar">&#8594;</span></a>
+        <a href="#" class="btn btn-ghost">Join The Discord</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <h5>Cobra Gaming</h5>
+          <p style="color:rgb(var(--color-muted));font-size:14px;max-width:30ch;">A competition house and streetwear label. Built loud, built to last.</p>
+        </div>
+        <div><h5>Team</h5><a href="#">Roster</a><a href="#">Academy</a><a href="#">Staff</a><a href="#">Trials</a></div>
+        <div><h5>Shop</h5><a href="#">New Drops</a><a href="#">Jerseys</a><a href="#">Accessories</a><a href="#">Archive</a></div>
+        <div><h5>Connect</h5><a href="#">Twitch</a><a href="#">YouTube</a><a href="#">Discord</a><a href="#">Press</a></div>
+      </div>
+      <div class="bigmark">Cobra</div>
+      <div class="legal">
+        <span>© 2026 Cobra Gaming</span>
+        <span>Built with NEXA Web Studio</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+  (function () {
+    const hdr = document.getElementById('hdr'), prog = document.getElementById('prog');
+    const onScroll = () => {
+      hdr.classList.toggle('stuck', scrollY > 40);
+      const h = document.documentElement;
+      prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+    };
+    onScroll();
+    addEventListener('scroll', onScroll, { passive: true });
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasGSAP = !!(window.gsap && window.ScrollTrigger);
+
+    const runCount = (el) => {
+      const target = parseFloat(el.dataset.count);
+      if (reducedMotion) { el.textContent = target; return; }
+      const t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - t0) / 1500, 1), v = target * (1 - Math.pow(1 - p, 3));
+        el.textContent = (target % 1 ? v.toFixed(1) : Math.round(v));
+        if (p < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    };
+
+    if (!hasGSAP || reducedMotion) {
+      const cIO = new IntersectionObserver((es) => {
+        es.forEach(e => { if (e.isIntersecting) { runCount(e.target); cIO.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      document.querySelectorAll('[data-count]').forEach(el => cIO.observe(el));
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    const ez = 'power3.out';
+    const mm = gsap.matchMedia();
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.set('.hero h1 .hl', { yPercent: 110 });
+      gsap.set('#heroKick', { opacity: 0, x: -20 });
+      gsap.set(['#heroDesc', '#heroBtn'], { opacity: 0, y: 24 });
+
+      const intro = gsap.timeline({ defaults: { ease: ez } });
+      intro.to('#heroKick', { opacity: 1, x: 0, duration: 0.8 })
+           .to('.hero h1 .hl', { yPercent: 0, duration: 1.0, stagger: 0.12 }, '-=0.5')
+           .to(['#heroDesc', '#heroBtn'], { opacity: 1, y: 0, duration: 0.9, stagger: 0.1 }, '-=0.6');
+
+      gsap.to('#heroImg', { yPercent: 14, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+      gsap.set('[data-reveal]', { opacity: 0, y: 30 });
+      ScrollTrigger.batch('[data-reveal]', {
+        start: 'top 88%',
+        onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.8, ease: ez, stagger: 0.07, overwrite: true }),
+        once: true
+      });
+
+      gsap.set('[data-reveal-clip]', { clipPath: 'inset(100% 0 0 0)' });
+      ScrollTrigger.batch('[data-reveal-clip]', {
+        start: 'top 84%',
+        onEnter: (els) => gsap.to(els, { clipPath: 'inset(0% 0 0 0)', duration: 1.0, ease: ez, stagger: 0.1, overwrite: true }),
+        once: true
+      });
+
+      gsap.utils.toArray('.parallax-img').forEach((img) => {
+        gsap.fromTo(img, { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: img.closest('section') || img, start: 'top bottom', end: 'bottom top', scrub: true } });
+      });
+
+      gsap.utils.toArray('[data-count]').forEach((el) => {
+        ScrollTrigger.create({ trigger: el, start: 'top 88%', once: true, onEnter: () => runCount(el) });
+      });
+    });
+
+    if (matchMedia('(pointer:fine)').matches) {
+      document.querySelectorAll('.btn-fill').forEach(b => {
+        b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * 0.1, y: (e.clientY - r.top - r.height / 2) * 0.18, duration: 0.4, ease: 'power2.out' }); });
+        b.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, duration: 0.5, ease: 'power2.out' }));
+      });
+    }
+  })();
+  </script>
+  <script>
+  /* === NEXA visibility failsafe === */
+  (function(){
+    var SEL='h1,h2,h3,h4,h5,p,li,blockquote,[data-reveal],[data-reveal-clip]';
+    function isHidden(el){ var cs=getComputedStyle(el); if(cs.visibility==='hidden')return true; if(parseFloat(cs.opacity)<0.06)return true; var cp=cs.clipPath||cs.webkitClipPath||''; if(/inset\([^)]*100%/.test(cp))return true; return false; }
+    function force(el){ if(!isHidden(el))return; el.style.setProperty('opacity','1','important'); el.style.setProperty('visibility','visible','important'); el.style.setProperty('transform','none','important'); el.style.setProperty('clip-path','none','important'); el.style.setProperty('-webkit-clip-path','none','important'); }
+    var els; try{ els=[].slice.call(document.querySelectorAll(SEL)); }catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4')); }
+    if('IntersectionObserver' in window){ var io=new IntersectionObserver(function(ents){ ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } }); },{threshold:0.01,rootMargin:'0px 0px -5% 0px'}); els.forEach(function(el){ io.observe(el); }); } else { els.forEach(force); }
+    window.addEventListener('load',function(){ setTimeout(function(){ els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); }); },2600); });
+  })();
+  </script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=cobra&name=Cobra" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

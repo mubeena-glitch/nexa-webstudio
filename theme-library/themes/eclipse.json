@@ -1,0 +1,93 @@
+{
+  "id": "eclipse",
+  "name": "Eclipse",
+  "family": "minimal",
+  "sector": "Photography portfolio",
+  "tags": [
+    "dark",
+    "photography",
+    "portfolio",
+    "editorial",
+    "monochrome",
+    "minimal",
+    "gallery"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "10 10 11",
+      "surface": "18 18 20",
+      "surface2": "26 26 29",
+      "ink": "240 238 233",
+      "muted": "150 148 142",
+      "line": "44 44 48",
+      "primary": "240 238 233",
+      "onPrimary": "10 10 11",
+      "accent": "201 168 122",
+      "accent2": "120 118 112"
+    },
+    "type": {
+      "display": "'Fraunces', 'Times New Roman', Georgia, serif",
+      "body": "'Inter Tight', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Inter Tight', ui-sans-serif, system-ui, sans-serif",
+      "scaleRatio": 1.33,
+      "weights": {
+        "display": 400,
+        "displayBold": 500,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(96px, 13vw, 184px)",
+      "gutter": "clamp(22px, 5vw, 80px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "2px",
+      "button": "0px",
+      "input": "0px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(0 0 0 / 0.4), 0 18px 48px -24px rgb(0 0 0 / 0.7)",
+      "elevated": "0 2px 4px rgb(0 0 0 / 0.5), 0 36px 80px -28px rgb(0 0 0 / 0.85)",
+      "philosophy": "deep"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration": "640ms",
+      "character": "editorial"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "3:4",
+      "filter": "grayscale(0.18) contrast(1.04)"
+    }
+  },
+  "recipes": {
+    "button": "outline-sharp",
+    "card": "borderless",
+    "nav": "centered-wordmark"
+  },
+  "preferredLayouts": {
+    "nav": "centered-wordmark",
+    "hero": "full-bleed-editorial",
+    "trusted": "publication-marquee",
+    "features": "asymmetric-statement",
+    "gallery": "mosaic-masonry",
+    "showcase": "pinned-horizontal-series",
+    "stats": "minimal-band",
+    "testimonial": "single-quote-serif",
+    "pricing": "commission-tiers",
+    "cta": "full-bleed-image-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap",
+    "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "id": "harbor",
+  "name": "Harbor",
+  "family": "corporate",
+  "sector": "Logistics / Shipping",
+  "tags": [
+    "light",
+    "logistics",
+    "shipping",
+    "navy",
+    "teal",
+    "corporate",
+    "freight",
+    "supply-chain"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "255 255 255",
+      "surface": "244 247 250",
+      "surface2": "236 241 246",
+      "ink": "16 30 51",
+      "muted": "92 108 130",
+      "line": "219 227 236",
+      "primary": "18 52 110",
+      "onPrimary": "255 255 255",
+      "accent": "18 52 110",
+      "accent2": "16 161 158"
+    },
+    "type": {
+      "display": "'Space Grotesk', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Inter', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'IBM Plex Mono', ui-monospace, monospace",
+      "scaleRatio": 1.26,
+      "weights": {
+        "display": 600,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.02em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(84px, 10vw, 144px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "14px",
+      "button": "10px",
+      "input": "10px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(16 30 51 / 0.05), 0 8px 22px -12px rgb(16 30 51 / 0.14)",
+      "elevated": "0 2px 4px rgb(16 30 51 / 0.06), 0 24px 48px -16px rgb(16 30 51 / 0.20)",
+      "philosophy": "crisp"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "420ms",
+      "character": "precise"
+    },
+    "imagery": {
+      "treatment": "framed",
+      "ratio": "16:10",
+      "filter": "none"
+    }
+  },
+  "recipes": {
+    "button": "solid-square",
+    "card": "bordered",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "split-text-tracking-map",
+    "trusted": "logo-bar",
+    "screenshot": "full-width-band",
+    "features": "alternating-splits",
+    "bento": "dense-capabilities",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "solid-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  ]
+}

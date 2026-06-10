@@ -1,0 +1,93 @@
+{
+  "id": "vellum",
+  "name": "Vellum",
+  "family": "luxury",
+  "sector": "Publishing / Books",
+  "tags": [
+    "light",
+    "publishing",
+    "editorial",
+    "literary",
+    "serif",
+    "classic",
+    "books"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "247 242 231",
+      "surface": "242 235 221",
+      "surface2": "236 227 210",
+      "ink": "33 29 24",
+      "muted": "112 102 88",
+      "line": "221 210 190",
+      "primary": "33 29 24",
+      "onPrimary": "247 242 231",
+      "accent": "138 30 36",
+      "accent2": "168 130 62"
+    },
+    "type": {
+      "display": "'Fraunces', 'Georgia', serif",
+      "body": "'Newsreader', 'Georgia', serif",
+      "mono": "'Spline Sans Mono', ui-monospace, monospace",
+      "scaleRatio": 1.333,
+      "weights": {
+        "display": 400,
+        "displayBold": 600,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(92px, 11vw, 156px)",
+      "gutter": "clamp(22px, 5vw, 72px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "4px",
+      "button": "2px",
+      "input": "2px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(33 29 24 / 0.05), 0 10px 28px -16px rgb(33 29 24 / 0.22)",
+      "elevated": "0 2px 6px rgb(33 29 24 / 0.07), 0 30px 60px -24px rgb(33 29 24 / 0.34)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration": "640ms",
+      "character": "graceful"
+    },
+    "imagery": {
+      "treatment": "duotone-warm",
+      "ratio": "3:4",
+      "filter": "sepia(0.12) contrast(1.02)"
+    }
+  },
+  "recipes": {
+    "button": "ink-rule",
+    "card": "ruled",
+    "nav": "serif-centred"
+  },
+  "preferredLayouts": {
+    "nav": "serif-centred",
+    "hero": "editorial-split-cover",
+    "trusted": "press-quotes",
+    "screenshot": "spread-mockup",
+    "features": "ruled-columns",
+    "bento": "catalogue-grid",
+    "integrations": "imprint-list",
+    "stats": "figures-rule",
+    "pricing": "membership-tiers",
+    "testimonial": "pull-quote-portrait",
+    "cta": "colophon-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Spline+Sans+Mono:wght@400;500&display=swap"
+  ]
+}

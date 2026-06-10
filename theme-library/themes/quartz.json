@@ -1,0 +1,93 @@
+{
+  "id": "quartz",
+  "name": "Quartz",
+  "family": "minimal",
+  "sector": "Interior design studio",
+  "tags": [
+    "light",
+    "minimal",
+    "interior",
+    "taupe",
+    "neutral",
+    "editorial",
+    "studio"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "240 237 231",
+      "surface": "232 228 221",
+      "surface2": "223 218 210",
+      "ink": "29 28 26",
+      "muted": "118 113 105",
+      "line": "213 208 199",
+      "primary": "29 28 26",
+      "onPrimary": "242 239 233",
+      "accent": "139 123 105",
+      "accent2": "139 123 105"
+    },
+    "type": {
+      "display": "'Archivo', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Archivo', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Newsreader', ui-serif, Georgia, serif",
+      "scaleRatio": 1.32,
+      "weights": {
+        "display": 600,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.03em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(86px, 11vw, 152px)",
+      "gutter": "clamp(20px, 5vw, 68px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "2px",
+      "button": "2px",
+      "input": "2px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(29 28 26 / 0.04), 0 12px 32px -18px rgb(29 28 26 / 0.18)",
+      "elevated": "0 2px 5px rgb(29 28 26 / 0.06), 0 30px 60px -24px rgb(29 28 26 / 0.28)",
+      "philosophy": "subtle"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.19, 1, 0.22, 1)",
+      "duration": "580ms",
+      "character": "precise"
+    },
+    "imagery": {
+      "treatment": "edge-to-edge",
+      "ratio": "4:5",
+      "filter": "neutral"
+    }
+  },
+  "recipes": {
+    "button": "solid-square",
+    "card": "hairline-editorial",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "asymmetric-editorial",
+    "trusted": "logo-bar",
+    "screenshot": "full-width-band",
+    "features": "numbered-services",
+    "bento": "project-gallery",
+    "integrations": "process-steps",
+    "stats": "band-countup",
+    "pricing": "engagement-tiers",
+    "testimonial": "single-quote-photo",
+    "cta": "soft-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap"
+  ]
+}

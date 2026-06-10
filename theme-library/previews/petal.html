@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Petal — NEXA Theme Preview (Weddings &amp; Events Studio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     PETAL — design tokens (1:1 mirror of petal.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 253 247 245;
+    --color-surface: 250 240 238;
+    --color-surface-2: 246 232 230;
+    --color-ink: 59 40 44;
+    --color-muted: 138 110 114;
+    --color-line: 234 214 212;
+    --color-primary: 176 110 116;
+    --color-on-primary: 255 255 255;
+    --color-accent: 176 110 116;
+    --color-accent2: 183 142 84;
+
+    --font-display: "Playfair Display", ui-serif, Georgia, serif;
+    --font-body: "Outfit", ui-sans-serif, system-ui, sans-serif;
+    --display-tracking: -0.01em;
+
+    --space-section: clamp(92px, 12vw, 168px);
+    --gutter: clamp(20px, 5vw, 68px);
+
+    --radius-card: 20px;
+    --radius-button: 999px;
+    --radius-input: 999px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(59 40 44 / 0.04), 0 12px 30px -16px rgb(59 40 44 / 0.16);
+    --shadow-elevated: 0 2px 6px rgb(59 40 44 / 0.05), 0 30px 60px -22px rgb(59 40 44 / 0.22);
+
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 560ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  .eyebrow {
+    font-family: var(--font-body); font-size: 12px; letter-spacing: 0.28em;
+    text-transform: uppercase; color: rgb(var(--color-accent2)); font-weight: 500;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before, .eyebrow::after { content: ""; width: 26px; height: 1px; background: rgb(var(--color-accent2) / .6); }
+  .eyebrow.center { justify-content: center; }
+  .eyebrow.solo::after { display: none; }
+  .disp { font-family: var(--font-display); font-weight: 500; letter-spacing: var(--display-tracking); line-height: 1.12; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18px); font-weight: 300; }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-accent2)); outline-offset: 4px; border-radius: 8px; }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 80;
+    background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2)));
+  }
+
+  /* ---------- buttons (recipe: solid-pill) ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body);
+    font-weight: 500; font-size: 15px; letter-spacing: .02em; padding: 14px 28px; border-radius: var(--radius-button);
+    border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+      background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary));
+    box-shadow: 0 1px 2px rgb(59 40 44 / .1), 0 12px 26px -12px rgb(var(--color-primary) / .6); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgb(59 40 44 / .12), 0 18px 34px -12px rgb(var(--color-primary) / .72); }
+  .btn-ghost { border-color: rgb(var(--color-primary) / .35); color: rgb(var(--color-primary)); background: transparent; }
+  .btn-ghost:hover { border-color: rgb(var(--color-primary)); background: rgb(var(--color-primary) / .06); transform: translateY(-2px); }
+  .btn-gold { background: rgb(var(--color-accent2)); color: #fff; }
+  .btn-gold:hover { transform: translateY(-2px); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     NAV — centred serif wordmark, links either side
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 70;
+    background: rgb(var(--color-bg) / .82);
+    backdrop-filter: saturate(130%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); box-shadow: 0 1px 0 rgb(var(--color-line) / .6); }
+  .nav-inner { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px; height: 80px; }
+  .nav-left { display: flex; align-items: center; gap: 34px; }
+  .nav-right { display: flex; align-items: center; gap: 22px; justify-content: flex-end; }
+  .wordmark { font-family: var(--font-display); font-weight: 600; font-size: 26px; letter-spacing: .01em; text-align: center; display: inline-flex; align-items: center; gap: 9px; }
+  .wordmark .mk { color: rgb(var(--color-accent2)); }
+  .nav-left a, .nav-right a.lk { font-size: 14px; letter-spacing: .04em; color: rgb(var(--color-muted)); font-weight: 400; position: relative; transition: color var(--dur) var(--ease); }
+  .nav-left a::after, .nav-right a.lk::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -6px; height: 1px; background: rgb(var(--color-accent2)); transition: right var(--dur) var(--ease); }
+  .nav-left a:hover, .nav-right a.lk:hover { color: rgb(var(--color-ink)); }
+  .nav-left a:hover::after, .nav-right a.lk:hover::after { right: 0; }
+  .nav-right .btn { padding: 11px 22px; }
+  @media (max-width: 940px) { .nav-inner { grid-template-columns: 1fr auto; } .nav-left a, .nav-right a.lk { display: none; } }
+
+  /* ============================================================
+     HERO — editorial arch: centred text, arched photo + side images
+     ============================================================ */
+  .hero { position: relative; padding-top: clamp(48px, 7vw, 88px); padding-bottom: clamp(72px, 9vw, 128px); overflow: hidden; text-align: center; }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(50% 40% at 50% 0%, rgb(var(--color-accent2) / .10), transparent 70%),
+      radial-gradient(60% 50% at 50% 100%, rgb(var(--color-primary) / .08), transparent 70%);
+  }
+  .hero .eyebrow { margin-bottom: 22px; }
+  .hero h1 { font-size: clamp(44px, 7vw, 88px); font-weight: 500; max-width: 14ch; margin: 0 auto; line-height: 1.06; }
+  .hero h1 em { font-style: italic; color: rgb(var(--color-primary)); }
+  .hero .lead { margin: 24px auto 0; max-width: 52ch; }
+  .hero-cta { display: flex; gap: 14px; justify-content: center; margin-top: 34px; flex-wrap: wrap; }
+
+  .hero-gallery { position: relative; margin-top: clamp(48px, 7vw, 84px); display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: clamp(16px, 2.5vw, 30px); align-items: end; }
+  @media (max-width: 760px) { .hero-gallery { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; } .hero-gallery .hg-side { display: none; } }
+  .hg-side { border-radius: 200px 200px 22px 22px; overflow: hidden; aspect-ratio: 3/4.4; box-shadow: var(--shadow-card); border: 1px solid rgb(var(--color-line)); }
+  .hg-center { border-radius: 260px 260px 24px 24px; overflow: hidden; aspect-ratio: 3/3.7; box-shadow: var(--shadow-elevated); border: 1px solid rgb(var(--color-line)); position: relative; }
+  .hg-side img, .hg-center img { width: 100%; height: 100%; object-fit: cover; }
+  .hg-center .seal {
+    position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
+    background: rgb(var(--color-bg) / .94); border: 1px solid rgb(var(--color-line)); backdrop-filter: blur(6px);
+    border-radius: 999px; padding: 9px 18px; font-family: var(--font-display); font-style: italic; font-size: 15px; box-shadow: var(--shadow-card);
+  }
+  .hero-meta { display: flex; align-items: center; justify-content: center; gap: 30px; margin-top: 34px; flex-wrap: wrap; }
+  .hero-meta .hm { display: inline-flex; align-items: center; gap: 9px; font-size: 13px; color: rgb(var(--color-muted)); letter-spacing: .02em; }
+  .hero-meta .hm svg { color: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     MARQUEE / TRUST
+     ============================================================ */
+  .logos { padding: 14px 0; border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface) / .5); }
+  .logos .cap { text-align: center; font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: rgb(var(--color-muted)); font-weight: 500; }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: clamp(26px, 5vw, 56px); flex-wrap: wrap; margin-top: 22px; }
+  .logo-row .lm { font-family: var(--font-display); font-style: italic; font-size: 21px; color: rgb(var(--color-muted)); opacity: .78; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .logo-row .lm:hover { opacity: 1; color: rgb(var(--color-primary)); }
+
+  /* ============================================================
+     GALLERY SHOWCASE BAND
+     ============================================================ */
+  .band-shot { padding: var(--space-section) 0; }
+  .shot-head { text-align: center; max-width: 640px; margin: 0 auto 54px; }
+  .shot-head h2 { font-size: clamp(30px, 3.8vw, 50px); margin: 18px 0 16px; }
+  .masonry { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 180px; gap: 18px; }
+  @media (max-width: 880px) { .masonry { grid-template-columns: repeat(2, 1fr); } }
+  .mz { border-radius: var(--radius-card); overflow: hidden; box-shadow: var(--shadow-card); border: 1px solid rgb(var(--color-line)); position: relative; }
+  .mz img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  .mz:hover img { transform: scale(1.06); }
+  .mz .cap2 { position: absolute; left: 14px; bottom: 12px; font-family: var(--font-display); font-style: italic; font-size: 15px; color: #fff; text-shadow: 0 1px 8px rgb(0 0 0 / .4); }
+  .mz.tall { grid-row: span 2; }
+  .mz.wide { grid-column: span 2; }
+  @media (max-width: 880px) { .mz.wide { grid-column: span 2; } .mz.tall { grid-row: span 2; } }
+
+  /* ============================================================
+     ALTERNATING FEATURE SPLITS
+     ============================================================ */
+  .splits { padding: 0 0 var(--space-section); }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 92px); align-items: center; padding: clamp(52px, 7vw, 92px) 0; }
+  .split + .split { border-top: 1px solid rgb(var(--color-line)); }
+  .split:nth-child(even) .split-media { order: 2; }
+  .split:nth-child(even) .split-text { order: 1; }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split .split-media, .split .split-text { order: 0 !important; } }
+  .split-text h2 { font-size: clamp(28px, 3.4vw, 44px); margin: 16px 0 16px; max-width: 16ch; }
+  .split-text .lead { max-width: 44ch; }
+  .checks { list-style: none; margin-top: 26px; display: grid; gap: 14px; }
+  .checks li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; }
+  .checks li .ck { flex: none; width: 24px; height: 24px; border-radius: 999px; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); display: grid; place-items: center; margin-top: 1px; }
+  .split-media { position: relative; }
+  .split-media .ph { border-radius: 200px 200px var(--radius-card) var(--radius-card); border: 1px solid rgb(var(--color-line)); overflow: hidden; box-shadow: var(--shadow-elevated); aspect-ratio: 4/4.6; max-width: 440px; margin-inline: auto; }
+  .split-media .ph img { width: 100%; height: 100%; object-fit: cover; }
+  .split-media .tagchip { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); padding: 9px 18px; border-radius: 999px; background: rgb(var(--color-bg) / .94); backdrop-filter: blur(6px); border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-card); font-family: var(--font-display); font-style: italic; font-size: 14px; white-space: nowrap; }
+
+  /* ============================================================
+     SERVICES SOFT GRID
+     ============================================================ */
+  .caps { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .55); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .caps-head { text-align: center; max-width: 600px; margin: 0 auto 50px; }
+  .caps-head h2 { font-size: clamp(30px, 3.6vw, 48px); margin: 18px 0 14px; }
+  .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 880px) { .bento { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .bento { grid-template-columns: 1fr; } }
+  .cap {
+    border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-bg));
+    padding: 30px 28px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 12px;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .cap:hover { transform: translateY(-4px); box-shadow: var(--shadow-elevated); }
+  .cap .ci { width: 52px; height: 52px; border-radius: 999px; background: rgb(var(--color-primary) / .1); color: rgb(var(--color-primary)); display: grid; place-items: center; }
+  .cap h3 { font-family: var(--font-display); font-weight: 500; font-size: 22px; }
+  .cap p { color: rgb(var(--color-muted)); font-size: 14.5px; }
+  .cap .mono-tag { margin-top: auto; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: rgb(var(--color-accent2)); font-weight: 500; }
+
+  /* ============================================================
+     PARTNERS / VENDORS TILE GRID
+     ============================================================ */
+  .integ { padding: var(--space-section) 0; }
+  .integ-head { text-align: center; max-width: 600px; margin: 0 auto 50px; }
+  .integ-head h2 { font-size: clamp(30px, 3.6vw, 48px); margin: 18px 0 12px; }
+  .integ-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 760px) { .integ-grid { grid-template-columns: repeat(2, 1fr); } }
+  .itile { display: flex; align-items: center; gap: 14px; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-bg)); padding: 20px; box-shadow: var(--shadow-card); transition: transform var(--dur) var(--ease); }
+  .itile:hover { transform: translateY(-4px); }
+  .itile .g { width: 46px; height: 46px; flex: none; border-radius: 999px; display: grid; place-items: center; background: rgb(var(--color-surface)); color: rgb(var(--color-primary)); border: 1px solid rgb(var(--color-line)); }
+  .itile .nm { font-family: var(--font-display); font-weight: 500; font-size: 17px; }
+  .itile .ct { font-size: 12.5px; color: rgb(var(--color-muted)); }
+
+  /* ============================================================
+     METRICS BAND
+     ============================================================ */
+  .metrics { padding: clamp(72px, 8vw, 104px) 0; background: rgb(var(--color-surface-2) / .7); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; text-align: center; }
+  @media (max-width: 760px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; } }
+  .metric .num { font-family: var(--font-display); font-weight: 500; font-size: clamp(40px, 5vw, 64px); line-height: 1; }
+  .metric .num .suf { color: rgb(var(--color-primary)); }
+  .metric .lbl { color: rgb(var(--color-muted)); font-size: 13.5px; letter-spacing: .04em; margin-top: 12px; }
+
+  /* ============================================================
+     PACKAGES / PRICING
+     ============================================================ */
+  .pricing { padding: var(--space-section) 0; }
+  .pricing-head { text-align: center; max-width: 600px; margin: 0 auto 56px; }
+  .pricing-head h2 { font-size: clamp(30px, 3.8vw, 50px); margin: 18px 0 12px; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+  @media (max-width: 900px) { .tiers { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+  .tier { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-bg)); padding: 36px 32px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 8px; transition: transform var(--dur) var(--ease); text-align: center; }
+  .tier.pop { border-color: rgb(var(--color-primary) / .5); box-shadow: var(--shadow-elevated); position: relative; transform: translateY(-10px); background: linear-gradient(180deg, rgb(var(--color-surface) / .6), rgb(var(--color-bg))); }
+  @media (max-width: 900px) { .tier.pop { transform: none; } }
+  .tier .badge-pop { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; background: rgb(var(--color-accent2)); color: #fff; padding: 6px 16px; border-radius: 999px; font-weight: 500; }
+  .tier .tn { font-family: var(--font-display); font-weight: 500; font-size: 24px; }
+  .tier .desc { color: rgb(var(--color-muted)); font-size: 13.5px; min-height: 40px; }
+  .tier .price { font-family: var(--font-display); font-weight: 500; font-size: 46px; margin: 14px 0 2px; }
+  .tier .price span { font-size: 15px; color: rgb(var(--color-muted)); }
+  .tier ul { list-style: none; display: grid; gap: 12px; margin: 20px 0 24px; text-align: left; }
+  .tier ul li { display: flex; gap: 11px; font-size: 14px; align-items: flex-start; }
+  .tier ul li svg { flex: none; color: rgb(var(--color-accent2)); margin-top: 3px; }
+  .tier .btn { width: 100%; justify-content: center; margin-top: auto; }
+
+  /* ============================================================
+     TESTIMONIAL
+     ============================================================ */
+  .quote { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .55); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .quote-grid { display: grid; grid-template-columns: 300px 1fr; gap: clamp(36px, 5vw, 72px); align-items: center; max-width: 1000px; margin: 0 auto; }
+  @media (max-width: 760px) { .quote-grid { grid-template-columns: 1fr; text-align: center; } }
+  .quote-photo { border-radius: 220px 220px var(--radius-card) var(--radius-card); overflow: hidden; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); aspect-ratio: 4/5; }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .quote blockquote { font-family: var(--font-display); font-weight: 500; font-style: italic; font-size: clamp(24px, 3vw, 36px); line-height: 1.38; }
+  .quote blockquote .hl { color: rgb(var(--color-primary)); font-style: normal; }
+  .quote .by { margin-top: 24px; font-style: normal; }
+  .quote .by .n { font-family: var(--font-display); font-size: 18px; }
+  .quote .by .r { color: rgb(var(--color-muted)); font-size: 14px; }
+  .quote .stars { color: rgb(var(--color-accent2)); margin-bottom: 20px; display: inline-flex; gap: 4px; }
+
+  /* ============================================================
+     CTA BAND
+     ============================================================ */
+  .cta { padding: var(--space-section) 0; }
+  .cta-card { position: relative; overflow: hidden; border-radius: 28px; padding: clamp(52px, 7vw, 92px); text-align: center; color: #fff; background: linear-gradient(140deg, rgb(var(--color-primary)), rgb(140 78 88)); box-shadow: var(--shadow-elevated); }
+  .cta-card::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 82% 12%, rgb(var(--color-accent2) / .5), transparent 48%); pointer-events: none; }
+  .cta-card .eyebrow { color: rgb(255 255 255 / .85); margin-bottom: 18px; position: relative; }
+  .cta-card .eyebrow::before, .cta-card .eyebrow::after { background: rgb(255 255 255 / .6); }
+  .cta-card h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(32px, 4.2vw, 56px); position: relative; }
+  .cta-card p { color: rgb(255 255 255 / .85); margin: 18px auto 0; max-width: 48ch; position: relative; font-weight: 300; }
+  .cta-card .cta-actions { display: flex; gap: 14px; justify-content: center; margin-top: 34px; flex-wrap: wrap; position: relative; }
+  .cta-card .btn-white { background: #fff; color: rgb(var(--color-primary)); }
+  .cta-card .btn-white:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgb(0 0 0 / .35); }
+  .cta-card .btn-line { border-color: rgb(255 255 255 / .5); color: #fff; background: transparent; }
+  .cta-card .btn-line:hover { border-color: #fff; background: rgb(255 255 255 / .08); }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: clamp(60px, 7vw, 92px) 0 40px; }
+  .foot-top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 38px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wordmark { justify-content: flex-start; margin-bottom: 16px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 34ch; margin-bottom: 20px; }
+  .news { display: flex; gap: 8px; max-width: 340px; }
+  .news input { flex: 1; padding: 12px 18px; border-radius: var(--radius-input); border: 1px solid rgb(var(--color-line)); font-family: var(--font-body); font-size: 14px; background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); }
+  .news input::placeholder { color: rgb(var(--color-muted)); }
+  .news .btn { padding: 12px 18px; }
+  .foot-col h4 { font-family: var(--font-display); font-weight: 500; font-size: 17px; margin-bottom: 16px; }
+  .foot-col a { display: block; color: rgb(var(--color-muted)); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-primary)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 50px; padding-top: 26px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; }
+  .foot-bot .cp { color: rgb(var(--color-muted)); font-size: 13px; }
+  .foot-bot .soc { display: flex; gap: 10px; }
+  .foot-bot .soc a { width: 38px; height: 38px; border-radius: 999px; border: 1px solid rgb(var(--color-line)); display: grid; place-items: center; color: rgb(var(--color-muted)); transition: all var(--dur) var(--ease); }
+  .foot-bot .soc a:hover { color: rgb(var(--color-primary)); border-color: rgb(var(--color-primary) / .4); }
+
+  /* ribbon */
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    font-family: var(--font-body); font-size: 11px; letter-spacing: .06em;
+    background: rgb(var(--color-ink)); color: #fff; padding: 8px 14px; border-radius: 999px;
+    box-shadow: var(--shadow-elevated); opacity: .92;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <div class="nav-left">
+      <a href="#gallery">Gallery</a>
+      <a href="#services">Services</a>
+      <a href="#packages">Packages</a>
+    </div>
+    <a class="wordmark" href="#" aria-label="Petal home">Petal <span class="mk">&amp; Co</span></a>
+    <div class="nav-right">
+      <a class="lk" href="#customers">Stories</a>
+      <a class="btn btn-primary magnetic" href="#contact">Enquire</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="hero">
+  <span class="eyebrow center" data-hero>Wedding &amp; event design studio</span>
+  <h1 class="disp" data-hero>Weddings woven with <em>quiet</em> beauty</h1>
+  <p class="lead" data-hero>Petal is a boutique events studio designing ceremonies and celebrations across the coast and countryside. We hold every detail, from the first mood board to the final farewell, so you can be fully present on the day.</p>
+  <div class="hero-cta" data-hero>
+    <a class="btn btn-primary magnetic" href="#contact">Begin your enquiry <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="btn btn-ghost" href="#gallery">View the gallery</a>
+  </div>
+
+  <div class="hero-gallery" data-hero-media>
+    <div class="hg-side"><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80&auto=format&fit=crop" alt="Bride holding a soft bouquet of pale roses" loading="lazy"></div>
+    <div class="hg-center">
+      <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=900&q=80&auto=format&fit=crop" alt="Couple sharing a first dance under warm festoon lighting">
+      <span class="seal">Est. by hand, 2014</span>
+    </div>
+    <div class="hg-side"><img src="https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=600&q=80&auto=format&fit=crop" alt="Reception table set with candles and dusty rose florals" loading="lazy"></div>
+  </div>
+
+  <div class="hero-meta" data-hero>
+    <span class="hm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.6-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.4-7 10-7 10z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg> 300+ celebrations designed</span>
+    <span class="hm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg> Featured in Coastal Bride</span>
+    <span class="hm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> Fully insured &amp; accredited</span>
+  </div>
+</section>
+
+<!-- ======================== TRUST ======================== -->
+<section class="logos">
+  <div class="wrap">
+    <p class="cap" data-reveal>As seen and celebrated alongside</p>
+    <div class="logo-row" data-batch>
+      <span class="lm">Coastal Bride</span>
+      <span class="lm">The Wild Vow</span>
+      <span class="lm">Linen &amp; Lace</span>
+      <span class="lm">Hearth Venues</span>
+      <span class="lm">Bloom Journal</span>
+      <span class="lm">Saved the Date</span>
+    </div>
+  </div>
+</section>
+
+<!-- =================== GALLERY SHOWCASE =================== -->
+<section class="band-shot" id="gallery">
+  <div class="wrap">
+    <div class="shot-head" data-reveal>
+      <span class="eyebrow center">Recent celebrations</span>
+      <h2 class="disp">A look at the days we have held</h2>
+      <p class="lead">Every wedding is its own world. Here are a few we have shaped, from intimate garden vows to candlelit barn receptions.</p>
+    </div>
+    <div class="masonry" data-batch>
+      <div class="mz tall"><img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=700&q=80&auto=format&fit=crop" alt="Outdoor ceremony arch dressed with white florals" loading="lazy"><span class="cap2">Garden vows, Elm House</span></div>
+      <div class="mz wide"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=900&q=80&auto=format&fit=crop" alt="Long reception table under warm string lights" loading="lazy"><span class="cap2">Coastal supper</span></div>
+      <div class="mz"><img src="https://images.unsplash.com/photo-1525258946800-98cfd641d0de?w=600&q=80&auto=format&fit=crop" alt="Close detail of a dusty rose bridal bouquet" loading="lazy"></div>
+      <div class="mz"><img src="https://images.unsplash.com/photo-1535083783855-76ae62b2914e?w=600&q=80&auto=format&fit=crop" alt="Bride and groom walking a lantern-lined path" loading="lazy"></div>
+      <div class="mz wide"><img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=900&q=80&auto=format&fit=crop" alt="Guests toasting at an evening reception" loading="lazy"><span class="cap2">Barn celebration, Wrenfield</span></div>
+      <div class="mz tall"><img src="https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=700&q=80&auto=format&fit=crop" alt="Tiered wedding cake decorated with fresh blooms" loading="lazy"><span class="cap2">Hand-finished details</span></div>
+      <div class="mz"><img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=600&q=80&auto=format&fit=crop" alt="Place setting with menu card and sprig of greenery" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ALTERNATING SPLITS ================= -->
+<section class="splits" id="services">
+  <div class="wrap">
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&q=80&auto=format&fit=crop" alt="Planner sketching a floral mood board on a desk" loading="lazy"></div>
+        <span class="tagchip">From first idea to final plan</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow solo">Design</span>
+        <h2 class="disp">A celebration shaped entirely around you</h2>
+        <p class="lead">We begin with a long, unhurried conversation and build a design world from there. Palette, flowers, light, and rhythm of the day are all considered together, never bolted on as an afterthought.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Bespoke mood boards and styling direction</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Floral and tablescape design in-house</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> A single point of contact throughout</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80&auto=format&fit=crop" alt="Elegant outdoor venue set for a wedding ceremony" loading="lazy"></div>
+        <span class="tagchip">Venues we know by heart</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow solo">Plan</span>
+        <h2 class="disp">Every supplier held, every hour mapped</h2>
+        <p class="lead">From the celebrant to the late-night taxis, we coordinate the whole cast so nothing falls between the cracks. You receive a clear running order and we quietly manage the rest behind the scenes.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Full supplier sourcing and liaison</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Detailed timeline and floor plans</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Budget tracking with no surprises</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=800&q=80&auto=format&fit=crop" alt="Bride and groom embracing at golden hour" loading="lazy"></div>
+        <span class="tagchip">We stay until the last dance</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow solo">On the day</span>
+        <h2 class="disp">Present, calm, and entirely yours</h2>
+        <p class="lead">Our team is there from the early setup to the final send-off, steering the day so gently that you never see the work. If anything shifts, we have already solved it before you would have thought to ask.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Full on-the-day coordination team</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Setup, styling, and quiet pack-down</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Calm problem-solving you never notice</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= SERVICES SOFT GRID ================= -->
+<section class="caps">
+  <div class="wrap">
+    <div class="caps-head" data-reveal>
+      <span class="eyebrow center">How we help</span>
+      <h2 class="disp">Ways to work with the studio</h2>
+      <p class="lead">Whether you want us beside you for the full journey or only for the final stretch, there is a way in.</p>
+    </div>
+    <div class="bento" data-batch>
+      <div class="cap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.6-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.4-7 10-7 10z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+        <h3>Full design</h3>
+        <p>We hold the whole celebration with you, from the very first idea through to the last dance.</p>
+        <span class="mono-tag">Signature service</span>
+      </div>
+      <div class="cap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+        <h3>Partial planning</h3>
+        <p>You have made a start. We join partway and bring the loose threads together into one calm plan.</p>
+        <span class="mono-tag">Most flexible</span>
+      </div>
+      <div class="cap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <h3>On-the-day</h3>
+        <p>You have planned it all. We step in to run the day itself so you can simply be there.</p>
+        <span class="mono-tag">Final-stretch care</span>
+      </div>
+      <div class="cap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 19c5-1 9-5 14-14M9 13l-2 6 6-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3>Floral &amp; styling</h3>
+        <p>Our in-house florals and tablescapes, available as a standalone for couples who have a planner already.</p>
+        <span class="mono-tag">Studio add-on</span>
+      </div>
+      <div class="cap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 9h16M9 5v14" stroke="currentColor" stroke-width="1.6"/></svg></span>
+        <h3>Private events</h3>
+        <p>Anniversaries, milestone birthdays, and gatherings designed with the same gentle care.</p>
+        <span class="mono-tag">Beyond weddings</span>
+      </div>
+      <div class="cap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+        <h3>Destination days</h3>
+        <p>For couples marrying further afield, we travel and coordinate the whole celebration on location.</p>
+        <span class="mono-tag">Travel ready</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PARTNERS ==================== -->
+<section class="integ" id="partners">
+  <div class="wrap">
+    <div class="integ-head" data-reveal>
+      <span class="eyebrow center">Trusted hands</span>
+      <h2 class="disp">The makers we love to work alongside</h2>
+      <p class="lead">A small, considered circle of suppliers we return to time and again for their craft.</p>
+    </div>
+    <div class="integ-grid" data-batch>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 13v8M9 18h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><div class="nm">Wild Stem</div><div class="ct">Florals</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg></span><div><div class="nm">Hartley &amp; Reed</div><div class="ct">Photography</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 19V8l7-4 7 4v11M9 19v-5h6v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><div class="nm">Elm House</div><div class="ct">Venues</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 21V9l6-6 6 6v12M10 21v-6h4v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><div class="nm">Copper Spoon</div><div class="ct">Catering</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.8"/></svg></span><div><div class="nm">The Long Note</div><div class="ct">Live music</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16v13H4zM4 7l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><div><div class="nm">Pressed Paper</div><div class="ct">Stationery</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M6 8c0 3 2 5 6 5M18 8c0 3-2 5-6 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><div><div class="nm">Glow &amp; Glass</div><div class="ct">Lighting</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M7 11V8a5 5 0 0110 0v3" stroke="currentColor" stroke-width="1.8"/></svg></span><div><div class="nm">Linen &amp; Lace</div><div class="ct">Hire &amp; tableware</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== METRICS BAND ==================== -->
+<section class="metrics" id="metrics">
+  <div class="wrap">
+    <div class="metrics-grid" data-batch>
+      <div class="metric"><div class="num"><span class="count" data-to="300">0</span><span class="suf">+</span></div><div class="lbl">Celebrations designed</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="11">0</span><span class="suf"></span></div><div class="lbl">Years holding the day</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="48">0</span><span class="suf"></span></div><div class="lbl">Favourite venues</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="5" data-dec="0">0</span><span class="suf">.0</span></div><div class="lbl">Average couple rating</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PACKAGES ======================= -->
+<section class="pricing" id="packages">
+  <div class="wrap">
+    <div class="pricing-head" data-reveal>
+      <span class="eyebrow center">Packages</span>
+      <h2 class="disp">Find the level of care that fits</h2>
+      <p class="lead">Each package can be tailored after our first conversation. Figures are a guide for a celebration of around one hundred guests.</p>
+    </div>
+    <div class="tiers" data-batch>
+      <div class="tier">
+        <div class="tn">On the day</div>
+        <div class="desc">For couples who have planned it all themselves</div>
+        <div class="price">&pound;1,650</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Full coordination on the day</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Final supplier confirmations</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Running order and floor plan</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Setup and quiet pack-down</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact">Enquire</a>
+      </div>
+      <div class="tier pop">
+        <span class="badge-pop">Most loved</span>
+        <div class="tn">Partial planning</div>
+        <div class="desc">For couples who want us alongside them</div>
+        <div class="price">&pound;4,200</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in On the day</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Design direction and mood boards</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Supplier sourcing and liaison</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Budget tracking throughout</li>
+        </ul>
+        <a class="btn btn-primary magnetic" href="#contact">Enquire</a>
+      </div>
+      <div class="tier">
+        <div class="tn">Full design</div>
+        <div class="desc">For couples who want it all held for them</div>
+        <div class="price">&pound;7,800</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in Partial planning</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Full creative direction from day one</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> In-house florals and styling</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Unlimited planning sessions</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact">Enquire</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TESTIMONIAL ===================== -->
+<section class="quote" id="customers">
+  <div class="wrap quote-grid" data-reveal>
+    <div class="quote-photo">
+      <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=700&q=80&auto=format&fit=crop" alt="Portrait of Amara and James, a married couple, smiling outdoors" loading="lazy">
+    </div>
+    <div>
+      <span class="stars" aria-label="5 out of 5 stars">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+      </span>
+      <blockquote>"We thought we had to do it all ourselves to keep it personal. Petal proved us wrong. They held every detail so gently that the whole day felt like ours, and <span class="hl">we were finally able to simply enjoy it.</span>"</blockquote>
+      <div class="by">
+        <div class="n">Amara &amp; James</div>
+        <div class="r">Married at Elm House, spring 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== CTA ======================== -->
+<section class="cta" id="contact">
+  <div class="wrap">
+    <div class="cta-card" data-reveal>
+      <span class="eyebrow center">Let us begin</span>
+      <h2 class="disp">Tell us about your day</h2>
+      <p>We take on a small number of celebrations each year so every couple has our full attention. Share a few details and we will be in touch within two working days.</p>
+      <div class="cta-actions">
+        <a class="btn btn-white magnetic" href="#">Start your enquiry <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-line" href="#">View availability</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FOOTER ======================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="wordmark" href="#" aria-label="Petal home">Petal <span class="mk">&amp; Co</span></a>
+        <p>A boutique wedding and events studio designing celebrations across the coast and countryside, one cherished day at a time.</p>
+        <form class="news" onsubmit="return false">
+          <label for="news-email" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+          <input id="news-email" type="email" placeholder="you@email.com" aria-label="Email address for the studio journal" autocomplete="email">
+          <button class="btn btn-primary" type="submit">Join</button>
+        </form>
+      </div>
+      <div class="foot-col">
+        <h4>Studio</h4>
+        <a href="#">Gallery</a><a href="#">Services</a><a href="#">Packages</a><a href="#">Journal</a><a href="#">About</a>
+      </div>
+      <div class="foot-col">
+        <h4>Celebrations</h4>
+        <a href="#">Weddings</a><a href="#">Private events</a><a href="#">Destination days</a><a href="#">Florals</a>
+      </div>
+      <div class="foot-col">
+        <h4>Visit</h4>
+        <a href="#">Enquire</a><a href="#">Availability</a><a href="#">The studio</a><a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span class="cp">&copy; 2026 Petal &amp; Co Events. Made with care.</span>
+      <div class="soc">
+        <a href="#" aria-label="Petal on Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Petal on Pinterest"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 20l2-7M8 9a4 4 0 117 2.7c-1 1.3-3 1.3-3.6-.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg></a>
+        <a href="#" aria-label="Petal on Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 8h2V5h-2a3 3 0 00-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · Petal · weddings</div>
+
+<!-- ===== GSAP (CDN) ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm = gsap.matchMedia();
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 26, autoAlpha: 0, duration: 0.8, stagger: 0.1 })
+          .from('.hg-side, .hg-center', { y: 40, autoAlpha: 0, scale: 0.96, duration: 1.0, stagger: 0.12 }, '-=0.5');
+
+    /* gentle parallax on hero gallery images while scrolling */
+    gsap.to('.hg-side', {
+      yPercent: -8, ease: 'none',
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+    gsap.to('.hg-center', {
+      yPercent: 5, ease: 'none',
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+
+    gsap.set('[data-reveal]', { y: 30, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.14, ease: 'power3.out', overwrite: true }); }
+    });
+
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 26, autoAlpha: 0 });
+      ScrollTrigger.create({
+        trigger: grid, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' }); }
+      });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], .hg-side, .hg-center, [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+      if (reduced) { el.textContent = to.toFixed(dec); return; }
+      ScrollTrigger.create({
+        trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          var obj = { v: 0 };
+          gsap.to(obj, { v: to, duration: 1.5, ease: 'power2.out',
+            onUpdate: function () { el.textContent = obj.v.toFixed(dec); },
+            onComplete: function () { el.textContent = to.toFixed(dec); } });
+        }
+      });
+    });
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.2, y: (e.clientY - r.top - r.height / 2) * 0.3, duration: 0.5, ease: 'power3' });
+      });
+      btn.addEventListener('pointerleave', function () { gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'power3' }); });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-hero-media],[data-reveal],.hg-side,.hg-center,[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,.reveal')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=petal&name=Petal" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

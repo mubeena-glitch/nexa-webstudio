@@ -1,0 +1,93 @@
+{
+  "id": "clay",
+  "name": "Clay",
+  "family": "minimal",
+  "sector": "Handmade / pottery studio",
+  "tags": [
+    "light",
+    "minimal",
+    "terracotta",
+    "handmade",
+    "craft",
+    "earthy",
+    "studio"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "247 241 232",
+      "surface": "240 232 220",
+      "surface2": "233 222 207",
+      "ink": "45 36 30",
+      "muted": "122 108 96",
+      "line": "221 209 193",
+      "primary": "187 92 58",
+      "onPrimary": "252 247 240",
+      "accent": "187 92 58",
+      "accent2": "124 132 96"
+    },
+    "type": {
+      "display": "'Fraunces', ui-serif, Georgia, serif",
+      "body": "'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Spline Sans Mono', ui-monospace, monospace",
+      "scaleRatio": 1.26,
+      "weights": {
+        "display": 500,
+        "displayBold": 600,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(84px, 10vw, 144px)",
+      "gutter": "clamp(20px, 5vw, 60px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "18px",
+      "button": "999px",
+      "input": "12px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(45 36 30 / 0.05), 0 12px 30px -16px rgb(45 36 30 / 0.16)",
+      "elevated": "0 2px 5px rgb(45 36 30 / 0.06), 0 28px 56px -22px rgb(45 36 30 / 0.24)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "520ms",
+      "character": "gentle"
+    },
+    "imagery": {
+      "treatment": "framed-warm",
+      "ratio": "4:5",
+      "filter": "warm"
+    }
+  },
+  "recipes": {
+    "button": "solid-pill",
+    "card": "soft-rounded",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "editorial-split-image",
+    "trusted": "logo-bar",
+    "screenshot": "full-bleed-image",
+    "features": "alternating-splits",
+    "bento": "process-steps",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "soft-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap"
+  ]
+}

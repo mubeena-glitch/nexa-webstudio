@@ -1,0 +1,94 @@
+{
+  "id": "maple",
+  "name": "Maple",
+  "family": "corporate",
+  "sector": "Accounting / Advisory",
+  "tags": [
+    "light",
+    "accounting",
+    "advisory",
+    "finance",
+    "forest-green",
+    "cream",
+    "trustworthy",
+    "corporate"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "250 247 240",
+      "surface": "244 240 231",
+      "surface2": "238 233 222",
+      "ink": "31 41 35",
+      "muted": "96 106 96",
+      "line": "223 218 205",
+      "primary": "30 79 56",
+      "onPrimary": "255 255 255",
+      "accent": "30 79 56",
+      "accent2": "176 124 60"
+    },
+    "type": {
+      "display": "'Fraunces', ui-serif, Georgia, serif",
+      "body": "'Inter', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'IBM Plex Mono', ui-monospace, monospace",
+      "scaleRatio": 1.3,
+      "weights": {
+        "display": 500,
+        "displayBold": 600,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(88px, 11vw, 152px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "balanced"
+    },
+    "radius": {
+      "card": "12px",
+      "button": "8px",
+      "input": "8px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(31 41 35 / 0.05), 0 8px 22px -12px rgb(31 41 35 / 0.14)",
+      "elevated": "0 2px 4px rgb(31 41 35 / 0.06), 0 24px 48px -16px rgb(31 41 35 / 0.20)",
+      "philosophy": "grounded"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "460ms",
+      "character": "measured"
+    },
+    "imagery": {
+      "treatment": "framed",
+      "ratio": "16:10",
+      "filter": "warm"
+    }
+  },
+  "recipes": {
+    "button": "solid-square",
+    "card": "bordered",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "editorial-split-trust",
+    "trusted": "logo-bar",
+    "screenshot": "full-width-band",
+    "features": "alternating-splits",
+    "bento": "dense-capabilities",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "solid-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  ]
+}

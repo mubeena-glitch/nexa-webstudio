@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rosewood — NEXA Theme Preview (Boutique Hotel)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     ROSEWOOD — design tokens (1:1 mirror of rosewood.json)
+     ============================================================ */
+  :root {
+    --color-bg: 244 238 233;
+    --color-surface: 236 228 222;
+    --color-surface-2: 228 218 211;
+    --color-ink: 47 32 39;
+    --color-muted: 124 104 110;
+    --color-line: 214 200 196;
+    --color-primary: 92 53 70;
+    --color-on-primary: 247 242 238;
+    --color-accent: 92 53 70;
+    --color-accent2: 168 130 78;
+
+    --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+    --font-body: "Jost", ui-sans-serif, system-ui, sans-serif;
+    --display-tracking: 0em;
+
+    --space-section: clamp(88px, 12vw, 160px);
+    --gutter: clamp(22px, 5vw, 72px);
+
+    --radius-card: 4px;
+    --radius-button: 2px;
+    --radius-input: 2px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(47 32 39 / 0.05), 0 14px 40px -22px rgb(47 32 39 / 0.30);
+    --shadow-elevated: 0 2px 6px rgb(47 32 39 / 0.07), 0 34px 70px -28px rgb(47 32 39 / 0.40);
+
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 640ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  .eyebrow {
+    font-family: var(--font-body); font-size: 12px; letter-spacing: 0.32em;
+    text-transform: uppercase; color: rgb(var(--color-accent2)); font-weight: 500;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before { content: ""; width: 28px; height: 1px; background: rgb(var(--color-accent2)); }
+  .eyebrow.center { justify-content: center; }
+  .eyebrow.center::before { display: none; }
+  .disp { font-family: var(--font-display); font-weight: 500; letter-spacing: var(--display-tracking); line-height: 1.1; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.3vw, 18px); }
+
+  :focus-visible { outline: 1.5px solid rgb(var(--color-primary)); outline-offset: 4px; }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%; z-index: 80;
+    background: rgb(var(--color-accent2));
+  }
+
+  /* ---------- buttons (recipe: outline-square + filled) ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body);
+    font-weight: 500; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 16px 30px; border-radius: var(--radius-button);
+    border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: transform var(--dur) var(--ease), background var(--dur) var(--ease),
+      border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-primary:hover { background: rgb(72 40 55); transform: translateY(-2px); }
+  .btn-line { border-color: rgb(var(--color-primary) / .4); color: rgb(var(--color-primary)); background: transparent; }
+  .btn-line:hover { border-color: rgb(var(--color-primary)); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(5px); }
+
+  /* ============================================================
+     NAV — centred serif wordmark, links either side
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 70;
+    background: rgb(var(--color-bg) / .85);
+    backdrop-filter: saturate(130%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); }
+  .nav-inner { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; height: 84px; }
+  .nav-links { display: flex; align-items: center; gap: 34px; }
+  .nav-links.right { justify-content: flex-end; }
+  .nav-links a { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--color-muted)); font-weight: 400; transition: color var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .wordmark { font-family: var(--font-display); font-weight: 600; font-size: 28px; letter-spacing: 0.04em; text-align: center; }
+  .wordmark small { display: block; font-family: var(--font-body); font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase; color: rgb(var(--color-accent2)); margin-top: 1px; }
+  .nav-cta { display: inline-flex; }
+  @media (max-width: 1000px) {
+    .nav-inner { grid-template-columns: 1fr auto 1fr; }
+    .nav-links a:not(.always) { display: none; }
+    .nav-links.left { visibility: hidden; }
+  }
+
+  /* ============================================================
+     HERO — full-bleed image with centred overlay
+     ============================================================ */
+  .hero { position: relative; min-height: clamp(560px, 86vh, 880px); display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
+  .hero .bg { position: absolute; inset: 0; z-index: -2; }
+  .hero .bg img { width: 100%; height: 100%; object-fit: cover; }
+  .hero .scrim { position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(38 24 30 / .5), rgb(38 24 30 / .35) 40%, rgb(38 24 30 / .62)); }
+  .hero-inner { position: relative; color: #fff; max-width: 760px; padding-inline: var(--gutter); }
+  .hero .eyebrow { color: rgb(231 205 170); justify-content: center; }
+  .hero .eyebrow::before { display: none; }
+  .hero h1 { font-size: clamp(46px, 8vw, 104px); margin: 22px 0 0; font-weight: 500; line-height: 1.04; }
+  .hero h1 em { font-style: italic; color: rgb(231 205 170); }
+  .hero p { color: rgb(255 255 255 / .86); font-size: clamp(16px, 1.4vw, 19px); margin: 24px auto 0; max-width: 50ch; }
+  .hero-cta { display: flex; gap: 16px; justify-content: center; margin-top: 38px; flex-wrap: wrap; }
+  .hero-cta .btn-line { border-color: rgb(255 255 255 / .5); color: #fff; }
+  .hero-cta .btn-line:hover { border-color: #fff; background: rgb(255 255 255 / .08); }
+  .hero-cta .btn-primary { background: rgb(231 205 170); color: rgb(var(--color-ink)); }
+  .hero-cta .btn-primary:hover { background: #fff; }
+  .scroll-cue { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); color: rgb(255 255 255 / .7); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .scroll-cue .line { width: 1px; height: 40px; background: rgb(255 255 255 / .5); }
+
+  /* ============================================================
+     PRESS QUOTES BAR
+     ============================================================ */
+  .press { padding: clamp(52px, 6vw, 80px) 0; border-bottom: 1px solid rgb(var(--color-line)); }
+  .press-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 56px); text-align: center; }
+  @media (max-width: 800px) { .press-grid { grid-template-columns: 1fr; gap: 40px; } }
+  .press-item p { font-family: var(--font-display); font-style: italic; font-size: 22px; color: rgb(var(--color-ink)); line-height: 1.4; }
+  .press-item .src { display: block; margin-top: 14px; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     INTRO SPLIT — editorial rows
+     ============================================================ */
+  .intro { padding: var(--space-section) 0; }
+  .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
+  @media (max-width: 900px) { .intro-grid { grid-template-columns: 1fr; } }
+  .intro-text h2 { font-size: clamp(34px, 4.4vw, 58px); margin: 20px 0 22px; max-width: 16ch; }
+  .intro-text p + p { margin-top: 18px; }
+  .intro-text .sign { font-family: var(--font-display); font-style: italic; font-size: 26px; margin-top: 26px; color: rgb(var(--color-primary)); }
+  .intro-media { position: relative; }
+  .intro-media .ph { overflow: hidden; aspect-ratio: 3/4; box-shadow: var(--shadow-elevated); }
+  .intro-media .ph img { width: 100%; height: 100%; object-fit: cover; }
+  .intro-media .ph2 { position: absolute; width: 46%; aspect-ratio: 3/4; right: -8%; bottom: -10%; overflow: hidden; box-shadow: var(--shadow-elevated); border: 6px solid rgb(var(--color-bg)); }
+  .intro-media .ph2 img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 560px) { .intro-media .ph2 { display: none; } }
+
+  /* ============================================================
+     ROOMS GRID
+     ============================================================ */
+  .rooms { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .5); border-block: 1px solid rgb(var(--color-line)); }
+  .rooms-head { text-align: center; max-width: 620px; margin: 0 auto 60px; }
+  .rooms-head h2 { font-size: clamp(34px, 4.4vw, 58px); margin: 18px 0 14px; }
+  .rgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  @media (max-width: 900px) { .rgrid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
+  .rcard { background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); overflow: hidden; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+  .rcard:hover { transform: translateY(-6px); box-shadow: var(--shadow-elevated); }
+  .rcard .rimg { aspect-ratio: 4/3; overflow: hidden; }
+  .rcard .rimg img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.6s var(--ease); }
+  .rcard:hover .rimg img { transform: scale(1.06); }
+  .rcard .rbody { padding: 28px 28px 32px; }
+  .rcard .rname { font-family: var(--font-display); font-weight: 500; font-size: 26px; }
+  .rcard .rmeta { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(var(--color-accent2)); margin-top: 4px; }
+  .rcard .rdesc { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 14px; }
+  .rcard .rfoot { display: flex; align-items: baseline; justify-content: space-between; margin-top: 22px; padding-top: 18px; border-top: 1px solid rgb(var(--color-line)); }
+  .rcard .rprice { font-family: var(--font-display); font-size: 28px; }
+  .rcard .rprice span { font-family: var(--font-body); font-size: 12px; color: rgb(var(--color-muted)); letter-spacing: 0.1em; }
+  .rcard .rlink { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--color-primary)); display: inline-flex; align-items: center; gap: 7px; }
+
+  /* ============================================================
+     EXPERIENCES LIST
+     ============================================================ */
+  .exp { padding: var(--space-section) 0; }
+  .exp-head { max-width: 640px; margin-bottom: 48px; }
+  .exp-head h2 { font-size: clamp(34px, 4.4vw, 58px); margin: 18px 0 0; }
+  .exp-list { border-top: 1px solid rgb(var(--color-line)); }
+  .exp-row { display: grid; grid-template-columns: 80px 1fr auto; align-items: center; gap: 28px; padding: 30px 0; border-bottom: 1px solid rgb(var(--color-line)); transition: padding-left var(--dur) var(--ease); }
+  .exp-row:hover { padding-left: 14px; }
+  .exp-row .no { font-family: var(--font-display); font-size: 30px; color: rgb(var(--color-accent2)); }
+  .exp-row .ex-t { font-family: var(--font-display); font-size: 28px; font-weight: 500; }
+  .exp-row .ex-d { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 4px; max-width: 52ch; }
+  .exp-row .ex-link { color: rgb(var(--color-primary)); }
+  @media (max-width: 720px) { .exp-row { grid-template-columns: 50px 1fr; } .exp-row .ex-link { display: none; } }
+
+  /* ============================================================
+     GALLERY BAND — full bleed
+     ============================================================ */
+  .gallery { padding: 0; }
+  .gallery-strip { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 0; min-height: 420px; }
+  @media (max-width: 760px) { .gallery-strip { grid-template-columns: 1fr 1fr; } .gallery-strip > *:last-child { display: none; } }
+  .gallery-strip > div { overflow: hidden; }
+  .gallery-strip img { width: 100%; height: 100%; object-fit: cover; transition: transform 2s var(--ease); }
+  .gallery-strip > div:hover img { transform: scale(1.05); }
+
+  /* ============================================================
+     STATS BAND
+     ============================================================ */
+  .stats { padding: clamp(64px, 8vw, 110px) 0; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; text-align: center; }
+  @media (max-width: 760px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 44px; } }
+  .stat .num { font-family: var(--font-display); font-weight: 500; font-size: clamp(44px, 5.4vw, 72px); line-height: 1; }
+  .stat .num .suf { color: rgb(231 205 170); }
+  .stat .lbl { color: rgb(var(--color-on-primary) / .7); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; margin-top: 14px; }
+
+  /* ============================================================
+     TESTIMONIAL
+     ============================================================ */
+  .quote { padding: var(--space-section) 0; text-align: center; }
+  .quote .inner { max-width: 880px; margin: 0 auto; }
+  .quote .stars { color: rgb(var(--color-accent2)); display: inline-flex; gap: 5px; margin-bottom: 26px; }
+  .quote blockquote { font-family: var(--font-display); font-weight: 400; font-style: italic; font-size: clamp(26px, 3.6vw, 44px); line-height: 1.32; }
+  .quote .by { margin-top: 30px; }
+  .quote .by .n { font-family: var(--font-display); font-size: 22px; }
+  .quote .by .r { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-accent2)); margin-top: 4px; }
+
+  /* ============================================================
+     SUITE RATES / PRICING
+     ============================================================ */
+  .rates { padding: 0 0 var(--space-section); }
+  .rates-head { text-align: center; max-width: 600px; margin: 0 auto 56px; }
+  .rates-head h2 { font-size: clamp(34px, 4.4vw, 56px); margin: 16px 0 12px; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+  @media (max-width: 900px) { .tiers { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+  .tier { border: 1px solid rgb(var(--color-line)); background: rgb(var(--color-bg)); padding: 38px 34px; display: flex; flex-direction: column; gap: 6px; transition: transform var(--dur) var(--ease); }
+  .tier.pop { background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); position: relative; }
+  .tier.pop .desc, .tier.pop ul li { color: rgb(var(--color-on-primary) / .78); }
+  .tier .badge-pop { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; background: rgb(var(--color-accent2)); color: #fff; padding: 6px 16px; }
+  .tier .tn { font-family: var(--font-display); font-weight: 500; font-size: 26px; }
+  .tier .desc { color: rgb(var(--color-muted)); font-size: 13px; min-height: 40px; }
+  .tier .price { font-family: var(--font-display); font-weight: 500; font-size: 52px; margin: 12px 0 2px; }
+  .tier .price span { font-family: var(--font-body); font-size: 13px; color: rgb(var(--color-muted)); letter-spacing: 0.1em; }
+  .tier.pop .price span { color: rgb(var(--color-on-primary) / .65); }
+  .tier ul { list-style: none; display: grid; gap: 13px; margin: 22px 0 28px; }
+  .tier ul li { display: flex; gap: 11px; font-size: 14px; align-items: flex-start; }
+  .tier ul li svg { flex: none; color: rgb(var(--color-accent2)); margin-top: 4px; }
+  .tier .btn { width: 100%; justify-content: center; margin-top: auto; }
+  .tier.pop .btn-line { border-color: rgb(var(--color-on-primary) / .4); color: rgb(var(--color-on-primary)); }
+  .tier.pop .btn-line:hover { border-color: rgb(var(--color-on-primary)); background: rgb(var(--color-on-primary) / .08); }
+
+  /* ============================================================
+     CTA — full bleed band
+     ============================================================ */
+  .cta { position: relative; padding: clamp(96px, 13vw, 180px) 0; text-align: center; overflow: hidden; }
+  .cta .bg { position: absolute; inset: 0; z-index: -2; }
+  .cta .bg img { width: 100%; height: 100%; object-fit: cover; }
+  .cta .scrim { position: absolute; inset: 0; z-index: -1; background: rgb(38 24 30 / .6); }
+  .cta-inner { position: relative; color: #fff; max-width: 720px; margin: 0 auto; padding-inline: var(--gutter); }
+  .cta-inner .eyebrow { color: rgb(231 205 170); justify-content: center; }
+  .cta-inner .eyebrow::before { display: none; }
+  .cta-inner h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(38px, 5.4vw, 70px); margin: 18px 0 0; }
+  .cta-inner p { color: rgb(255 255 255 / .84); margin: 20px auto 0; max-width: 46ch; }
+  .cta-inner .btn { margin-top: 34px; background: rgb(231 205 170); color: rgb(var(--color-ink)); border: none; }
+  .cta-inner .btn:hover { background: #fff; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: clamp(60px, 8vw, 96px) 0 44px; background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); }
+  .foot-top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 40px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wm { font-family: var(--font-display); font-size: 30px; letter-spacing: 0.04em; }
+  .foot-brand .wm small { display: block; font-family: var(--font-body); font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase; color: rgb(231 205 170); margin-top: 2px; }
+  .foot-brand p { color: rgb(var(--color-on-primary) / .6); font-size: 14px; max-width: 30ch; margin: 18px 0; }
+  .news { display: flex; gap: 0; max-width: 320px; border: 1px solid rgb(var(--color-on-primary) / .3); }
+  .news input { flex: 1; padding: 13px 16px; border: none; font-family: var(--font-body); font-size: 13px; background: transparent; color: #fff; }
+  .news input::placeholder { color: rgb(var(--color-on-primary) / .5); }
+  .news button { padding: 0 20px; border: none; background: rgb(231 205 170); color: rgb(var(--color-ink)); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; }
+  .foot-col h4 { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(231 205 170); margin-bottom: 16px; }
+  .foot-col a { display: block; color: rgb(var(--color-on-primary) / .65); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: #fff; }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 52px; padding-top: 26px; border-top: 1px solid rgb(var(--color-on-primary) / .15); flex-wrap: wrap; gap: 14px; }
+  .foot-bot .cp { color: rgb(var(--color-on-primary) / .55); font-size: 12px; letter-spacing: 0.06em; }
+  .foot-bot .soc { display: flex; gap: 12px; }
+  .foot-bot .soc a { width: 38px; height: 38px; border: 1px solid rgb(var(--color-on-primary) / .25); display: grid; place-items: center; color: rgb(var(--color-on-primary) / .7); transition: all var(--dur) var(--ease); }
+  .foot-bot .soc a:hover { color: rgb(231 205 170); border-color: rgb(231 205 170 / .6); }
+
+  /* ribbon */
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    font-family: var(--font-body); font-size: 11px; letter-spacing: .08em;
+    background: rgb(var(--color-ink)); color: rgb(231 205 170); padding: 9px 14px; border-radius: 999px;
+    box-shadow: var(--shadow-elevated); opacity: .94;
+  }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .scroll-cue { display: none; } }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <nav class="nav-links left" aria-label="Primary">
+      <a href="#rooms">Rooms</a>
+      <a href="#dining">Dining</a>
+      <a href="#experiences">Experiences</a>
+    </nav>
+    <a class="wordmark" href="#" aria-label="Rosewood home">Rosewood<small>House &amp; Garden</small></a>
+    <nav class="nav-links right" aria-label="Secondary">
+      <a href="#story">Our House</a>
+      <a href="#visit">Contact</a>
+      <a class="btn btn-line always" href="#book">Reserve</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="hero">
+  <div class="bg" aria-hidden="true"><img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1600&q=80" alt="A softly lit boutique hotel suite with linen drapes and a four-poster bed"></div>
+  <span class="scrim" aria-hidden="true"></span>
+  <div class="hero-inner">
+    <span class="eyebrow" data-hero>A nine-room retreat in the old town</span>
+    <h1 class="disp" data-hero>Stay a while, <em>quietly</em>.</h1>
+    <p data-hero>Rosewood is a restored merchant's house turned boutique hotel, where worn brass, deep plum, and long afternoons replace the rush. Nine rooms, one walled garden, and a kitchen that closes when the last guest is happy.</p>
+    <div class="hero-cta" data-hero>
+      <a class="btn btn-primary" href="#book">Check availability</a>
+      <a class="btn btn-line" href="#rooms">View the rooms</a>
+    </div>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<!-- ============================ PRESS ============================ -->
+<section class="press">
+  <div class="wrap press-grid" data-batch>
+    <div class="press-item">
+      <p>"The most quietly luxurious nine rooms in the county."</p>
+      <span class="src">Country Retreats</span>
+    </div>
+    <div class="press-item">
+      <p>"A house that feels lived in, in the loveliest sense."</p>
+      <span class="src">The Slow Traveller</span>
+    </div>
+    <div class="press-item">
+      <p>"Worth the journey for the walled garden alone."</p>
+      <span class="src">Tatler Travel Guide</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ INTRO ============================ -->
+<section class="intro" id="story">
+  <div class="wrap intro-grid">
+    <div class="intro-text" data-reveal>
+      <span class="eyebrow">Our House</span>
+      <h2 class="disp">A merchant's house, kept honest</h2>
+      <p class="lead">Built in 1788 and lovingly held by the same family for three decades, Rosewood was never meant to be a grand hotel. It is a home that happens to take guests.</p>
+      <p class="lead">We restored what we could and replaced only what we had to. The floors creak in the right places. The brass is unpolished on purpose. Breakfast is whenever you wake.</p>
+      <div class="sign">Eleanor &amp; James Whitfield, owners</div>
+    </div>
+    <div class="intro-media" data-reveal>
+      <div class="ph"><img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80" alt="A warmly lit hotel lounge with velvet armchairs and a marble fireplace" loading="lazy"></div>
+      <div class="ph2"><img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=600&q=80" alt="A close detail of brass fittings and linen in a boutique hotel room" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ROOMS ============================ -->
+<section class="rooms" id="rooms">
+  <div class="wrap">
+    <div class="rooms-head" data-reveal>
+      <span class="eyebrow center">Nine rooms, no two alike</span>
+      <h2 class="disp">Choose your corner of the house</h2>
+      <p class="lead">Each room keeps its original proportions and its own temperament. Pick the one that suits your stay.</p>
+    </div>
+    <div class="rgrid" data-batch>
+      <article class="rcard">
+        <div class="rimg"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=700&q=80" alt="A cosy attic hotel room with sloped ceilings and a brass bed" loading="lazy"></div>
+        <div class="rbody">
+          <div class="rname">The Garret</div>
+          <div class="rmeta">Top floor · Sleeps 2</div>
+          <p class="rdesc">A snug eaved room under the roofline, with a freestanding tub and views across the rooftops.</p>
+          <div class="rfoot"><div class="rprice">£180<span> / night</span></div><a class="rlink" href="#book">Reserve <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+        </div>
+      </article>
+      <article class="rcard">
+        <div class="rimg"><img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=700&q=80" alt="An elegant hotel room with a plum velvet headboard and large windows" loading="lazy"></div>
+        <div class="rbody">
+          <div class="rname">The Plum Room</div>
+          <div class="rmeta">First floor · Sleeps 2</div>
+          <p class="rdesc">Our signature room, deep in colour and quiet, with a writing desk and the original shutters.</p>
+          <div class="rfoot"><div class="rprice">£240<span> / night</span></div><a class="rlink" href="#book">Reserve <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+        </div>
+      </article>
+      <article class="rcard">
+        <div class="rimg"><img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=700&q=80" alt="A spacious garden suite opening onto a walled garden through glass doors" loading="lazy"></div>
+        <div class="rbody">
+          <div class="rname">The Garden Suite</div>
+          <div class="rmeta">Ground floor · Sleeps 3</div>
+          <p class="rdesc">Our largest room, opening straight onto the walled garden, with a private terrace for breakfast.</p>
+          <div class="rfoot"><div class="rprice">£320<span> / night</span></div><a class="rlink" href="#book">Reserve <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ EXPERIENCES ============================ -->
+<section class="exp" id="experiences">
+  <div class="wrap">
+    <div class="exp-head" data-reveal>
+      <span class="eyebrow">While you are here</span>
+      <h2 class="disp">Days worth slowing down for</h2>
+    </div>
+    <div class="exp-list" data-batch>
+      <div class="exp-row">
+        <span class="no">01</span>
+        <div><div class="ex-t">The kitchen table dinner</div><div class="ex-d">A single set menu each evening, cooked from what the markets and the garden gave us that morning.</div></div>
+        <a class="ex-link" href="#" aria-label="More about the kitchen table dinner"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="exp-row">
+        <span class="no">02</span>
+        <div><div class="ex-t">Walled garden mornings</div><div class="ex-d">Coffee among the roses, a few hens, and the kind of quiet you forget exists in town.</div></div>
+        <a class="ex-link" href="#" aria-label="More about walled garden mornings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="exp-row">
+        <span class="no">03</span>
+        <div><div class="ex-t">The cellar tasting</div><div class="ex-d">An hour by candlelight with James and a few local growers, no pretension and no spit bucket required.</div></div>
+        <a class="ex-link" href="#" aria-label="More about the cellar tasting"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="exp-row">
+        <span class="no">04</span>
+        <div><div class="ex-t">Old town wanders</div><div class="ex-d">We will draw you a map of the lanes worth losing an afternoon in, and where to stop for cake.</div></div>
+        <a class="ex-link" href="#" aria-label="More about old town wanders"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ GALLERY ============================ -->
+<section class="gallery" id="dining" aria-label="Photographs of the house">
+  <div class="gallery-strip" data-batch>
+    <div><img src="https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=900&q=80" alt="A candlelit dining room with a long communal table set for dinner" loading="lazy"></div>
+    <div><img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=700&q=80" alt="A reading nook by a window with an armchair and stacked books" loading="lazy"></div>
+    <div><img src="https://images.unsplash.com/photo-1444201983204-c43cbd584d93?auto=format&fit=crop&w=700&q=80" alt="A breakfast tray with coffee and pastries on linen sheets" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- ============================ STATS ============================ -->
+<section class="stats">
+  <div class="wrap">
+    <div class="stats-grid" data-batch>
+      <div class="stat"><div class="num"><span class="count" data-to="9">0</span></div><div class="lbl">Individual rooms</div></div>
+      <div class="stat"><div class="num"><span class="count" data-to="1788">0</span></div><div class="lbl">The house was built</div></div>
+      <div class="stat"><div class="num"><span class="count" data-to="4.9">0</span></div><div class="lbl">Average guest rating</div></div>
+      <div class="stat"><div class="num"><span class="count" data-to="62">0</span><span class="suf">%</span></div><div class="lbl">Guests who return</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TESTIMONIAL ============================ -->
+<section class="quote">
+  <div class="wrap inner" data-reveal>
+    <span class="stars" aria-label="5 out of 5 stars">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
+    </span>
+    <blockquote class="disp">"We came for one night and stayed for three. The Plum Room, the garden at breakfast, a dinner we still talk about. It is the only hotel we have ever felt sad to leave."</blockquote>
+    <div class="by">
+      <div class="n">Marguerite Laurent</div>
+      <div class="r">Stayed three nights, returning in spring</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RATES ============================ -->
+<section class="rates" id="book">
+  <div class="wrap">
+    <div class="rates-head" data-reveal>
+      <span class="eyebrow center">Stay with us</span>
+      <h2 class="disp">Rates that include the things that matter</h2>
+      <p class="lead">Every stay includes breakfast, the walled garden, and unhurried mornings.</p>
+    </div>
+    <div class="tiers" data-batch>
+      <div class="tier">
+        <div class="tn">The Night</div>
+        <div class="desc">A single restful stay</div>
+        <div class="price">£180<span> / night</span></div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Garden breakfast for two</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Use of the walled garden</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Late checkout when we can</li>
+        </ul>
+        <a class="btn btn-line" href="#">Reserve</a>
+      </div>
+      <div class="tier pop">
+        <span class="badge-pop">Most chosen</span>
+        <div class="tn">The Weekend</div>
+        <div class="desc">Two nights, properly unwound</div>
+        <div class="price">£420<span> / two nights</span></div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in The Night</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> One kitchen table dinner</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Cellar tasting for two</li>
+        </ul>
+        <a class="btn btn-line" href="#">Reserve</a>
+      </div>
+      <div class="tier">
+        <div class="tn">The Whole House</div>
+        <div class="desc">All nine rooms, just yours</div>
+        <div class="price">On request</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Exclusive use of the house</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> A menu planned with you</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Ideal for small weddings</li>
+        </ul>
+        <a class="btn btn-line" href="#">Enquire</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CTA ============================ -->
+<section class="cta" id="visit">
+  <div class="bg" aria-hidden="true"><img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1600&q=80" alt="A boutique hotel facade at dusk with warm lit windows"></div>
+  <span class="scrim" aria-hidden="true"></span>
+  <div class="cta-inner" data-reveal>
+    <span class="eyebrow">Your room is waiting</span>
+    <h2>Come and stay a while, quietly</h2>
+    <p>Tell us when you would like to arrive and we will hold the room that suits you. No deposit to enquire, no rush to decide.</p>
+    <a class="btn" href="#">Check availability</a>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="wm">Rosewood<small>House &amp; Garden</small></div>
+        <p>A nine-room boutique hotel in a restored merchant's house. Stay a while, quietly.</p>
+        <form class="news" onsubmit="return false">
+          <label for="news-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+          <input id="news-email" type="email" placeholder="Your email" aria-label="Email for occasional letters" autocomplete="email">
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+      <div class="foot-col">
+        <h4>The House</h4>
+        <a href="#">Our story</a><a href="#">The rooms</a><a href="#">The garden</a><a href="#">Gallery</a>
+      </div>
+      <div class="foot-col">
+        <h4>Stay</h4>
+        <a href="#">Availability</a><a href="#">Rates</a><a href="#">Dining</a><a href="#">Whole house</a>
+      </div>
+      <div class="foot-col">
+        <h4>Visit</h4>
+        <a href="#">Find us</a><a href="#">Directions</a><a href="#">Contact</a><a href="#">Gift stays</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span class="cp">© 2026 Rosewood House &amp; Garden. A family-run retreat.</span>
+      <div class="soc">
+        <a href="#" aria-label="Rosewood on Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Rosewood on Pinterest"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7c-2 0-3.5 1.4-3.5 3.3 0 .9.4 1.8 1 2M10.7 13.6L9.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+        <a href="#" aria-label="Rosewood by email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 8l9 6 9-6" stroke="currentColor" stroke-width="2"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · Rosewood · hotel</div>
+
+<!-- ===== GSAP (CDN) ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm = gsap.matchMedia();
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 30, autoAlpha: 0, duration: 0.9, stagger: 0.14 });
+
+    /* slow ken-burns drift on hero background */
+    gsap.to('.hero .bg', { scale: 1.12, ease: 'none',
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+    gsap.set('[data-reveal]', { y: 32, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 1.0, stagger: 0.14, ease: 'power3.out', overwrite: true }); }
+    });
+
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 28, autoAlpha: 0 });
+      ScrollTrigger.create({
+        trigger: grid, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.1, ease: 'power3.out' }); }
+      });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      var dec = (to % 1 !== 0) ? 1 : 0;
+      var fmt = function (v) { return to >= 1000 ? Math.round(v).toString() : v.toFixed(dec); };
+      if (reduced) { el.textContent = fmt(to); return; }
+      ScrollTrigger.create({
+        trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          var obj = { v: 0 };
+          gsap.to(obj, { v: to, duration: 1.6, ease: 'power2.out',
+            onUpdate: function () { el.textContent = fmt(obj.v); },
+            onComplete: function () { el.textContent = fmt(to); } });
+        }
+      });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,blockquote,[data-hero],[data-reveal],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,p')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=rosewood&name=Rosewood" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cascade — NEXA Theme Preview (Developer Tools / API Platform)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     CASCADE — design tokens (1:1 mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 8 11 14;
+    --color-surface: 14 19 24;
+    --color-surface-2: 20 27 34;
+    --color-ink: 227 236 242;
+    --color-muted: 131 149 161;
+    --color-line: 34 45 54;
+    --color-primary: 45 212 191;     /* cyan / teal */
+    --color-on-primary: 5 14 16;
+    --color-accent: 45 212 191;
+    --color-accent2: 56 189 248;     /* sky */
+
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    --display-tracking: -0.03em;
+
+    --space-section: clamp(80px, 10vw, 144px);
+    --gutter: clamp(20px, 5vw, 60px);
+
+    --radius-card: 12px;
+    --radius-button: 10px;
+    --radius-input: 10px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -16px rgb(0 0 0 / 0.7);
+    --shadow-elevated: 0 2px 6px rgb(0 0 0 / 0.5), 0 28px 60px -22px rgb(0 0 0 / 0.85);
+    --glow: 0 0 0 1px rgb(var(--color-primary) / .3), 0 0 32px -6px rgb(var(--color-primary) / .35);
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 420ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgb(var(--color-primary));
+    display: inline-flex; align-items: center; gap: 9px;
+  }
+  .eyebrow::before { content: "$"; opacity: .6; }
+  .eyebrow.center { justify-content: center; }
+  .disp { font-family: var(--font-display); font-weight: 500; letter-spacing: var(--display-tracking); line-height: 1.04; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.35vw, 18px); }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 6px; }
+
+  /* scroll progress hairline */
+  #progress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%; z-index: 80;
+    background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2)));
+    box-shadow: 0 0 12px rgb(var(--color-primary) / .6);
+  }
+
+  /* ---------- buttons (recipe: solid-rounded) ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-body);
+    font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: var(--radius-button);
+    border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+      background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary));
+    box-shadow: 0 0 0 1px rgb(var(--color-primary) / .4), 0 10px 28px -10px rgb(var(--color-primary) / .55); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgb(var(--color-primary) / .6), 0 16px 36px -10px rgb(var(--color-primary) / .7); }
+  .btn-ghost { border-color: rgb(var(--color-line)); color: rgb(var(--color-ink)); background: rgb(var(--color-surface) / .6); }
+  .btn-ghost:hover { border-color: rgb(var(--color-primary) / .5); transform: translateY(-1px); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     NAV
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 70;
+    background: rgb(var(--color-bg) / .72);
+    backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 66px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 19px; letter-spacing: -0.02em; }
+  .wordmark .glyph {
+    width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center;
+    background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent2)));
+    color: rgb(var(--color-on-primary)); box-shadow: 0 6px 16px -6px rgb(var(--color-primary) / .7);
+  }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a { font-family: var(--font-mono); font-size: 13px; color: rgb(var(--color-muted)); position: relative; transition: color var(--dur) var(--ease); }
+  .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -6px; height: 1px; background: rgb(var(--color-primary)); transition: right var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-links a:hover::after { right: 0; }
+  .nav-actions { display: flex; align-items: center; gap: 14px; }
+  .nav-actions .signin { font-family: var(--font-mono); font-size: 13px; color: rgb(var(--color-ink)); }
+  .nav-actions .btn { padding: 9px 16px; }
+  .gh { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-muted)); padding: 8px 12px; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-button); transition: border-color var(--dur) var(--ease); }
+  .gh:hover { border-color: rgb(var(--color-primary) / .5); color: rgb(var(--color-ink)); }
+  @media (max-width: 920px) { .nav-links, .nav-actions .signin, .gh { display: none; } }
+
+  /* ============================================================
+     HERO — code-terminal split
+     ============================================================ */
+  .hero { position: relative; padding-top: clamp(56px, 8vw, 104px); padding-bottom: clamp(80px, 11vw, 150px); overflow: hidden; }
+  .grid-bg {
+    position: absolute; inset: 0; z-index: -2; pointer-events: none;
+    background-image:
+      linear-gradient(rgb(var(--color-line) / .5) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--color-line) / .5) 1px, transparent 1px);
+    background-size: 52px 52px;
+    -webkit-mask-image: radial-gradient(120% 80% at 70% 0%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(120% 80% at 70% 0%, #000 0%, transparent 72%);
+  }
+  .glow-orb { position: absolute; z-index: -1; border-radius: 50%; filter: blur(80px); pointer-events: none; will-change: transform; }
+  .glow-orb.g1 { width: 40vw; max-width: 480px; aspect-ratio: 1; top: -10%; right: 2%; background: radial-gradient(circle, rgb(var(--color-primary) / .28), transparent 68%); animation: drift 20s var(--ease) infinite alternate; }
+  .glow-orb.g2 { width: 32vw; max-width: 380px; aspect-ratio: 1; bottom: -16%; left: 8%; background: radial-gradient(circle, rgb(var(--color-accent2) / .22), transparent 68%); animation: drift2 24s var(--ease) infinite alternate; }
+  @keyframes drift { to { transform: translate3d(-40px, 36px, 0) scale(1.1); } }
+  @keyframes drift2 { to { transform: translate3d(44px, -30px, 0) scale(1.08); } }
+
+  .hero-grid { position: relative; display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(36px, 5vw, 72px); align-items: center; }
+  @media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; } }
+
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 9px; padding: 6px 13px 6px 8px;
+    border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-pill);
+    background: rgb(var(--color-surface) / .7); font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-muted));
+  }
+  .hero-pill .tag { font-size: 10px; padding: 3px 8px; border-radius: 999px; background: rgb(var(--color-primary) / .14); color: rgb(var(--color-primary)); letter-spacing: .04em; }
+  .hero h1 { font-size: clamp(38px, 5.4vw, 64px); margin: 22px 0 0; max-width: 14ch; font-weight: 600; }
+  .hero h1 .accent { color: rgb(var(--color-primary)); }
+  .hero .lead { margin: 20px 0 0; max-width: 46ch; }
+  .hero-cta { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+  .install { margin-top: 26px; display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 13px; padding: 11px 14px; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-button); background: rgb(var(--color-surface) / .55); color: rgb(var(--color-ink)); }
+  .install .pfx { color: rgb(var(--color-primary)); }
+  .install .cp { margin-left: 6px; color: rgb(var(--color-muted)); cursor: pointer; }
+  .install .cp:hover { color: rgb(var(--color-primary)); }
+
+  /* terminal mockup */
+  .term { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface)); box-shadow: var(--shadow-elevated); }
+  .term-chrome { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-bottom: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface-2) / .7); }
+  .dots { display: flex; gap: 7px; }
+  .dots i { width: 11px; height: 11px; border-radius: 999px; display: block; }
+  .dots i:nth-child(1){ background: #ff5f57; } .dots i:nth-child(2){ background: #febc2e; } .dots i:nth-child(3){ background: #28c840; }
+  .term-chrome .fn { font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-muted)); }
+  .term-body { padding: 18px 20px; font-family: var(--font-mono); font-size: 13px; line-height: 1.85; }
+  .term-body .ln { display: block; white-space: pre; }
+  .term-body .cm { color: rgb(var(--color-muted)); }
+  .term-body .kw { color: rgb(var(--color-accent2)); }
+  .term-body .st { color: rgb(var(--color-primary)); }
+  .term-body .fn2 { color: #d7a8ff; }
+  .term-body .nm { color: rgb(var(--color-ink)); }
+  .term-out { margin-top: 6px; padding: 12px 16px; border-radius: 9px; background: rgb(var(--color-bg) / .6); border: 1px solid rgb(var(--color-line)); }
+  .term-out .ok { color: rgb(var(--color-primary)); }
+  .term-float { position: absolute; right: -14px; bottom: 26px; z-index: 4; display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: rgb(var(--color-surface-2)); border: 1px solid rgb(var(--color-line)); border-radius: 12px; box-shadow: var(--shadow-elevated); }
+  .term-float .ic { width: 32px; height: 32px; border-radius: 9px; background: rgb(var(--color-primary) / .15); color: rgb(var(--color-primary)); display: grid; place-items: center; }
+  .term-float .ti { font-size: 13px; font-weight: 600; line-height: 1.2; }
+  .term-float .su { font-family: var(--font-mono); font-size: 11px; color: rgb(var(--color-muted)); }
+  @media (max-width: 560px) { .term-float { right: 6px; bottom: 8px; } }
+
+  /* ============================================================
+     LOGO BAR
+     ============================================================ */
+  .logos { padding: 8px 0 4px; }
+  .logos .cap { text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 5vw, 58px); flex-wrap: wrap; margin-top: 24px; }
+  .logo-row .lm { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 600; font-size: 18px; color: rgb(var(--color-muted)); opacity: .7; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .logo-row .lm:hover { opacity: 1; color: rgb(var(--color-ink)); }
+  .logo-row .lm svg { color: rgb(var(--color-primary)); }
+
+  /* ============================================================
+     TERMINAL / API BAND
+     ============================================================ */
+  .band { padding: var(--space-section) 0; }
+  .band-head { text-align: center; max-width: 640px; margin: 0 auto 48px; }
+  .band-head h2 { font-size: clamp(28px, 3.4vw, 42px); margin: 16px 0 14px; font-weight: 600; }
+  .endpoint { max-width: 1060px; margin: 0 auto; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); overflow: hidden; background: rgb(var(--color-surface)); box-shadow: var(--shadow-elevated); }
+  .endpoint-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 800px) { .endpoint-grid { grid-template-columns: 1fr; } }
+  .ep-req, .ep-res { padding: 22px 24px; font-family: var(--font-mono); font-size: 13px; line-height: 1.85; }
+  .ep-req { border-right: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 800px) { .ep-req { border-right: none; border-bottom: 1px solid rgb(var(--color-line)); } }
+  .ep-tab { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 14px; }
+  .ep-method { color: rgb(var(--color-on-primary)); background: rgb(var(--color-primary)); padding: 2px 8px; border-radius: 5px; font-weight: 600; }
+  .ep-req .url { color: rgb(var(--color-ink)); }
+  .ep-req .key { color: rgb(var(--color-accent2)); }
+  .ep-req .val { color: rgb(var(--color-primary)); }
+  .ep-res .key2 { color: rgb(var(--color-accent2)); }
+  .ep-res .num { color: #d7a8ff; }
+  .ep-res .str { color: rgb(var(--color-primary)); }
+  .ep-res .status { color: rgb(var(--color-primary)); }
+
+  /* ============================================================
+     CAPABILITIES BENTO
+     ============================================================ */
+  .caps { padding: var(--space-section) 0; border-top: 1px solid rgb(var(--color-line)); }
+  .caps-head { max-width: 580px; margin-bottom: 44px; }
+  .caps-head h2 { font-size: clamp(28px, 3.2vw, 40px); margin: 16px 0 12px; font-weight: 600; }
+  .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; grid-auto-flow: row dense; }
+  @media (max-width: 880px) { .bento { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .bento { grid-template-columns: 1fr; } }
+  .cap {
+    border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-surface));
+    padding: 22px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden;
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .cap.span2 { grid-column: span 2; }
+  @media (max-width: 520px) { .cap.span2 { grid-column: span 1; } }
+  .cap:hover { transform: translateY(-3px); border-color: rgb(var(--color-primary) / .45); }
+  .cap .ci { width: 40px; height: 40px; border-radius: 10px; background: rgb(var(--color-primary) / .12); color: rgb(var(--color-primary)); display: grid; place-items: center; }
+  .cap h3 { font-family: var(--font-display); font-weight: 600; font-size: 17px; }
+  .cap p { color: rgb(var(--color-muted)); font-size: 14px; }
+  .cap .mono-tag { margin-top: auto; font-family: var(--font-mono); font-size: 11px; color: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     SHOWCASE — region map / infra visual
+     ============================================================ */
+  .showcase { padding: var(--space-section) 0; border-top: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface) / .4); }
+  .showcase-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(36px, 5vw, 72px); align-items: center; }
+  @media (max-width: 900px) { .showcase-grid { grid-template-columns: 1fr; } }
+  .showcase-text h2 { font-size: clamp(26px, 3vw, 38px); margin: 16px 0 14px; max-width: 18ch; font-weight: 600; }
+  .checks { list-style: none; margin-top: 24px; display: grid; gap: 13px; }
+  .checks li { display: flex; align-items: flex-start; gap: 11px; font-size: 15px; }
+  .checks li .ck { flex: none; width: 22px; height: 22px; border-radius: 6px; background: rgb(var(--color-primary) / .14); color: rgb(var(--color-primary)); display: grid; place-items: center; margin-top: 1px; }
+  .showcase-media { position: relative; border-radius: var(--radius-card); overflow: hidden; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); aspect-ratio: 16/11; }
+  .showcase-media img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.8) brightness(.8) contrast(1.05); }
+  .showcase-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgb(var(--color-bg) / .65)); }
+  .showcase-media .pin { position: absolute; z-index: 2; display: flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px; background: rgb(var(--color-surface-2) / .9); border: 1px solid rgb(var(--color-line)); font-family: var(--font-mono); font-size: 11px; backdrop-filter: blur(6px); }
+  .showcase-media .pin .d { width: 7px; height: 7px; border-radius: 999px; background: rgb(var(--color-primary)); box-shadow: 0 0 10px rgb(var(--color-primary)); }
+  .pin.p1 { top: 22%; left: 18%; } .pin.p2 { top: 46%; left: 54%; } .pin.p3 { bottom: 18%; left: 30%; }
+
+  /* ============================================================
+     STATS BAND
+     ============================================================ */
+  .metrics { padding: clamp(60px, 7vw, 92px) 0; border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface) / .35); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; text-align: center; }
+  @media (max-width: 760px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; } }
+  .metric .num { font-family: var(--font-display); font-weight: 700; font-size: clamp(34px, 4.4vw, 54px); letter-spacing: -0.03em; line-height: 1; }
+  .metric .num .suf { color: rgb(var(--color-primary)); }
+  .metric .lbl { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 10px; font-family: var(--font-mono); }
+
+  /* ============================================================
+     TESTIMONIAL
+     ============================================================ */
+  .quote { padding: var(--space-section) 0; }
+  .quote-grid { display: grid; grid-template-columns: 260px 1fr; gap: clamp(32px, 5vw, 60px); align-items: center; max-width: 980px; margin: 0 auto; }
+  @media (max-width: 760px) { .quote-grid { grid-template-columns: 1fr; text-align: center; } }
+  .quote-photo { border-radius: var(--radius-card); overflow: hidden; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); aspect-ratio: 4/5; }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.85) brightness(.9); }
+  .quote blockquote { font-family: var(--font-display); font-weight: 500; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.35; letter-spacing: -0.02em; }
+  .quote blockquote .hl { color: rgb(var(--color-primary)); }
+  .quote .by { margin-top: 22px; }
+  .quote .by .n { font-weight: 600; }
+  .quote .by .r { color: rgb(var(--color-muted)); font-size: 14px; font-family: var(--font-mono); }
+
+  /* ============================================================
+     PRICING
+     ============================================================ */
+  .pricing { padding: var(--space-section) 0; border-top: 1px solid rgb(var(--color-line)); }
+  .pricing-head { text-align: center; max-width: 600px; margin: 0 auto 50px; }
+  .pricing-head h2 { font-size: clamp(28px, 3.4vw, 44px); margin: 16px 0 12px; font-weight: 600; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+  @media (max-width: 900px) { .tiers { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+  .tier { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-surface)); padding: 28px; display: flex; flex-direction: column; gap: 8px; transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .tier.pop { border-color: rgb(var(--color-primary) / .6); box-shadow: var(--glow); position: relative; }
+  .tier .badge-pop { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); padding: 5px 13px; border-radius: 999px; }
+  .tier .tn { font-family: var(--font-display); font-weight: 600; font-size: 18px; }
+  .tier .desc { color: rgb(var(--color-muted)); font-size: 13px; min-height: 38px; }
+  .tier .price { font-family: var(--font-display); font-weight: 700; font-size: 42px; letter-spacing: -0.03em; margin: 12px 0 2px; }
+  .tier .price span { font-size: 15px; font-weight: 500; color: rgb(var(--color-muted)); font-family: var(--font-mono); }
+  .tier ul { list-style: none; display: grid; gap: 11px; margin: 18px 0 22px; }
+  .tier ul li { display: flex; gap: 10px; font-size: 14px; align-items: flex-start; }
+  .tier ul li svg { flex: none; color: rgb(var(--color-primary)); margin-top: 3px; }
+  .tier .btn { width: 100%; justify-content: center; margin-top: auto; }
+
+  /* ============================================================
+     CTA BAND
+     ============================================================ */
+  .cta { padding: var(--space-section) 0; }
+  .cta-card { position: relative; overflow: hidden; border-radius: 20px; padding: clamp(44px, 6vw, 76px); text-align: center; border: 1px solid rgb(var(--color-primary) / .35); background: linear-gradient(160deg, rgb(var(--color-surface)), rgb(var(--color-bg))); box-shadow: var(--shadow-elevated); }
+  .cta-card::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 80% 0%, rgb(var(--color-primary) / .2), transparent 50%); pointer-events: none; }
+  .cta-card h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(30px, 3.6vw, 48px); letter-spacing: -0.03em; position: relative; }
+  .cta-card p { color: rgb(var(--color-muted)); margin: 16px auto 0; max-width: 48ch; position: relative; }
+  .cta-card .cta-actions { display: flex; gap: 14px; justify-content: center; margin-top: 30px; flex-wrap: wrap; position: relative; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: clamp(56px, 7vw, 84px) 0 40px; border-top: 1px solid rgb(var(--color-line)); }
+  .foot-top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 36px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wordmark { margin-bottom: 14px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 32ch; margin-bottom: 18px; }
+  .foot-col h4 { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 14px; }
+  .foot-col a { display: block; color: rgb(var(--color-muted)); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-primary)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; }
+  .foot-bot .cp { color: rgb(var(--color-muted)); font-size: 13px; font-family: var(--font-mono); }
+  .foot-bot .soc { display: flex; gap: 10px; }
+  .foot-bot .soc a { width: 36px; height: 36px; border-radius: 9px; border: 1px solid rgb(var(--color-line)); display: grid; place-items: center; color: rgb(var(--color-muted)); transition: all var(--dur) var(--ease); }
+  .foot-bot .soc a:hover { color: rgb(var(--color-primary)); border-color: rgb(var(--color-primary) / .4); }
+
+  /* ribbon */
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em;
+    background: rgb(var(--color-surface-2)); color: rgb(var(--color-ink)); padding: 8px 13px; border-radius: 999px;
+    border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); opacity: .94;
+  }
+  .ribbon b { color: rgb(var(--color-primary)); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .glow-orb { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#" aria-label="Cascade home">
+      <span class="glyph" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 7l5 5-5 5M11 17h9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      Cascade
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#docs">Docs</a>
+      <a href="#api">API</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#changelog">Changelog</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="gh" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.12 2.91.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.3 9.3 0 015 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.49A10.26 10.26 0 0022 12.25C22 6.58 17.52 2 12 2z"/></svg> 14.2k</a>
+      <a class="signin" href="#">Sign in</a>
+      <a class="btn btn-primary" href="#">Start building <svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="hero">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <span class="glow-orb g1" aria-hidden="true"></span>
+  <span class="glow-orb g2" aria-hidden="true"></span>
+
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <span class="hero-pill" data-hero><span class="tag">v3.2</span> Edge runtime now generally available</span>
+      <h1 class="disp" data-hero>Ship APIs at the <span class="accent">edge</span> without managing servers.</h1>
+      <p class="lead" data-hero>Cascade is the developer platform for building, deploying, and scaling APIs across forty regions. Write a function, push to main, and we route every request to the nearest node in milliseconds.</p>
+      <div class="install" data-hero><span class="pfx">$</span><span class="mono">npm i -g @cascade/cli</span><span class="cp" title="Copy">copy</span></div>
+      <div class="hero-cta" data-hero>
+        <a class="btn btn-primary" href="#">Start building <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#">Read the docs</a>
+      </div>
+    </div>
+
+    <div class="hero-media" data-hero-media>
+      <div class="term" data-parallax-stage>
+        <div class="term-chrome">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="fn">edge/handler.ts</span>
+        </div>
+        <div class="term-body" aria-hidden="true">
+<span class="ln"><span class="cm">// deploy globally in one file</span></span>
+<span class="ln"><span class="kw">import</span> <span class="nm">{ cascade }</span> <span class="kw">from</span> <span class="st">'@cascade/edge'</span></span>
+<span class="ln"> </span>
+<span class="ln"><span class="kw">export default</span> <span class="fn2">cascade</span><span class="nm">(</span><span class="kw">async</span> <span class="nm">(req) => {</span></span>
+<span class="ln">  <span class="kw">const</span> <span class="nm">region = req.geo.region</span></span>
+<span class="ln">  <span class="kw">return</span> <span class="nm">Response.json({ region,</span> <span class="st">latency</span><span class="nm">:</span> <span class="st">'12ms'</span> <span class="nm">})</span></span>
+<span class="ln"><span class="nm">})</span></span>
+          <div class="term-out">
+<span class="ln"><span class="cm">$ cascade deploy</span></span>
+<span class="ln"><span class="ok">✓</span> <span class="nm">Built in 1.8s · 40 regions live</span></span>
+<span class="ln"><span class="ok">✓</span> <span class="nm">https://api.cascade.dev</span></span>
+          </div>
+        </div>
+        <div class="term-float" data-parallax="34">
+          <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3 8 4-16 3 8h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span><span class="ti">p99 latency</span><br><span class="su">14ms global</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== LOGO BAR ======================== -->
+<section class="logos">
+  <div class="wrap">
+    <p class="cap" data-reveal>Trusted by engineering teams shipping at scale</p>
+    <div class="logo-row" data-batch>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Quanted</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Relayer</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Bitwise</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M5 8l7-5 7 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Northpeak</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="12" r="5" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="12" r="5" stroke="currentColor" stroke-width="2"/></svg> Loopfield</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 16c4-10 12-10 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Driftcode</span>
+    </div>
+  </div>
+</section>
+
+<!-- =================== API ENDPOINT BAND =================== -->
+<section class="band" id="api">
+  <div class="wrap">
+    <div class="band-head" data-reveal>
+      <span class="eyebrow center">One API, every region</span>
+      <h2 class="disp">A request and response you can read at a glance</h2>
+      <p class="lead">Typed endpoints, predictable errors, and automatic retries. The same call runs in Tokyo, Frankfurt, and Sao Paulo without a single config change.</p>
+    </div>
+    <div class="endpoint" data-reveal>
+      <div class="ep-tab" style="padding:16px 24px 0">
+        <span class="ep-method">POST</span> <span class="mono">/v3/functions/invoke</span>
+      </div>
+      <div class="endpoint-grid">
+        <div class="ep-req" aria-hidden="true">
+          <div class="ep-tab">Request</div>
+<span class="ln"><span class="key">curl</span> -X POST <span class="url">api.cascade.dev/v3/invoke</span> \</span>
+<span class="ln">  -H <span class="val">"Authorization: Bearer sk_live_..."</span> \</span>
+<span class="ln">  -H <span class="val">"Content-Type: application/json"</span> \</span>
+<span class="ln">  -d <span class="val">'{</span></span>
+<span class="ln">    <span class="val">"function": "resize-image",</span></span>
+<span class="ln">    <span class="val">"region": "auto",</span></span>
+<span class="ln">    <span class="val">"input": { "width": 1200 }</span></span>
+<span class="ln">  <span class="val">}'</span></span>
+        </div>
+        <div class="ep-res" aria-hidden="true">
+          <div class="ep-tab">Response · <span class="status">200 OK</span></div>
+<span class="ln"><span class="nm">{</span></span>
+<span class="ln">  <span class="key2">"id"</span>: <span class="str">"inv_8f2a"</span>,</span>
+<span class="ln">  <span class="key2">"region"</span>: <span class="str">"fra1"</span>,</span>
+<span class="ln">  <span class="key2">"duration_ms"</span>: <span class="num">12</span>,</span>
+<span class="ln">  <span class="key2">"cold_start"</span>: <span class="num">false</span>,</span>
+<span class="ln">  <span class="key2">"output"</span>: <span class="str">"https://cdn.cascade.dev/i/8f2a"</span></span>
+<span class="ln"><span class="nm">}</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CAPABILITIES BENTO ================= -->
+<section class="caps" id="features">
+  <div class="wrap">
+    <div class="caps-head" data-reveal>
+      <span class="eyebrow">Built for builders</span>
+      <h2 class="disp">Everything between your code and production</h2>
+      <p class="lead">A platform that handles routing, scaling, and observability so your team can focus on the function body.</p>
+    </div>
+    <div class="bento" data-batch>
+      <article class="cap span2">
+        <span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3 8 4-16 3 8h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3>Instant cold starts</h3>
+        <p>Functions boot in under five milliseconds on a runtime built for the edge. No containers to warm, no servers to provision, no queue to wait behind.</p>
+        <span class="mono-tag">p50 boot · 3.1ms</span>
+      </article>
+      <article class="cap">
+        <span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M2 12h20M12 3a14 14 0 010 18M12 3a14 14 0 000 18" stroke="currentColor" stroke-width="1.6"/></svg></span>
+        <h3>Forty regions</h3>
+        <p>Deploy once, run everywhere. Requests route to the closest healthy node automatically.</p>
+        <span class="mono-tag">regions · 40</span>
+      </article>
+      <article class="cap">
+        <span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 9l3 3-3 3M13 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3>Typed SDKs</h3>
+        <p>First-class clients for TypeScript, Go, Python, and Rust with generated types from your schema.</p>
+        <span class="mono-tag">sdk · 4 langs</span>
+      </article>
+      <article class="cap">
+        <span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3>Secrets and auth</h3>
+        <p>Encrypted environment secrets and signed tokens managed for every deployment.</p>
+        <span class="mono-tag">soc 2 · type ii</span>
+      </article>
+      <article class="cap span2">
+        <span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3>Observability built in</h3>
+        <p>Live traces, structured logs, and per-region latency charts ship with every project. Set alerts on error rate or p99 and pipe events straight to your existing stack.</p>
+        <span class="mono-tag">logs · traces · metrics</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHOWCASE / INFRA ================= -->
+<section class="showcase" id="changelog">
+  <div class="wrap">
+    <div class="showcase-grid">
+      <div class="showcase-text" data-reveal>
+        <span class="eyebrow">Global by default</span>
+        <h2 class="disp">Your code, replicated to every edge node</h2>
+        <p class="lead">When you push to main, Cascade compiles your functions and distributes them to every region in seconds. Traffic shifts gradually, health checks gate each rollout, and any failed region rolls back on its own.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Atomic deploys with instant rollback</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Preview URLs for every pull request</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Zero-downtime gradual rollouts</li>
+        </ul>
+      </div>
+      <div class="showcase-media" data-reveal>
+        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1100&q=80" alt="Network of connected nodes across a global map glowing in the dark" loading="lazy">
+        <span class="pin p1"><span class="d"></span> iad1 · 9ms</span>
+        <span class="pin p2"><span class="d"></span> fra1 · 12ms</span>
+        <span class="pin p3"><span class="d"></span> nrt1 · 11ms</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STATS BAND ==================== -->
+<section class="metrics">
+  <div class="wrap">
+    <div class="metrics-grid" data-batch>
+      <div class="metric"><div class="num"><span class="count" data-to="40" data-dec="0">0</span></div><div class="lbl">edge regions</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="99.99" data-dec="2">0</span><span class="suf">%</span></div><div class="lbl">uptime SLA</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="14" data-dec="0">0</span><span class="suf">ms</span></div><div class="lbl">p99 latency</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="8" data-dec="0">0</span><span class="suf">B</span></div><div class="lbl">requests / month</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TESTIMONIAL ==================== -->
+<section class="quote">
+  <div class="wrap">
+    <div class="quote-grid">
+      <div class="quote-photo" data-reveal>
+        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80" alt="Portrait of a staff engineer smiling at her desk" loading="lazy">
+      </div>
+      <div data-reveal>
+        <blockquote class="disp">We replaced three services and a queue with one Cascade function. Our cold starts went from <span class="hl">two seconds to three milliseconds</span>, and our on-call pager finally went quiet.</blockquote>
+        <div class="by">
+          <div class="n">Priya Anand</div>
+          <div class="r">Staff Engineer, Relayer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PRICING ==================== -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="pricing-head" data-reveal>
+      <span class="eyebrow center">Pricing</span>
+      <h2 class="disp">Start free, scale when you ship</h2>
+      <p class="lead">Usage-based pricing with a generous free tier. No charge for idle functions and no surprise egress fees.</p>
+    </div>
+    <div class="tiers" data-batch>
+      <article class="tier">
+        <div class="tn">Hobby</div>
+        <div class="desc">For side projects and prototypes getting their first users.</div>
+        <div class="price">Free</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 1 million invocations</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 3 edge regions</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Community support</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Start free</a>
+      </article>
+      <article class="tier pop">
+        <span class="badge-pop">Most popular</span>
+        <div class="tn">Team</div>
+        <div class="desc">For teams running production workloads across regions.</div>
+        <div class="price">$49 <span>/ month</span></div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 50 million invocations</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> All 40 regions</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Traces and alerting</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Priority support</li>
+        </ul>
+        <a class="btn btn-primary" href="#">Start building</a>
+      </article>
+      <article class="tier">
+        <div class="tn">Enterprise</div>
+        <div class="desc">For organisations with custom scale and compliance needs.</div>
+        <div class="price">Custom</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Unlimited invocations</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Dedicated regions</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 99.99% SLA and SSO</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Contact sales</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<section class="cta" id="docs">
+  <div class="wrap">
+    <div class="cta-card">
+      <h2 class="disp">Deploy your first function in under a minute</h2>
+      <p>Install the CLI, write a handler, and push. Cascade takes care of routing, scaling, and the forty regions in between.</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary" href="#">Start building <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#">Browse the docs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="wordmark" href="#" aria-label="Cascade home">
+          <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 7l5 5-5 5M11 17h9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          Cascade
+        </a>
+        <p>The edge platform for developers who would rather write functions than manage infrastructure.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="#">Edge Functions</a>
+        <a href="#">Routing</a>
+        <a href="#">Observability</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="foot-col">
+        <h4>Developers</h4>
+        <a href="#">Documentation</a>
+        <a href="#">API reference</a>
+        <a href="#">SDKs</a>
+        <a href="#">Status</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Security</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span class="cp">© 2026 Cascade Labs. All rights reserved.</span>
+      <div class="soc">
+        <a href="#" aria-label="GitHub"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.57 2.34 1.12 2.91.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.3 9.3 0 015 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.49A10.26 10.26 0 0022 12.25C22 6.58 17.52 2 12 2z"/></svg></a>
+        <a href="#" aria-label="Discord"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M8 10h.01M16 10h.01M7 16c2 1.5 8 1.5 10 0M6 8a18 18 0 0112 0M5 8l-1 9 4 2M19 8l1 9-4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" aria-label="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.6l-5-6.6L5.6 22H2.5l8.1-9.3L1 2h6.8l4.5 6 5.6-6zm-1.2 18h1.8L7.3 3.9H5.4L17.7 20z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · <b>Cascade</b> · developer</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  /* scroll progress + nav state (always, no motion required) */
+  var nav = document.getElementById('nav');
+  var progress = document.getElementById('progress');
+  function onScroll() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    progress.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', h.scrollTop > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  var mm = gsap.matchMedia();
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    /* hero entrance */
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 24, autoAlpha: 0, duration: 0.7, stagger: 0.09 })
+          .from('[data-hero-media]', { y: 34, autoAlpha: 0, scale: 0.97, duration: 0.9 }, '-=0.5');
+
+    /* pointer parallax on float chip */
+    var stage = document.querySelector('[data-parallax-stage]');
+    var layers = gsap.utils.toArray('[data-parallax]');
+    if (stage && finePointer && layers.length) {
+      var hero = document.getElementById('hero');
+      var qx = layers.map(function (el) {
+        return { el: el, depth: parseFloat(el.getAttribute('data-parallax')) || 16,
+          sx: gsap.quickTo(el, 'x', { duration: 0.6, ease: 'power3' }),
+          sy: gsap.quickTo(el, 'y', { duration: 0.6, ease: 'power3' }) };
+      });
+      hero.addEventListener('pointermove', function (e) {
+        var r = hero.getBoundingClientRect();
+        var nx = (e.clientX - r.left) / r.width - 0.5;
+        var ny = (e.clientY - r.top) / r.height - 0.5;
+        qx.forEach(function (l) { l.sx(nx * l.depth); l.sy(ny * l.depth); });
+      });
+      hero.addEventListener('pointerleave', function () { qx.forEach(function (l) { l.sx(0); l.sy(0); }); });
+    }
+
+    /* scrubbed parallax on showcase image */
+    gsap.utils.toArray('.showcase-media img').forEach(function (img) {
+      gsap.fromTo(img, { yPercent: -8 }, { yPercent: 8, ease: 'none',
+        scrollTrigger: { trigger: img, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+
+    /* staggered reveals */
+    gsap.set('[data-reveal]', { y: 26, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.12, ease: 'power3.out', overwrite: true }); }
+    });
+
+    /* grid children batches */
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 22, autoAlpha: 0 });
+      ScrollTrigger.create({
+        trigger: grid, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.08, ease: 'power3.out' }); }
+      });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-hero-media], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+      if (reduced) { el.textContent = to.toFixed(dec); return; }
+      ScrollTrigger.create({
+        trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          var obj = { v: 0 };
+          gsap.to(obj, { v: to, duration: 1.4, ease: 'power2.out',
+            onUpdate: function () { el.textContent = obj.v.toFixed(dec); },
+            onComplete: function () { el.textContent = to.toFixed(dec); } });
+        }
+      });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-reveal],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,p')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=cascade&name=Cascade" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

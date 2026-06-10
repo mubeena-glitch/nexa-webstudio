@@ -1,0 +1,93 @@
+{
+  "id": "sage",
+  "name": "Sage",
+  "family": "minimal",
+  "sector": "Therapy / mental wellness",
+  "tags": [
+    "light",
+    "wellness",
+    "therapy",
+    "sage",
+    "green",
+    "calm",
+    "minimal"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "246 244 237",
+      "surface": "240 237 228",
+      "surface2": "234 231 220",
+      "ink": "44 51 44",
+      "muted": "111 119 109",
+      "line": "221 219 207",
+      "primary": "106 138 110",
+      "onPrimary": "255 255 255",
+      "accent": "106 138 110",
+      "accent2": "176 142 104"
+    },
+    "type": {
+      "display": "'Fraunces', ui-serif, Georgia, serif",
+      "body": "'Mulish', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'IBM Plex Mono', ui-monospace, monospace",
+      "scaleRatio": 1.24,
+      "weights": {
+        "display": 400,
+        "displayBold": 600,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(96px, 12vw, 176px)",
+      "gutter": "clamp(20px, 5vw, 64px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "24px",
+      "button": "999px",
+      "input": "16px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(44 51 44 / 0.03), 0 12px 32px -18px rgb(44 51 44 / 0.14)",
+      "elevated": "0 2px 4px rgb(44 51 44 / 0.04), 0 30px 60px -24px rgb(44 51 44 / 0.18)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.33, 1, 0.68, 1)",
+      "duration": "640ms",
+      "character": "gentle"
+    },
+    "imagery": {
+      "treatment": "soft-organic",
+      "ratio": "4:5",
+      "filter": "saturate(0.92) brightness(1.02)"
+    }
+  },
+  "recipes": {
+    "button": "solid-pill",
+    "card": "soft-fill",
+    "nav": "centred-pill"
+  },
+  "preferredLayouts": {
+    "nav": "centred-pill",
+    "hero": "calm-portrait-split",
+    "trusted": "logo-bar",
+    "screenshot": "soft-organic-frame",
+    "features": "alternating-splits",
+    "bento": "support-grid",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "soft-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Mulish:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  ]
+}

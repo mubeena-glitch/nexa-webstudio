@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cinder — NEXA Theme Preview (BBQ &amp; Smokehouse)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     CINDER — design tokens (mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 22 18 16;
+    --color-surface: 33 26 23;
+    --color-surface-2: 45 35 30;
+    --color-ink: 242 232 222;
+    --color-muted: 176 156 142;
+    --color-line: 60 47 40;
+    --color-primary: 224 78 42;     /* ember red */
+    --color-on-primary: 20 12 9;
+    --color-accent: 224 78 42;
+    --color-accent2: 230 168 70;    /* amber */
+
+    --font-display: "Oswald", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Roboto Mono", ui-monospace, monospace;
+
+    --maxw: 1280px;
+    --gutter: clamp(20px, 5vw, 68px);
+    --ratio: 4 / 5;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 560ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); font-family: var(--font-body); font-weight: 400; line-height: 1.62; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; }
+
+  .disp { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.02; }
+  .label { font-family: var(--font-mono); font-weight: 500; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; }
+  .ember { color: rgb(var(--color-primary)); }
+  .amber { color: rgb(var(--color-accent2)); }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18px); }
+
+  #prog { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); z-index: 90; }
+
+  /* buttons — slab, square */
+  .btn { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; padding: 15px 28px; border-radius: 4px; border: 2px solid rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); background: rgb(var(--color-primary)); cursor: pointer; transition: background var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-line { background: transparent; color: rgb(var(--color-ink)); border-color: rgb(var(--color-line)); }
+  .btn-line:hover { border-color: rgb(var(--color-primary)); color: rgb(var(--color-primary)); }
+  .btn-amber { background: rgb(var(--color-accent2)); border-color: rgb(var(--color-accent2)); color: rgb(var(--color-on-primary)); }
+
+  /* ============ NAV ============ */
+  header { position: sticky; top: 0; z-index: 80; transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease); border-bottom: 1px solid transparent; }
+  header.stuck { background: rgb(var(--color-bg) / .9); backdrop-filter: blur(10px); border-bottom-color: rgb(var(--color-line)); }
+  .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding-block: 20px; }
+  .nav .left, .nav .right { display: flex; gap: 28px; align-items: center; }
+  .nav .right { justify-content: flex-end; }
+  .nav .left a, .nav .right a { font-family: var(--font-display); font-weight: 500; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(var(--color-muted)); transition: color var(--dur) var(--ease); }
+  .nav .left a:hover, .nav .right a:hover { color: rgb(var(--color-ink)); }
+  .nav .wordmark { font-family: var(--font-display); font-weight: 700; font-size: 24px; letter-spacing: 0.18em; text-transform: uppercase; text-align: center; }
+  .nav .wordmark span { color: rgb(var(--color-primary)); }
+  @media (max-width: 860px) { .nav { grid-template-columns: auto 1fr; } .nav .left { display: none; } .nav .wordmark { text-align: left; } }
+
+  /* ============ HERO — full-bleed ============ */
+  .hero { position: relative; min-height: 92svh; display: flex; align-items: flex-end; overflow: hidden; }
+  .hero .media { position: absolute; inset: -10% 0; }
+  .hero .media img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1) contrast(1.08) brightness(.62); will-change: transform; }
+  .hero .scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(22 18 16 / .5) 0%, transparent 30%, transparent 50%, rgb(22 18 16 / .92) 100%); }
+  .hero .ember-glow { position: absolute; inset: 0; background: radial-gradient(60% 50% at 50% 100%, rgb(var(--color-primary) / .26), transparent 70%); pointer-events: none; }
+  .hero .content { position: relative; padding: var(--gutter); padding-bottom: clamp(48px, 9vh, 100px); max-width: 980px; }
+  .hero .eyebrow { letter-spacing: 0.4em; color: rgb(var(--color-accent2)); }
+  .hero h1 { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: clamp(52px, 11vw, 150px); line-height: 0.9; margin-top: 20px; }
+  .hero h1 .line { display: block; overflow: hidden; }
+  .hero h1 em { font-style: normal; color: rgb(var(--color-primary)); }
+  .hero .row { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; margin-top: 34px; flex-wrap: wrap; }
+  .hero .desc { max-width: 42ch; color: rgb(var(--color-ink) / .86); font-size: 16px; }
+  .hero .actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  /* ============ MARQUEE STRIP ============ */
+  .strip { border-block: 1px solid rgb(var(--color-line)); overflow: hidden; background: rgb(var(--color-surface)); }
+  .strip .track { display: flex; gap: 64px; width: max-content; padding: 18px 0; animation: scroll 34s linear infinite; }
+  .strip span { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 20px; color: rgb(var(--color-muted)); white-space: nowrap; }
+  .strip span::before { content: "●"; color: rgb(var(--color-primary)); margin-right: 64px; font-size: 9px; vertical-align: middle; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* ============ MANIFESTO ============ */
+  .manifesto { padding-block: clamp(80px, 14vh, 180px); }
+  .manifesto .grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(30px, 6vw, 100px); align-items: start; }
+  @media (max-width: 860px) { .manifesto .grid { grid-template-columns: 1fr; gap: 32px; } }
+  .manifesto .head h2 { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: clamp(30px, 4vw, 56px); line-height: 1.04; }
+  .manifesto .head h2 em { font-style: normal; color: rgb(var(--color-primary)); }
+  .manifesto .col { color: rgb(var(--color-muted)); font-size: 16px; }
+  .manifesto .col p + p { margin-top: 18px; }
+  .manifesto .col .btn { margin-top: 30px; }
+
+  /* ============ MENU — numbered list ============ */
+  .menu { padding-bottom: clamp(70px, 12vh, 150px); }
+  .menu .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 36px; flex-wrap: wrap; gap: 12px; }
+  .menu .head h2 { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: clamp(30px, 4.4vw, 60px); }
+  .row-item { display: grid; grid-template-columns: 64px 1fr auto; gap: 22px; align-items: center; padding: 24px 0; border-top: 1px solid rgb(var(--color-line)); transition: background var(--dur) var(--ease); }
+  .row-item:last-child { border-bottom: 1px solid rgb(var(--color-line)); }
+  .row-item:hover { background: rgb(var(--color-surface) / .5); }
+  .row-item .no { font-family: var(--font-display); font-weight: 700; font-size: 26px; color: rgb(var(--color-primary)); }
+  .row-item .nm { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: 22px; }
+  .row-item .ds { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 4px; max-width: 56ch; }
+  .row-item .pr { font-family: var(--font-mono); font-weight: 500; font-size: 17px; color: rgb(var(--color-accent2)); white-space: nowrap; }
+  @media (max-width: 620px) { .row-item { grid-template-columns: 40px 1fr; } .row-item .pr { grid-column: 2; } .row-item .no { font-size: 20px; } }
+
+  /* ============ CAMPAIGN SPREAD ============ */
+  .spread { display: grid; grid-template-columns: 1.05fr 0.95fr; min-height: 84vh; }
+  .spread.flip { grid-template-columns: 0.95fr 1.05fr; }
+  @media (max-width: 860px) { .spread, .spread.flip { grid-template-columns: 1fr; } }
+  .spread .pane-img { position: relative; overflow: hidden; min-height: 58vh; }
+  .spread .pane-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.08) contrast(1.06) brightness(.82); will-change: transform; }
+  .spread .pane-txt { display: flex; flex-direction: column; justify-content: center; padding: clamp(40px, 7vw, 100px); background: rgb(var(--color-surface)); }
+  .spread .pane-txt h2 { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: clamp(34px, 5vw, 74px); line-height: 0.98; }
+  .spread .pane-txt h2 em { font-style: normal; color: rgb(var(--color-primary)); }
+  .spread .pane-txt p { color: rgb(var(--color-muted)); font-size: 16px; max-width: 44ch; margin-top: 22px; }
+  .spread .pane-txt .btn { margin-top: 34px; align-self: flex-start; }
+  .spread .idx { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-accent2)); margin-bottom: 20px; }
+
+  /* ============ SMOKEHOUSE GALLERY — pinned horizontal ============ */
+  .gallery { padding-bottom: clamp(70px, 12vh, 150px); padding-top: clamp(70px, 12vh, 150px); }
+  .gallery .head { display: flex; justify-content: space-between; align-items: baseline; padding-inline: var(--gutter); margin-bottom: 36px; flex-wrap: wrap; gap: 10px; }
+  .gallery .head h2 { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: clamp(30px, 4vw, 58px); }
+  .g-viewport { overflow: hidden; }
+  .g-track { display: flex; gap: 18px; padding-inline: var(--gutter); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 10px; }
+  .g-track::-webkit-scrollbar { display: none; }
+  .dish { flex: 0 0 min(82vw, 400px); scroll-snap-align: start; }
+  .dish .ph { aspect-ratio: var(--ratio); overflow: hidden; background: rgb(var(--color-surface)); border-radius: 6px; }
+  .dish .ph img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05) contrast(1.05) brightness(.92); transition: transform 1.2s var(--ease); }
+  .dish:hover .ph img { transform: scale(1.05); }
+  .dish .meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; }
+  .dish .meta .nm { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: 19px; }
+  .dish .meta .pr { font-family: var(--font-mono); font-size: 13px; color: rgb(var(--color-accent2)); }
+  .dish .tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-primary)); margin-top: 5px; }
+
+  /* ============ PROCESS — three steps + image ============ */
+  .process { padding-block: clamp(80px, 14vh, 170px); border-top: 1px solid rgb(var(--color-line)); }
+  .process .grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(30px, 6vw, 90px); align-items: center; }
+  @media (max-width: 860px) { .process .grid { grid-template-columns: 1fr; } }
+  .process h2 { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: clamp(32px, 4.4vw, 62px); line-height: 1.0; }
+  .process h2 em { font-style: normal; color: rgb(var(--color-primary)); }
+  .steps { margin-top: 40px; }
+  .stp { display: flex; gap: 22px; padding: 24px 0; border-top: 1px solid rgb(var(--color-line)); }
+  .stp:last-child { border-bottom: 1px solid rgb(var(--color-line)); }
+  .stp .no { font-family: var(--font-display); font-weight: 700; font-size: 24px; color: rgb(var(--color-accent2)); flex: none; width: 42px; }
+  .stp h3 { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: 20px; }
+  .stp p { color: rgb(var(--color-muted)); font-size: 15px; margin-top: 6px; max-width: 48ch; }
+  .process .ph { aspect-ratio: 4/5; overflow: hidden; border-radius: 6px; }
+  .process .ph img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.06) contrast(1.05) brightness(.84); }
+
+  /* ============ STATS ============ */
+  .stats { border-block: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface)); }
+  .stats .grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 760px) { .stats .grid { grid-template-columns: repeat(2, 1fr); } }
+  .stats .cell { padding: clamp(44px, 7vh, 84px) 26px; text-align: center; border-right: 1px solid rgb(var(--color-line)); }
+  .stats .cell:last-child { border-right: none; }
+  @media (max-width: 760px) { .stats .cell:nth-child(2) { border-right: none; } .stats .cell:nth-child(-n+2) { border-bottom: 1px solid rgb(var(--color-line)); } }
+  .stats .n { font-family: var(--font-display); font-weight: 700; font-size: clamp(44px, 5.4vw, 72px); line-height: 1; }
+  .stats .n .u { color: rgb(var(--color-primary)); }
+  .stats .l { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 14px; }
+
+  /* ============ TESTIMONIAL ============ */
+  .press { padding-block: clamp(80px, 14vh, 180px); text-align: center; }
+  .press .quote { font-family: var(--font-display); font-weight: 500; text-transform: uppercase; font-size: clamp(26px, 4vw, 54px); line-height: 1.16; max-width: 22ch; margin: 0 auto; }
+  .press .quote em { font-style: normal; color: rgb(var(--color-primary)); }
+  .press .by { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--color-accent2)); margin-top: 30px; }
+
+  /* ============ BOOK / CTA IMAGE BAND ============ */
+  .book { position: relative; overflow: hidden; }
+  .book .bg { position: absolute; inset: 0; }
+  .book .bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.34) saturate(1.1); will-change: transform; }
+  .book .inner { position: relative; text-align: center; padding-block: clamp(90px, 16vh, 200px); padding-inline: var(--gutter); }
+  .book h2 { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: clamp(34px, 5vw, 80px); }
+  .book h2 em { font-style: normal; color: rgb(var(--color-primary)); }
+  .book p { color: rgb(var(--color-ink) / .84); margin: 18px auto 0; max-width: 44ch; }
+  .book .actions { display: flex; gap: 14px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
+
+  /* ============ FOOTER ============ */
+  footer { border-top: 1px solid rgb(var(--color-line)); padding-block: 60px 36px; }
+  .foot { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 36px; }
+  @media (max-width: 760px) { .foot { grid-template-columns: 1fr 1fr; gap: 36px 24px; } }
+  .foot h4 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 16px; }
+  .foot .brandblurb { color: rgb(var(--color-muted)); font-size: 14px; max-width: 32ch; }
+  .foot a { display: block; font-size: 14px; color: rgb(var(--color-muted)); padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot a:hover { color: rgb(var(--color-ink)); }
+  .bigmark { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: clamp(60px, 17vw, 240px); letter-spacing: 0.04em; line-height: 1; text-align: center; padding-top: 60px; color: rgb(var(--color-ink) / .92); }
+  .bigmark span { color: rgb(var(--color-primary)); }
+  .legal { display: flex; justify-content: space-between; padding-top: 28px; margin-top: 28px; border-top: 1px solid rgb(var(--color-line)); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--color-muted)); flex-wrap: wrap; gap: 12px; }
+
+  .ribbon { position: fixed; bottom: 0; right: 0; z-index: 95; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); font-family: var(--font-mono); font-weight: 500; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; padding: 8px 14px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+  <div id="prog"></div>
+  <div class="ribbon">NEXA Theme · Cinder · smokehouse</div>
+
+  <header id="hdr">
+    <nav class="wrap nav" aria-label="Primary">
+      <div class="left">
+        <a href="#menu">Menu</a>
+        <a href="#process">The Pit</a>
+        <a href="#story">Our Story</a>
+      </div>
+      <div class="wordmark">Cin<span>der</span></div>
+      <div class="right">
+        <a href="#book">Book a table</a>
+        <a href="#" class="ember">Order online</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Cinder smokehouse">
+    <div class="media"><img id="heroImg" src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=1900&q=80&auto=format&fit=crop" alt="Brisket and ribs smoking over open coals" /></div>
+    <div class="scrim"></div>
+    <div class="ember-glow" aria-hidden="true"></div>
+    <div class="content">
+      <span class="label eyebrow" id="heroEyebrow">Low and slow since 2009 · East London</span>
+      <h1 id="heroTitle"><span class="line">Smoke,</span><span class="line"><em>fire</em> and patience.</span></h1>
+      <div class="row">
+        <p class="desc" id="heroDesc">Whole cuts rubbed by hand, smoked over British oak for sixteen hours, and pulled the moment the bark turns to cinder. This is barbecue with nowhere to hide.</p>
+        <div class="actions" id="heroBtns">
+          <a href="#menu" class="btn">See the menu</a>
+          <a href="#book" class="btn btn-line">Book a table</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRIP -->
+  <div class="strip" aria-hidden="true">
+    <div class="track">
+      <span>British Oak</span><span>16 Hour Brisket</span><span>House Rub</span><span>Open Pit</span><span>No Shortcuts</span><span>Burnt Ends</span>
+      <span>British Oak</span><span>16 Hour Brisket</span><span>House Rub</span><span>Open Pit</span><span>No Shortcuts</span><span>Burnt Ends</span>
+    </div>
+  </div>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto" id="story">
+    <div class="wrap grid">
+      <div class="head" data-reveal>
+        <span class="label amber">Our Story</span>
+        <h2 style="margin-top:16px;">We do one thing. <em>Smoke meat properly,</em> and refuse to rush it.</h2>
+      </div>
+      <div class="col" data-reveal>
+        <p>Cinder started as a single oil-drum smoker behind a railway arch in Hackney. Fifteen years on we still run the pit by hand, still light it before dawn, and still serve until the day's cook runs out.</p>
+        <p>Nothing is held overnight. Nothing is microwaved. When the brisket is gone, it is gone, and we start again tomorrow with a fresh fire.</p>
+        <a href="#process" class="btn btn-line">How we cook</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="menu" id="menu">
+    <div class="wrap">
+      <div class="head" data-reveal>
+        <h2>The Board</h2>
+        <span class="label amber">Served by the plate or the kilo</span>
+      </div>
+      <div class="row-item" data-reveal>
+        <span class="no">01</span>
+        <div><div class="nm">Oak-Smoked Brisket</div><div class="ds">Sixteen hours over British oak, sliced to order with a peppered bark and a soft pink smoke ring.</div></div>
+        <span class="pr">£16</span>
+      </div>
+      <div class="row-item" data-reveal>
+        <span class="no">02</span>
+        <div><div class="nm">Burnt Ends</div><div class="ds">The caramelised tips of the brisket point, glazed in our molasses and ancho sauce.</div></div>
+        <span class="pr">£12</span>
+      </div>
+      <div class="row-item" data-reveal>
+        <span class="no">03</span>
+        <div><div class="nm">Baby Back Ribs</div><div class="ds">A full rack, dry-rubbed and smoked until the meat pulls clean from the bone. Sauce on the side.</div></div>
+        <span class="pr">£18</span>
+      </div>
+      <div class="row-item" data-reveal>
+        <span class="no">04</span>
+        <div><div class="nm">Pulled Pork Shoulder</div><div class="ds">Twelve hours low and slow, hand-pulled and finished with a splash of cider vinegar.</div></div>
+        <span class="pr">£14</span>
+      </div>
+      <div class="row-item" data-reveal>
+        <span class="no">05</span>
+        <div><div class="nm">Smoked Half Chicken</div><div class="ds">Brined overnight, rubbed with paprika and smoked until the skin turns mahogany.</div></div>
+        <span class="pr">£13</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAMPAIGN SPREAD -->
+  <section class="spread">
+    <div class="pane-img"><img class="parallax-img" src="https://images.unsplash.com/photo-1558030006-450675393462?w=1200&q=80&auto=format&fit=crop" alt="A whole brisket resting after a long smoke" loading="lazy"></div>
+    <div class="pane-txt">
+      <div class="idx" data-reveal>01 / The Fire</div>
+      <h2 class="disp" data-reveal>Wood, not gas. <em>Ever.</em></h2>
+      <p data-reveal>We burn seasoned British oak and a little applewood, never gas or pellets. It takes longer and costs more, and it is the only reason the smoke tastes the way it does.</p>
+      <a href="#process" class="btn" data-reveal>Meet the pit</a>
+    </div>
+  </section>
+
+  <!-- GALLERY (horizontal) -->
+  <section class="gallery" aria-label="From the smokehouse">
+    <div class="head">
+      <h2 data-reveal>From the Pit</h2>
+      <span class="label amber" data-reveal>Scroll to explore →</span>
+    </div>
+    <div class="g-viewport" id="gViewport">
+      <div class="g-track" id="gTrack">
+        <article class="dish"><div class="ph"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=760&q=80&auto=format&fit=crop" alt="Sliced smoked brisket on a board" loading="lazy"></div><div class="meta"><span class="nm">Brisket Board</span><span class="pr">£16</span></div><div class="tag">House favourite</div></article>
+        <article class="dish"><div class="ph"><img src="https://images.unsplash.com/photo-1607330289024-1535c6b4e1c1?w=760&q=80&auto=format&fit=crop" alt="A rack of glazed smoked ribs" loading="lazy"></div><div class="meta"><span class="nm">Baby Back Ribs</span><span class="pr">£18</span></div><div class="tag">Off the bone</div></article>
+        <article class="dish"><div class="ph"><img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=760&q=80&auto=format&fit=crop" alt="A loaded barbecue platter" loading="lazy"></div><div class="meta"><span class="nm">The Pitmaster</span><span class="pr">£28</span></div><div class="tag">Sharing plate</div></article>
+        <article class="dish"><div class="ph"><img src="https://images.unsplash.com/photo-1558030006-450675393462?w=760&q=80&auto=format&fit=crop" alt="Pulled pork piled high" loading="lazy"></div><div class="meta"><span class="nm">Pulled Pork</span><span class="pr">£14</span></div><div class="tag">Cider finish</div></article>
+        <article class="dish"><div class="ph"><img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=760&q=80&auto=format&fit=crop" alt="Burnt ends glistening in sauce" loading="lazy"></div><div class="meta"><span class="nm">Burnt Ends</span><span class="pr">£12</span></div><div class="tag">Limited daily</div></article>
+        <article class="dish"><div class="ph"><img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=760&q=80&auto=format&fit=crop" alt="A smoked sandwich stacked high" loading="lazy"></div><div class="meta"><span class="nm">Smoke Stack</span><span class="pr">£11</span></div><div class="tag">Lunch only</div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPREAD FLIP -->
+  <section class="spread flip">
+    <div class="pane-txt">
+      <div class="idx" data-reveal>02 / The Rub</div>
+      <h2 class="disp" data-reveal>Eleven spices, <em>no secrets.</em></h2>
+      <p data-reveal>Black pepper, smoked paprika, ancho, brown sugar and a handful of others, blended fresh every morning. We will tell you what is in it. We will not tell you the ratios.</p>
+      <a href="#menu" class="btn btn-amber" data-reveal>See the board</a>
+    </div>
+    <div class="pane-img"><img class="parallax-img" src="https://images.unsplash.com/photo-1606756790138-261d2b21cd75?w=1200&q=80&auto=format&fit=crop" alt="Spice rub being pressed into a cut of meat" loading="lazy"></div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process" id="process">
+    <div class="wrap grid">
+      <div>
+        <span class="label amber" data-reveal>The Method</span>
+        <h2 class="disp" data-reveal style="margin-top:16px;">From cold cut to <em>cinder bark.</em></h2>
+        <div class="steps">
+          <div class="stp" data-reveal><span class="no">01</span><div><h3>Light the pit</h3><p>The fire is lit at four in the morning and brought slowly to a steady 110 degrees before a single cut goes on.</p></div></div>
+          <div class="stp" data-reveal><span class="no">02</span><div><h3>Smoke and wait</h3><p>Brisket sits for sixteen hours. We open the lid as little as possible. Every look costs you heat and time.</p></div></div>
+          <div class="stp" data-reveal><span class="no">03</span><div><h3>Rest and slice</h3><p>Off the pit, the meat rests for an hour so the juices settle, then we slice it to order in front of you.</p></div></div>
+        </div>
+      </div>
+      <div class="ph" data-reveal><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=80&auto=format&fit=crop" alt="A pitmaster tending the smoker" loading="lazy"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="grid">
+      <div class="cell" data-reveal><div class="n"><span data-count="16">0</span><span class="u">h</span></div><div class="l">On the brisket</div></div>
+      <div class="cell" data-reveal><div class="n"><span data-count="110">0</span><span class="u">°</span></div><div class="l">Steady pit heat</div></div>
+      <div class="cell" data-reveal><div class="n"><span data-count="2009">0</span></div><div class="l">Lighting fires since</div></div>
+      <div class="cell" data-reveal><div class="n"><span data-count="0">0</span><span class="u"> gas</span></div><div class="l">Shortcuts taken</div></div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIAL -->
+  <section class="press">
+    <div class="wrap">
+      <p class="quote" data-reveal>“The best brisket in <em>London</em>, full stop.”</p>
+      <div class="by" data-reveal>The Capital Eats Guide, 2026</div>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section class="book" id="book">
+    <div class="bg" aria-hidden="true"><img class="parallax-img" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80&auto=format&fit=crop" alt="" loading="lazy"></div>
+    <div class="inner">
+      <h2 data-reveal>Come <em>hungry.</em></h2>
+      <p data-reveal>We take bookings for groups of four or more. Walk in for everything else, and arrive early on weekends. When the smoke clears, the board sells out.</p>
+      <div class="actions" data-reveal>
+        <a href="#" class="btn">Book a table</a>
+        <a href="#" class="btn btn-line">Order online</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <h4>Cinder Smokehouse</h4>
+          <p class="brandblurb">Open-pit barbecue, smoked over British oak. Railway Arch 12, Hackney, London. Open Wednesday to Sunday.</p>
+        </div>
+        <div><h4>Eat</h4><a href="#menu">The Board</a><a href="#">Sharing plates</a><a href="#">Sides</a><a href="#">Drinks</a></div>
+        <div><h4>Visit</h4><a href="#book">Book a table</a><a href="#">Find us</a><a href="#">Private hire</a><a href="#">Catering</a></div>
+        <div><h4>Follow</h4><a href="#">Instagram</a><a href="#">Newsletter</a><a href="#">Press</a><a href="#">Contact</a></div>
+      </div>
+      <div class="bigmark">CIN<span>DER</span></div>
+      <div class="legal">
+        <span>© 2026 Cinder Smokehouse</span>
+        <span>Built with NEXA Web Studio</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+  (function () {
+    const hdr = document.getElementById('hdr'), prog = document.getElementById('prog');
+    const onScroll = () => {
+      hdr.classList.toggle('stuck', scrollY > 40);
+      const h = document.documentElement;
+      prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+    };
+    onScroll();
+    addEventListener('scroll', onScroll, { passive: true });
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasGSAP = !!(window.gsap && window.ScrollTrigger);
+
+    const runCount = (el) => {
+      const target = parseFloat(el.dataset.count);
+      if (reducedMotion) { el.textContent = target; return; }
+      const t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - t0) / 1500, 1), v = target * (1 - Math.pow(1 - p, 3));
+        el.textContent = Math.round(v);
+        if (p < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    };
+
+    if (!hasGSAP || reducedMotion) {
+      const cIO = new IntersectionObserver((es) => {
+        es.forEach(e => { if (e.isIntersecting) { runCount(e.target); cIO.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      document.querySelectorAll('[data-count]').forEach(el => cIO.observe(el));
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    const easeLux = 'power3.out';
+    const mm = gsap.matchMedia();
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.set('.hero h1 .line', { yPercent: 110 });
+      gsap.set('#heroEyebrow', { opacity: 0, y: 16 });
+      gsap.set(['#heroDesc', '#heroBtns'], { opacity: 0, y: 24 });
+      const intro = gsap.timeline({ defaults: { ease: easeLux } });
+      intro.to('#heroEyebrow', { opacity: 1, y: 0, duration: 1.0 })
+           .to('.hero h1 .line', { yPercent: 0, duration: 1.3, stagger: 0.1 }, '-=0.7')
+           .to(['#heroDesc', '#heroBtns'], { opacity: 1, y: 0, duration: 1.0, stagger: 0.12 }, '-=0.7');
+
+      gsap.to('#heroImg', { yPercent: 14, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+      gsap.set('[data-reveal]', { opacity: 0, y: 32 });
+      ScrollTrigger.batch('[data-reveal]', {
+        start: 'top 86%',
+        onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 1.0, ease: easeLux, stagger: 0.09, overwrite: true }),
+        once: true
+      });
+
+      gsap.utils.toArray('.parallax-img').forEach((img) => {
+        gsap.fromTo(img, { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: img.closest('section') || img, start: 'top bottom', end: 'bottom top', scrub: true } });
+      });
+
+      gsap.utils.toArray('[data-count]').forEach((el) => {
+        ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => runCount(el) });
+      });
+    });
+
+    // pinned horizontal gallery (desktop only; native scroll fallback otherwise)
+    mm.add('(min-width: 861px) and (prefers-reduced-motion: no-preference)', () => {
+      const viewport = document.getElementById('gViewport');
+      const track = document.getElementById('gTrack');
+      if (!viewport || !track) return;
+      track.style.overflowX = 'visible';
+      track.style.scrollSnapType = 'none';
+      const getDistance = () => track.scrollWidth - viewport.clientWidth;
+      const tween = gsap.to(track, {
+        x: () => -getDistance(), ease: 'none',
+        scrollTrigger: { trigger: viewport, start: 'top top', end: () => '+=' + getDistance(), pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1 }
+      });
+      return () => {
+        tween.scrollTrigger && tween.scrollTrigger.kill();
+        tween.kill();
+        gsap.set(track, { clearProps: 'x' });
+        track.style.overflowX = '';
+        track.style.scrollSnapType = '';
+      };
+    });
+
+    if (matchMedia('(pointer:fine)').matches) {
+      document.querySelectorAll('.btn').forEach(b => {
+        b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * 0.1, y: (e.clientY - r.top - r.height / 2) * 0.16, duration: 0.4, ease: 'power2.out' }); });
+        b.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, duration: 0.5, ease: 'power2.out' }));
+      });
+    }
+  })();
+  </script>
+  <script>
+  /* === NEXA visibility failsafe === */
+  (function(){
+    var SEL='h1,h2,h3,h4,h5,p,li,[data-reveal]';
+    function isHidden(el){
+      var cs=getComputedStyle(el);
+      if(cs.visibility==='hidden') return true;
+      if(parseFloat(cs.opacity)<0.06) return true;
+      var cp=cs.clipPath||cs.webkitClipPath||'';
+      if(/inset\([^)]*100%/.test(cp)) return true;
+      return false;
+    }
+    function force(el){
+      if(!isHidden(el)) return;
+      el.style.setProperty('opacity','1','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('transform','none','important');
+      el.style.setProperty('clip-path','none','important');
+      el.style.setProperty('-webkit-clip-path','none','important');
+    }
+    var els;
+    try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+    catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4')); }
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(ents){
+        ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+      },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+      els.forEach(function(el){ io.observe(el); });
+    } else { els.forEach(force); }
+    window.addEventListener('load',function(){ setTimeout(function(){
+      els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+    },2600); });
+  })();
+  </script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=cinder&name=Cinder" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

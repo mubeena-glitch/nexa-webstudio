@@ -1,0 +1,94 @@
+{
+  "id": "petal",
+  "name": "Petal",
+  "family": "luxury",
+  "sector": "Weddings / Events",
+  "tags": [
+    "light",
+    "weddings",
+    "events",
+    "blush",
+    "dusty-rose",
+    "gold",
+    "romantic",
+    "luxury"
+  ],
+  "mode": "light",
+  "tokens": {
+    "color": {
+      "bg": "253 247 245",
+      "surface": "250 240 238",
+      "surface2": "246 232 230",
+      "ink": "59 40 44",
+      "muted": "138 110 114",
+      "line": "234 214 212",
+      "primary": "176 110 116",
+      "onPrimary": "255 255 255",
+      "accent": "176 110 116",
+      "accent2": "183 142 84"
+    },
+    "type": {
+      "display": "'Playfair Display', ui-serif, Georgia, serif",
+      "body": "'Outfit', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Outfit', ui-sans-serif, system-ui, sans-serif",
+      "scaleRatio": 1.33,
+      "weights": {
+        "display": 500,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(92px, 12vw, 168px)",
+      "gutter": "clamp(20px, 5vw, 68px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "20px",
+      "button": "999px",
+      "input": "999px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(59 40 44 / 0.04), 0 12px 30px -16px rgb(59 40 44 / 0.16)",
+      "elevated": "0 2px 6px rgb(59 40 44 / 0.05), 0 30px 60px -22px rgb(59 40 44 / 0.22)",
+      "philosophy": "soft"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration": "560ms",
+      "character": "graceful"
+    },
+    "imagery": {
+      "treatment": "soft-arch",
+      "ratio": "4:5",
+      "filter": "warm"
+    }
+  },
+  "recipes": {
+    "button": "solid-pill",
+    "card": "soft-elevated",
+    "nav": "centred-serif"
+  },
+  "preferredLayouts": {
+    "nav": "centred-serif",
+    "hero": "editorial-serif-arch",
+    "trusted": "logo-bar",
+    "screenshot": "gallery-band",
+    "features": "alternating-splits",
+    "bento": "soft-grid",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "soft-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap"
+  ]
+}

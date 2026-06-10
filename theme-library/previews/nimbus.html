@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nimbus — NEXA Theme Preview (Cloud Hosting / DevOps Platform)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     NIMBUS — design tokens (1:1 mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 13 18 28;
+    --color-surface: 20 27 40;
+    --color-surface-2: 28 37 54;
+    --color-ink: 226 234 246;
+    --color-muted: 138 153 176;
+    --color-line: 39 51 72;
+    --color-primary: 56 167 255;     /* sky blue */
+    --color-on-primary: 6 12 22;
+    --color-accent: 56 167 255;
+    --color-accent2: 52 226 196;     /* teal */
+
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --display-tracking: -0.02em;
+
+    --space-section: clamp(84px, 10vw, 144px);
+    --gutter: clamp(20px, 5vw, 64px);
+
+    --radius-card: 14px;
+    --radius-button: 10px;
+    --radius-input: 10px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 30px -16px rgb(0 0 0 / 0.6);
+    --shadow-elevated: 0 2px 6px rgb(0 0 0 / 0.5), 0 30px 60px -22px rgb(0 0 0 / 0.7);
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 420ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: 1220px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 6px; }
+
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(var(--color-primary)); display: inline-flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: "$"; color: rgb(var(--color-accent2)); font-weight: 500; }
+  .eyebrow.center { justify-content: center; }
+  .disp { font-family: var(--font-display); font-weight: 600; letter-spacing: var(--display-tracking); line-height: 1.06; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18px); }
+
+  /* scroll progress */
+  #progress { position: fixed; top: 0; left: 0; height: 2px; width: 0%; z-index: 80; background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); }
+
+  /* ---------- buttons ---------- */
+  .btn { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-body); font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: var(--radius-button); border: 1px solid transparent; cursor: pointer; white-space: nowrap; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); box-shadow: 0 8px 22px -10px rgb(var(--color-primary) / .8); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 30px -10px rgb(var(--color-primary) / .9); }
+  .btn-ghost { border-color: rgb(var(--color-line)); color: rgb(var(--color-ink)); background: rgb(var(--color-surface) / .6); }
+  .btn-ghost:hover { border-color: rgb(var(--color-primary) / .5); transform: translateY(-1px); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============== NAV ============== */
+  header.nav { position: sticky; top: 0; z-index: 70; background: rgb(var(--color-bg) / .78); backdrop-filter: saturate(140%) blur(12px); border-bottom: 1px solid transparent; transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease); }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 66px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 19px; letter-spacing: -0.01em; }
+  .wordmark .glyph { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); color: rgb(var(--color-on-primary)); }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a { font-size: 15px; color: rgb(var(--color-muted)); font-weight: 500; position: relative; transition: color var(--dur) var(--ease); }
+  .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -6px; height: 2px; background: rgb(var(--color-primary)); transition: right var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-links a:hover::after { right: 0; }
+  .nav-actions { display: flex; align-items: center; gap: 14px; }
+  .nav-actions .signin { font-size: 15px; font-weight: 600; color: rgb(var(--color-ink)); }
+  .nav-actions .btn { padding: 9px 16px; }
+  @media (max-width: 880px) { .nav-links, .nav-actions .signin { display: none; } }
+
+  /* ============== HERO — terminal + status dashboard ============== */
+  .hero { position: relative; padding-top: clamp(56px, 8vw, 104px); padding-bottom: clamp(80px, 11vw, 150px); overflow: hidden; }
+  .grid-wash { position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(rgb(var(--color-line) / .5) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--color-line) / .5) 1px, transparent 1px); background-size: 54px 54px; -webkit-mask-image: radial-gradient(120% 80% at 50% 0%, #000 0%, transparent 72%); mask-image: radial-gradient(120% 80% at 50% 0%, #000 0%, transparent 72%); opacity: .5; }
+  .glow { position: absolute; z-index: -1; border-radius: 50%; filter: blur(90px); pointer-events: none; }
+  .glow.g1 { width: 50vw; max-width: 600px; aspect-ratio: 1; top: -16%; left: 44%; background: radial-gradient(circle, rgb(var(--color-primary) / .42), transparent 70%); animation: float1 20s var(--ease) infinite alternate; }
+  .glow.g2 { width: 36vw; max-width: 440px; aspect-ratio: 1; top: 18%; left: -6%; background: radial-gradient(circle, rgb(var(--color-accent2) / .3), transparent 70%); animation: float2 24s var(--ease) infinite alternate; }
+  @keyframes float1 { to { transform: translate3d(-44px, 30px, 0) scale(1.1); } }
+  @keyframes float2 { to { transform: translate3d(40px, -26px, 0) scale(1.12); } }
+
+  .hero-grid { position: relative; display: grid; grid-template-columns: 1fr 1.12fr; gap: clamp(36px, 5vw, 72px); align-items: center; }
+  @media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero-pill { display: inline-flex; align-items: center; gap: 9px; padding: 7px 14px 7px 9px; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-pill); background: rgb(var(--color-surface) / .7); font-size: 13px; font-weight: 500; }
+  .hero-pill .tag { font-family: var(--font-mono); font-size: 11px; padding: 3px 8px; border-radius: 999px; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); }
+  .hero h1 { font-size: clamp(40px, 5.4vw, 64px); margin: 22px 0 0; max-width: 16ch; }
+  .hero h1 .accent { color: rgb(var(--color-primary)); }
+  .hero .lead { margin: 20px 0 0; max-width: 46ch; }
+  .hero-cta { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+  .trust { display: flex; align-items: center; gap: 20px; margin-top: 28px; flex-wrap: wrap; }
+  .trust .badge { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: rgb(var(--color-muted)); font-weight: 500; }
+  .trust .badge svg { color: rgb(var(--color-accent2)); }
+
+  /* terminal card */
+  .term { position: relative; z-index: 2; border-radius: var(--radius-card); overflow: hidden; border: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface)); box-shadow: var(--shadow-elevated); }
+  .term-chrome { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface-2)); }
+  .dots { display: flex; gap: 7px; }
+  .dots i { width: 11px; height: 11px; border-radius: 999px; display: block; }
+  .dots i:nth-child(1){ background: #ff5f57; } .dots i:nth-child(2){ background: #febc2e; } .dots i:nth-child(3){ background: #28c840; }
+  .term-title { font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-muted)); }
+  .term-body { padding: 18px 20px; font-family: var(--font-mono); font-size: 13px; line-height: 1.85; }
+  .term-body .ln { display: block; white-space: pre-wrap; }
+  .term-body .p { color: rgb(var(--color-accent2)); }
+  .term-body .c { color: rgb(var(--color-ink)); }
+  .term-body .o { color: rgb(var(--color-muted)); }
+  .term-body .ok { color: rgb(var(--color-accent2)); }
+  .term-body .url { color: rgb(var(--color-primary)); }
+  .term-body .cursor { display: inline-block; width: 8px; height: 15px; background: rgb(var(--color-primary)); vertical-align: -2px; animation: blink 1.1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* status strip below terminal */
+  .status-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgb(var(--color-line)); border-top: 1px solid rgb(var(--color-line)); }
+  .status-strip .s { background: rgb(var(--color-surface)); padding: 13px 16px; }
+  .status-strip .s .l { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: rgb(var(--color-muted)); }
+  .status-strip .s .v { font-family: var(--font-display); font-weight: 600; font-size: 18px; margin-top: 3px; }
+  .status-strip .s .v.up { color: rgb(var(--color-accent2)); }
+
+  /* ============== LOGO BAR ============== */
+  .logos { padding: 4px 0 8px; }
+  .logos .cap { text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 5vw, 58px); flex-wrap: wrap; margin-top: 26px; }
+  .logo-row .lm { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 600; font-size: 18px; color: rgb(var(--color-muted)); opacity: .72; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .logo-row .lm:hover { opacity: 1; color: rgb(var(--color-ink)); }
+  .logo-row .lm svg { color: rgb(var(--color-primary)); }
+
+  /* ============== SCREENSHOT BAND ============== */
+  .band-shot { padding: var(--space-section) 0; }
+  .shot-head { text-align: center; max-width: 660px; margin: 0 auto 48px; }
+  .shot-head h2 { font-size: clamp(28px, 3.4vw, 42px); margin: 16px 0 14px; }
+  .shot-frame { max-width: 1120px; margin: 0 auto; }
+  .frame { position: relative; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-surface)); box-shadow: var(--shadow-elevated); overflow: hidden; }
+  .chrome { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface-2)); }
+  .urlbar { flex: 1; height: 26px; border-radius: 8px; background: rgb(var(--color-bg) / .6); border: 1px solid rgb(var(--color-line)); display: flex; align-items: center; padding: 0 12px; font-family: var(--font-mono); font-size: 11px; color: rgb(var(--color-muted)); gap: 7px; }
+  .urlbar svg { color: rgb(var(--color-accent2)); }
+  .app { display: grid; grid-template-columns: 200px 1fr; min-height: 440px; }
+  @media (max-width: 760px) { .app { grid-template-columns: 1fr; } .app .app-nav { display: none; } }
+  .app-nav { border-right: 1px solid rgb(var(--color-line)); background: rgb(var(--color-bg) / .35); padding: 18px 14px; }
+  .app-nav .brand { display: flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 15px; margin-bottom: 22px; }
+  .app-nav .brand .g { width: 24px; height: 24px; border-radius: 7px; background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); }
+  .app-nav .navi { display: flex; align-items: center; gap: 10px; font-size: 13px; padding: 9px 10px; border-radius: 9px; color: rgb(var(--color-muted)); font-weight: 500; }
+  .app-nav .navi.on { background: rgb(var(--color-primary) / .14); color: rgb(var(--color-primary)); }
+  .app-nav .navi .d { width: 7px; height: 7px; border-radius: 999px; background: currentColor; }
+  .app-body { padding: 22px 24px; }
+  .app-body .ab-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 12px; }
+  .app-body .ab-head h3 { font-family: var(--font-display); font-weight: 600; font-size: 20px; }
+  .app-body .ab-head .chips { display: flex; gap: 8px; }
+  .app-body .ab-head .chip { font-family: var(--font-mono); font-size: 11px; padding: 5px 11px; border-radius: 999px; border: 1px solid rgb(var(--color-line)); color: rgb(var(--color-muted)); }
+  .app-body .ab-head .chip.solid { background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); border-color: transparent; }
+  .ab-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  @media (max-width: 560px) { .ab-kpis { grid-template-columns: repeat(2, 1fr); } }
+  .ab-kpi { border: 1px solid rgb(var(--color-line)); border-radius: 12px; padding: 13px 14px; background: rgb(var(--color-bg) / .35); }
+  .ab-kpi .l { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: rgb(var(--color-muted)); }
+  .ab-kpi .v { font-family: var(--font-display); font-weight: 700; font-size: 22px; margin-top: 5px; }
+  .ab-cols { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 680px) { .ab-cols { grid-template-columns: 1fr; } }
+  .ab-panel { border: 1px solid rgb(var(--color-line)); border-radius: 12px; padding: 15px; background: rgb(var(--color-bg) / .35); }
+  .ab-panel .pt { font-size: 13px; font-weight: 600; margin-bottom: 14px; display: flex; justify-content: space-between; }
+  .ab-panel .pt .mono { color: rgb(var(--color-muted)); font-size: 11px; }
+  .bars { display: flex; align-items: flex-end; gap: 9px; height: 130px; }
+  .bars .bar { flex: 1; border-radius: 5px 5px 0 0; background: linear-gradient(180deg, rgb(var(--color-primary)), rgb(var(--color-primary) / .4)); height: var(--h); transform-origin: bottom; }
+  .bars .bar.alt { background: linear-gradient(180deg, rgb(var(--color-accent2)), rgb(var(--color-accent2) / .35)); }
+  table.mini { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.mini th { text-align: left; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: rgb(var(--color-muted)); padding-bottom: 9px; font-weight: 500; }
+  table.mini td { padding: 9px 0; border-top: 1px solid rgb(var(--color-line)); }
+  table.mini td .stat { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+  table.mini td .stat.up { color: rgb(var(--color-accent2)); } table.mini td .stat.dn { color: #f0746b; }
+
+  /* ============== ALTERNATING SPLITS ============== */
+  .splits { padding: 0 0 var(--space-section); }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; padding: clamp(48px, 6vw, 84px) 0; }
+  .split + .split { border-top: 1px solid rgb(var(--color-line)); }
+  .split:nth-child(even) .split-media { order: 2; }
+  .split:nth-child(even) .split-text { order: 1; }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split .split-media, .split .split-text { order: 0 !important; } }
+  .split-text h2 { font-size: clamp(26px, 3vw, 36px); margin: 16px 0 14px; max-width: 18ch; }
+  .split-text .lead { max-width: 44ch; }
+  .checks { list-style: none; margin-top: 24px; display: grid; gap: 13px; }
+  .checks li { display: flex; align-items: flex-start; gap: 11px; font-size: 15px; }
+  .checks li .ck { flex: none; width: 22px; height: 22px; border-radius: 999px; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); display: grid; place-items: center; margin-top: 1px; }
+  .split-media { position: relative; }
+  .split-media .ph { border-radius: var(--radius-card); border: 1px solid rgb(var(--color-line)); overflow: hidden; box-shadow: var(--shadow-elevated); aspect-ratio: 16/11; }
+  .split-media .ph img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05) brightness(.92) hue-rotate(-6deg); }
+  .split-media .tagchip { position: absolute; bottom: 16px; left: 16px; padding: 8px 13px; border-radius: 10px; background: rgb(var(--color-surface) / .92); backdrop-filter: blur(6px); border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-card); font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+  .split-media .tagchip .dot { width: 8px; height: 8px; border-radius: 999px; background: rgb(var(--color-accent2)); }
+
+  /* ============== CAPABILITIES BENTO ============== */
+  .caps { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .4); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .caps-head { max-width: 600px; margin-bottom: 44px; }
+  .caps-head h2 { font-size: clamp(28px, 3.2vw, 40px); margin: 16px 0 12px; }
+  .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; grid-auto-flow: row dense; }
+  @media (max-width: 880px) { .bento { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .bento { grid-template-columns: 1fr; } }
+  .cap { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-surface)); padding: 22px; display: flex; flex-direction: column; gap: 10px; transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .cap.span2 { grid-column: span 2; }
+  @media (max-width: 520px) { .cap.span2 { grid-column: span 1; } }
+  .cap:hover { transform: translateY(-3px); border-color: rgb(var(--color-primary) / .45); }
+  .cap .ci { width: 40px; height: 40px; border-radius: 11px; background: rgb(var(--color-primary) / .14); color: rgb(var(--color-primary)); display: grid; place-items: center; }
+  .cap h3 { font-family: var(--font-display); font-weight: 600; font-size: 17px; }
+  .cap p { color: rgb(var(--color-muted)); font-size: 14px; }
+  .cap .mono-tag { margin-top: auto; font-family: var(--font-mono); font-size: 11px; color: rgb(var(--color-accent2)); }
+
+  /* ============== INTEGRATIONS ============== */
+  .integ { padding: var(--space-section) 0; }
+  .integ-head { text-align: center; max-width: 600px; margin: 0 auto 46px; }
+  .integ-head h2 { font-size: clamp(28px, 3.2vw, 40px); margin: 16px 0 12px; }
+  .integ-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 760px) { .integ-grid { grid-template-columns: repeat(2, 1fr); } }
+  .itile { display: flex; align-items: center; gap: 13px; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-surface)); padding: 18px; transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .itile:hover { transform: translateY(-3px); border-color: rgb(var(--color-primary) / .45); }
+  .itile .g { width: 42px; height: 42px; flex: none; border-radius: 11px; display: grid; place-items: center; background: rgb(var(--color-bg)); color: rgb(var(--color-primary)); border: 1px solid rgb(var(--color-line)); }
+  .itile .nm { font-family: var(--font-display); font-weight: 600; font-size: 15px; }
+  .itile .ct { font-size: 12px; color: rgb(var(--color-muted)); }
+
+  /* ============== METRICS BAND ============== */
+  .metrics { padding: clamp(64px, 7vw, 96px) 0; background: rgb(var(--color-primary) / .08); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; text-align: center; }
+  @media (max-width: 760px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; } }
+  .metric .num { font-family: var(--font-display); font-weight: 700; font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -0.02em; line-height: 1; }
+  .metric .num .suf { color: rgb(var(--color-primary)); }
+  .metric .lbl { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 10px; }
+
+  /* ============== PRICING ============== */
+  .pricing { padding: var(--space-section) 0; }
+  .pricing-head { text-align: center; max-width: 600px; margin: 0 auto 50px; }
+  .pricing-head h2 { font-size: clamp(28px, 3.4vw, 44px); margin: 16px 0 12px; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; align-items: stretch; }
+  @media (max-width: 900px) { .tiers { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+  .tier { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-surface)); padding: 30px; display: flex; flex-direction: column; gap: 8px; transition: transform var(--dur) var(--ease); }
+  .tier.pop { border-color: rgb(var(--color-primary)); box-shadow: var(--shadow-elevated); position: relative; transform: translateY(-8px); }
+  @media (max-width: 900px) { .tier.pop { transform: none; } }
+  .tier .badge-pop { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); padding: 5px 13px; border-radius: 999px; }
+  .tier .tn { font-family: var(--font-display); font-weight: 600; font-size: 18px; }
+  .tier .desc { color: rgb(var(--color-muted)); font-size: 13px; min-height: 38px; }
+  .tier .price { font-family: var(--font-display); font-weight: 700; font-size: 44px; letter-spacing: -0.02em; margin: 12px 0 2px; }
+  .tier .price span { font-size: 15px; font-weight: 500; color: rgb(var(--color-muted)); }
+  .tier ul { list-style: none; display: grid; gap: 11px; margin: 18px 0 22px; }
+  .tier ul li { display: flex; gap: 10px; font-size: 14px; align-items: flex-start; }
+  .tier ul li svg { flex: none; color: rgb(var(--color-accent2)); margin-top: 3px; }
+  .tier .btn { width: 100%; justify-content: center; margin-top: auto; }
+
+  /* ============== TESTIMONIAL ============== */
+  .quote { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .4); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .quote-grid { display: grid; grid-template-columns: 280px 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; max-width: 980px; margin: 0 auto; }
+  @media (max-width: 760px) { .quote-grid { grid-template-columns: 1fr; text-align: center; } }
+  .quote-photo { border-radius: var(--radius-card); overflow: hidden; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); aspect-ratio: 4/5; }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.02) brightness(.92); }
+  .quote blockquote { font-family: var(--font-display); font-weight: 500; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.32; letter-spacing: -0.01em; }
+  .quote blockquote .hl { color: rgb(var(--color-primary)); }
+  .quote .by { margin-top: 22px; }
+  .quote .by .n { font-weight: 600; }
+  .quote .by .r { color: rgb(var(--color-muted)); font-size: 14px; }
+  .quote .stars { color: rgb(var(--color-accent2)); margin-bottom: 18px; display: inline-flex; gap: 3px; }
+
+  /* ============== CTA BAND ============== */
+  .cta { padding: var(--space-section) 0; }
+  .cta-card { position: relative; overflow: hidden; border-radius: 22px; padding: clamp(44px, 6vw, 80px); text-align: center; color: rgb(var(--color-ink)); border: 1px solid rgb(var(--color-line)); background: linear-gradient(135deg, rgb(var(--color-surface-2)), rgb(var(--color-bg))); box-shadow: var(--shadow-elevated); }
+  .cta-card::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 80% 0%, rgb(var(--color-primary) / .3), transparent 50%), radial-gradient(circle at 12% 100%, rgb(var(--color-accent2) / .22), transparent 50%); pointer-events: none; }
+  .cta-card h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(30px, 3.6vw, 48px); letter-spacing: -0.02em; position: relative; }
+  .cta-card p { color: rgb(var(--color-muted)); margin: 16px auto 0; max-width: 48ch; position: relative; }
+  .cta-card .cta-actions { display: flex; gap: 14px; justify-content: center; margin-top: 30px; flex-wrap: wrap; position: relative; }
+
+  /* ============== FOOTER ============== */
+  footer { padding: clamp(56px, 7vw, 88px) 0 40px; border-top: 1px solid rgb(var(--color-line)); }
+  .foot-top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 36px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wordmark { margin-bottom: 14px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 32ch; margin-bottom: 18px; }
+  .news { display: flex; gap: 8px; max-width: 340px; }
+  .news input { flex: 1; padding: 11px 14px; border-radius: var(--radius-input); border: 1px solid rgb(var(--color-line)); font-family: var(--font-body); font-size: 14px; background: rgb(var(--color-surface)); color: rgb(var(--color-ink)); }
+  .news input::placeholder { color: rgb(var(--color-muted)); }
+  .news .btn { padding: 11px 16px; }
+  .foot-col h4 { font-family: var(--font-display); font-weight: 600; font-size: 14px; margin-bottom: 14px; }
+  .foot-col a { display: block; color: rgb(var(--color-muted)); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-ink)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; }
+  .foot-bot .cp { color: rgb(var(--color-muted)); font-size: 13px; }
+  .foot-bot .soc { display: flex; gap: 10px; }
+  .foot-bot .soc a { width: 36px; height: 36px; border-radius: 9px; border: 1px solid rgb(var(--color-line)); display: grid; place-items: center; color: rgb(var(--color-muted)); transition: all var(--dur) var(--ease); }
+  .foot-bot .soc a:hover { color: rgb(var(--color-primary)); border-color: rgb(var(--color-primary) / .4); }
+
+  /* ribbon */
+  .ribbon { position: fixed; right: 14px; bottom: 14px; z-index: 90; font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); padding: 8px 13px; border-radius: 999px; box-shadow: var(--shadow-elevated); opacity: .94; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .glow { animation: none !important; }
+    *, *::before, *::after { animation-duration: .001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#" aria-label="Nimbus home">
+      <span class="glyph" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 18a4 4 0 010-8 5 5 0 019.6-1.6A4.5 4.5 0 0117 18H7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </span>
+      Nimbus
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#product">Platform</a>
+      <a href="#features">Features</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#customers">Customers</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="signin" href="#">Sign in</a>
+      <a class="btn btn-primary magnetic" href="#">Deploy free</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="hero">
+  <div class="grid-wash" aria-hidden="true"></div>
+  <span class="glow g1" aria-hidden="true"></span>
+  <span class="glow g2" aria-hidden="true"></span>
+
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <span class="hero-pill" data-hero><span class="tag">v4.2</span> Edge regions now live in Mumbai &amp; São Paulo</span>
+      <h1 class="disp" data-hero>Ship to the cloud in <span class="accent">one command</span>, scale without thinking about it.</h1>
+      <p class="lead" data-hero>Nimbus is the managed cloud platform for engineering teams. Push your code and we handle builds, global edge delivery, autoscaling, and observability out of the box.</p>
+      <div class="hero-cta" data-hero>
+        <a class="btn btn-primary magnetic" href="#">Deploy free <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#">Read the docs</a>
+      </div>
+      <div class="trust" data-hero>
+        <span class="badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> SOC 2 Type II</span>
+        <span class="badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3 8 4-16 3 8h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> 99.99% uptime</span>
+        <span class="badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> 40ms global p95</span>
+      </div>
+    </div>
+
+    <div class="hero-media" data-hero-media>
+      <div class="term" data-spot>
+        <div class="term-chrome">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="term-title">~/projects/atlas-api — nimbus deploy</span>
+        </div>
+        <div class="term-body" aria-label="Terminal showing a Nimbus deployment">
+          <span class="ln"><span class="p">~/atlas-api $</span> <span class="c">nimbus deploy --prod</span></span>
+          <span class="ln"><span class="o">→ Detected runtime: Node 20 · framework: Fastify</span></span>
+          <span class="ln"><span class="o">→ Building image</span> <span class="ok">done in 11.4s</span></span>
+          <span class="ln"><span class="o">→ Pushing to 18 edge regions</span> <span class="ok">done</span></span>
+          <span class="ln"><span class="o">→ Health checks</span> <span class="ok">[OK] 18/18 passing</span></span>
+          <span class="ln"><span class="ok">✓ Live</span> <span class="url">https://atlas-api.nimbus.app</span></span>
+          <span class="ln"><span class="p">~/atlas-api $</span> <span class="cursor" aria-hidden="true"></span></span>
+        </div>
+        <div class="status-strip">
+          <div class="s"><div class="l">Region health</div><div class="v up">18/18</div></div>
+          <div class="s"><div class="l">Build time</div><div class="v">11.4s</div></div>
+          <div class="s"><div class="l">p95 latency</div><div class="v up">38ms</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== LOGO BAR ======================== -->
+<section class="logos">
+  <div class="wrap">
+    <p class="cap" data-reveal>Powering engineering teams worldwide</p>
+    <div class="logo-row" data-batch>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Northwind</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> Vertex</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/></svg> Squareloop</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Helio</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="12" r="5" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="12" r="5" stroke="currentColor" stroke-width="2"/></svg> Cobalt</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18c4-12 12-12 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Driftwave</span>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SCREENSHOT BAND =================== -->
+<section class="band-shot" id="product">
+  <div class="wrap">
+    <div class="shot-head" data-reveal>
+      <span class="eyebrow center">The control plane</span>
+      <h2 class="disp">Every deployment, region, and metric in one console</h2>
+      <p class="lead">Watch builds roll out across the edge, follow live logs, and roll back in a single click when something looks off.</p>
+    </div>
+    <div class="shot-frame" data-reveal>
+      <div class="frame" data-spot>
+        <div class="chrome">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="urlbar"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 10V8a4 4 0 018 0v2" stroke="currentColor" stroke-width="2"/></svg> console.nimbus.app/atlas-api/overview</span>
+        </div>
+        <div class="app">
+          <aside class="app-nav" aria-hidden="true">
+            <div class="brand"><span class="g"></span> Nimbus</div>
+            <div class="navi on"><span class="d"></span> Overview</div>
+            <div class="navi"><span class="d"></span> Deployments</div>
+            <div class="navi"><span class="d"></span> Regions</div>
+            <div class="navi"><span class="d"></span> Logs</div>
+            <div class="navi"><span class="d"></span> Metrics</div>
+            <div class="navi"><span class="d"></span> Settings</div>
+          </aside>
+          <div class="app-body">
+            <div class="ab-head">
+              <h3 class="disp">atlas-api · production</h3>
+              <div class="chips"><span class="chip">eu-west · us-east · +16</span><span class="chip solid">Healthy</span></div>
+            </div>
+            <div class="ab-kpis">
+              <div class="ab-kpi"><div class="l">Requests / min</div><div class="v mono">214k</div></div>
+              <div class="ab-kpi"><div class="l">p95 latency</div><div class="v mono">38ms</div></div>
+              <div class="ab-kpi"><div class="l">Error rate</div><div class="v mono">0.02%</div></div>
+              <div class="ab-kpi"><div class="l">CPU avg</div><div class="v mono">34%</div></div>
+            </div>
+            <div class="ab-cols">
+              <div class="ab-panel">
+                <div class="pt">Requests by region <span class="mono">last 24h</span></div>
+                <div class="bars" data-bars>
+                  <span class="bar" style="--h:44%"></span><span class="bar alt" style="--h:60%"></span>
+                  <span class="bar" style="--h:52%"></span><span class="bar alt" style="--h:73%"></span>
+                  <span class="bar" style="--h:65%"></span><span class="bar alt" style="--h:82%"></span>
+                  <span class="bar" style="--h:76%"></span><span class="bar alt" style="--h:94%"></span>
+                  <span class="bar" style="--h:70%"></span><span class="bar alt" style="--h:100%"></span>
+                </div>
+              </div>
+              <div class="ab-panel">
+                <div class="pt">Recent deploys</div>
+                <table class="mini">
+                  <thead><tr><th>Commit</th><th>Status</th><th>Time</th></tr></thead>
+                  <tbody>
+                    <tr><td class="mono">a91f3c</td><td><span class="stat up">Live</span></td><td class="mono">11.4s</td></tr>
+                    <tr><td class="mono">3de0b2</td><td><span class="stat up">Live</span></td><td class="mono">9.8s</td></tr>
+                    <tr><td class="mono">7c1aa0</td><td><span class="stat up">Live</span></td><td class="mono">12.1s</td></tr>
+                    <tr><td class="mono">f44e19</td><td><span class="stat dn">Rolled back</span></td><td class="mono">10.6s</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ALTERNATING SPLITS ================= -->
+<section class="splits" id="features">
+  <div class="wrap">
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=900&q=80&auto=format&fit=crop" alt="Rows of servers inside a modern data centre" loading="lazy"></div>
+        <span class="tagchip"><span class="dot"></span> 18 edge regions</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow">Global edge</span>
+        <h2 class="disp">Your app, milliseconds from every user</h2>
+        <p class="lead">Static assets and serverless functions run from the region nearest each request. No manual replication, no CDN configuration to maintain.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Automatic geo-routing and failover</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Instant cache invalidation on deploy</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Free TLS certificates, renewed for you</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80&auto=format&fit=crop" alt="Engineer reviewing observability dashboards on a laptop" loading="lazy"></div>
+        <span class="tagchip"><span class="dot"></span> Live logs &amp; traces</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow">Observability</span>
+        <h2 class="disp">See what your services are doing, the moment they do it</h2>
+        <p class="lead">Structured logs, distributed traces, and metrics ship with every project. Query them with the same console you deploy from, no extra agents to install.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Real-time log streaming and search</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Alert rules on latency and error budgets</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> One-click rollback to any prior build</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CAPABILITIES BENTO ================= -->
+<section class="caps">
+  <div class="wrap">
+    <div class="caps-head" data-reveal>
+      <span class="eyebrow">Built in</span>
+      <h2 class="disp">Everything a production platform needs, from day one</h2>
+      <p class="lead">No bolt-on services to wire together. The primitives your team relies on are part of the runtime.</p>
+    </div>
+    <div class="bento" data-batch>
+      <div class="cap span2"><span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><h3>Autoscaling runtime</h3><p>Scale from zero to thousands of instances based on live traffic, then back down. You only pay for what runs.</p><span class="mono-tag">scale: auto</span></div>
+      <div class="cap"><span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><h3>Managed databases</h3><p>Postgres and Redis with daily backups and point-in-time restore.</p><span class="mono-tag">pg · redis</span></div>
+      <div class="cap"><span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><h3>Secrets vault</h3><p>Encrypted environment secrets, scoped per project and per branch.</p><span class="mono-tag">vault</span></div>
+      <div class="cap"><span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3a14 14 0 010 18" stroke="currentColor" stroke-width="2"/></svg></span><h3>Preview environments</h3><p>Every pull request gets a live, isolated URL automatically.</p><span class="mono-tag">preview/*</span></div>
+      <div class="cap span2"><span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 17l6-6 4 4 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Cron and background jobs</h3><p>Schedule recurring tasks and run long background jobs on the same platform, with retries and dead-letter queues handled for you.</p><span class="mono-tag">jobs · cron</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INTEGRATIONS ================= -->
+<section class="integ" id="integrations">
+  <div class="wrap">
+    <div class="integ-head" data-reveal>
+      <span class="eyebrow center">Connect</span>
+      <h2 class="disp">Plugs into the tools you already run</h2>
+      <p class="lead">Wire Nimbus into your pipeline in minutes, not sprints.</p>
+    </div>
+    <div class="integ-grid" data-batch>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 19c-4 1.4-4-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.2 4.2 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.3 0C6.6 3.3 5.5 3.6 5.5 3.6a4.2 4.2 0 00-.1 3.2A4.6 4.6 0 004 10c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><div class="nm">GitHub</div><div class="ct">Deploy on push</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" stroke-width="2"/><path d="M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div><div class="nm">GitLab</div><div class="ct">CI triggers</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div><div class="nm">Datadog</div><div class="ct">Metric export</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7l8 5 8-5M4 7v10l8 5 8-5V7M4 7l8-4 8 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><div><div class="nm">Slack</div><div class="ct">Deploy alerts</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2"/><path d="M9 9h6v6H9z" stroke="currentColor" stroke-width="2"/></svg></span><div><div class="nm">Terraform</div><div class="ct">Provider</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div><div class="nm">PagerDuty</div><div class="ct">Incidents</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3 8 4-16 3 8h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><div class="nm">Grafana</div><div class="ct">Dashboards</div></div></div>
+      <div class="itile"><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16v13H4zM4 7l4-4h8l4 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><div><div class="nm">Sentry</div><div class="ct">Error tracking</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= METRICS BAND ================= -->
+<section class="metrics" id="customers">
+  <div class="wrap">
+    <div class="metrics-grid" data-batch>
+      <div class="metric"><div class="num"><span class="count" data-to="18">0</span></div><div class="lbl">Edge regions</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="99.99" data-dec="2">0</span><span class="suf">%</span></div><div class="lbl">Measured uptime</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="38">0</span><span class="suf">ms</span></div><div class="lbl">Global p95 latency</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="11">0</span><span class="suf">s</span></div><div class="lbl">Median build time</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="pricing-head" data-reveal>
+      <span class="eyebrow center">Pricing</span>
+      <h2 class="disp">Start free, pay as you scale</h2>
+      <p class="lead">Usage-based pricing with no surprise egress fees. Upgrade the moment you need more.</p>
+    </div>
+    <div class="tiers" data-batch>
+      <div class="tier">
+        <div class="tn">Hobby</div>
+        <div class="desc">For side projects and prototypes.</div>
+        <div class="price">£0<span> / month</span></div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 1 project, 3 regions</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 100 GB bandwidth</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Community support</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Get started</a>
+      </div>
+      <div class="tier pop">
+        <span class="badge-pop">Most popular</span>
+        <div class="tn">Team</div>
+        <div class="desc">For growing engineering teams.</div>
+        <div class="price">£60<span> / month</span></div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Unlimited projects, all regions</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 1 TB bandwidth included</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Preview environments</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Priority support</li>
+        </ul>
+        <a class="btn btn-primary magnetic" href="#">Start free trial</a>
+      </div>
+      <div class="tier">
+        <div class="tn">Enterprise</div>
+        <div class="desc">For organisations at scale.</div>
+        <div class="price">Custom</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Dedicated regions and SLAs</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> SSO and audit logs</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Named solutions engineer</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Contact sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIAL ================= -->
+<section class="quote">
+  <div class="wrap">
+    <div class="quote-grid" data-reveal>
+      <div class="quote-photo"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80&auto=format&fit=crop" alt="Portrait of Priya Nair, VP of Engineering" loading="lazy"></div>
+      <div>
+        <div class="stars" aria-label="Five out of five">★★★★★</div>
+        <blockquote>We moved our entire platform onto Nimbus in a fortnight and <span class="hl">cut our infrastructure bill by 40 per cent</span> while shipping twice as often.</blockquote>
+        <div class="by"><div class="n">Priya Nair</div><div class="r">VP of Engineering, Helio</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-card" data-reveal>
+      <h2>Deploy your first project in under a minute</h2>
+      <p>Connect a repository, run one command, and watch it go live across the edge. No credit card needed to start.</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary magnetic" href="#">Deploy free <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#">Talk to an engineer</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="wordmark" href="#"><span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 18a4 4 0 010-8 5 5 0 019.6-1.6A4.5 4.5 0 0117 18H7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span> Nimbus</a>
+        <p>The managed cloud platform for teams who would rather ship than babysit infrastructure.</p>
+        <form class="news" onsubmit="return false">
+          <label for="nl" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email</label>
+          <input id="nl" type="email" placeholder="you@company.com" />
+          <button class="btn btn-primary" type="submit">Subscribe</button>
+        </form>
+      </div>
+      <div class="foot-col"><h4>Platform</h4><a href="#">Overview</a><a href="#">Edge regions</a><a href="#">Databases</a><a href="#">Pricing</a><a href="#">Changelog</a></div>
+      <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Customers</a><a href="#">Careers</a><a href="#">Blog</a><a href="#">Contact</a></div>
+      <div class="foot-col"><h4>Resources</h4><a href="#">Docs</a><a href="#">API reference</a><a href="#">Status</a><a href="#">Security</a><a href="#">Community</a></div>
+    </div>
+    <div class="foot-bot">
+      <span class="cp">© 2026 Nimbus Cloud Ltd. All rights reserved.</span>
+      <div class="soc">
+        <a href="#" aria-label="Nimbus on X"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <a href="#" aria-label="Nimbus on GitHub"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 19c-4 1.4-4-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.2 4.2 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.3 0C6.6 3.3 5.5 3.6 5.5 3.6a4.2 4.2 0 00-.1 3.2A4.6 4.6 0 004 10c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" aria-label="Nimbus on LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2"/><path d="M7 10v6M7 7v.01M11 16v-3a2 2 0 014 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · Nimbus · cloud</div>
+
+<!-- ===== GSAP (CDN) ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm = gsap.matchMedia();
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 24, autoAlpha: 0, duration: 0.7, stagger: 0.09 })
+          .from('[data-hero-media]', { y: 34, autoAlpha: 0, scale: 0.97, duration: 0.9 }, '-=0.45');
+
+    gsap.set('[data-reveal]', { y: 26, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.12, ease: 'power3.out', overwrite: true }); }
+    });
+
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 22, autoAlpha: 0 });
+      ScrollTrigger.create({ trigger: grid, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.07, ease: 'power3.out' }); } });
+    });
+
+    document.querySelectorAll('[data-bars]').forEach(function (group) {
+      var bars = group.querySelectorAll('.bar');
+      gsap.set(bars, { scaleY: 0, transformOrigin: 'bottom' });
+      ScrollTrigger.create({ trigger: group, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(bars, { scaleY: 1, duration: 0.9, stagger: 0.06, ease: 'power2.out' }); } });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-hero-media], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    document.querySelectorAll('.bar').forEach(function (b) { gsap.set(b, { scaleY: 1 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+      if (reduced) { el.textContent = to.toFixed(dec); return; }
+      ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          var obj = { v: 0 };
+          gsap.to(obj, { v: to, duration: 1.4, ease: 'power2.out',
+            onUpdate: function () { el.textContent = obj.v.toFixed(dec); },
+            onComplete: function () { el.textContent = to.toFixed(dec); } });
+        } });
+    });
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.25, y: (e.clientY - r.top - r.height / 2) * 0.35, duration: 0.4, ease: 'power3' });
+      });
+      btn.addEventListener('pointerleave', function () { gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power3' }); });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-reveal],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    var cp=cs.clipPath||cs.webkitClipPath||'';
+    if(/inset\([^)]*100%/.test(cp)) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+    el.style.setProperty('clip-path','none','important');
+    el.style.setProperty('-webkit-clip-path','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=nimbus&name=Nimbus" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

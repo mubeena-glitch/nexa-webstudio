@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clay — NEXA Theme Preview (Handmade Pottery Studio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     CLAY — design tokens (1:1 mirror of clay.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 247 241 232;
+    --color-surface: 240 232 220;
+    --color-surface-2: 233 222 207;
+    --color-ink: 45 36 30;
+    --color-muted: 122 108 96;
+    --color-line: 221 209 193;
+    --color-primary: 187 92 58;
+    --color-on-primary: 252 247 240;
+    --color-accent: 187 92 58;
+    --color-accent2: 124 132 96;
+
+    --font-display: "Fraunces", ui-serif, Georgia, serif;
+    --font-body: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Spline Sans Mono", ui-monospace, monospace;
+    --display-tracking: -0.01em;
+
+    --space-section: clamp(84px, 10vw, 144px);
+    --gutter: clamp(20px, 5vw, 60px);
+
+    --radius-card: 18px;
+    --radius-button: 999px;
+    --radius-input: 12px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(45 36 30 / 0.05), 0 12px 30px -16px rgb(45 36 30 / 0.16);
+    --shadow-elevated: 0 2px 5px rgb(45 36 30 / 0.06), 0 28px 56px -22px rgb(45 36 30 / 0.24);
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 520ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgb(var(--color-primary));
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ""; width: 24px; height: 1px; background: rgb(var(--color-primary)); }
+  .eyebrow.center { justify-content: center; }
+  .disp { font-family: var(--font-display); font-weight: 500; letter-spacing: var(--display-tracking); line-height: 1.08; font-optical-sizing: auto; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18.5px); }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 6px; }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 80;
+    background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2)));
+  }
+
+  /* ---------- buttons (recipe: solid-pill) ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-body);
+    font-weight: 600; font-size: 15px; padding: 14px 26px; border-radius: var(--radius-button);
+    border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+      background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary));
+    box-shadow: 0 1px 2px rgb(45 36 30 / .14), 0 10px 24px -10px rgb(var(--color-primary) / .6); }
+  .btn-primary:hover { box-shadow: 0 2px 4px rgb(45 36 30 / .16), 0 16px 34px -10px rgb(var(--color-primary) / .7); transform: translateY(-2px); }
+  .btn-ghost { border-color: rgb(var(--color-ink) / .22); color: rgb(var(--color-ink)); background: transparent; }
+  .btn-ghost:hover { border-color: rgb(var(--color-ink) / .45); transform: translateY(-2px); background: rgb(var(--color-surface) / .6); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     NAV
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 70;
+    background: rgb(var(--color-bg) / .82);
+    backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); box-shadow: 0 1px 0 rgb(var(--color-line) / .6); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 72px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 11px; font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: -0.01em; }
+  .wordmark .glyph {
+    width: 34px; height: 34px; border-radius: 50% 50% 50% 8px; display: grid; place-items: center;
+    background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary));
+    box-shadow: 0 6px 14px -6px rgb(var(--color-primary) / .7);
+  }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a { font-size: 15px; color: rgb(var(--color-muted)); font-weight: 500; position: relative; transition: color var(--dur) var(--ease); }
+  .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -6px; height: 1.5px; background: rgb(var(--color-primary)); transition: right var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-links a:hover::after { right: 0; }
+  .nav-actions { display: flex; align-items: center; gap: 16px; }
+  .nav-actions .signin { font-size: 15px; font-weight: 600; color: rgb(var(--color-ink)); }
+  .nav-actions .btn { padding: 11px 20px; }
+  @media (max-width: 880px) { .nav-links, .nav-actions .signin { display: none; } }
+
+  /* ============================================================
+     HERO — editorial split: large serif left, framed image right
+     ============================================================ */
+  .hero { position: relative; padding-top: clamp(48px, 7vw, 92px); padding-bottom: clamp(64px, 9vw, 120px); overflow: hidden; }
+  .hero-wash {
+    position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 78% 18%, rgb(var(--color-primary) / .12), transparent 70%),
+      radial-gradient(50% 50% at 8% 80%, rgb(var(--color-accent2) / .12), transparent 72%);
+  }
+  .hero-grid { position: relative; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(36px, 5vw, 72px); align-items: center; }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 9px; padding: 7px 15px 7px 9px;
+    border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-pill);
+    background: rgb(var(--color-bg) / .7); font-size: 13px; font-weight: 500;
+  }
+  .hero-pill .tag { font-family: var(--font-mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; background: rgb(var(--color-accent2) / .18); color: rgb(var(--color-accent2)); }
+  .hero h1 { font-size: clamp(44px, 6.4vw, 80px); margin: 24px 0 0; max-width: 13ch; font-weight: 400; }
+  .hero h1 .it { font-style: italic; color: rgb(var(--color-primary)); }
+  .hero .lead { margin: 24px 0 0; max-width: 44ch; }
+  .hero-cta { display: flex; gap: 14px; margin-top: 32px; flex-wrap: wrap; }
+  .hero-foot { display: flex; align-items: center; gap: 26px; margin-top: 34px; flex-wrap: wrap; }
+  .hero-foot .hf { display: inline-flex; flex-direction: column; }
+  .hero-foot .hf .n { font-family: var(--font-display); font-weight: 600; font-size: 24px; }
+  .hero-foot .hf .l { font-size: 13px; color: rgb(var(--color-muted)); }
+  .hero-foot .sep { width: 1px; height: 34px; background: rgb(var(--color-line)); }
+
+  .hero-media { position: relative; }
+  .hero-frame { position: relative; border-radius: 26px 26px 26px 80px; overflow: hidden; aspect-ratio: 4/5; box-shadow: var(--shadow-elevated); border: 1px solid rgb(var(--color-line)); }
+  .hero-frame img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.04) contrast(1.02); }
+  .hero-stamp {
+    position: absolute; left: -18px; bottom: 40px; z-index: 4;
+    width: 116px; height: 116px; border-radius: 50%; display: grid; place-items: center; text-align: center;
+    background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgb(var(--color-primary));
+    line-height: 1.5;
+  }
+  .hero-chip {
+    position: absolute; right: -14px; top: 38px; z-index: 4; display: flex; align-items: center; gap: 11px;
+    background: rgb(var(--color-bg)); border: 1px solid rgb(var(--color-line)); border-radius: 16px; padding: 12px 16px; box-shadow: var(--shadow-elevated);
+  }
+  .hero-chip .ic { width: 38px; height: 38px; border-radius: 11px; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); display: grid; place-items: center; }
+  .hero-chip .ti { font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .hero-chip .su { font-size: 11px; color: rgb(var(--color-muted)); }
+  @media (max-width: 560px) { .hero-stamp { left: 6px; width: 92px; height: 92px; } .hero-chip { right: 4px; } }
+
+  /* ============================================================
+     MARQUEE / LOGO BAR
+     ============================================================ */
+  .logos { padding: 8px 0 4px; }
+  .logos .cap { text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 5vw, 58px); flex-wrap: wrap; margin-top: 26px; }
+  .logo-row .lm { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 600; font-size: 19px; color: rgb(var(--color-muted)); opacity: .74; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .logo-row .lm:hover { opacity: 1; color: rgb(var(--color-ink)); }
+  .logo-row .lm svg { color: rgb(var(--color-primary)); }
+
+  /* ============================================================
+     FULL-BLEED SHOWCASE
+     ============================================================ */
+  .showcase { padding: var(--space-section) 0; }
+  .showcase-head { max-width: 620px; margin: 0 auto 48px; text-align: center; }
+  .showcase-head h2 { font-size: clamp(30px, 3.8vw, 50px); margin: 16px 0 14px; }
+  .gallery { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+  .gtile { position: relative; border-radius: var(--radius-card); overflow: hidden; box-shadow: var(--shadow-card); border: 1px solid rgb(var(--color-line)); }
+  .gtile img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease); }
+  .gtile:hover img { transform: scale(1.05); }
+  .gtile .cap2 { position: absolute; left: 14px; bottom: 14px; padding: 7px 13px; border-radius: 999px; background: rgb(var(--color-bg) / .92); font-size: 12px; font-weight: 600; box-shadow: var(--shadow-card); }
+  .g-a { grid-column: span 7; aspect-ratio: 16/11; }
+  .g-b { grid-column: span 5; aspect-ratio: 4/3; }
+  .g-c { grid-column: span 5; aspect-ratio: 4/3; }
+  .g-d { grid-column: span 7; aspect-ratio: 16/11; }
+  @media (max-width: 760px) { .g-a, .g-b, .g-c, .g-d { grid-column: span 12; aspect-ratio: 16/11; } }
+
+  /* ============================================================
+     ALTERNATING SPLITS
+     ============================================================ */
+  .splits { padding: 0 0 var(--space-section); }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; padding: clamp(48px, 6vw, 84px) 0; }
+  .split + .split { border-top: 1px solid rgb(var(--color-line)); }
+  .split:nth-child(even) .split-media { order: 2; }
+  .split:nth-child(even) .split-text { order: 1; }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split .split-media, .split .split-text { order: 0 !important; } }
+  .split-text h2 { font-size: clamp(28px, 3.2vw, 40px); margin: 16px 0 14px; max-width: 17ch; font-weight: 500; }
+  .split-text .lead { max-width: 44ch; }
+  .checks { list-style: none; margin-top: 26px; display: grid; gap: 14px; }
+  .checks li { display: flex; align-items: flex-start; gap: 12px; font-size: 15.5px; }
+  .checks li .ck { flex: none; width: 24px; height: 24px; border-radius: 999px; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); display: grid; place-items: center; margin-top: 1px; }
+  .split-media { position: relative; }
+  .split-media .ph { border-radius: var(--radius-card); border: 1px solid rgb(var(--color-line)); overflow: hidden; box-shadow: var(--shadow-elevated); aspect-ratio: 5/4; }
+  .split-media .ph img { width: 100%; height: 100%; object-fit: cover; }
+  .split-media .tagchip { position: absolute; bottom: 16px; left: 16px; padding: 8px 14px; border-radius: 999px; background: rgb(var(--color-bg) / .94); border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-card); font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+  .split-media .tagchip .dot { width: 8px; height: 8px; border-radius: 999px; background: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     PROCESS STEPS (bento alternative)
+     ============================================================ */
+  .process { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .55); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .process-head { max-width: 560px; margin-bottom: 48px; }
+  .process-head h2 { font-size: clamp(30px, 3.4vw, 44px); margin: 16px 0 12px; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  @media (max-width: 880px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-bg));
+    padding: 26px 24px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 12px;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .step:hover { transform: translateY(-4px); box-shadow: var(--shadow-elevated); }
+  .step .no { font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-primary)); letter-spacing: .1em; }
+  .step .si { width: 46px; height: 46px; border-radius: 50% 50% 50% 10px; background: rgb(var(--color-primary) / .12); color: rgb(var(--color-primary)); display: grid; place-items: center; }
+  .step h3 { font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+  .step p { color: rgb(var(--color-muted)); font-size: 14.5px; }
+
+  /* ============================================================
+     STATS BAND
+     ============================================================ */
+  .metrics { padding: clamp(64px, 7vw, 96px) 0; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; text-align: center; }
+  @media (max-width: 760px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; } }
+  .metric .num { font-family: var(--font-display); font-weight: 600; font-size: clamp(38px, 4.6vw, 60px); letter-spacing: -0.02em; line-height: 1; }
+  .metric .num .suf { color: rgb(var(--color-primary)); }
+  .metric .lbl { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 12px; }
+
+  /* ============================================================
+     CLASSES / OFFERINGS GRID
+     ============================================================ */
+  .offer { padding: var(--space-section) 0; }
+  .offer-head { text-align: center; max-width: 600px; margin: 0 auto 46px; }
+  .offer-head h2 { font-size: clamp(30px, 3.4vw, 44px); margin: 16px 0 12px; }
+  .offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 860px) { .offer-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
+  .ocard { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-bg)); overflow: hidden; box-shadow: var(--shadow-card); display: flex; flex-direction: column; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+  .ocard:hover { transform: translateY(-4px); box-shadow: var(--shadow-elevated); }
+  .ocard .oimg { aspect-ratio: 3/2; overflow: hidden; }
+  .ocard .oimg img { width: 100%; height: 100%; object-fit: cover; }
+  .ocard .obody { padding: 22px 22px 26px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .ocard .otag { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: rgb(var(--color-accent2)); }
+  .ocard h3 { font-family: var(--font-display); font-weight: 600; font-size: 21px; }
+  .ocard p { color: rgb(var(--color-muted)); font-size: 14.5px; }
+  .ocard .ofoot { margin-top: auto; padding-top: 16px; display: flex; align-items: center; justify-content: space-between; }
+  .ocard .price { font-family: var(--font-display); font-weight: 600; font-size: 20px; }
+  .ocard .price span { font-size: 13px; color: rgb(var(--color-muted)); font-weight: 400; }
+
+  /* ============================================================
+     TESTIMONIAL
+     ============================================================ */
+  .quote { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .55); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .quote-grid { display: grid; grid-template-columns: 280px 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; max-width: 980px; margin: 0 auto; }
+  @media (max-width: 760px) { .quote-grid { grid-template-columns: 1fr; text-align: center; } }
+  .quote-photo { border-radius: 22px 22px 22px 70px; overflow: hidden; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); aspect-ratio: 4/5; }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .quote blockquote { font-family: var(--font-display); font-weight: 500; font-size: clamp(23px, 2.7vw, 33px); line-height: 1.34; letter-spacing: -0.01em; }
+  .quote blockquote .hl { color: rgb(var(--color-primary)); font-style: italic; }
+  .quote .by { margin-top: 24px; }
+  .quote .by .n { font-weight: 600; }
+  .quote .by .r { color: rgb(var(--color-muted)); font-size: 14px; }
+  .quote .stars { color: rgb(var(--color-primary)); margin-bottom: 18px; display: inline-flex; gap: 4px; }
+
+  /* ============================================================
+     CTA BAND
+     ============================================================ */
+  .cta { padding: var(--space-section) 0; }
+  .cta-card { position: relative; overflow: hidden; border-radius: 28px; padding: clamp(44px, 6vw, 84px); text-align: center; color: rgb(var(--color-on-primary)); background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(150 64 40)); box-shadow: var(--shadow-elevated); }
+  .cta-card::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 82% 12%, rgb(var(--color-accent2) / .4), transparent 48%); pointer-events: none; }
+  .cta-card h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(32px, 3.8vw, 52px); letter-spacing: -0.01em; position: relative; }
+  .cta-card p { color: rgb(252 247 240 / .85); margin: 16px auto 0; max-width: 46ch; position: relative; }
+  .cta-card .cta-actions { display: flex; gap: 14px; justify-content: center; margin-top: 32px; flex-wrap: wrap; position: relative; }
+  .cta-card .btn-white { background: rgb(var(--color-bg)); color: rgb(var(--color-primary)); }
+  .cta-card .btn-white:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgb(0 0 0 / .35); }
+  .cta-card .btn-line { border-color: rgb(252 247 240 / .45); color: rgb(var(--color-on-primary)); background: transparent; }
+  .cta-card .btn-line:hover { border-color: rgb(var(--color-on-primary)); }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: clamp(56px, 7vw, 88px) 0 40px; border-top: 1px solid rgb(var(--color-line)); }
+  .foot-top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 36px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wordmark { margin-bottom: 14px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 32ch; margin-bottom: 18px; }
+  .news { display: flex; gap: 8px; max-width: 340px; }
+  .news input { flex: 1; padding: 12px 15px; border-radius: var(--radius-input); border: 1px solid rgb(var(--color-line)); font-family: var(--font-body); font-size: 14px; background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); }
+  .news input::placeholder { color: rgb(var(--color-muted)); }
+  .news .btn { padding: 12px 18px; }
+  .foot-col h4 { font-family: var(--font-display); font-weight: 600; font-size: 15px; margin-bottom: 14px; }
+  .foot-col a { display: block; color: rgb(var(--color-muted)); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-ink)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; }
+  .foot-bot .cp { color: rgb(var(--color-muted)); font-size: 13px; }
+  .foot-bot .soc { display: flex; gap: 10px; }
+  .foot-bot .soc a { width: 38px; height: 38px; border-radius: 999px; border: 1px solid rgb(var(--color-line)); display: grid; place-items: center; color: rgb(var(--color-muted)); transition: all var(--dur) var(--ease); }
+  .foot-bot .soc a:hover { color: rgb(var(--color-primary)); border-color: rgb(var(--color-primary) / .4); }
+
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em;
+    background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); padding: 8px 13px; border-radius: 999px;
+    box-shadow: var(--shadow-elevated); opacity: .92;
+  }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#" aria-label="Marl &amp; Maker home">
+      <span class="glyph" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9c0-2.2 2.7-4 6-4s6 1.8 6 4v2c0 5-2 8-6 8s-6-3-6-8V9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      Marl &amp; Maker
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#shop">Shop</a>
+      <a href="#story">Our craft</a>
+      <a href="#classes">Classes</a>
+      <a href="#process">Process</a>
+      <a href="#studio">Studio</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="signin" href="#">Visit us</a>
+      <a class="btn btn-primary magnetic" href="#">Book a class</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="hero">
+  <div class="hero-wash" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <span class="hero-pill" data-hero><span class="tag">NEW</span> Spring wheel-throwing classes now open</span>
+      <h1 class="disp" data-hero>Pots thrown by hand, <span class="it">made to be lived with</span>.</h1>
+      <p class="lead" data-hero>Marl &amp; Maker is a small ceramics studio on the south coast. Every mug, bowl and vase is wheel-thrown, glazed and fired by us, in batches small enough to remember.</p>
+      <div class="hero-cta" data-hero>
+        <a class="btn btn-primary magnetic" href="#shop">Shop the collection <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#classes">Join a class</a>
+      </div>
+      <div class="hero-foot" data-hero>
+        <span class="hf"><span class="n">2,400+</span><span class="l">Pieces made by hand</span></span>
+        <span class="sep" aria-hidden="true"></span>
+        <span class="hf"><span class="n">11 yrs</span><span class="l">At the wheel</span></span>
+        <span class="sep" aria-hidden="true"></span>
+        <span class="hf"><span class="n">100%</span><span class="l">Lead-free glazes</span></span>
+      </div>
+    </div>
+    <div class="hero-media" data-hero-media>
+      <div class="hero-frame" data-parallax-stage>
+        <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=900&q=80" alt="Potter shaping a clay bowl on a spinning wheel">
+      </div>
+      <div class="hero-stamp" aria-hidden="true" data-parallax="22">Wheel-thrown<br>· est. 2015 ·<br>by hand</div>
+      <div class="hero-chip" aria-hidden="true" data-parallax="34">
+        <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.2 5.6L20 9l-4.4 3.8L17 19l-5-3-5 3 1.4-6.2L4 9l5.8-.4L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+        <span><span class="ti">Small batches</span><br><span class="su">Fired weekly in studio</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== LOGO BAR ======================== -->
+<section class="logos">
+  <div class="wrap">
+    <p class="cap" data-reveal>Stocked by independent shops we love</p>
+    <div class="logo-row" data-batch>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3c4 4 4 14 0 18-4-4-4-14 0-18z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> Oxeye</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 4v16" stroke="currentColor" stroke-width="2"/></svg> Hearth &amp; Co</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18c4-12 12-12 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Driftwood</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="7" stroke="currentColor" stroke-width="2"/></svg> Folk Market</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 4l8 8-8 8-8-8 8-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> The Larder</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 19V8l7-4 7 4v11" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> Maypole</span>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SHOWCASE GALLERY =================== -->
+<section class="showcase" id="shop">
+  <div class="wrap">
+    <div class="showcase-head" data-reveal>
+      <span class="eyebrow center">The collection</span>
+      <h2 class="disp">Quiet, useful objects for everyday rituals</h2>
+      <p class="lead">Tableware and home pieces in our house glazes: oatmeal, ash, river-stone and ochre. No two are exactly alike.</p>
+    </div>
+    <div class="gallery" data-batch>
+      <div class="gtile g-a"><img src="https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=900&q=80" alt="Set of handmade speckled stoneware mugs" loading="lazy"><span class="cap2">Speckled mug · oatmeal glaze</span></div>
+      <div class="gtile g-b"><img src="https://images.unsplash.com/photo-1493106641515-6b5631de4bb9?auto=format&fit=crop&w=700&q=80" alt="Shelves lined with rows of finished ceramic bowls" loading="lazy"><span class="cap2">Nesting bowls</span></div>
+      <div class="gtile g-c"><img src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=700&q=80" alt="Tall ceramic vase with a matte earthy finish" loading="lazy"><span class="cap2">Bud vase · ash glaze</span></div>
+      <div class="gtile g-d"><img src="https://images.unsplash.com/photo-1493106819501-66d381c466f1?auto=format&fit=crop&w=900&q=80" alt="Hands holding a freshly glazed terracotta dish" loading="lazy"><span class="cap2">Serving dish · ochre</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ALTERNATING SPLITS ================= -->
+<section class="splits" id="story">
+  <div class="wrap">
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&w=900&q=80" alt="Potter centring wet clay on a turning wheel" loading="lazy"></div>
+        <span class="tagchip"><span class="dot"></span> Thrown one at a time</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow">Our hands</span>
+        <h2 class="disp">Made slowly, the way it has always been made</h2>
+        <p class="lead">We centre, pull and trim every piece on the wheel. There is no mould and no machine. A mug takes the time it takes, and we think you can feel that when you hold one.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Local stoneware clay, dug and reclaimed in-house</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Glazes mixed from raw materials, never bought ready-made</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Fired in our own kiln, twice, to 1,260 degrees</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1556760544-74068565f05c?auto=format&fit=crop&w=900&q=80" alt="Warm pottery studio interior with shelves and a worktable" loading="lazy"></div>
+        <span class="tagchip"><span class="dot"></span> Open studio every Saturday</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow">Built to last</span>
+        <h2 class="disp">Pieces that earn their place on the table</h2>
+        <p class="lead">Our tableware is dishwasher safe, microwave safe and made to be used daily. We would rather make something you reach for every morning than something you keep behind glass.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Food-safe, lead-free glazes throughout</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Repairs and re-glazing offered on every piece</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Plastic-free packing, posted in recycled board</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =================== PROCESS STEPS =================== -->
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="process-head" data-reveal>
+      <span class="eyebrow">From clay to cupboard</span>
+      <h2 class="disp">Four hands-on stages, no shortcuts</h2>
+      <p class="lead">Each piece passes through the same patient sequence before it ever leaves the studio.</p>
+    </div>
+    <div class="steps" data-batch>
+      <div class="step">
+        <span class="no">01</span>
+        <span class="si"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 20h16M7 20c0-4 2-7 5-7s5 3 5 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="2"/></svg></span>
+        <h3>Throwing</h3>
+        <p>Soft clay is centred and pulled on the wheel into its rough living shape.</p>
+      </div>
+      <div class="step">
+        <span class="no">02</span>
+        <span class="si"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3>Trimming</h3>
+        <p>Once leather-hard, the foot is turned and handles are pulled and joined.</p>
+      </div>
+      <div class="step">
+        <span class="no">03</span>
+        <span class="si"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4h12l-1 7H7L6 4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 11v9M15 11v9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3>Glazing</h3>
+        <p>After a first firing, each piece is dipped in glazes mixed by hand that week.</p>
+      </div>
+      <div class="step">
+        <span class="no">04</span>
+        <span class="si"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3c2 3 4 4 4 7a4 4 0 11-8 0c0-3 2-4 4-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+        <h3>Firing</h3>
+        <p>A final kiln firing to stoneware temperature sets the glaze for life.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== STATS BAND =================== -->
+<section class="metrics">
+  <div class="wrap">
+    <div class="metrics-grid" data-batch>
+      <div class="metric"><div class="num"><span class="count" data-to="2400" data-dec="0">2400</span><span class="suf">+</span></div><div class="lbl">Pieces thrown by hand</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="48" data-dec="0">48</span></div><div class="lbl">Kiln firings a year</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="11" data-dec="0">11</span></div><div class="lbl">Years at the wheel</div></div>
+      <div class="metric"><div class="num"><span class="count" data-to="4.9" data-dec="1">4.9</span><span class="suf">/5</span></div><div class="lbl">Average maker rating</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CLASSES / OFFERINGS =================== -->
+<section class="offer" id="classes">
+  <div class="wrap">
+    <div class="offer-head" data-reveal>
+      <span class="eyebrow center">Learn at the wheel</span>
+      <h2 class="disp">Classes for every pair of hands</h2>
+      <p class="lead">Small groups, clay and tools provided, and a kiln firing included so you take home what you make.</p>
+    </div>
+    <div class="offer-grid" data-batch>
+      <article class="ocard">
+        <div class="oimg"><img src="https://images.unsplash.com/photo-1607582544160-26c4a3f6e0a5?auto=format&fit=crop&w=700&q=80" alt="Beginner shaping clay during an introductory pottery session" loading="lazy"></div>
+        <div class="obody">
+          <span class="otag">Two hours</span>
+          <h3>Try the wheel</h3>
+          <p>A relaxed taster session. Throw two pieces, choose a glaze, and we fire them for you.</p>
+          <div class="ofoot"><span class="price">£45<span> / person</span></span><a class="btn btn-ghost" href="#">Book</a></div>
+        </div>
+      </article>
+      <article class="ocard">
+        <div class="oimg"><img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=700&q=80" alt="Student practising throwing technique on a pottery wheel" loading="lazy"></div>
+        <div class="obody">
+          <span class="otag">Six weeks</span>
+          <h3>Throw a set</h3>
+          <p>A weekly course that builds from centring to a full dinner set you can use at home.</p>
+          <div class="ofoot"><span class="price">£240<span> / course</span></span><a class="btn btn-primary" href="#">Book</a></div>
+        </div>
+      </article>
+      <article class="ocard">
+        <div class="oimg"><img src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=700&q=80" alt="Hands trimming the base of a finished ceramic vessel" loading="lazy"></div>
+        <div class="obody">
+          <span class="otag">Half day</span>
+          <h3>Private studio</h3>
+          <p>Book the studio for two with a maker on hand. Lovely for birthdays and anniversaries.</p>
+          <div class="ofoot"><span class="price">£160<span> / pair</span></span><a class="btn btn-ghost" href="#">Book</a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TESTIMONIAL =================== -->
+<section class="quote" id="studio">
+  <div class="wrap">
+    <div class="quote-grid">
+      <div class="quote-photo" data-reveal><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" alt="Portrait of a smiling studio customer holding a handmade mug" loading="lazy"></div>
+      <div data-reveal>
+        <span class="stars" aria-label="Five out of five">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.5 6.3L21 10l-4.8 4.1L17.6 21 12 17.4 6.4 21l1.4-6.9L3 10l6.5-.7L12 3z"/></svg>
+        </span>
+        <blockquote class="disp">My morning coffee tastes better in a mug that someone <span class="hl">actually made</span>. It chipped once and they re-glazed it for free. I will never buy a factory mug again.</blockquote>
+        <div class="by">
+          <div class="n">Eleanor Pryce</div>
+          <div class="r">Regular at the studio, Lewes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CTA =================== -->
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-card" data-reveal>
+      <h2>Bring something handmade into your home</h2>
+      <p>Order from the current collection or reserve a place at the wheel. New pieces and class dates go out in our small monthly note.</p>
+      <div class="cta-actions">
+        <a class="btn btn-white magnetic" href="#shop">Shop the collection</a>
+        <a class="btn btn-line" href="#classes">See class dates</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="wordmark" href="#" aria-label="Marl &amp; Maker home">
+          <span class="glyph" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9c0-2.2 2.7-4 6-4s6 1.8 6 4v2c0 5-2 8-6 8s-6-3-6-8V9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          Marl &amp; Maker
+        </a>
+        <p>A small wheel-throwing ceramics studio on the south coast. Useful pots, made by hand, in batches we can count.</p>
+        <form class="news" onsubmit="return false">
+          <input type="email" aria-label="Email address" placeholder="Your email for studio news" />
+          <button class="btn btn-primary" type="submit">Join</button>
+        </form>
+      </div>
+      <div class="foot-col">
+        <h4>Shop</h4>
+        <a href="#">Mugs &amp; cups</a><a href="#">Bowls</a><a href="#">Vases</a><a href="#">Tableware sets</a><a href="#">Seconds</a>
+      </div>
+      <div class="foot-col">
+        <h4>Studio</h4>
+        <a href="#">Our craft</a><a href="#">Classes</a><a href="#">Private bookings</a><a href="#">Visit us</a><a href="#">Stockists</a>
+      </div>
+      <div class="foot-col">
+        <h4>Help</h4>
+        <a href="#">Care &amp; repairs</a><a href="#">Delivery</a><a href="#">Returns</a><a href="#">Wholesale</a><a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span class="cp">© 2026 Marl &amp; Maker Ceramics. Made by hand in Sussex.</span>
+      <div class="soc">
+        <a href="#" aria-label="Marl and Maker on Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Marl and Maker on Pinterest"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8c-2 0-3 1.3-3 3 0 1.6 1 2.4 1.4 2.4.2 0 .3-.6.3-.8 0-.3-.7-.8-.7-1.7 0-1.2.9-2.1 2.2-2.1 1.2 0 1.9.7 1.9 1.9 0 1.5-.7 2.8-1.6 2.8-.5 0-.9-.4-.7-1 .2-.7.5-1.4.5-1.9 0-1.4-1.9-1.2-1.9.6 0 .4.1.7.1.7L9.4 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#" aria-label="Marl and Maker on Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 8h2V5h-2c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h2.2l.8-3H14V8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · Clay · pottery</div>
+
+<!-- ===== GSAP (CDN) ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm = gsap.matchMedia();
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 26, autoAlpha: 0, duration: 0.75, stagger: 0.1 })
+          .from('[data-hero-media]', { y: 36, autoAlpha: 0, scale: 0.96, duration: 0.95 }, '-=0.5');
+
+    var stage = document.querySelector('[data-parallax-stage]');
+    var layers = gsap.utils.toArray('[data-parallax]');
+    if (stage && finePointer && layers.length) {
+      var hero = document.getElementById('hero');
+      var qx = layers.map(function (el) {
+        return { el: el, depth: parseFloat(el.getAttribute('data-parallax')) || 16,
+          sx: gsap.quickTo(el, 'x', { duration: 0.7, ease: 'power3' }),
+          sy: gsap.quickTo(el, 'y', { duration: 0.7, ease: 'power3' }) };
+      });
+      hero.addEventListener('pointermove', function (e) {
+        var r = hero.getBoundingClientRect();
+        var nx = (e.clientX - r.left) / r.width - 0.5;
+        var ny = (e.clientY - r.top) / r.height - 0.5;
+        qx.forEach(function (l) { l.sx(nx * l.depth); l.sy(ny * l.depth); });
+      });
+      hero.addEventListener('pointerleave', function () { qx.forEach(function (l) { l.sx(0); l.sy(0); }); });
+    }
+
+    gsap.set('[data-reveal]', { y: 28, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.12, ease: 'power3.out', overwrite: true }); }
+    });
+
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 24, autoAlpha: 0 });
+      ScrollTrigger.create({
+        trigger: grid, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.08, ease: 'power3.out' }); }
+      });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-hero-media], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+      if (reduced) { el.textContent = to.toFixed(dec); return; }
+      ScrollTrigger.create({
+        trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          var obj = { v: 0 };
+          gsap.to(obj, { v: to, duration: 1.5, ease: 'power2.out',
+            onUpdate: function () { el.textContent = obj.v.toFixed(dec); },
+            onComplete: function () { el.textContent = to.toFixed(dec); } });
+        }
+      });
+    });
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.22, y: (e.clientY - r.top - r.height / 2) * 0.3, duration: 0.4, ease: 'power3' });
+      });
+      btn.addEventListener('pointerleave', function () { gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power3' }); });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,[data-hero],[data-reveal],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,p')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=clay&name=Clay" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

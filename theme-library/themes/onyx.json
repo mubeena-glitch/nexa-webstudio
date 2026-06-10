@@ -1,0 +1,94 @@
+{
+  "id": "onyx",
+  "name": "Onyx",
+  "family": "luxury",
+  "sector": "Luxury watches & jewellery",
+  "tags": [
+    "dark",
+    "luxury",
+    "watches",
+    "jewellery",
+    "gold",
+    "editorial",
+    "high-contrast"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "5 5 6",
+      "surface": "16 16 18",
+      "surface2": "24 24 27",
+      "ink": "242 238 230",
+      "muted": "150 145 134",
+      "line": "44 42 40",
+      "primary": "210 178 116",
+      "onPrimary": "10 9 7",
+      "accent": "210 178 116",
+      "accent2": "166 137 84"
+    },
+    "type": {
+      "display": "'Playfair Display', 'Didot', Georgia, serif",
+      "body": "'Jost', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Jost', ui-sans-serif, system-ui, sans-serif",
+      "scaleRatio": 1.333,
+      "weights": {
+        "display": 500,
+        "displayBold": 700,
+        "body": 300,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.01em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(96px, 13vw, 184px)",
+      "gutter": "clamp(22px, 5vw, 84px)",
+      "density": "airy"
+    },
+    "radius": {
+      "card": "2px",
+      "button": "0px",
+      "input": "0px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(0 0 0 / 0.5), 0 18px 50px -22px rgb(0 0 0 / 0.8)",
+      "elevated": "0 2px 6px rgb(0 0 0 / 0.6), 0 40px 80px -28px rgb(0 0 0 / 0.9)",
+      "philosophy": "deep"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration": "640ms",
+      "character": "stately"
+    },
+    "imagery": {
+      "treatment": "full-bleed",
+      "ratio": "4:5",
+      "filter": "contrast(1.06) brightness(0.92)"
+    }
+  },
+  "recipes": {
+    "button": "outline-sharp",
+    "card": "hairline",
+    "nav": "centred-wordmark"
+  },
+  "preferredLayouts": {
+    "nav": "centred-wordmark",
+    "hero": "full-bleed-editorial",
+    "trusted": "marquee-strip",
+    "screenshot": "single-icon-stage",
+    "features": "split-spreads",
+    "bento": "mosaic-grid",
+    "integrations": "tile-grid",
+    "stats": "hairline-band",
+    "pricing": "single-icon-feature",
+    "testimonial": "press-quote",
+    "cta": "image-newsletter"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap",
+    "https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap"
+  ]
+}

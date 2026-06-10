@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fathom — NEXA Theme Preview (AI / Data Analytics Platform)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     FATHOM — design tokens (mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 9 13 26;
+    --color-surface: 15 21 41;
+    --color-surface-2: 22 30 54;
+    --color-ink: 232 238 252;
+    --color-muted: 142 156 192;
+    --color-line: 37 47 78;
+    --color-primary: 74 124 255;     /* electric blue */
+    --color-on-primary: 5 8 18;
+    --color-accent: 74 124 255;
+    --color-accent2: 64 214 196;     /* teal */
+
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    --display-tracking: -0.025em;
+
+    --maxw: 1220px;
+    --section: clamp(84px, 11vw, 156px);
+    --gutter: clamp(20px, 5vw, 64px);
+    --radius-card: 18px;
+    --radius-button: 10px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 460ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 6px; }
+
+  .disp { font-family: var(--font-display); font-weight: 600; letter-spacing: var(--display-tracking); line-height: 1.06; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18px); }
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-accent2)); display:inline-flex; align-items:center; gap:10px; }
+  .eyebrow::before { content:""; width: 22px; height: 1px; background: rgb(var(--color-accent2)); }
+  .eyebrow.center { justify-content:center; }
+
+  #progress { position: fixed; top: 0; left: 0; height: 2px; width: 0%; z-index: 90; background: linear-gradient(90deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); }
+
+  /* ---------- buttons ---------- */
+  .btn { display:inline-flex; align-items:center; gap: 9px; font-family: var(--font-body); font-weight: 600; font-size: 15px; padding: 13px 22px; border-radius: var(--radius-button); border: 1px solid transparent; cursor: pointer; white-space:nowrap; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .btn-primary { background: rgb(var(--color-primary)); color: #fff; box-shadow: 0 8px 30px -8px rgb(var(--color-primary) / .7); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 40px -8px rgb(var(--color-primary) / .85); }
+  .btn-ghost { border-color: rgb(var(--color-line)); color: rgb(var(--color-ink)); background: rgb(var(--color-surface) / .6); }
+  .btn-ghost:hover { border-color: rgb(var(--color-primary) / .6); transform: translateY(-2px); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* glow backdrops */
+  .glow { position:absolute; border-radius:50%; filter: blur(90px); opacity:.5; pointer-events:none; z-index:0; }
+
+  /* ---------- NAV ---------- */
+  header.nav { position: sticky; top: 0; z-index: 70; background: rgb(var(--color-bg) / .72); backdrop-filter: saturate(140%) blur(14px); border-bottom: 1px solid transparent; transition: border-color var(--dur) var(--ease); }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); }
+  .nav-inner { display:flex; align-items:center; justify-content:space-between; gap:24px; height: 70px; }
+  .wordmark { display:inline-flex; align-items:center; gap:11px; font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.01em; }
+  .wordmark .glyph { width: 30px; height: 30px; border-radius: 9px; display:grid; place-items:center; background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); color:#05101a; font-weight:700; box-shadow: 0 6px 18px -6px rgb(var(--color-primary) / .8); }
+  .nav-links { display:flex; gap: 30px; }
+  .nav-links a { font-size: 14px; color: rgb(var(--color-muted)); transition: color var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-actions { display:flex; gap: 12px; align-items:center; }
+  @media (max-width: 880px){ .nav-links, .nav-actions .btn-ghost { display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero { position: relative; padding-top: clamp(60px, 9vh, 110px); padding-bottom: var(--section); overflow:hidden; }
+  .hero .glow.a { width: 620px; height: 620px; background: rgb(var(--color-primary)); top: -260px; left: -160px; }
+  .hero .glow.b { width: 520px; height: 520px; background: rgb(var(--color-accent2)); top: -180px; right: -160px; opacity:.32; }
+  .hero-inner { position: relative; z-index: 1; text-align:center; }
+  .badge { display:inline-flex; align-items:center; gap: 9px; font-size: 12.5px; font-family: var(--font-mono); color: rgb(var(--color-muted)); border: 1px solid rgb(var(--color-line)); background: rgb(var(--color-surface) / .6); padding: 7px 14px; border-radius: 999px; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: rgb(var(--color-accent2)); box-shadow: 0 0 12px rgb(var(--color-accent2)); }
+  .hero h1 { font-family: var(--font-display); font-weight: 700; letter-spacing: var(--display-tracking); font-size: clamp(42px, 6.4vw, 92px); line-height: 1.02; margin-top: 26px; max-width: 16ch; margin-inline:auto; }
+  .hero h1 .grad { background: linear-gradient(100deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.sub { max-width: 56ch; margin: 24px auto 0; font-size: clamp(16px, 1.5vw, 19px); color: rgb(var(--color-muted)); }
+  .hero .ctrow { display:flex; gap: 14px; justify-content:center; margin-top: 36px; flex-wrap:wrap; }
+  /* dashboard glass mock */
+  .dash { position: relative; z-index: 1; margin: clamp(48px, 8vw, 90px) auto 0; max-width: 1060px; }
+  .dash .glassframe { border: 1px solid rgb(var(--color-line)); border-radius: 20px; background: linear-gradient(180deg, rgb(var(--color-surface) / .9), rgb(var(--color-surface-2) / .7)); padding: 14px; box-shadow: 0 40px 90px -30px rgb(0 0 0 / .8), inset 0 1px 0 rgb(255 255 255 / .04); backdrop-filter: blur(8px); }
+  .dash .barhead { display:flex; align-items:center; gap: 8px; padding: 6px 8px 14px; }
+  .dash .barhead .d { width: 11px; height: 11px; border-radius: 50%; background: rgb(var(--color-line)); }
+  .dash .shot { border-radius: 12px; overflow:hidden; aspect-ratio: 16/9.4; }
+  .dash .shot img { width:100%; height:100%; object-fit: cover; }
+  .dash .float { position:absolute; background: rgb(var(--color-surface-2)); border: 1px solid rgb(var(--color-line)); border-radius: 14px; padding: 14px 16px; box-shadow: 0 24px 48px -18px rgb(0 0 0 / .7); }
+  .dash .float .k { font-family: var(--font-display); font-weight: 700; font-size: 24px; }
+  .dash .float .v { font-size: 11px; color: rgb(var(--color-muted)); margin-top: 3px; }
+  .dash .f1 { left: -28px; top: 30%; }
+  .dash .f2 { right: -28px; bottom: 18%; }
+  @media (max-width: 720px){ .dash .float { display:none; } }
+
+  /* ---------- LOGOS ---------- */
+  .logos { padding-block: clamp(40px, 6vw, 64px); border-block: 1px solid rgb(var(--color-line)); }
+  .logos p { text-align:center; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-muted)); font-family: var(--font-mono); }
+  .logo-row { display:flex; flex-wrap:wrap; justify-content:center; gap: clamp(28px, 5vw, 64px); margin-top: 28px; }
+  .logo-row span { font-family: var(--font-display); font-weight: 600; font-size: clamp(17px, 2vw, 22px); color: rgb(var(--color-ink) / .42); transition: color var(--dur) var(--ease); }
+  .logo-row span:hover { color: rgb(var(--color-ink) / .82); }
+
+  /* ---------- SECTION HEAD ---------- */
+  .sec { padding-block: var(--section); position: relative; }
+  .sec-head { max-width: 640px; }
+  .sec-head.center { margin-inline:auto; text-align:center; }
+  .sec-head h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: var(--display-tracking); font-size: clamp(30px, 4vw, 52px); line-height: 1.06; margin-top: 16px; }
+  .sec-head p { margin-top: 16px; }
+
+  /* ---------- BENTO ---------- */
+  .bento { display:grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(150px, auto); gap: 16px; margin-top: clamp(40px, 5vw, 64px); }
+  @media (max-width: 880px){ .bento { grid-template-columns: repeat(2, 1fr); } }
+  .cell { position: relative; overflow: hidden; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-surface) / .7); padding: 26px; transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .cell:hover { border-color: rgb(var(--color-primary) / .55); transform: translateY(-3px); }
+  .cell .ic { width: 40px; height: 40px; border-radius: 11px; display:grid; place-items:center; background: rgb(var(--color-primary) / .14); color: rgb(var(--color-primary)); font-family: var(--font-mono); font-size: 18px; margin-bottom: 16px; }
+  .cell h3 { font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+  .cell p { color: rgb(var(--color-muted)); font-size: 14.5px; margin-top: 8px; }
+  .cell.big { grid-column: span 4; grid-row: span 2; }
+  .cell.tall { grid-column: span 2; grid-row: span 2; }
+  .cell.wide { grid-column: span 3; }
+  .cell.sm { grid-column: span 3; }
+  .cell.span2 { grid-column: span 2; }
+  @media (max-width: 880px){ .cell.big,.cell.tall,.cell.wide,.cell.sm,.cell.span2 { grid-column: span 2; grid-row: auto; } }
+  .cell.big .shot { margin-top: 20px; border-radius: 12px; overflow:hidden; aspect-ratio: 16/8; border: 1px solid rgb(var(--color-line)); }
+  .cell.big .shot img { width:100%; height:100%; object-fit: cover; }
+  .cell.tall .codeblock { margin-top: 18px; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.8; color: rgb(var(--color-muted)); background: rgb(var(--color-bg) / .6); border: 1px solid rgb(var(--color-line)); border-radius: 10px; padding: 14px; }
+  .codeblock .tk { color: rgb(var(--color-accent2)); }
+  .codeblock .fn { color: rgb(var(--color-primary)); }
+
+  /* ---------- SHOWCASE BAND ---------- */
+  .showcase { background: rgb(var(--color-surface) / .5); border-block: 1px solid rgb(var(--color-line)); }
+  .showcase .grid { display:grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 6vw, 90px); align-items:center; }
+  @media (max-width: 880px){ .showcase .grid { grid-template-columns: 1fr; } }
+  .showcase .frame { border-radius: 18px; overflow:hidden; border: 1px solid rgb(var(--color-line)); box-shadow: 0 40px 80px -30px rgb(0 0 0 / .8); }
+  .showcase .frame img { width:100%; height:100%; object-fit: cover; aspect-ratio: 4/3; }
+  .showcase ul { margin-top: 26px; display:grid; gap: 16px; }
+  .showcase li { display:flex; gap: 13px; align-items:flex-start; color: rgb(var(--color-muted)); font-size: 15.5px; }
+  .showcase li .ck { flex:none; width: 22px; height: 22px; border-radius: 7px; display:grid; place-items:center; background: rgb(var(--color-accent2) / .16); color: rgb(var(--color-accent2)); font-size: 12px; margin-top: 1px; }
+  .showcase li b { color: rgb(var(--color-ink)); font-weight: 600; }
+
+  /* ---------- STATS ---------- */
+  .stats { border-bottom: 1px solid rgb(var(--color-line)); }
+  .stats .grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgb(var(--color-line)); }
+  @media (max-width: 760px){ .stats .grid { grid-template-columns: repeat(2, 1fr); } }
+  .stats .cell2 { background: rgb(var(--color-bg)); padding: clamp(40px, 6vh, 72px) 24px; text-align:center; }
+  .stats .n { font-family: var(--font-display); font-weight: 700; font-size: clamp(38px, 5vw, 64px); letter-spacing: -0.02em; background: linear-gradient(180deg, rgb(var(--color-ink)), rgb(var(--color-primary))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stats .n .u { color: rgb(var(--color-accent2)); -webkit-text-fill-color: rgb(var(--color-accent2)); }
+  .stats .l { font-size: 13px; color: rgb(var(--color-muted)); margin-top: 12px; }
+
+  /* ---------- PRICING ---------- */
+  .pricing .tiers { display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: clamp(40px, 5vw, 64px); }
+  @media (max-width: 880px){ .pricing .tiers { grid-template-columns: 1fr; } }
+  .tier { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); background: rgb(var(--color-surface) / .6); padding: 30px; display:flex; flex-direction:column; }
+  .tier.hi { border-color: rgb(var(--color-primary)); background: linear-gradient(180deg, rgb(var(--color-primary) / .12), rgb(var(--color-surface) / .6)); box-shadow: 0 30px 70px -28px rgb(var(--color-primary) / .55); position: relative; }
+  .tier.hi .tag { position:absolute; top: -12px; left: 30px; background: rgb(var(--color-primary)); color:#fff; font-size: 11px; font-family: var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+  .tier .name { font-family: var(--font-display); font-weight: 600; font-size: 17px; }
+  .tier .price { font-family: var(--font-display); font-weight: 700; font-size: 46px; margin-top: 14px; letter-spacing: -0.02em; }
+  .tier .price span { font-size: 15px; color: rgb(var(--color-muted)); font-weight: 400; }
+  .tier ul { list-style:none; margin: 22px 0 26px; display:grid; gap: 12px; }
+  .tier li { font-size: 14.5px; color: rgb(var(--color-muted)); display:flex; gap: 10px; }
+  .tier li::before { content: "→"; color: rgb(var(--color-accent2)); }
+  .tier .btn { margin-top: auto; justify-content:center; }
+
+  /* ---------- TESTIMONIAL ---------- */
+  .quote-sec { text-align:center; }
+  .quote-sec .frame { width: 76px; height: 76px; border-radius: 50%; overflow:hidden; margin: 0 auto 28px; border: 2px solid rgb(var(--color-primary) / .5); }
+  .quote-sec .frame img { width:100%; height:100%; object-fit: cover; }
+  .quote-sec blockquote { font-family: var(--font-display); font-weight: 500; font-size: clamp(24px, 3.2vw, 40px); line-height: 1.28; max-width: 22ch; margin: 0 auto; letter-spacing: -0.01em; }
+  .quote-sec .by { margin-top: 26px; font-size: 14px; color: rgb(var(--color-muted)); }
+  .quote-sec .by b { color: rgb(var(--color-ink)); }
+
+  /* ---------- CTA ---------- */
+  .cta { position: relative; overflow:hidden; }
+  .cta .panel { position: relative; border: 1px solid rgb(var(--color-line)); border-radius: 26px; background: linear-gradient(180deg, rgb(var(--color-surface) / .9), rgb(var(--color-surface-2) / .6)); padding: clamp(48px, 8vw, 100px) var(--gutter); text-align:center; overflow:hidden; }
+  .cta .glow.c { width: 560px; height: 560px; background: rgb(var(--color-primary)); top: -300px; left: 50%; transform: translateX(-50%); opacity: .4; }
+  .cta h2 { position: relative; font-family: var(--font-display); font-weight: 700; font-size: clamp(32px, 5vw, 60px); letter-spacing: var(--display-tracking); line-height: 1.04; }
+  .cta p { position: relative; color: rgb(var(--color-muted)); max-width: 50ch; margin: 18px auto 0; font-size: 17px; }
+  .cta .ctrow { position: relative; display:flex; gap: 14px; justify-content:center; margin-top: 34px; flex-wrap:wrap; }
+
+  /* ---------- FOOTER ---------- */
+  footer { border-top: 1px solid rgb(var(--color-line)); padding-block: 60px 40px; }
+  .foot { display:grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 36px; }
+  @media (max-width: 760px){ .foot { grid-template-columns: 1fr 1fr; gap: 36px 24px; } }
+  .foot p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 30ch; margin-top: 14px; }
+  .foot h4 { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 16px; }
+  .foot a { display:block; font-size: 14px; color: rgb(var(--color-muted)); padding: 6px 0; transition: color var(--dur) var(--ease); }
+  .foot a:hover { color: rgb(var(--color-ink)); }
+  .legal { display:flex; justify-content:space-between; padding-top: 28px; margin-top: 36px; border-top: 1px solid rgb(var(--color-line)); font-size: 12.5px; color: rgb(var(--color-muted)); flex-wrap:wrap; gap: 12px; }
+
+  .ribbon { position: fixed; bottom: 0; right: 0; z-index: 95; background: rgb(var(--color-primary)); color: #fff; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 14px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+  <div id="progress"></div>
+  <div class="ribbon">NEXA Theme · Fathom · analytics</div>
+
+  <header class="nav" id="hdr">
+    <div class="wrap nav-inner">
+      <a class="wordmark" href="#"><span class="glyph">F</span>Fathom</a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#platform">Platform</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#pricing">Pricing</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="#" class="btn btn-ghost">Sign in</a>
+        <a href="#" class="btn btn-primary">Start free <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="glow a"></div>
+    <div class="glow b"></div>
+    <div class="wrap hero-inner">
+      <span class="badge" data-reveal><span class="dot"></span>Now with real-time anomaly detection</span>
+      <h1 data-reveal>Turn raw events into <span class="grad">decisions you can defend.</span></h1>
+      <p class="sub" data-reveal>Fathom unifies every data source into one warehouse-native model, then lets your whole team ask questions in plain language and trust the answer.</p>
+      <div class="ctrow" data-reveal>
+        <a href="#" class="btn btn-primary">Start free <span class="arrow">→</span></a>
+        <a href="#platform" class="btn btn-ghost">See the platform</a>
+      </div>
+    </div>
+    <div class="dash wrap" data-reveal-clip>
+      <div class="glassframe">
+        <div class="barhead"><span class="d"></span><span class="d"></span><span class="d"></span></div>
+        <div class="shot"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=80&auto=format&fit=crop" alt="An analytics dashboard showing charts and live metrics" /></div>
+      </div>
+      <div class="float f1"><div class="k">+38.4%</div><div class="v">Forecast accuracy</div></div>
+      <div class="float f2"><div class="k mono">1.2s</div><div class="v">Median query time</div></div>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos">
+    <div class="wrap">
+      <p data-reveal>Trusted by data teams at</p>
+      <div class="logo-row" data-reveal>
+        <span>Northwind</span><span>Helios Bank</span><span>Cartograph</span><span>Brightline</span><span>Meridian Labs</span><span>Vantage</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATFORM / BENTO -->
+  <section class="sec" id="platform">
+    <div class="wrap">
+      <div class="sec-head" data-reveal>
+        <span class="eyebrow">The platform</span>
+        <h2>One model. Every question your team can throw at it.</h2>
+        <p class="lead">Connect your warehouse, define your metrics once, and let everyone explore without writing a line of SQL.</p>
+      </div>
+      <div class="bento">
+        <div class="cell big" data-reveal>
+          <div class="ic">◷</div>
+          <h3>Live anomaly detection</h3>
+          <p>Fathom watches every metric continuously and surfaces the change before it reaches your board deck, with the likely cause attached.</p>
+          <div class="shot"><img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?w=1100&q=80&auto=format&fit=crop" alt="A line chart highlighting an anomaly spike" loading="lazy"></div>
+        </div>
+        <div class="cell tall" data-reveal>
+          <div class="ic">{ }</div>
+          <h3>Semantic layer</h3>
+          <p>Define each metric once. Every chart, alert and answer reads from the same definition.</p>
+          <div class="codeblock"><span class="tk">metric</span> <span class="fn">net_revenue</span> {<br>&nbsp;&nbsp;sum(<span class="tk">orders.total</span>)<br>&nbsp;&nbsp;minus(<span class="tk">refunds.amount</span>)<br>&nbsp;&nbsp;grain: <span class="tk">day</span><br>}</div>
+        </div>
+        <div class="cell sm" data-reveal>
+          <div class="ic">↗</div>
+          <h3>Plain-language queries</h3>
+          <p>Ask a question the way you would ask a colleague. Fathom returns the chart and the query it ran.</p>
+        </div>
+        <div class="cell span2" data-reveal>
+          <div class="ic">⚡</div>
+          <h3>Warehouse-native</h3>
+          <p>Runs where your data already lives. Nothing copied, nothing to sync.</p>
+        </div>
+        <div class="cell span2" data-reveal>
+          <div class="ic">◫</div>
+          <h3>Role-aware access</h3>
+          <p>Row-level governance inherited straight from your warehouse permissions.</p>
+        </div>
+        <div class="cell span2" data-reveal>
+          <div class="ic">↺</div>
+          <h3>Version history</h3>
+          <p>Every metric change is tracked, reviewed and reversible.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE -->
+  <section class="sec showcase" id="workflow">
+    <div class="wrap grid">
+      <div class="frame" data-reveal-clip><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1100&q=80&auto=format&fit=crop" alt="A team reviewing analytics on a large display" loading="lazy"></div>
+      <div data-reveal>
+        <span class="eyebrow">The workflow</span>
+        <h2 class="disp" style="font-size:clamp(28px,3.6vw,46px);margin-top:14px;">From question to answer in seconds, not sprints.</h2>
+        <ul>
+          <li><span class="ck">✓</span><span><b>Connect once.</b> Point Fathom at your warehouse and it maps your tables automatically.</span></li>
+          <li><span class="ck">✓</span><span><b>Model in minutes.</b> Define your core metrics in a readable spec your analysts already understand.</span></li>
+          <li><span class="ck">✓</span><span><b>Share with confidence.</b> Every dashboard reads from the same governed definitions, so the numbers always agree.</span></li>
+          <li><span class="ck">✓</span><span><b>Stay ahead.</b> Alerts reach the right channel the moment a metric moves outside its expected range.</span></li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="margin-top:30px;">Read the docs <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats" id="metrics">
+    <div class="grid">
+      <div class="cell2" data-reveal><div class="n"><span data-count="4">0</span><span class="u">B</span></div><div class="l">Events modelled daily</div></div>
+      <div class="cell2" data-reveal><div class="n"><span data-count="1">0</span><span class="u">.2s</span></div><div class="l">Median query latency</div></div>
+      <div class="cell2" data-reveal><div class="n"><span data-count="99">0</span><span class="u">.9%</span></div><div class="l">Platform uptime</div></div>
+      <div class="cell2" data-reveal><div class="n"><span data-count="600">0</span><span class="u">+</span></div><div class="l">Data teams onboard</div></div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="sec pricing" id="pricing">
+    <div class="wrap">
+      <div class="sec-head center" data-reveal>
+        <span class="eyebrow center">Pricing</span>
+        <h2>Start free. Scale when the questions multiply.</h2>
+        <p class="lead">Usage-based, with no charge for read-only viewers. Cancel whenever.</p>
+      </div>
+      <div class="tiers">
+        <div class="tier" data-reveal>
+          <div class="name">Starter</div>
+          <div class="price">£0<span> /month</span></div>
+          <ul>
+            <li>Up to 3 data sources</li>
+            <li>5 modelled metrics</li>
+            <li>Plain-language queries</li>
+            <li>Community support</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Get started</a>
+        </div>
+        <div class="tier hi" data-reveal>
+          <span class="tag">Most popular</span>
+          <div class="name">Team</div>
+          <div class="price">£480<span> /month</span></div>
+          <ul>
+            <li>Unlimited sources</li>
+            <li>Unlimited metrics</li>
+            <li>Anomaly detection</li>
+            <li>Role-aware access</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start free trial <span class="arrow">→</span></a>
+        </div>
+        <div class="tier" data-reveal>
+          <div class="name">Enterprise</div>
+          <div class="price">Custom</div>
+          <ul>
+            <li>Dedicated warehouse tuning</li>
+            <li>Single sign-on and audit logs</li>
+            <li>Custom data residency</li>
+            <li>Named success engineer</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Talk to sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="sec quote-sec">
+    <div class="wrap">
+      <div class="frame" data-reveal><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&q=80&auto=format&fit=crop" alt="Portrait of a data leader" /></div>
+      <blockquote class="disp" data-reveal>“We retired four dashboards and a fortnight of arguing about whose number was right. Now the whole company reads from one truth.”</blockquote>
+      <div class="by" data-reveal><b>Priya Nadar</b> · VP Data, Brightline</div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="sec cta">
+    <div class="wrap">
+      <div class="panel" data-reveal>
+        <div class="glow c"></div>
+        <h2>Stop guessing. Start measuring.</h2>
+        <p>Connect your warehouse in under ten minutes and ask your first question today. No credit card, no sales call.</p>
+        <div class="ctrow">
+          <a href="#" class="btn btn-primary">Start free <span class="arrow">→</span></a>
+          <a href="#" class="btn btn-ghost">Book a demo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <a class="wordmark" href="#"><span class="glyph">F</span>Fathom</a>
+          <p>Warehouse-native analytics for teams that need to trust their numbers.</p>
+        </div>
+        <div><h4>Product</h4><a href="#">Platform</a><a href="#">Semantic layer</a><a href="#">Alerts</a><a href="#">Integrations</a></div>
+        <div><h4>Resources</h4><a href="#">Documentation</a><a href="#">Changelog</a><a href="#">Status</a><a href="#">Security</a></div>
+        <div><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="#">Customers</a><a href="#">Contact</a></div>
+      </div>
+      <div class="legal">
+        <span>© 2026 Fathom Analytics Ltd</span>
+        <span>Built with NEXA Web Studio</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+  (function () {
+    const hdr = document.getElementById('hdr'), prog = document.getElementById('progress');
+    const onScroll = () => {
+      hdr.classList.toggle('scrolled', scrollY > 30);
+      const h = document.documentElement;
+      prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+    };
+    onScroll();
+    addEventListener('scroll', onScroll, { passive: true });
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasGSAP = !!(window.gsap && window.ScrollTrigger);
+
+    const runCount = (el) => {
+      const raw = el.dataset.count, target = parseFloat(raw);
+      if (reducedMotion) { el.textContent = target; return; }
+      const t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - t0) / 1500, 1), v = target * (1 - Math.pow(1 - p, 3));
+        el.textContent = Math.round(v);
+        if (p < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    };
+
+    if (!hasGSAP || reducedMotion) {
+      const cIO = new IntersectionObserver((es) => {
+        es.forEach(e => { if (e.isIntersecting) { runCount(e.target); cIO.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      document.querySelectorAll('[data-count]').forEach(el => cIO.observe(el));
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    const ease = 'power3.out';
+    const mm = gsap.matchMedia();
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.set('.hero [data-reveal]', { opacity: 0, y: 26 });
+      gsap.to('.hero [data-reveal]', { opacity: 1, y: 0, duration: 1.0, ease, stagger: 0.12, delay: 0.1 });
+
+      gsap.set('[data-reveal]:not(.hero [data-reveal])', { opacity: 0, y: 30 });
+      ScrollTrigger.batch('[data-reveal]:not(.hero [data-reveal])', {
+        start: 'top 88%',
+        onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.9, ease, stagger: 0.08, overwrite: true }),
+        once: true
+      });
+
+      gsap.set('[data-reveal-clip]', { opacity: 0, y: 40, scale: 0.98 });
+      ScrollTrigger.batch('[data-reveal-clip]', {
+        start: 'top 86%',
+        onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, scale: 1, duration: 1.1, ease, overwrite: true }),
+        once: true
+      });
+
+      // floating cards drift
+      gsap.to('.dash .f1', { y: -14, repeat: -1, yoyo: true, duration: 3.2, ease: 'sine.inOut' });
+      gsap.to('.dash .f2', { y: 14, repeat: -1, yoyo: true, duration: 3.6, ease: 'sine.inOut' });
+
+      // dashboard parallax
+      gsap.to('.dash', { yPercent: -6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+      gsap.utils.toArray('[data-count]').forEach((el) => {
+        ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => runCount(el) });
+      });
+    });
+  })();
+  </script>
+  <script>
+  /* === NEXA visibility failsafe === */
+  (function(){
+    var SEL='h1,h2,h3,h4,p,li,[data-reveal],[data-reveal-clip]';
+    function isHidden(el){
+      var cs=getComputedStyle(el);
+      if(cs.visibility==='hidden') return true;
+      if(parseFloat(cs.opacity)<0.06) return true;
+      return false;
+    }
+    function force(el){
+      if(!isHidden(el)) return;
+      el.style.setProperty('opacity','1','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('transform','none','important');
+    }
+    var els;
+    try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+    catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,p')); }
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(ents){
+        ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+      },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+      els.forEach(function(el){ io.observe(el); });
+    } else { els.forEach(force); }
+    window.addEventListener('load',function(){ setTimeout(function(){
+      els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+    },2600); });
+  })();
+  </script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=fathom&name=Fathom" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

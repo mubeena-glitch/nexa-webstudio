@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tundra — NEXA Theme Preview (Outdoor / Adventure Gear)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     TUNDRA — design tokens (1:1 mirror of theme.json -> CSS vars)
+     ============================================================ */
+  :root {
+    --color-bg: 244 245 243;
+    --color-surface: 236 238 235;
+    --color-surface-2: 227 230 226;
+    --color-ink: 28 33 33;
+    --color-muted: 94 104 104;
+    --color-line: 212 216 213;
+    --color-primary: 45 56 56;      /* slate */
+    --color-on-primary: 244 245 243;
+    --color-accent: 232 92 30;      /* signal orange */
+    --color-accent2: 62 122 110;    /* pine teal */
+
+    --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Spline Sans Mono", ui-monospace, monospace;
+    --display-tracking: -0.02em;
+
+    --space-section: clamp(84px, 10vw, 144px);
+    --gutter: clamp(20px, 5vw, 64px);
+
+    --radius-card: 14px;
+    --radius-button: 10px;
+    --radius-input: 10px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(28 33 33 / 0.05), 0 10px 26px -14px rgb(28 33 33 / 0.2);
+    --shadow-elevated: 0 2px 5px rgb(28 33 33 / 0.06), 0 26px 52px -18px rgb(28 33 33 / 0.3);
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 480ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .disp { font-family: var(--font-display); font-weight: 700; letter-spacing: var(--display-tracking); line-height: 1.02; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 19px); }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgb(var(--color-accent));
+    display: inline-flex; align-items: center; gap: 10px; font-weight: 500;
+  }
+  .eyebrow::before { content: ""; width: 18px; height: 2px; background: rgb(var(--color-accent)); }
+  .eyebrow.center { justify-content: center; }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 3px; border-radius: 4px; }
+  #progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 80; background: rgb(var(--color-accent)); }
+
+  /* ---------- buttons (recipe: solid-rounded) ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display);
+    font-weight: 700; font-size: 14px; letter-spacing: .01em; padding: 14px 24px;
+    border-radius: var(--radius-button); border: 2px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .btn-primary { background: rgb(var(--color-accent)); color: #fff; box-shadow: 0 8px 20px -10px rgb(var(--color-accent) / .7); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -10px rgb(var(--color-accent) / .8); }
+  .btn-dark { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-dark:hover { transform: translateY(-2px); background: rgb(var(--color-ink)); }
+  .btn-ghost { border-color: rgb(var(--color-ink) / .2); color: rgb(var(--color-ink)); background: transparent; }
+  .btn-ghost:hover { border-color: rgb(var(--color-ink)); transform: translateY(-2px); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     NAV — split inline
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 70;
+    background: rgb(var(--color-bg) / .85);
+    backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); box-shadow: var(--shadow-card); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 70px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -0.02em; }
+  .wordmark .glyph { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; background: rgb(var(--color-primary)); color: rgb(var(--color-accent)); }
+  .nav-links { display: flex; align-items: center; gap: 30px; }
+  .nav-links a { font-family: var(--font-display); font-weight: 600; font-size: 14px; color: rgb(var(--color-muted)); position: relative; transition: color var(--dur) var(--ease); text-transform: uppercase; letter-spacing: .02em; }
+  .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -6px; height: 2px; background: rgb(var(--color-accent)); transition: right var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-links a:hover::after { right: 0; }
+  .nav-actions { display: flex; align-items: center; gap: 14px; }
+  .nav-actions .btn { padding: 10px 18px; }
+  @media (max-width: 900px) { .nav-links { display: none; } }
+
+  /* ============================================================
+     HERO — full-bleed image with overlay panel
+     ============================================================ */
+  .hero { position: relative; min-height: 88vh; display: flex; align-items: flex-end; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: -2; }
+  .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(28 33 33 / .35) 0%, transparent 30%, rgb(28 33 33 / .12) 55%, rgb(28 33 33 / .78) 100%); }
+  .hero-inner { position: relative; z-index: 2; width: 100%; padding-bottom: clamp(48px, 7vw, 92px); padding-top: clamp(48px, 7vw, 92px); }
+  .hero-inner .eyebrow { color: rgb(var(--color-accent)); }
+  .hero h1 { font-family: var(--font-display); font-weight: 800; color: #fff; font-size: clamp(44px, 8vw, 104px); line-height: .94; letter-spacing: -0.03em; margin: 18px 0 0; max-width: 16ch; text-transform: uppercase; }
+  .hero h1 .accent { color: rgb(var(--color-accent)); }
+  .hero .lead { color: rgb(244 245 243 / .9); margin: 22px 0 0; max-width: 46ch; font-size: clamp(17px, 1.5vw, 20px); }
+  .hero-cta { display: flex; gap: 14px; margin-top: 32px; flex-wrap: wrap; }
+  .hero-cta .btn-glass { background: rgb(244 245 243 / .12); color: #fff; border-color: rgb(255 255 255 / .3); backdrop-filter: blur(8px); }
+  .hero-cta .btn-glass:hover { background: rgb(244 245 243 / .2); border-color: #fff; transform: translateY(-2px); }
+  .hero-strip { display: flex; gap: clamp(24px, 5vw, 56px); margin-top: 40px; flex-wrap: wrap; }
+  .hero-strip .hs { color: #fff; }
+  .hero-strip .hs b { font-family: var(--font-display); font-weight: 800; font-size: 28px; display: block; }
+  .hero-strip .hs span { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgb(244 245 243 / .7); }
+
+  /* ============================================================
+     LOGO BAR
+     ============================================================ */
+  .logos { padding: clamp(36px, 5vw, 56px) 0; border-bottom: 1px solid rgb(var(--color-line)); }
+  .logos .cap { text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 5vw, 60px); flex-wrap: wrap; margin-top: 26px; }
+  .logo-row .lm { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; color: rgb(var(--color-muted)); transition: color var(--dur) var(--ease); text-transform: uppercase; letter-spacing: -0.01em; }
+  .logo-row .lm:hover { color: rgb(var(--color-ink)); }
+  .logo-row .lm svg { color: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     KIT BAND — featured product showcase
+     ============================================================ */
+  .kit { padding: var(--space-section) 0; }
+  .kit-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .kit-head h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 4.4vw, 54px); text-transform: uppercase; letter-spacing: -0.03em; max-width: 16ch; }
+  .kit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  @media (max-width: 900px) { .kit-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .kit-grid { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; } }
+  .prod { display: flex; flex-direction: column; border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); overflow: hidden; background: rgb(var(--color-bg)); box-shadow: var(--shadow-card); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+  .prod:hover { transform: translateY(-5px); box-shadow: var(--shadow-elevated); }
+  .prod .pic { position: relative; aspect-ratio: 4/5; overflow: hidden; background: rgb(var(--color-surface)); }
+  .prod .pic img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur) var(--ease); }
+  .prod:hover .pic img { transform: scale(1.05); }
+  .prod .tag { position: absolute; top: 12px; left: 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; background: rgb(var(--color-accent)); color: #fff; padding: 4px 9px; border-radius: 5px; }
+  .prod .tag.teal { background: rgb(var(--color-accent2)); }
+  .prod .info { padding: 18px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .prod .info .cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .prod .info .nm { font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+  .prod .info .row { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 12px; }
+  .prod .info .pr { font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+  .prod .info .rt { font-size: 12px; color: rgb(var(--color-muted)); display: inline-flex; align-items: center; gap: 4px; }
+  .prod .info .rt svg { color: rgb(var(--color-accent)); }
+
+  /* ============================================================
+     ALTERNATING SPLITS — built-for sections
+     ============================================================ */
+  .splits { padding: 0 0 var(--space-section); }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; padding: clamp(48px, 6vw, 88px) 0; }
+  .split + .split { border-top: 1px solid rgb(var(--color-line)); }
+  .split:nth-child(even) .split-media { order: 2; }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split .split-media { order: 0 !important; } }
+  .split-text h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 3.6vw, 44px); text-transform: uppercase; letter-spacing: -0.03em; margin: 16px 0 14px; max-width: 16ch; }
+  .checks { list-style: none; margin-top: 24px; display: grid; gap: 14px; }
+  .checks li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; }
+  .checks li .ck { flex: none; width: 24px; height: 24px; border-radius: 6px; background: rgb(var(--color-accent) / .14); color: rgb(var(--color-accent)); display: grid; place-items: center; margin-top: 1px; }
+  .split-media { position: relative; }
+  .split-media .ph { border-radius: var(--radius-card); overflow: hidden; border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); aspect-ratio: 4/3; }
+  .split-media .ph img { width: 100%; height: 100%; object-fit: cover; }
+  .split-media .chip { position: absolute; bottom: 16px; left: 16px; padding: 9px 14px; border-radius: 8px; background: rgb(var(--color-bg) / .94); backdrop-filter: blur(6px); border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-card); font-family: var(--font-display); font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
+  .split-media .chip .dot { width: 8px; height: 8px; border-radius: 999px; background: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     FIELD GRID — capabilities bento
+     ============================================================ */
+  .field { padding: var(--space-section) 0; background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .field-head { max-width: 600px; margin-bottom: 48px; }
+  .field-head .eyebrow { color: rgb(var(--color-accent)); }
+  .field-head h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 4vw, 48px); text-transform: uppercase; letter-spacing: -0.03em; margin: 16px 0 0; }
+  .field-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 880px) { .field-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .field-grid { grid-template-columns: 1fr; } }
+  .fcap { border: 1px solid rgb(244 245 243 / .12); border-radius: var(--radius-card); padding: 24px; display: flex; flex-direction: column; gap: 12px; background: rgb(244 245 243 / .03); transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), background var(--dur) var(--ease); }
+  .fcap:hover { transform: translateY(-4px); border-color: rgb(var(--color-accent) / .6); background: rgb(244 245 243 / .06); }
+  .fcap.span2 { grid-column: span 2; }
+  @media (max-width: 480px) { .fcap.span2 { grid-column: span 1; } }
+  .fcap .ci { width: 44px; height: 44px; border-radius: 10px; background: rgb(var(--color-accent) / .18); color: rgb(var(--color-accent)); display: grid; place-items: center; }
+  .fcap h3 { font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+  .fcap p { color: rgb(244 245 243 / .7); font-size: 14px; }
+  .fcap .tagm { margin-top: auto; font-family: var(--font-mono); font-size: 11px; color: rgb(var(--color-accent2)); }
+
+  /* ============================================================
+     STATS BAND
+     ============================================================ */
+  .stats { padding: clamp(60px, 7vw, 100px) 0; border-bottom: 1px solid rgb(var(--color-line)); }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; text-align: center; }
+  @media (max-width: 720px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; } }
+  .stat .num { font-family: var(--font-display); font-weight: 800; font-size: clamp(38px, 5vw, 62px); letter-spacing: -0.03em; line-height: 1; }
+  .stat .num .suf { color: rgb(var(--color-accent)); }
+  .stat .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 12px; }
+
+  /* ============================================================
+     TESTIMONIAL — single quote + photo
+     ============================================================ */
+  .quote { padding: var(--space-section) 0; }
+  .quote-grid { display: grid; grid-template-columns: 300px 1fr; gap: clamp(36px, 5vw, 64px); align-items: center; max-width: 1000px; margin: 0 auto; }
+  @media (max-width: 760px) { .quote-grid { grid-template-columns: 1fr; text-align: center; } }
+  .quote-photo { aspect-ratio: 4/5; overflow: hidden; border-radius: var(--radius-card); border: 1px solid rgb(var(--color-line)); box-shadow: var(--shadow-elevated); }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .quote .stars { color: rgb(var(--color-accent)); margin-bottom: 18px; display: inline-flex; gap: 3px; }
+  .quote blockquote { font-family: var(--font-display); font-weight: 600; font-size: clamp(22px, 2.8vw, 34px); line-height: 1.28; letter-spacing: -0.02em; }
+  .quote blockquote .hl { color: rgb(var(--color-accent)); }
+  .quote .by { margin-top: 22px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .quote .by b { color: rgb(var(--color-ink)); }
+
+  /* ============================================================
+     EXPEDITION CTA
+     ============================================================ */
+  .cta { padding: var(--space-section) 0; }
+  .cta-card { position: relative; overflow: hidden; border-radius: 22px; padding: clamp(48px, 7vw, 96px); text-align: center; color: #fff; }
+  .cta-card .cta-bg { position: absolute; inset: 0; z-index: -2; }
+  .cta-card .cta-bg img { width: 100%; height: 100%; object-fit: cover; }
+  .cta-card .cta-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgb(28 33 33 / .82), rgb(28 33 33 / .55)); }
+  .cta-card .eyebrow { color: rgb(var(--color-accent)); position: relative; justify-content: center; }
+  .cta-card h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(32px, 4.8vw, 60px); text-transform: uppercase; letter-spacing: -0.03em; margin: 18px auto 0; max-width: 16ch; position: relative; }
+  .cta-card p { color: rgb(244 245 243 / .85); margin: 16px auto 0; max-width: 46ch; position: relative; }
+  .cta-card .cta-actions { display: flex; gap: 14px; justify-content: center; margin-top: 32px; flex-wrap: wrap; position: relative; }
+  .cta-card .btn-line { border-color: rgb(255 255 255 / .4); color: #fff; background: transparent; }
+  .cta-card .btn-line:hover { border-color: #fff; transform: translateY(-2px); }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: clamp(60px, 8vw, 96px) 0 40px; border-top: 1px solid rgb(var(--color-line)); }
+  .foot-top { display: grid; grid-template-columns: 1.7fr repeat(3, 1fr); gap: 40px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wordmark { margin-bottom: 14px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 15px; max-width: 32ch; margin-bottom: 18px; }
+  .news { display: flex; gap: 8px; max-width: 360px; }
+  .news input { flex: 1; padding: 12px 14px; border-radius: var(--radius-input); border: 1px solid rgb(var(--color-line)); font-family: var(--font-body); font-size: 14px; background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); }
+  .news input::placeholder { color: rgb(var(--color-muted)); }
+  .news .btn { padding: 12px 18px; }
+  .foot-col h4 { font-family: var(--font-display); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 16px; }
+  .foot-col a { display: block; color: rgb(var(--color-muted)); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-ink)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 50px; padding-top: 26px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; color: rgb(var(--color-muted)); }
+
+  /* ribbon */
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em;
+    background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); padding: 8px 13px; border-radius: 999px;
+    box-shadow: var(--shadow-elevated); opacity: .94;
+  }
+  .ribbon b { color: rgb(var(--color-accent)); }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#" aria-label="Tundra home">
+      <span class="glyph" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 20l6-12 4 7 2-4 6 9z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>
+      </span>
+      Tundra
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#kit">Shop</a>
+      <a href="#built">Technology</a>
+      <a href="#field">Guarantee</a>
+      <a href="#stories">Field Stories</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="#">Account</a>
+      <a class="btn btn-primary magnetic" href="#kit">Shop the kit</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true" data-hero-bg>
+    <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1800&q=80" alt="A lone hiker crossing a windswept alpine ridge at dawn">
+  </div>
+  <div class="wrap hero-inner">
+    <span class="eyebrow" data-hero>Built for the treeline and beyond</span>
+    <h1 class="disp" data-hero>Gear that <span class="accent">earns</span> its place on your back.</h1>
+    <p class="lead" data-hero>Tundra makes hard-wearing shells, packs, and layers tested where the trail runs out. Repairable for life, guaranteed against everything except the obvious.</p>
+    <div class="hero-cta" data-hero>
+      <a class="btn btn-primary magnetic" href="#kit">Shop the kit <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="btn btn-glass" href="#built">See the technology</a>
+    </div>
+    <div class="hero-strip" data-hero>
+      <span class="hs"><b>30,000 ft</b><span>Field-tested elevation</span></span>
+      <span class="hs"><b>Lifetime</b><span>Repair guarantee</span></span>
+      <span class="hs"><b>100%</b><span>Recycled main fabric</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== LOGO BAR ======================== -->
+<section class="logos">
+  <div class="wrap">
+    <p class="cap" data-reveal>Trusted on expeditions worldwide</p>
+    <div class="logo-row" data-batch>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 20l6-12 4 7 2-4 6 9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> Northface Guides</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 3v18" stroke="currentColor" stroke-width="2"/></svg> Arctic Survey</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l9 18H3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg> Summit Co.</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18c4-12 12-12 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Ridgeline</span>
+      <span class="lm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/></svg> Basecamp</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== KIT BAND ======================== -->
+<section class="kit" id="kit">
+  <div class="wrap">
+    <div class="kit-head" data-reveal>
+      <h2>The autumn kit</h2>
+      <a class="btn btn-ghost" href="#">Shop all gear</a>
+    </div>
+    <div class="kit-grid" data-batch>
+      <article class="prod">
+        <div class="pic"><span class="tag">New</span><img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=600&q=80" alt="A weatherproof hardshell jacket on a hanger" loading="lazy"></div>
+        <div class="info"><span class="cat">Hardshell</span><span class="nm">Treeline 3L Shell</span><div class="row"><span class="pr">&pound;320</span><span class="rt"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.5 1.6 6.7L12 17l-6.2 3.6 1.6-6.7L2.2 9.5l6.9-.6L12 2z"/></svg>4.9</span></div></div>
+      </article>
+      <article class="prod">
+        <div class="pic"><img src="https://images.unsplash.com/photo-1622260614153-03223fb72052?auto=format&fit=crop&w=600&q=80" alt="A rugged hiking backpack standing on rock" loading="lazy"></div>
+        <div class="info"><span class="cat">Pack</span><span class="nm">Cairn 45 Pack</span><div class="row"><span class="pr">&pound;185</span><span class="rt"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.5 1.6 6.7L12 17l-6.2 3.6 1.6-6.7L2.2 9.5l6.9-.6L12 2z"/></svg>4.8</span></div></div>
+      </article>
+      <article class="prod">
+        <div class="pic"><span class="tag teal">Recycled</span><img src="https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&w=600&q=80" alt="An insulated down jacket folded on a wooden surface" loading="lazy"></div>
+        <div class="info"><span class="cat">Insulation</span><span class="nm">Whiteout Down Hoody</span><div class="row"><span class="pr">&pound;240</span><span class="rt"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.5 1.6 6.7L12 17l-6.2 3.6 1.6-6.7L2.2 9.5l6.9-.6L12 2z"/></svg>5.0</span></div></div>
+      </article>
+      <article class="prod">
+        <div class="pic"><img src="https://images.unsplash.com/photo-1520975954732-35dd22299614?auto=format&fit=crop&w=600&q=80" alt="A pair of sturdy leather hiking boots" loading="lazy"></div>
+        <div class="info"><span class="cat">Footwear</span><span class="nm">Scree Approach Boot</span><div class="row"><span class="pr">&pound;210</span><span class="rt"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.5 1.6 6.7L12 17l-6.2 3.6 1.6-6.7L2.2 9.5l6.9-.6L12 2z"/></svg>4.7</span></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SPLITS ======================== -->
+<section class="splits" id="built">
+  <div class="wrap">
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=900&q=80" alt="A mountaineer pulling on a shell jacket against driving wind" loading="lazy"></div>
+        <span class="chip"><span class="dot"></span> StormGate membrane</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow">Weatherproof</span>
+        <h2>Dry in the worst the mountain has</h2>
+        <p class="lead">Our three-layer StormGate membrane holds out wind-driven rain and snow while letting the sweat of a hard climb breathe straight through.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 28,000 mm hydrostatic head</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Fully taped, welded seams</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> PFC-free water repellent finish</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="split" data-reveal>
+      <div class="split-media">
+        <div class="ph"><img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=900&q=80" alt="A worn pack and gear laid out on alpine rock" loading="lazy"></div>
+        <span class="chip"><span class="dot"></span> Repair, never replace</span>
+      </div>
+      <div class="split-text">
+        <span class="eyebrow">Built to last</span>
+        <h2>Made to be mended, not binned</h2>
+        <p class="lead">Every seam, zip, and buckle is chosen so it can be fixed in the field or at our workshop. Send it back worn and we will send it home ready for the next trip.</p>
+        <ul class="checks">
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Free lifetime repairs on all kit</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Field repair kit in every box</li>
+          <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Trade-in scheme for old gear</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FIELD GRID ======================== -->
+<section class="field" id="field">
+  <div class="wrap">
+    <div class="field-head" data-reveal>
+      <span class="eyebrow">Why Tundra</span>
+      <h2>Engineered for the long haul</h2>
+    </div>
+    <div class="field-grid" data-batch>
+      <div class="fcap span2">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+        <h3>Tested where the trail ends</h3>
+        <p>Every product spends a season on the backs of mountain guides before it ever reaches a shelf, in conditions a lab can only imitate.</p>
+        <span class="tagm">// field-proven across four continents</span>
+      </div>
+      <div class="fcap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3 8 4-16 3 8h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3>Featherweight</h3>
+        <p>Less to carry, more to climb. Our shells start at 290 grams packed.</p>
+      </div>
+      <div class="fcap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+        <h3>Fast dispatch</h3>
+        <p>Order before noon and your kit ships the same day, carbon-balanced.</p>
+      </div>
+      <div class="fcap">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 11-9-9c2.5 0 4.8 1 6.4 2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M21 4v5h-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3>Circular by design</h3>
+        <p>Worn-out gear comes back to us to be repaired, resold, or recycled.</p>
+      </div>
+      <div class="fcap span2">
+        <span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+        <h3>Honest by the gram</h3>
+        <p>Every spec sheet lists real measured weights, fabric sources, and repairability scores, with nothing rounded in our favour.</p>
+        <span class="tagm">// no marketing maths</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== STATS ======================== -->
+<section class="stats">
+  <div class="wrap stats-grid" data-batch>
+    <div class="stat"><div class="num"><span class="count" data-to="240">0</span><span class="suf">k</span></div><div class="lbl">Garments repaired</div></div>
+    <div class="stat"><div class="num"><span class="count" data-to="38">0</span></div><div class="lbl">Countries shipped to</div></div>
+    <div class="stat"><div class="num"><span class="count" data-to="100">0</span><span class="suf">%</span></div><div class="lbl">Recycled main fabric</div></div>
+    <div class="stat"><div class="num"><span class="count" data-to="19">0</span></div><div class="lbl">Years on the mountain</div></div>
+  </div>
+</section>
+
+<!-- ======================== TESTIMONIAL ======================== -->
+<section class="quote" id="stories">
+  <div class="wrap quote-grid">
+    <div class="quote-photo" data-reveal>
+      <img src="https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&w=600&q=80" alt="A mountain guide standing on a snowy summit" loading="lazy">
+    </div>
+    <div data-reveal>
+      <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+      <blockquote>&ldquo;Six seasons guiding in the Alps and my Treeline shell has been <span class="hl">patched twice and binned never.</span> I trust it more than most things I own.&rdquo;</blockquote>
+      <div class="by"><b>Kasper Lund</b> &nbsp;·&nbsp; UIAGM mountain guide, Chamonix</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== CTA ======================== -->
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-card" data-reveal>
+      <div class="cta-bg" aria-hidden="true"><img src="https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?auto=format&fit=crop&w=1600&q=80" alt="A tent pitched on a high ridge under the stars" loading="lazy"></div>
+      <span class="eyebrow">Get out there</span>
+      <h2>Your next trip is waiting</h2>
+      <p>Build your kit, join the repair guarantee, and head for the treeline knowing your gear will hold.</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary magnetic" href="#kit">Shop the kit</a>
+        <a class="btn btn-line" href="#">Find a stockist</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="wordmark" href="#"><span class="glyph" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 20l6-12 4 7 2-4 6 9z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></span> Tundra</a>
+        <p>Hard-wearing outdoor gear, tested where the trail runs out and guaranteed for life.</p>
+        <form class="news" onsubmit="return false">
+          <input type="email" placeholder="Email for field notes &amp; drops" aria-label="Email address">
+          <button class="btn btn-dark" type="submit">Join</button>
+        </form>
+      </div>
+      <div class="foot-col">
+        <h4>Shop</h4>
+        <a href="#">Shells</a><a href="#">Insulation</a><a href="#">Packs</a><a href="#">Footwear</a>
+      </div>
+      <div class="foot-col">
+        <h4>Tundra</h4>
+        <a href="#">Our technology</a><a href="#">Repair guarantee</a><a href="#">Sustainability</a><a href="#">Field stories</a>
+      </div>
+      <div class="foot-col">
+        <h4>Support</h4>
+        <a href="#">Size guide</a><a href="#">Returns</a><a href="#">Trade-in</a><a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>&copy; 2007&ndash;2026 Tundra Outdoor. All rights reserved.</span>
+      <span>Set in Archivo &amp; Inter</span>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · <b>Tundra</b> · outdoor</div>
+
+<!-- ======================== GSAP ======================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var nav = document.getElementById('nav');
+  var progress = document.getElementById('progress');
+  function onScroll() {
+    var st = window.pageYOffset || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+  var mm = gsap.matchMedia();
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 30, autoAlpha: 0, duration: 0.8, stagger: 0.1 });
+
+    /* hero background slow zoom + parallax */
+    gsap.fromTo('[data-hero-bg] img', { scale: 1.12 }, { scale: 1, duration: 2.4, ease: 'power2.out' });
+    gsap.to('[data-hero-bg] img', { yPercent: 14, ease: 'none',
+      scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true } });
+
+    gsap.set('[data-reveal]', { y: 30, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', { start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.12, ease: 'power3.out', overwrite: true }); } });
+
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 26, autoAlpha: 0 });
+      ScrollTrigger.create({ trigger: grid, start: 'top 86%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.65, stagger: 0.08, ease: 'power3.out' }); } });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    gsap.set('[data-hero-bg] img', { scale: 1 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      if (reduced) { el.textContent = to; return; }
+      ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true,
+        onEnter: function () { var o = { v: 0 }; gsap.to(o, { v: to, duration: 1.5, ease: 'power2.out',
+          onUpdate: function () { el.textContent = Math.round(o.v); }, onComplete: function () { el.textContent = to; } }); } });
+    });
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.22, y: (e.clientY - r.top - r.height / 2) * 0.3, duration: 0.4, ease: 'power3' });
+      });
+      btn.addEventListener('pointerleave', function () { gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power3' }); });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,p,li,[data-hero],[data-reveal],[data-batch] > *';
+  function isHidden(el){ var cs=getComputedStyle(el); if(cs.visibility==='hidden') return true; if(parseFloat(cs.opacity)<0.06) return true; return false; }
+  function force(el){ if(!isHidden(el)) return; el.style.setProperty('opacity','1','important'); el.style.setProperty('visibility','visible','important'); el.style.setProperty('transform','none','important'); }
+  var els; try{ els=[].slice.call(document.querySelectorAll(SEL)); }catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,p')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){ ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1500); } }); },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){ els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); }); },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=tundra&name=Tundra" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>

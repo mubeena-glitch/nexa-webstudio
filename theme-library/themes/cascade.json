@@ -1,0 +1,94 @@
+{
+  "id": "cascade",
+  "name": "Cascade",
+  "family": "modern",
+  "sector": "Developer Tools / API Platform",
+  "tags": [
+    "dark",
+    "developer",
+    "api",
+    "cyan",
+    "teal",
+    "mono",
+    "technical",
+    "infrastructure"
+  ],
+  "mode": "dark",
+  "tokens": {
+    "color": {
+      "bg": "8 11 14",
+      "surface": "14 19 24",
+      "surface2": "20 27 34",
+      "ink": "227 236 242",
+      "muted": "131 149 161",
+      "line": "34 45 54",
+      "primary": "45 212 191",
+      "onPrimary": "5 14 16",
+      "accent": "45 212 191",
+      "accent2": "56 189 248"
+    },
+    "type": {
+      "display": "'Space Grotesk', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Inter', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, monospace",
+      "scaleRatio": 1.25,
+      "weights": {
+        "display": 500,
+        "displayBold": 700,
+        "body": 400,
+        "label": 500,
+        "bold": 600
+      },
+      "displayCase": "none",
+      "displayTracking": "-0.03em"
+    },
+    "space": {
+      "base": 8,
+      "section": "clamp(80px, 10vw, 144px)",
+      "gutter": "clamp(20px, 5vw, 60px)",
+      "density": "compact"
+    },
+    "radius": {
+      "card": "12px",
+      "button": "10px",
+      "input": "10px",
+      "pill": "999px"
+    },
+    "shadow": {
+      "card": "0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -16px rgb(0 0 0 / 0.7)",
+      "elevated": "0 2px 6px rgb(0 0 0 / 0.5), 0 28px 60px -22px rgb(0 0 0 / 0.85)",
+      "philosophy": "deep-contrast"
+    },
+    "motion": {
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "420ms",
+      "character": "precise"
+    },
+    "imagery": {
+      "treatment": "framed-terminal",
+      "ratio": "16:10",
+      "filter": "cool-desaturate"
+    }
+  },
+  "recipes": {
+    "button": "solid-rounded",
+    "card": "bordered-glow",
+    "nav": "split-inline"
+  },
+  "preferredLayouts": {
+    "nav": "split-inline",
+    "hero": "code-terminal-split",
+    "trusted": "logo-bar",
+    "screenshot": "terminal-band",
+    "features": "icon-grid",
+    "bento": "dense-capabilities",
+    "integrations": "tile-grid",
+    "stats": "band-countup",
+    "pricing": "three-tier-highlight",
+    "testimonial": "single-quote-photo",
+    "cta": "code-band"
+  },
+  "fontLinks": [
+    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+  ]
+}

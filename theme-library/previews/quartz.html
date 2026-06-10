@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quartz — NEXA Theme Preview (Interior Design Studio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     QUARTZ — design tokens (1:1 mirror of quartz.json)
+     ============================================================ */
+  :root {
+    --color-bg: 240 237 231;
+    --color-surface: 232 228 221;
+    --color-surface-2: 223 218 210;
+    --color-ink: 29 28 26;
+    --color-muted: 118 113 105;
+    --color-line: 213 208 199;
+    --color-primary: 29 28 26;
+    --color-on-primary: 242 239 233;
+    --color-accent: 139 123 105;
+    --color-accent2: 139 123 105;
+
+    --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-serif: "Newsreader", ui-serif, Georgia, serif;
+    --display-tracking: -0.03em;
+
+    --space-section: clamp(86px, 11vw, 152px);
+    --gutter: clamp(20px, 5vw, 68px);
+
+    --radius-card: 2px;
+    --radius-button: 2px;
+    --radius-input: 2px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 1px 2px rgb(29 28 26 / 0.04), 0 12px 32px -18px rgb(29 28 26 / 0.18);
+    --shadow-elevated: 0 2px 5px rgb(29 28 26 / 0.06), 0 30px 60px -24px rgb(29 28 26 / 0.28);
+
+    --ease: cubic-bezier(0.19, 1, 0.22, 1);
+    --dur: 580ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: var(--font-body);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding-inline: var(--gutter); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .serif { font-family: var(--font-serif); }
+
+  .eyebrow {
+    font-family: var(--font-body); font-size: 12px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgb(var(--color-accent2)); font-weight: 500;
+    display: inline-flex; align-items: center; gap: 11px;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: rgb(var(--color-accent2)); }
+  .eyebrow.center { justify-content: center; }
+  .disp { font-family: var(--font-display); font-weight: 600; letter-spacing: var(--display-tracking); line-height: 1.04; }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18px); }
+
+  :focus-visible { outline: 2px solid rgb(var(--color-ink)); outline-offset: 3px; }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%; z-index: 80;
+    background: rgb(var(--color-ink));
+  }
+
+  /* ---------- buttons (recipe: solid-square) ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-body);
+    font-weight: 500; font-size: 14px; padding: 14px 26px; border-radius: var(--radius-button);
+    border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: transform var(--dur) var(--ease), background var(--dur) var(--ease),
+      border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .btn-primary { background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); }
+  .btn-primary:hover { background: rgb(58 54 50); transform: translateY(-1px); }
+  .btn-line { border-color: rgb(var(--color-ink) / .35); color: rgb(var(--color-ink)); background: transparent; }
+  .btn-line:hover { border-color: rgb(var(--color-ink)); }
+  .btn .arrow { transition: transform var(--dur) var(--ease); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     NAV
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 70;
+    background: rgb(var(--color-bg) / .85);
+    backdrop-filter: saturate(130%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: rgb(var(--color-line)); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 78px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.03em; }
+  .wordmark .glyph { width: 12px; height: 12px; background: rgb(var(--color-accent2)); transform: rotate(45deg); }
+  .nav-links { display: flex; align-items: center; gap: 34px; }
+  .nav-links a { font-size: 14px; color: rgb(var(--color-muted)); font-weight: 500; position: relative; transition: color var(--dur) var(--ease); }
+  .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -6px; height: 1.5px; background: rgb(var(--color-ink)); transition: right var(--dur) var(--ease); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-links a:hover::after { right: 0; }
+  .nav-actions { display: flex; align-items: center; gap: 14px; }
+  .nav-actions .btn { padding: 11px 22px; }
+  @media (max-width: 920px) { .nav-links { display: none; } }
+
+  /* ============================================================
+     HERO — asymmetric editorial: big type left, tall image right
+     ============================================================ */
+  .hero { padding-top: clamp(40px, 6vw, 76px); padding-bottom: clamp(40px, 6vw, 72px); }
+  .hero-top { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 30px; margin-bottom: clamp(28px, 4vw, 48px); }
+  @media (max-width: 760px) { .hero-top { grid-template-columns: 1fr; } }
+  .hero h1 { font-size: clamp(48px, 9vw, 132px); font-weight: 600; line-height: 0.95; max-width: 12ch; }
+  .hero h1 .serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; color: rgb(var(--color-accent2)); }
+  .hero-top .intro { max-width: 34ch; padding-bottom: 8px; }
+  .hero-top .intro p { color: rgb(var(--color-muted)); }
+  .hero-top .intro .btn { margin-top: 20px; }
+
+  .hero-media { position: relative; }
+  .hero-media .big { aspect-ratio: 21/9; overflow: hidden; box-shadow: var(--shadow-card); }
+  @media (max-width: 760px) { .hero-media .big { aspect-ratio: 4/3; } }
+  .hero-media .big img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 1px; background: rgb(var(--color-line)); }
+  @media (max-width: 620px) { .hero-strip { grid-template-columns: repeat(2, 1fr); } }
+  .hero-strip .cell { background: rgb(var(--color-bg)); padding: 22px 24px; }
+  .hero-strip .cell .k { font-family: var(--font-serif); font-size: 30px; font-weight: 500; }
+  .hero-strip .cell .v { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-top: 4px; }
+
+  /* ============================================================
+     LOGO BAR
+     ============================================================ */
+  .logos { padding: clamp(48px, 6vw, 72px) 0; border-bottom: 1px solid rgb(var(--color-line)); }
+  .logos .cap { text-align: center; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--color-muted)); }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 5vw, 64px); flex-wrap: wrap; margin-top: 28px; }
+  .logo-row .lm { font-family: var(--font-serif); font-size: 22px; color: rgb(var(--color-muted)); opacity: .7; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .logo-row .lm:hover { opacity: 1; color: rgb(var(--color-ink)); }
+
+  /* ============================================================
+     SERVICES — numbered
+     ============================================================ */
+  .services { padding: var(--space-section) 0; }
+  .services-head { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; margin-bottom: 56px; }
+  @media (max-width: 760px) { .services-head { grid-template-columns: 1fr; } }
+  .services-head h2 { font-size: clamp(32px, 4.4vw, 56px); }
+  .services-head p { color: rgb(var(--color-muted)); max-width: 42ch; }
+  .svc-list { border-top: 1px solid rgb(var(--color-ink)); }
+  .svc { display: grid; grid-template-columns: 90px 1.1fr 1.4fr auto; align-items: start; gap: 24px; padding: 36px 0; border-bottom: 1px solid rgb(var(--color-line)); transition: background var(--dur) var(--ease); }
+  @media (max-width: 820px) { .svc { grid-template-columns: 60px 1fr; gap: 8px 18px; } .svc .svc-d { grid-column: 2; } .svc .svc-x { display: none; } }
+  .svc:hover { background: rgb(var(--color-surface) / .5); }
+  .svc .svc-no { font-family: var(--font-serif); font-size: 24px; color: rgb(var(--color-accent2)); }
+  .svc .svc-t { font-family: var(--font-display); font-weight: 600; font-size: 24px; letter-spacing: -0.02em; }
+  .svc .svc-d { color: rgb(var(--color-muted)); font-size: 15px; }
+  .svc .svc-x { justify-self: end; color: rgb(var(--color-ink)); }
+
+  /* ============================================================
+     PROJECT GALLERY
+     ============================================================ */
+  .projects { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .5); border-block: 1px solid rgb(var(--color-line)); }
+  .proj-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 52px; flex-wrap: wrap; }
+  .proj-head h2 { font-size: clamp(32px, 4.4vw, 56px); margin-top: 14px; }
+  .proj-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; }
+  @media (max-width: 820px) { .proj-grid { grid-template-columns: repeat(2, 1fr); } }
+  .proj { position: relative; overflow: hidden; background: rgb(var(--color-surface-2)); }
+  .proj.tall { grid-column: span 4; aspect-ratio: 16/10; }
+  .proj.small { grid-column: span 2; aspect-ratio: 4/5; }
+  @media (max-width: 820px) { .proj.tall, .proj.small { grid-column: span 2; aspect-ratio: 4/3; } }
+  .proj img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.6s var(--ease); }
+  .proj:hover img { transform: scale(1.05); }
+  .proj .meta { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 24px; background: linear-gradient(to top, rgb(20 19 17 / .78), transparent); color: #fff; opacity: 0; transform: translateY(10px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .proj:hover .meta { opacity: 1; transform: translateY(0); }
+  .proj .meta .pt { font-family: var(--font-display); font-weight: 600; font-size: 20px; }
+  .proj .meta .pl { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(255 255 255 / .75); margin-top: 2px; }
+
+  /* ============================================================
+     STATEMENT — large serif pull quote with side image
+     ============================================================ */
+  .statement { padding: var(--space-section) 0; }
+  .stmt-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(40px, 6vw, 90px); align-items: center; }
+  @media (max-width: 860px) { .stmt-grid { grid-template-columns: 1fr; } }
+  .stmt-grid .big-q { font-family: var(--font-serif); font-weight: 400; font-size: clamp(28px, 4vw, 50px); line-height: 1.24; letter-spacing: -0.01em; }
+  .stmt-grid .big-q em { font-style: italic; color: rgb(var(--color-accent2)); }
+  .stmt-grid .ph { overflow: hidden; aspect-ratio: 4/5; box-shadow: var(--shadow-elevated); }
+  .stmt-grid .ph img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ============================================================
+     PROCESS STEPS
+     ============================================================ */
+  .process { padding: var(--space-section) 0; background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); }
+  .process-head { max-width: 600px; margin-bottom: 56px; }
+  .process-head .eyebrow { color: rgb(var(--color-accent2)); }
+  .process-head h2 { font-size: clamp(32px, 4.4vw, 56px); margin: 16px 0 0; }
+  .pgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgb(var(--color-on-primary) / .14); border: 1px solid rgb(var(--color-on-primary) / .14); }
+  @media (max-width: 860px) { .pgrid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 460px) { .pgrid { grid-template-columns: 1fr; } }
+  .pstep { background: rgb(var(--color-ink)); padding: 34px 28px; }
+  .pstep .no { font-family: var(--font-serif); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-accent2)); }
+  .pstep h3 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin: 14px 0 10px; letter-spacing: -0.02em; }
+  .pstep p { color: rgb(var(--color-on-primary) / .68); font-size: 14px; }
+
+  /* ============================================================
+     STATS BAND
+     ============================================================ */
+  .stats { padding: clamp(60px, 7vw, 96px) 0; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgb(var(--color-line)); border: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 760px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: rgb(var(--color-bg)); padding: 36px 28px; }
+  .stat .num { font-family: var(--font-serif); font-weight: 500; font-size: clamp(40px, 5vw, 64px); line-height: 1; }
+  .stat .num .suf { color: rgb(var(--color-accent2)); }
+  .stat .lbl { color: rgb(var(--color-muted)); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 12px; }
+
+  /* ============================================================
+     TESTIMONIAL
+     ============================================================ */
+  .quote { padding: var(--space-section) 0; border-top: 1px solid rgb(var(--color-line)); }
+  .quote-grid { display: grid; grid-template-columns: 260px 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; max-width: 980px; margin: 0 auto; }
+  @media (max-width: 720px) { .quote-grid { grid-template-columns: 1fr; } }
+  .quote-photo { overflow: hidden; aspect-ratio: 1; box-shadow: var(--shadow-card); }
+  .quote-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .quote blockquote { font-family: var(--font-serif); font-weight: 400; font-size: clamp(22px, 2.8vw, 34px); line-height: 1.36; }
+  .quote blockquote em { font-style: italic; color: rgb(var(--color-accent2)); }
+  .quote .by { margin-top: 24px; }
+  .quote .by .n { font-family: var(--font-display); font-weight: 600; }
+  .quote .by .r { color: rgb(var(--color-muted)); font-size: 14px; }
+
+  /* ============================================================
+     ENGAGEMENT TIERS / PRICING
+     ============================================================ */
+  .pricing { padding: var(--space-section) 0; background: rgb(var(--color-surface) / .5); border-block: 1px solid rgb(var(--color-line)); }
+  .pricing-head { max-width: 600px; margin: 0 auto 54px; text-align: center; }
+  .pricing-head h2 { font-size: clamp(32px, 4.4vw, 54px); margin: 16px 0 12px; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgb(var(--color-line)); border: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 900px) { .tiers { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
+  .tier { background: rgb(var(--color-bg)); padding: 38px 34px; display: flex; flex-direction: column; gap: 6px; }
+  .tier.pop { background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); }
+  .tier.pop .desc, .tier.pop ul li { color: rgb(var(--color-on-primary) / .76); }
+  .tier .badge-pop { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--color-accent2)); margin-bottom: 6px; }
+  .tier .tn { font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: -0.02em; }
+  .tier .desc { color: rgb(var(--color-muted)); font-size: 13px; min-height: 40px; }
+  .tier .price { font-family: var(--font-serif); font-weight: 500; font-size: 46px; margin: 12px 0 2px; }
+  .tier .price span { font-family: var(--font-body); font-size: 13px; color: rgb(var(--color-muted)); }
+  .tier.pop .price span { color: rgb(var(--color-on-primary) / .65); }
+  .tier ul { list-style: none; display: grid; gap: 12px; margin: 22px 0 28px; }
+  .tier ul li { display: flex; gap: 11px; font-size: 14px; align-items: flex-start; }
+  .tier ul li svg { flex: none; color: rgb(var(--color-accent2)); margin-top: 3px; }
+  .tier .btn { width: 100%; justify-content: center; margin-top: auto; }
+  .tier.pop .btn-line { border-color: rgb(var(--color-on-primary) / .4); color: rgb(var(--color-on-primary)); }
+  .tier.pop .btn-line:hover { border-color: rgb(var(--color-on-primary)); }
+
+  /* ============================================================
+     CTA
+     ============================================================ */
+  .cta { padding: var(--space-section) 0; }
+  .cta-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; border: 1px solid rgb(var(--color-line)); }
+  @media (max-width: 760px) { .cta-grid { grid-template-columns: 1fr; } }
+  .cta-grid .copy { padding: clamp(40px, 6vw, 72px); display: flex; flex-direction: column; justify-content: center; }
+  .cta-grid .copy h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(30px, 3.8vw, 50px); letter-spacing: -0.03em; }
+  .cta-grid .copy p { color: rgb(var(--color-muted)); margin: 16px 0 28px; max-width: 40ch; }
+  .cta-grid .copy .acts { display: flex; gap: 14px; flex-wrap: wrap; }
+  .cta-grid .pic { overflow: hidden; min-height: 320px; }
+  .cta-grid .pic img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: clamp(56px, 7vw, 88px) 0 40px; border-top: 1px solid rgb(var(--color-line)); }
+  .foot-top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 36px; }
+  @media (max-width: 860px) { .foot-top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+  .foot-brand .wordmark { margin-bottom: 14px; }
+  .foot-brand p { color: rgb(var(--color-muted)); font-size: 14px; max-width: 32ch; margin-bottom: 18px; }
+  .news { display: flex; gap: 8px; max-width: 340px; }
+  .news input { flex: 1; padding: 12px 14px; border-radius: var(--radius-input); border: 1px solid rgb(var(--color-line)); font-family: var(--font-body); font-size: 14px; background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); }
+  .news input::placeholder { color: rgb(var(--color-muted)); }
+  .news .btn { padding: 12px 18px; }
+  .foot-col h4 { font-family: var(--font-display); font-weight: 600; font-size: 14px; margin-bottom: 14px; }
+  .foot-col a { display: block; color: rgb(var(--color-muted)); font-size: 14px; padding: 5px 0; transition: color var(--dur) var(--ease); }
+  .foot-col a:hover { color: rgb(var(--color-ink)); }
+  .foot-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgb(var(--color-line)); flex-wrap: wrap; gap: 14px; }
+  .foot-bot .cp { color: rgb(var(--color-muted)); font-size: 13px; }
+  .foot-bot .soc { display: flex; gap: 10px; }
+  .foot-bot .soc a { width: 36px; height: 36px; border: 1px solid rgb(var(--color-line)); display: grid; place-items: center; color: rgb(var(--color-muted)); transition: all var(--dur) var(--ease); }
+  .foot-bot .soc a:hover { color: rgb(var(--color-ink)); border-color: rgb(var(--color-ink) / .4); }
+
+  /* ribbon */
+  .ribbon {
+    position: fixed; right: 14px; bottom: 14px; z-index: 90;
+    font-family: var(--font-body); font-size: 11px; letter-spacing: .06em;
+    background: rgb(var(--color-ink)); color: rgb(var(--color-on-primary)); padding: 8px 13px; border-radius: 999px;
+    box-shadow: var(--shadow-elevated); opacity: .94;
+  }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#" aria-label="Quartz Studio home">
+      <span class="glyph" aria-hidden="true"></span>
+      Quartz Studio
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#studio">Studio</a>
+      <a href="#engage">Engage</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-line magnetic" href="#contact">Start a project</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-top">
+      <h1 class="disp" data-hero>Rooms that<br>feel <span class="serif">considered</span>.</h1>
+      <div class="intro" data-hero>
+        <p class="lead">Quartz is an interior design studio working in warm, quiet, lasting materials. We shape homes and workspaces that age beautifully and ask nothing of you to keep them lovely.</p>
+        <a class="btn btn-primary magnetic" href="#work">See selected work <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+    <div class="hero-media" data-hero-media>
+      <div class="big"><img src="https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1600&q=80" alt="A minimal warm-toned living room with soft black accents and natural light"></div>
+      <div class="hero-strip">
+        <div class="cell"><div class="k">14</div><div class="v">Years in practice</div></div>
+        <div class="cell"><div class="k">90+</div><div class="v">Homes &amp; spaces</div></div>
+        <div class="cell"><div class="k">6</div><div class="v">Design awards</div></div>
+        <div class="cell"><div class="k">3</div><div class="v">Cities we work in</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ LOGO BAR ============================ -->
+<section class="logos">
+  <div class="wrap">
+    <p class="cap" data-reveal>As featured in</p>
+    <div class="logo-row" data-batch>
+      <span class="lm">Dwell</span>
+      <span class="lm">Elle Decoration</span>
+      <span class="lm">Architectural Digest</span>
+      <span class="lm">The Modern House</span>
+      <span class="lm">Wallpaper</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SERVICES ============================ -->
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="services-head" data-reveal>
+      <h2 class="disp">What we do, and how far we take it</h2>
+      <p>From a single room to a full home, we work at whatever depth suits the brief. Each engagement is scoped honestly and priced before we begin.</p>
+    </div>
+    <div class="svc-list" data-batch>
+      <div class="svc">
+        <span class="svc-no">01</span>
+        <span class="svc-t">Full interior design</span>
+        <span class="svc-d">Concept to completion: spatial planning, materials, joinery, lighting, and the final styling.</span>
+        <span class="svc-x"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="svc">
+        <span class="svc-no">02</span>
+        <span class="svc-t">Renovation &amp; build</span>
+        <span class="svc-d">We manage trades, drawings, and the programme so the finished space matches the visual exactly.</span>
+        <span class="svc-x"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="svc">
+        <span class="svc-no">03</span>
+        <span class="svc-t">Furniture &amp; styling</span>
+        <span class="svc-d">Sourcing, commissioning, and arranging the pieces that make a room feel finished, never staged.</span>
+        <span class="svc-x"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="svc">
+        <span class="svc-no">04</span>
+        <span class="svc-t">Design consultation</span>
+        <span class="svc-d">A focused session and a clear written direction for those who want to carry out the work themselves.</span>
+        <span class="svc-x"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PROJECTS ============================ -->
+<section class="projects" id="work">
+  <div class="wrap">
+    <div class="proj-head" data-reveal>
+      <div>
+        <span class="eyebrow">Selected work</span>
+        <h2 class="disp">A few rooms we are proud of</h2>
+      </div>
+      <a class="btn btn-line" href="#">View full portfolio</a>
+    </div>
+    <div class="proj-grid" data-batch>
+      <a class="proj tall" href="#">
+        <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1100&q=80" alt="A serene neutral-toned bedroom with linen and timber" loading="lazy">
+        <span class="meta"><span class="pt">Linden House</span><span class="pl">Full home · 2025</span></span>
+      </a>
+      <a class="proj small" href="#">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=700&q=80" alt="A warm minimal kitchen with soft black cabinetry" loading="lazy">
+        <span class="meta"><span class="pt">Apt. Sixteen</span><span class="pl">Kitchen · 2024</span></span>
+      </a>
+      <a class="proj small" href="#">
+        <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=700&q=80" alt="A calm study with a timber desk and stone shelving" loading="lazy">
+        <span class="meta"><span class="pt">The Reading Room</span><span class="pl">Study · 2024</span></span>
+      </a>
+      <a class="proj tall" href="#">
+        <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=1100&q=80" alt="An open-plan living space in warm neutral tones with sculptural lighting" loading="lazy">
+        <span class="meta"><span class="pt">Marsh Lane Loft</span><span class="pl">Renovation · 2025</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STATEMENT ============================ -->
+<section class="statement" id="studio">
+  <div class="wrap stmt-grid">
+    <div class="big-q serif" data-reveal>We design for the way a room is actually lived in. Quiet materials, <em>honest light</em>, and nothing that needs explaining. A good interior should feel inevitable, as though it could not have been any other way.</div>
+    <div class="ph" data-reveal><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80" alt="A textured plaster wall beside a sculptural armchair and floor lamp" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- ============================ PROCESS ============================ -->
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="process-head" data-reveal>
+      <span class="eyebrow">How we work</span>
+      <h2 class="disp">Four steps, no surprises</h2>
+    </div>
+    <div class="pgrid" data-batch>
+      <div class="pstep"><div class="no">Phase 01</div><h3>Listen</h3><p>We walk the space, learn how you live, and gather the references that already speak to you.</p></div>
+      <div class="pstep"><div class="no">Phase 02</div><h3>Shape</h3><p>Plans, materials, and a clear visual direction, presented as one considered scheme rather than endless options.</p></div>
+      <div class="pstep"><div class="no">Phase 03</div><h3>Make</h3><p>We manage the trades and the timeline, keeping you informed without making it your second job.</p></div>
+      <div class="pstep"><div class="no">Phase 04</div><h3>Settle</h3><p>Styling, the final details, and a handover so the space feels yours from the first evening.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STATS ============================ -->
+<section class="stats">
+  <div class="wrap">
+    <div class="stats-grid" data-batch>
+      <div class="stat"><div class="num"><span class="count" data-to="90">0</span><span class="suf">+</span></div><div class="lbl">Spaces completed</div></div>
+      <div class="stat"><div class="num"><span class="count" data-to="14">0</span></div><div class="lbl">Years in practice</div></div>
+      <div class="stat"><div class="num"><span class="count" data-to="6">0</span></div><div class="lbl">Design awards</div></div>
+      <div class="stat"><div class="num"><span class="count" data-to="100">0</span><span class="suf">%</span></div><div class="lbl">Referral or repeat</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TESTIMONIAL ============================ -->
+<section class="quote">
+  <div class="wrap quote-grid" data-reveal>
+    <div class="quote-photo">
+      <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80" alt="Portrait of Helena Brandt in a softly lit interior" loading="lazy">
+    </div>
+    <div>
+      <blockquote class="serif">"They listened more than they pitched. Two years on, the flat still feels <em>exactly right</em>, and people always ask who designed it before they ask anything else."</blockquote>
+      <div class="by">
+        <div class="n">Helena Brandt</div>
+        <div class="r">Linden House, private residence</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ENGAGEMENT ============================ -->
+<section class="pricing" id="engage">
+  <div class="wrap">
+    <div class="pricing-head" data-reveal>
+      <span class="eyebrow center">Ways to work with us</span>
+      <h2 class="disp">Three engagements, clearly scoped</h2>
+      <p class="lead">Every project starts with a fixed-fee discovery, so you know the shape of it before committing.</p>
+    </div>
+    <div class="tiers" data-batch>
+      <div class="tier">
+        <span class="badge-pop">Direction</span>
+        <div class="tn">The Consultation</div>
+        <div class="desc">For confident self-builders</div>
+        <div class="price">£950</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Half-day on-site session</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Written design direction</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> A starter sourcing list</li>
+        </ul>
+        <a class="btn btn-line" href="#contact">Enquire</a>
+      </div>
+      <div class="tier pop">
+        <span class="badge-pop">Most chosen</span>
+        <div class="tn">The Scheme</div>
+        <div class="desc">For a room or a single space</div>
+        <div class="price">From £6k</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Full concept &amp; materials</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Drawings &amp; specification</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Sourcing &amp; final styling</li>
+        </ul>
+        <a class="btn btn-line" href="#contact">Enquire</a>
+      </div>
+      <div class="tier">
+        <span class="badge-pop">End to end</span>
+        <div class="tn">The Full Project</div>
+        <div class="desc">For a whole home or workspace</div>
+        <div class="price">On request</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Design, build &amp; project run</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Bespoke joinery &amp; commissions</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Single point of contact</li>
+        </ul>
+        <a class="btn btn-line" href="#contact">Enquire</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CTA ============================ -->
+<section class="cta" id="contact">
+  <div class="wrap">
+    <div class="cta-grid" data-reveal>
+      <div class="copy">
+        <h2 class="disp">Tell us about your space</h2>
+        <p>Send us a few photographs and a sentence on how you would like to live in it. We will tell you honestly whether we are the right studio for it.</p>
+        <div class="acts">
+          <a class="btn btn-primary magnetic" href="#">Start a project <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="btn btn-line" href="#">Book a call</a>
+        </div>
+      </div>
+      <div class="pic"><img src="https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=900&q=80" alt="A warm minimal hallway with a stone bench and arched doorway" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="wordmark" href="#" aria-label="Quartz Studio home">
+          <span class="glyph" aria-hidden="true"></span>
+          Quartz Studio
+        </a>
+        <p>An interior design studio working in warm, quiet, lasting materials. Homes and workspaces that age beautifully.</p>
+        <form class="news" onsubmit="return false">
+          <label for="news-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+          <input id="news-email" type="email" placeholder="you@email.com" aria-label="Email for studio news" autocomplete="email">
+          <button class="btn btn-primary" type="submit">Subscribe</button>
+        </form>
+      </div>
+      <div class="foot-col">
+        <h4>Studio</h4>
+        <a href="#">Selected work</a><a href="#">Services</a><a href="#">Our process</a><a href="#">About</a><a href="#">Journal</a>
+      </div>
+      <div class="foot-col">
+        <h4>Engage</h4>
+        <a href="#">Consultation</a><a href="#">Room scheme</a><a href="#">Full project</a><a href="#">Fees</a><a href="#">FAQs</a>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <a href="#">Start a project</a><a href="#">Book a call</a><a href="#">Find the studio</a><a href="#">Press</a><a href="#">Careers</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span class="cp">© 2026 Quartz Studio. Considered interiors.</span>
+      <div class="soc">
+        <a href="#" aria-label="Quartz on Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Quartz on Pinterest"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7c-2 0-3.5 1.4-3.5 3.3 0 .9.4 1.8 1 2M10.7 13.6L9.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+        <a href="#" aria-label="Quartz on LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2"/><path d="M7 10v6M7 7v.01M11 16v-3a2 2 0 014 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="ribbon">NEXA Theme · Quartz · interiors</div>
+
+<!-- ===== GSAP (CDN) ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 8);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm = gsap.matchMedia();
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.from('[data-hero]', { y: 28, autoAlpha: 0, duration: 0.8, stagger: 0.12 })
+          .from('[data-hero-media]', { y: 40, autoAlpha: 0, duration: 0.95 }, '-=0.45');
+
+    /* parallax scrub on hero image */
+    var big = document.querySelector('.hero-media .big img');
+    if (big) {
+      gsap.to(big, { yPercent: -10, ease: 'none',
+        scrollTrigger: { trigger: '.hero-media', start: 'top bottom', end: 'bottom top', scrub: true } });
+    }
+
+    gsap.set('[data-reveal]', { y: 30, autoAlpha: 0 });
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 86%',
+      onEnter: function (els) { gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.85, stagger: 0.13, ease: 'power3.out', overwrite: true }); }
+    });
+
+    document.querySelectorAll('[data-batch]').forEach(function (grid) {
+      var kids = grid.children;
+      gsap.set(kids, { y: 26, autoAlpha: 0 });
+      ScrollTrigger.create({
+        trigger: grid, start: 'top 85%', once: true,
+        onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.09, ease: 'power3.out' }); }
+      });
+    });
+
+    runCounts(false);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], [data-hero-media], [data-reveal]', { clearProps: 'all', autoAlpha: 1, y: 0 });
+    document.querySelectorAll('[data-batch]').forEach(function (g) { gsap.set(g.children, { autoAlpha: 1, y: 0 }); });
+    runCounts(true);
+  });
+
+  function runCounts(reduced) {
+    document.querySelectorAll('.count').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-to'));
+      if (reduced) { el.textContent = to.toFixed(0); return; }
+      ScrollTrigger.create({
+        trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          var obj = { v: 0 };
+          gsap.to(obj, { v: to, duration: 1.4, ease: 'power2.out',
+            onUpdate: function () { el.textContent = Math.round(obj.v); },
+            onComplete: function () { el.textContent = to.toFixed(0); } });
+        }
+      });
+    });
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.2, y: (e.clientY - r.top - r.height / 2) * 0.28, duration: 0.4, ease: 'power3' });
+      });
+      btn.addEventListener('pointerleave', function () { gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power3' }); });
+    });
+  }
+})();
+</script>
+<script>
+/* === NEXA visibility failsafe === */
+(function(){
+  var SEL='h1,h2,h3,h4,h5,p,li,blockquote,[data-hero],[data-hero-media],[data-reveal],[data-batch] > *';
+  function isHidden(el){
+    var cs=getComputedStyle(el);
+    if(cs.visibility==='hidden') return true;
+    if(parseFloat(cs.opacity)<0.06) return true;
+    return false;
+  }
+  function force(el){
+    if(!isHidden(el)) return;
+    el.style.setProperty('opacity','1','important');
+    el.style.setProperty('visibility','visible','important');
+    el.style.setProperty('transform','none','important');
+  }
+  var els;
+  try{ els=[].slice.call(document.querySelectorAll(SEL)); }
+  catch(e){ els=[].slice.call(document.querySelectorAll('h1,h2,h3,h4,p')); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ var el=en.target; io.unobserve(el); setTimeout(function(){force(el);},1300); } });
+    },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(force); }
+  window.addEventListener('load',function(){ setTimeout(function(){
+    els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight*1.3) force(el); });
+  },2600); });
+})();
+</script>
+
+<a id="nexa-use-theme-btn" href="../../editor.html?theme=quartz&name=Quartz" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
+</body>
+</html>
