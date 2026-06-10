@@ -396,9 +396,12 @@ var FORMS=[['lead-basic','Basic lead'],['consult-detailed','Consultation'],['boo
 
 var qs=new URLSearchParams(location.search);
 var id=(qs.get('t')||'').replace(/[^a-z0-9-]/gi,'');
+var themeId=(qs.get('theme')||'').replace(/[^a-z0-9-]/gi,'');
+var isTheme=!id&&!!themeId;
+if(isTheme)id=themeId; // unify so id-based logic (boot, naming, publish, add-sections) keeps working
 var name=qs.get('name')||prettify(id);
 var restoreReq=qs.get('restore')==='1',restored=false;
-var file=id?('templates/'+id+'.html'):'';
+var file=isTheme?('theme-library/previews/'+id+'.html'):(id?('templates/'+id+'.html'):'');
 var iframe=document.getElementById('cv');
 var ready=false, pendingExport=false, pendingPublish=false;
 
@@ -1370,7 +1373,7 @@ if(!id){
   checkPublishConfig();
   iframe.src=file;
   // Safety net: if the iframe never posts ready (older cache), hide loader after load.
-  iframe.addEventListener('load',function(){setTimeout(function(){if(!ready){document.getElementById('cvLoad').style.display='none';ready=true;prefillText();}renderSections();},600);});
+  iframe.addEventListener('load',function(){setTimeout(function(){if(!ready){document.getElementById('cvLoad').style.display='none';ready=true;prefillText();}renderSections();if(isTheme&&!iframe._themeNoticeShown){iframe._themeNoticeShown=true;toast('Theme opened as a starting page. Edit text &amp; images, reorder or delete sections, then publish. (Drawer restyle controls apply to NEXA templates.)');}},600);});
 }
 </script>
 </body>

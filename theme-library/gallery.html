@@ -30,9 +30,14 @@
  .sw span{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
  .tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.04em;padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
- .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:12px;color:var(--muted)}
+ .thumb{display:block}
+ .fonts{font-size:12px;color:var(--muted);margin-top:12px}
+ .foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:999px;background:#eef1fb;color:#3a52c4}
- .open{font-weight:600;color:var(--accent);font-size:13px}
+ .open{font-weight:600;color:var(--accent);font-size:13px;text-decoration:none}
+ .open:hover{text-decoration:underline}
+ .use{font-weight:600;color:#fff;background:var(--accent);font-size:12.5px;padding:8px 13px;border-radius:999px;text-decoration:none;white-space:nowrap;transition:.15s}
+ .use:hover{filter:brightness(1.08);box-shadow:0 8px 18px -8px rgba(79,107,237,.6)}
  .filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:18px 0 2px}
  .fgroup{display:flex;gap:6px;flex-wrap:wrap}
  .fpill{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;padding:6px 13px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:#fff;cursor:pointer;transition:.15s;text-transform:capitalize}
@@ -47,7 +52,7 @@
 </style></head><body>
 <header><div class="wrap top">
  <div class="kick">NEXA Web Studio</div><h1>Design Theme Library</h1>
- <p class="sub">15 sector-originated, token-driven themes — each with a distinct layout, real imagery, and GSAP-powered motion. Click any theme to open its full live preview.</p>
+ <p class="sub">Sector-originated, token-driven themes — each with a distinct layout, real imagery, and GSAP-powered motion. Open a live preview, or hit <strong>Use this theme</strong> to start an editable landing page in the Studio.</p>
  <div class="meta"><div><div class="n" id="nThemes">15</div><div class="l">Themes</div></div><div><div class="n" id="nFamilies">6</div><div class="l">Families</div></div><div><div class="n">100%</div><div class="l">Token-driven</div></div></div>
 </div></header>
 <div class="wrap">
@@ -74,13 +79,15 @@
    var nn=('0'+(T.indexOf(t)+1)).slice(-2);
    var sw=Object.values(t.palette).map(function(c){return '<span style="background:'+c+'"></span>'}).join('');
    var tags=t.tags.slice(0,3).map(function(x){return '<span class="tag">'+x+'</span>'}).join('');
-   return '<a class="card" href="'+t.preview+'">'
-     +'<div class="thumb"><img loading="lazy" src="'+t.thumbnail+'" alt="'+t.name+' preview"></div>'
+   var ed='../editor.html?theme='+encodeURIComponent(t.id)+'&name='+encodeURIComponent(t.name);
+   return '<div class="card">'
+     +'<a class="thumb" href="'+t.preview+'" target="_blank" rel="noopener"><img loading="lazy" src="'+t.thumbnail+'" alt="'+t.name+' preview"></a>'
      +'<div class="body"><div class="row1"><h3>'+t.name+'</h3><span class="badge">'+t.mode+'</span></div>'
      +'<div class="sector"><span class="num">'+nn+'</span> · '+t.sector+'</div>'
      +'<div class="sw">'+sw+'</div><div class="tags">'+tags+'</div>'
-     +'<div class="foot"><span>'+t.fonts.display+' / '+t.fonts.body+'</span><span class="open">Open preview →</span></div>'
-     +'</div></a>';
+     +'<div class="fonts">'+t.fonts.display+' / '+t.fonts.body+'</div>'
+     +'<div class="foot"><a class="open" href="'+t.preview+'" target="_blank" rel="noopener">Open preview →</a><a class="use" href="'+ed+'">Use this theme →</a></div>'
+     +'</div></div>';
  }
 
  function families(){var s=[];T.forEach(function(t){if(s.indexOf(t.family)<0)s.push(t.family);});return s.sort();}
