@@ -134,6 +134,7 @@ body.dragging{cursor:grabbing!important;user-select:none}
     <button class="hbtn" id="textBtn" onclick="toggleTextEdit()" title="Toggle inline text editing">&#9998; Edit text</button>
     <button class="hbtn" onclick="previewPage()" title="Preview the page full-screen, as visitors see it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> Preview</button>
     <button class="hbtn" id="publishBtn" onclick="publishPage()" title="Publish to Vercel — hosting, SSL and CDN included" style="display:none">&#8599; Publish</button>
+    <button class="hbtn" id="hubspotBtn" onclick="exportHubspot()" title="Export this page as a HubSpot custom module (.module) with editable HubL fields">&#9670; HubSpot module</button>
     <button class="hbtn pri" onclick="exportHtml()">&#8681; Download HTML</button>
   </div>
 </div>
@@ -391,6 +392,8 @@ body.dragging{cursor:grabbing!important;user-select:none}
 
 <div class="toast" id="toast"></div>
 
+<script src="/lib/zip.js"></script>
+<script src="/lib/hubspot-convert.js"></script>
 <script>
 var THEMES=[['editorial','Editorial'],['minimal','Minimal'],['conversion','Conversion'],['luxury','Luxury'],['dark','Dark']];
 var HEROES=[['form-right','Form right'],['image-split','Image split'],['centred','Centred'],['video','Video']];
@@ -399,13 +402,16 @@ var FORMS=[['lead-basic','Basic lead'],['consult-detailed','Consultation'],['boo
 var qs=new URLSearchParams(location.search);
 var id=(qs.get('t')||'').replace(/[^a-z0-9-]/gi,'');
 var themeId=(qs.get('theme')||'').replace(/[^a-z0-9-]/gi,'');
+var importKey=(qs.get('import')||'').replace(/[^a-z0-9-]/gi,'');
 var isTheme=!id&&!!themeId;
+var isImport=!id&&!themeId&&!!importKey; // page brought in via import.html (srcdoc from localStorage)
 if(isTheme)id=themeId; // unify so id-based logic (boot, naming, publish, add-sections) keeps working
-var name=qs.get('name')||prettify(id);
+var name=qs.get('name')||(isImport?'Imported page':prettify(id));
+if(isImport)id=(name.toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'')||'imported')+'-import'; // synthetic id → autosave/publish/naming work
 var restoreReq=qs.get('restore')==='1',restored=false;
-var file=isTheme?('theme-library/previews/'+id+'.html'):(id?('templates/'+id+'.html'):'');
+var file=isTheme?('theme-library/previews/'+id+'.html'):(id&&!isImport?('templates/'+id+'.html'):'');
 var iframe=document.getElementById('cv');
-var ready=false, pendingExport=false, pendingPublish=false;
+var ready=false, pendingExport=false, pendingPublish=false, pendingHubspot=false;
 
 function prettify(s){return (s||'Template').replace(/^[0-9]+-/,'').replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
 function toast(m){var t=document.getElementById('toast');t.innerHTML=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show');},1900);}
@@ -782,6 +788,20 @@ function popReveal(){if(popEl){popEl.classList.add('nx-popup-open');toast('Pop-u
 
 // ---- export ----
 function exportHtml(){if(!ready){toast('Template still loading…');return;}pendingExport=true;send({type:'nexa:get-html'});toast('Preparing download…');}
+// ---- Export as a HubSpot custom module (.module zip: module.html/css, fields.json, meta.json) ----
+function exportHubspot(){if(!ready){toast('Still loading…');return;}pendingHubspot=true;send({type:'nexa:get-html'});toast('Building HubSpot module…');}
+async function buildHubspot(rawHtml){
+  try{
+    var full=await assemble(rawHtml); // self-contained (kit inlined, tracking baked) → styles travel into module.css
+    if(!window.NEXAHubSpot||!window.NEXAZip){toast('Converter not loaded — refresh and retry.');return;}
+    var res=window.NEXAHubSpot.convert(full,{name:name});
+    var bytes=window.NEXAZip.make(res.files);
+    var blob=new Blob([bytes],{type:'application/zip'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=res.moduleName+'.zip';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+    toast('HubSpot module ready — '+res.fieldCount+' editable fields. Unzip &amp; <b>hs upload</b> the .module folder.');
+  }catch(e){toast('Module export failed: '+e.message);}
+}
 // Assemble the final, self-contained page (inline kit, clean editor artifacts, bake custom code + tracking).
 async function assemble(html){
   try{
@@ -870,6 +890,7 @@ window.addEventListener('message',function(e){
   if(m.type==='nexa:select')routeSelect(m);
   if(m.type==='nexa:html'&&pendingExport){pendingExport=false;download(m.html);}
   if(m.type==='nexa:html'&&pendingPublish){pendingPublish=false;doPublish(m.html);}
+  if(m.type==='nexa:html'&&pendingHubspot){pendingHubspot=false;buildHubspot(m.html);}
 });
 
 // Pre-fill the hero-copy and footer inputs by reading the loaded template (same-origin on deploy).
@@ -1383,21 +1404,27 @@ function openDraft(k){var h=localStorage.getItem(k);if(!h){toast('Draft not foun
 function delDraft(k){var idx=loadDraftIndex();delete idx[k];localStorage.setItem('nexa-drafts',JSON.stringify(idx));localStorage.removeItem(k);renderDrafts();}
 
 // ---- boot ----
-if(!id){
-  document.getElementById('cvLoad').innerHTML='<p style="max-width:280px;text-align:center">No template selected. <a href="templates.html" style="color:var(--a);font-weight:600">Pick one from the gallery</a>.</p>';
+if(!id&&!isImport){
+  document.getElementById('cvLoad').innerHTML='<p style="max-width:280px;text-align:center">No template selected. <a href="templates.html" style="color:var(--a);font-weight:600">Pick one from the gallery</a>, or <a href="import.html" style="color:var(--a);font-weight:600">import your own HTML</a>.</p>';
 }else{
   document.getElementById('tname').textContent=name;
   document.title='NEXA Studio — '+name;
-  document.getElementById('openBtn').href=file;
+  if(isImport){document.getElementById('openBtn').style.display='none';}else{document.getElementById('openBtn').href=file;}
   populateAddTpl();
   renderPalette();
   populateFonts();
   renderKits();
   renderDrafts();
   checkPublishConfig();
+  if(isImport){
+    var ih=localStorage.getItem(importKey);
+    if(!ih){document.getElementById('cvLoad').innerHTML='<p style="max-width:300px;text-align:center">That import has expired. <a href="import.html" style="color:var(--a);font-weight:600">Import your HTML again</a>.</p>';}
+    else{iframe.srcdoc=ih;setTimeout(function(){if(!iframe._imgNotice){iframe._imgNotice=true;toast('Imported. Click any text or image to edit, reorder or delete sections, then Download or export a HubSpot module.');}},900);}
+  }else{
   iframe.src=file;
   // Safety net: if the iframe never posts ready (older cache), hide loader after load.
   iframe.addEventListener('load',function(){setTimeout(function(){if(!ready){document.getElementById('cvLoad').style.display='none';ready=true;prefillText();}renderSections();if(isTheme&&!iframe._themeNoticeShown){iframe._themeNoticeShown=true;toast('Theme opened as a starting page. Edit text &amp; images, reorder or delete sections, then publish. (Drawer restyle controls apply to NEXA templates.)');}},600);});
+  }
 }
 </script>
 </body>

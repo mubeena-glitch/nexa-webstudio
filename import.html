@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXA Web Studio — Import HTML</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟣</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--a:#9354ff;--a2:#656dfe;--bg:#f7f4ff;--card:#fff;--tx:#2a2340;--mut:#6b6480;--bd:#e6ddff;--lp:#f3eeff}
+*{box-sizing:border-box}
+body{margin:0;font-family:Poppins,system-ui,sans-serif;background:radial-gradient(1200px 600px at 80% -10%,#efe7ff,transparent),var(--bg);color:var(--tx);min-height:100vh}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.7);backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}
+.brand{font-weight:700;letter-spacing:.5px}.brand b{color:var(--a)}
+.toplink{color:var(--mut);text-decoration:none;font-size:13px;font-weight:500}.toplink:hover{color:var(--a)}
+.wrap{max-width:920px;margin:0 auto;padding:42px 24px 80px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--a);background:var(--lp);padding:5px 12px;border-radius:20px}
+h1{font-size:30px;margin:16px 0 8px;font-weight:700;letter-spacing:-.5px}
+.sub{color:var(--mut);font-size:15px;margin:0 0 30px;max-width:560px;line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px}
+.card h3{margin:0 0 4px;font-size:15px;font-weight:600}
+.card .note{color:var(--mut);font-size:12.5px;margin:0 0 14px}
+.drop{border:2px dashed var(--bd);border-radius:14px;padding:34px;text-align:center;cursor:pointer;transition:.15s;background:var(--lp)}
+.drop:hover,.drop.over{border-color:var(--a);background:#efe7ff}
+.drop .big{font-size:15px;font-weight:600;margin:8px 0 2px}
+.drop .small{font-size:12.5px;color:var(--mut)}
+.drop svg{color:var(--a)}
+textarea{width:100%;min-height:160px;border:1px solid var(--bd);border-radius:10px;padding:12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--tx);resize:vertical;background:#fcfbff}
+textarea:focus{outline:none;border-color:var(--a)}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--tx)}
+.inp{width:100%;border:1px solid var(--bd);border-radius:9px;padding:10px 12px;font-family:inherit;font-size:13px;color:var(--tx);background:#fcfbff}
+.inp:focus{outline:none;border-color:var(--a)}
+.row{display:flex;gap:14px;flex-wrap:wrap}.row .fld{flex:1;min-width:200px}
+.stats{display:none;gap:10px;flex-wrap:wrap;margin-top:16px}
+.stat{background:var(--lp);border-radius:10px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--a)}
+.stat span{color:var(--tx)}
+.actions{display:flex;gap:12px;align-items:center;margin-top:26px;flex-wrap:wrap}
+.btn{padding:12px 26px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:#fff;color:var(--tx);font-family:inherit}
+.btn:hover{border-color:var(--a);color:var(--a)}
+.btn.pri{background:var(--a);color:#fff;border-color:var(--a)}.btn.pri:hover{opacity:.9;color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed;border-color:var(--bd);color:var(--tx)}
+.err{color:#c0392b;font-size:13px;margin-top:12px;display:none}
+.filename{font-size:12.5px;color:var(--a);font-weight:600;margin-top:10px;display:none}
+.tab-hint{font-size:12px;color:var(--mut);margin:0 0 12px}
+</style>
+</head>
+<body>
+<div class="hd">
+  <div class="brand">NEXA <b>Studio</b></div>
+  <a class="toplink" href="/index.html">← Home</a>
+</div>
+
+<div class="wrap">
+  <span class="eyebrow"><span>◆</span> Import</span>
+  <h1>Bring your own HTML into the Studio</h1>
+  <p class="sub">Upload or paste any landing page. The Studio turns it into an editable project — swap text and images, reorder sections, then download, publish, or export it as a HubSpot module.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>1. Add your page</h3>
+      <p class="note">Drop an <b>.html</b> file, or paste the markup below. Scripts are stripped for safety; your styles and images are kept.</p>
+
+      <div class="drop" id="drop">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div class="big">Drop an HTML file here</div>
+        <div class="small">or click to choose a file</div>
+        <input type="file" id="file" accept=".html,.htm,text/html" hidden>
+      </div>
+      <div class="filename" id="filename"></div>
+
+      <p class="tab-hint" style="margin:18px 0 8px;font-weight:600;color:var(--tx)">…or paste HTML</p>
+      <textarea id="paste" placeholder="&lt;!DOCTYPE html&gt;&#10;&lt;html&gt; … &lt;/html&gt;"></textarea>
+    </div>
+
+    <div class="card">
+      <h3>2. Details</h3>
+      <p class="note">Optional, but a source URL lets us fix relative image paths so they load in the editor.</p>
+      <div class="row">
+        <div class="fld"><label>Project name</label><input class="inp" id="name" placeholder="e.g. Globant LP"></div>
+        <div class="fld"><label>Source URL (optional)</label><input class="inp" id="srcurl" placeholder="https://example.com/landing"></div>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn pri" id="go" onclick="openInEditor()" disabled>Convert &amp; open in editor →</button>
+    <button class="btn" id="analyze" onclick="analyze()">Preview what we detected</button>
+  </div>
+  <div class="err" id="err"></div>
+</div>
+
+<script src="/lib/import-normalize.js"></script>
+<script>
+var rawHtml='', fromFile='';
+var drop=document.getElementById('drop'), fileInput=document.getElementById('file'), paste=document.getElementById('paste');
+
+drop.onclick=function(){fileInput.click();};
+['dragover','dragenter'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');});});
+['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');});});
+drop.addEventListener('drop',function(e){var f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f)readFile(f);});
+fileInput.addEventListener('change',function(){var f=fileInput.files&&fileInput.files[0];if(f)readFile(f);});
+paste.addEventListener('input',function(){if(paste.value.trim()){rawHtml=paste.value;fromFile='';document.getElementById('filename').style.display='none';}refresh();});
+
+function readFile(f){
+  var r=new FileReader();
+  r.onload=function(){rawHtml=String(r.result||'');fromFile=f.name;paste.value='';
+    var fn=document.getElementById('filename');fn.textContent='✓ '+f.name;fn.style.display='block';
+    if(!document.getElementById('name').value)document.getElementById('name').value=f.name.replace(/\.html?$/i,'');
+    refresh();};
+  r.readAsText(f);
+}
+function currentHtml(){return (rawHtml||paste.value||'').trim();}
+function refresh(){var has=currentHtml().length>40;document.getElementById('go').disabled=!has;if(!has){document.getElementById('stats').style.display='none';}}
+function showErr(m){var e=document.getElementById('err');e.textContent=m;e.style.display=m?'block':'none';}
+
+function build(){
+  var html=currentHtml();
+  if(html.length<40){showErr('Add an HTML file or paste some markup first.');return null;}
+  showErr('');
+  try{
+    return window.NEXAImport.normalise(html,{
+      name:document.getElementById('name').value.trim(),
+      sourceUrl:document.getElementById('srcurl').value.trim()
+    });
+  }catch(e){showErr('Could not parse that HTML: '+e.message);return null;}
+}
+function analyze(){
+  var res=build();if(!res)return;
+  var s=res.stats,box=document.getElementById('stats');
+  box.innerHTML=
+    '<div class="stat"><span>'+s.sections+'</span> sections</div>'+
+    '<div class="stat"><span>'+s.headings+'</span> headings</div>'+
+    '<div class="stat"><span>'+s.images+'</span> images</div>'+
+    '<div class="stat"><span>'+s.forms+'</span> forms</div>';
+  box.style.display='flex';
+}
+function openInEditor(){
+  var res=build();if(!res)return;
+  var key='nexa-import-'+Date.now();
+  var name=(document.getElementById('name').value.trim()||res.title||'Imported page');
+  try{localStorage.setItem(key,res.html);}
+  catch(e){showErr('That page is too large for local storage. Try a smaller file.');return;}
+  location.href='/editor.html?import='+encodeURIComponent(key)+'&name='+encodeURIComponent(name);
+}
+</script>
+</body>
+</html>
