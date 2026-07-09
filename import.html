@@ -36,6 +36,7 @@ textarea:focus{outline:none;border-color:var(--a)}
 .stats{display:none;gap:10px;flex-wrap:wrap;margin-top:16px}
 .stat{background:var(--lp);border-radius:10px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--a)}
 .stat span{color:var(--tx)}
+.relwarn{display:none;margin-top:14px;padding:11px 14px;border-radius:10px;background:#fff5e6;border:1px solid #ffd591;color:#8a5a00;font-size:12.5px;line-height:1.5}
 .actions{display:flex;gap:12px;align-items:center;margin-top:26px;flex-wrap:wrap}
 .btn{padding:12px 26px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:#fff;color:var(--tx);font-family:inherit}
 .btn:hover{border-color:var(--a);color:var(--a)}
@@ -82,6 +83,7 @@ textarea:focus{outline:none;border-color:var(--a)}
         <div class="fld"><label>Source URL (optional)</label><input class="inp" id="srcurl" placeholder="https://example.com/landing"></div>
       </div>
       <div class="stats" id="stats"></div>
+      <div class="relwarn" id="relwarn"></div>
     </div>
   </div>
 
@@ -134,11 +136,23 @@ function analyze(){
     '<div class="stat"><span>'+s.sections+'</span> sections</div>'+
     '<div class="stat"><span>'+s.headings+'</span> headings</div>'+
     '<div class="stat"><span>'+s.images+'</span> images</div>'+
-    '<div class="stat"><span>'+s.forms+'</span> forms</div>';
+    '<div class="stat"><span>'+s.forms+'</span> forms</div>'+
+    (s.revealFixed?'<div class="stat"><span>'+s.revealFixed+'</span> animated blocks un-hidden</div>':'');
   box.style.display='flex';
+  warnRelative(s);
+}
+// A page with relative image/CSS paths and no Source URL will 404 those assets.
+function warnRelative(s){
+  var w=document.getElementById('relwarn');
+  if(s.relativeAssets>0){
+    w.innerHTML='&#9888; This page has <b>'+s.relativeAssets+'</b> asset'+(s.relativeAssets>1?'s':'')+' with relative paths (images / stylesheets). '+
+      'They won’t load in the editor unless you add the <b>Source URL</b> above (the page it came from) so we can resolve them.';
+    w.style.display='block';
+  }else{w.style.display='none';}
 }
 function openInEditor(){
   var res=build();if(!res)return;
+  warnRelative(res.stats);
   var key='nexa-import-'+Date.now();
   var name=(document.getElementById('name').value.trim()||res.title||'Imported page');
   try{localStorage.setItem(key,res.html);}
