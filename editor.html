@@ -392,6 +392,49 @@ body.dragging{cursor:grabbing!important;user-select:none}
 
 <div class="toast" id="toast"></div>
 
+<div class="hs-modal" id="hsModal">
+  <div class="hs-panel">
+    <div class="hs-head">
+      <div><div class="hs-title">HubSpot modules</div><div class="hs-sub" id="hsCount"></div></div>
+      <button class="hs-x" onclick="closeHsModal()" title="Close">&#10005;</button>
+    </div>
+    <div class="hs-body" id="hsBody"></div>
+    <div class="hs-foot">
+      <span class="hs-hint" id="hsHint"></span>
+      <button class="hbtn pri" onclick="downloadHsZip()">&#8681; Download all modules (.zip)</button>
+    </div>
+  </div>
+</div>
+<style>
+.hs-modal{position:fixed;inset:0;background:rgba(24,18,43,.5);backdrop-filter:blur(3px);z-index:60;display:none;align-items:center;justify-content:center;padding:26px}
+.hs-modal.open{display:flex}
+.hs-panel{background:#fff;border-radius:16px;width:min(920px,96vw);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 70px rgba(30,20,60,.35);overflow:hidden}
+.hs-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #ece4ff}
+.hs-title{font-weight:700;font-size:16px;color:#2a2340}
+.hs-sub{font-size:12.5px;color:#8b7fb0;margin-top:2px}
+.hs-x{border:none;background:#f3eeff;color:#6b6480;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px}
+.hs-x:hover{background:#e9ddff;color:#9354ff}
+.hs-body{padding:16px 22px;overflow:auto}
+.hs-mod{border:1px solid #ece4ff;border-radius:12px;margin-bottom:14px;overflow:hidden}
+.hs-mod-h{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;background:#f7f4ff}
+.hs-mod-name{font-weight:600;font-size:13.5px;color:#5b2cd6;font-family:ui-monospace,Menlo,Consolas,monospace}
+.hs-mod-cnt{font-size:11.5px;font-weight:600;color:#8b7fb0}
+.hs-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.hs-tbl th{text-align:left;padding:8px 15px;color:#8b7fb0;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #f0ebfb}
+.hs-tbl td{padding:8px 15px;border-bottom:1px solid #f6f2ff;vertical-align:top;color:#2a2340}
+.hs-fl{font-weight:500;max-width:200px}
+.hs-fv{color:#6b6480;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px}
+.hs-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600}
+.hs-text{background:#e9ddff;color:#6b3fd6}.hs-richtext{background:#dfe4ff;color:#4453d6}
+.hs-image{background:#ffe6d6;color:#c26a2a}.hs-url{background:#d9f0e4;color:#2a8f5e}
+.hs-code{margin:8px 15px 14px}
+.hs-code summary{cursor:pointer;font-size:12px;color:#9354ff;font-weight:600}
+.hs-code pre{margin:8px 0 0;background:#1e1b2e;color:#d7cfff;padding:12px;border-radius:8px;font-size:11px;line-height:1.5;overflow:auto;max-height:240px;white-space:pre-wrap;word-break:break-word}
+.hs-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;border-top:1px solid #ece4ff;background:#fbfaff}
+.hs-hint{font-size:12px;color:#8b7fb0;line-height:1.5}
+.hs-hint code{background:#f3eeff;color:#6b3fd6;padding:1px 5px;border-radius:4px;font-size:11px}
+</style>
+
 <script src="/lib/zip.js"></script>
 <script src="/lib/hubspot-convert.js"></script>
 <script>
@@ -790,17 +833,42 @@ function popReveal(){if(popEl){popEl.classList.add('nx-popup-open');toast('Pop-u
 function exportHtml(){if(!ready){toast('Template still loading…');return;}pendingExport=true;send({type:'nexa:get-html'});toast('Preparing download…');}
 // ---- Export as a HubSpot custom module (.module zip: module.html/css, fields.json, meta.json) ----
 function exportHubspot(){if(!ready){toast('Still loading…');return;}pendingHubspot=true;send({type:'nexa:get-html'});toast('Building HubSpot module…');}
+var hsResult=null;
 async function buildHubspot(rawHtml){
   try{
     var full=await assemble(rawHtml); // self-contained (kit inlined, tracking baked) → styles travel into module.css
     if(!window.NEXAHubSpot||!window.NEXAZip){toast('Converter not loaded — refresh and retry.');return;}
-    var res=window.NEXAHubSpot.convert(full,{name:name});
-    var bytes=window.NEXAZip.make(res.files);
-    var blob=new Blob([bytes],{type:'application/zip'});
-    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=res.moduleName+'.zip';
-    document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
-    toast('HubSpot module ready — '+res.fieldCount+' editable fields. Unzip &amp; <b>hs upload</b> the .module folder.');
+    hsResult=window.NEXAHubSpot.convert(full,{name:name});
+    renderHsPreview(hsResult);
   }catch(e){toast('Module export failed: '+e.message);}
+}
+var HS_TYPE_LABEL={text:'Text',richtext:'Rich text',image:'Image',url:'Link'};
+function renderHsPreview(res){
+  document.getElementById('hsCount').textContent=res.moduleCount+' module'+(res.moduleCount>1?'s':'')+' · '+res.fieldCount+' editable fields';
+  var body=document.getElementById('hsBody');
+  body.innerHTML=res.modules.map(function(m,i){
+    var rows=m.fields.map(function(f){
+      var val=(f.type==='image')?(f['default'].src||''):(f.type==='url')?(f['default'].href||''):String(f['default']||'');
+      return '<tr><td class="hs-fl">'+escHtml(f.label)+'</td><td><span class="hs-badge hs-'+f.type+'">'+(HS_TYPE_LABEL[f.type]||f.type)+'</span></td><td class="hs-fv">'+escHtml(val.slice(0,70))+'</td></tr>';
+    }).join('');
+    if(!rows)rows='<tr><td colspan="3" class="hs-fv" style="opacity:.6">No editable fields in this section.</td></tr>';
+    return '<div class="hs-mod">'+
+      '<div class="hs-mod-h"><span class="hs-mod-name">&#128230; '+escHtml(m.folder)+'</span><span class="hs-mod-cnt">'+m.fields.length+' fields</span></div>'+
+      '<table class="hs-tbl"><thead><tr><th>Field</th><th>Type</th><th>Current value</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+      '<details class="hs-code"><summary>View module.html (HubL)</summary><pre>'+escHtml(m.moduleHtml)+'</pre></details>'+
+    '</div>';
+  }).join('');
+  document.getElementById('hsHint').innerHTML='One HubSpot module per section. Download, then <b>hs upload</b> each <code>.module</code> folder (README included).';
+  document.getElementById('hsModal').classList.add('open');
+}
+function closeHsModal(){document.getElementById('hsModal').classList.remove('open');}
+function downloadHsZip(){
+  if(!hsResult)return;
+  var bytes=window.NEXAZip.make(hsResult.files);
+  var blob=new Blob([bytes],{type:'application/zip'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=hsResult.zipName;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+  toast('Downloaded '+hsResult.moduleCount+' HubSpot modules &mdash; '+hsResult.fieldCount+' editable fields.');
 }
 // Assemble the final, self-contained page (inline kit, clean editor artifacts, bake custom code + tracking).
 async function assemble(html){
