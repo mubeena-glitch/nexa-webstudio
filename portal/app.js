@@ -2,7 +2,7 @@
    One client journey: brief chat -> prompt -> sitemap -> concepts (choose or mix) -> wireframes -> inner pages
    -> submit -> build -> staging -> plan and payment -> live. Every gate is an explicit approval, logged with a time.
    State is kept in this browser only (localStorage). Prices and terms below are EXAMPLES for NEXA leadership to set:
-   they all live in PRICE, INCL and TERMS so they can be changed in one place. */
+   they all live in catalog.js so they can be changed in one place. */
 (function () {
   "use strict";
   const $ = id => document.getElementById(id);
@@ -15,7 +15,7 @@
   /* ---------------- state ---------------- */
   const fresh = () => ({ a: {}, stage: "brief", editing: null, prompt: "", promptAsks: [], sitemap: null, concepts: { ready: false, sel: null, mode: "pick", mix: null, notes: {}, view: null },
     wf: null, inner: { ready: false, tab: 0 }, submittedAt: null, build: 0, changes: [], plan: null, paid: false, hostNow: null, live: false, log: [],
-    rounds: { concept: 0, inner: 0, staging: 0 }, need: {}, terms: false, billing: "monthly", invoices: [], requests: [], usedHours: 0, view: "project" });
+    rounds: { concept: 0, inner: 0, staging: 0 }, need: {}, terms: false, billing: "monthly", invoices: [], requests: [], usedHours: 0, view: "project", model: "monthly" });
   let S;
   try { S = JSON.parse(localStorage.getItem(KEY) || "null") || fresh(); } catch (e) { S = fresh(); }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
@@ -23,47 +23,58 @@
   const toast = t => { const el = $("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove("on"), 2600); };
 
   /* ---------------- the brief ---------------- */
-  const SECTORS = ["Real estate", "Hospitality", "Healthcare", "Education", "Finance", "Technology", "Retail", "Food and drink", "Professional services", "Government", "Other"];
-  const EXPERIENCE = [["AI-generated images", "Original imagery made for your brand"], ["AI-generated video", "Short films for hero sections"], ["3D elements", "Interactive 3D objects or scenes"], ["Immersive scroll storytelling", "The page unfolds as you scroll"], ["Page transitions", "Smooth movement between pages"], ["Micro-animations", "Small touches on buttons and cards"]];
-  const ADDONS = [["SEO setup", "Keywords, meta, schema and a technical check"], ["Analytics and tracking", "GA4, Tag Manager, conversion events"], ["More motion", "Richer animation across the site"], ["Copywriting", "We write the words for every page"], ["Translation", "Your site in more languages"], ["Integrations", "Connect your CRM, bookings, payments and more"], ["Priority care", "Same-day replies and 5 extra change hours a month"]];
-  const INTEGRATIONS = ["HubSpot CRM", "Salesforce", "Booking engine", "Payment gateway", "Newsletter", "Live chat or chatbot", "Custom API"];
-  const PAGES_DEF = { "Website": 8, "Landing page": 1, "Microsite": 4, "Online store": 12, "Members portal": 10 };
+  const C = window.NexaCatalog, LIB = () => window.NexaLibrary || { THEMES: [], TEMPLATES: [] };
+  const SECTORS = ["Real estate", "Hospitality", "Tourism", "Events", "Healthcare", "Education", "Finance", "Technology", "Retail", "Food and drink", "Automotive", "Professional services", "Government", "Non-profit", "Energy and industry", "Media and entertainment", "Other"];
+  const EXPERIENCE = C.EXPERIENCE.map(x => [x[0], x[1]]);
+  const PAGES_DEF = Object.fromEntries(C.TYPES.map(t => [t.v, t.pages]));
 
   const Q = [
     { id: "name", ask: () => "Hello, I'm Web Studio. Let's shape your project together. Answer what you can and skip anything you're not sure about. What should I call you?", type: "text", ph: "Your name" },
     { id: "company", ask: a => `Nice to meet you${a.name ? ", " + a.name : ""}. Which company or brand is this for?`, type: "text", ph: "Company or brand" },
     { id: "email", ask: () => "Where should we send updates about your project?", type: "email", ph: "name@company.com" },
-    { id: "type", ask: () => "What are we building?", type: "single", opts: ["Website", "Landing page", "Microsite", "Online store", "Members portal"] },
+    { id: "type", ask: () => "What are we building? Pick the closest; we shape the rest together.", type: "pick", opts: C.TYPES.map(t => [t.v, t.d, t.g, t.label]) },
+    { id: "users", ask: () => "Who will log in or use it?", sub: "Pick everyone who needs access.", type: "multi", opts: C.USERS, cond: a => C.lineOf(a.type) === "platform" },
+    { id: "pfeatures", ask: () => "Which of these does the platform need?", sub: "Each adds build time. We confirm everything with you in a scoping workshop.", type: "cards", opts: C.PFEATURES.map(x => [x[0], x[1]]), cond: a => C.lineOf(a.type) === "platform" },
+    { id: "data", ask: () => "Where does the data or content come from?", type: "multi", opts: C.DATA_SRC, cond: a => C.lineOf(a.type) === "platform" },
+    { id: "residency", ask: () => "Does the data need to stay in the UAE?", type: "single", opts: C.RESIDENCY, cond: a => C.lineOf(a.type) === "platform" },
     { id: "sector", ask: () => "Which sector are you in?", type: "single", opts: SECTORS },
-    { id: "pages", ask: a => `Roughly how many pages will the ${(a.type || "site").toLowerCase()} need? A guess is fine; we'll firm it up in the sitemap.`, type: "slider", min: 1, max: 40, def: a => PAGES_DEF[a.type] || 8 },
-    { id: "goals", ask: () => "What should it achieve? Pick all that apply.", type: "multi", opts: ["Generate leads", "Sell online", "Bookings", "Build the brand", "Inform and educate", "Recruit", "Launch a product"] },
+    { id: "pages", ask: a => `Roughly how many pages will the ${(a.type || "site").toLowerCase()} need? A guess is fine; we'll firm it up in the sitemap.`, type: "slider", min: 1, max: 60, def: a => PAGES_DEF[a.type] || 8 },
+    { id: "goals", ask: () => "What should it achieve? Pick all that apply.", type: "multi", opts: C.GOALS },
     { id: "audience", ask: () => "Who is it for? Describe your ideal visitor in a sentence.", type: "text", ph: "For example: families in Dubai looking for their first home" },
-    { id: "style", ask: () => "Which style feels most like you?", type: "single", opts: ["Minimal", "Luxury", "Simple", "Retro", "Artistic", "Editorial", "Bold"] },
-    { id: "experience", ask: () => "Any of these experiences? They lift the site and move you up a plan.", type: "cards", opts: EXPERIENCE },
-    { id: "motion", ask: () => "How much movement do you want?", type: "single", opts: ["Subtle", "Balanced", "Expressive"] },
+    { id: "template", ask: () => "Want to start from one of our proven landing pages? They are tested to convert and make the build even faster.", sub: "Pick one to start from, or design from scratch. Preview opens the full page.", type: "templates", cond: a => C.lineOf(a.type) === "lp" },
+    { id: "style", ask: () => "Which style feels most like you?", type: "pick", opts: C.STYLES.map(x => [x.v, x.d, null, x.label]) },
+    { id: "looks", ask: () => "Now pick up to three looks you like from our design library.", sub: "Designs from the NEXA studio. Filter by family. We use your picks as direction, never as a copy.", type: "themes" },
+    { id: "work", ask: () => "Here is some of our own work. Anything you like?", sub: "Pick any that inspire you, then tell us what you like about each.", type: "work" },
+    { id: "experience", ask: () => "Any of these experiences? They lift the site and can move you up a plan.", type: "cards", opts: EXPERIENCE },
+    { id: "motion", ask: () => "How much movement do you want?", type: "pick", opts: C.MOTION.map(m => [m[0], m[1]]) },
     { id: "brandMode", ask: () => "Let's talk brand. Where should your colours and fonts come from?", type: "single", opts: [["upload", "I'll upload my brand files"], ["site", "Take it from my current website"], ["suggest", "Suggest a look for me"], ["manual", "I'll enter colours and fonts"]] },
     { id: "brandFiles", ask: () => "Upload your brand guidelines, logo or fonts.", sub: "PDF, images or font files. In this prototype only the file names are kept.", type: "files", cond: a => a.brandMode === "upload" },
     { id: "currentSite", ask: () => "What's your current website address?", type: "url", ph: "https://", cond: a => a.brandMode === "site" },
     { id: "colours", ask: () => "Pick your brand colours, main colour first.", type: "colours", cond: a => a.brandMode === "manual" },
     { id: "fonts", ask: () => "And your fonts, if you know them.", type: "fonts", cond: a => a.brandMode === "manual" },
-    { id: "refs", ask: () => "Any websites you love? Add up to five and tell us what you like about each.", type: "urls" },
+    { id: "refs", ask: () => "Any other websites you love? Add up to five and tell us what you like about each.", type: "urls" },
     { id: "content", ask: () => "How ready is your content?", type: "single", opts: ["Copy and images are ready", "Some of it is ready", "We need help with all of it"] },
-    { id: "languages", ask: () => "Which languages?", type: "multi", opts: ["English", "Arabic", "French", "Other"] },
-    { id: "stack", ask: () => "Which platform should we build on?", sub: "Not sure? Choose Recommend for me and we'll advise.", type: "single", opts: ["Recommend for me", "HubSpot CMS", "WordPress", "Webflow", "Shopify", "Custom build (Next.js)"] },
+    { id: "languages", ask: () => "Which languages?", type: "multi", opts: C.LANGUAGES },
+    { id: "stack", ask: () => "Which platform should we build on?", sub: "Not sure? Use our recommendation, worked out from your answers so far.", type: "pick", opts: C.STACKS.map(x => [x[0], x[1]]), info: a => stackInfo(a) },
+    { id: "stackSetup", ask: a => (C.SETUP[a.stack] || {}).ask || "", type: "single", get opts() { return (C.SETUP[S.a.stack] || { opts: [] }).opts; }, info: a => setupInfo(a), cond: a => !!C.SETUP[a.stack] },
     { id: "domain", ask: () => "Do you already have a domain name?", type: "single", opts: ["Yes, I have one", "No, help me get one"] },
     { id: "hosting", ask: () => "When it's ready, how should we put it live?", type: "single", opts: [["nexa", "NEXA hosts it for me"], ["dns", "I'll add the DNS records you send me"], ["access", "I'll give you access to my domain and hosting"], ["later", "Decide later"]] },
     { id: "timeline", ask: () => "When do you need it?", type: "single", opts: ["As soon as possible", "Within a month", "In 1 to 3 months", "I'm flexible"] },
-    { id: "addons", ask: () => "Last choices. Any add-ons?", sub: "Each add-on is a small monthly amount on top of your plan.", type: "cards", opts: ADDONS },
-    { id: "integrations", ask: () => "Which systems should we connect?", type: "multi", opts: INTEGRATIONS, cond: a => (a.addons || []).includes("Integrations") },
+    { id: "addons", ask: () => "Last choices. Pick any add-ons.", sub: "Monthly prices shown. If you pay once, the one-time price applies; ongoing services stay monthly.", type: "addons" },
+    { id: "integrations", ask: () => "Which systems should we connect?", type: "multi", opts: C.INTEGRATIONS, cond: a => (a.addons || []).includes("Integrations") },
     { id: "transLangs", ask: () => "Which languages should we translate into?", type: "text", ph: "For example: Arabic, French", cond: a => (a.addons || []).includes("Translation") },
     { id: "notes", ask: () => "Anything else we should know?", type: "textarea", ph: "Competitors, must-haves, things to avoid…" }
   ];
-  const LBL = { name: "Your name", company: "Company or brand", email: "Email for updates", type: "Building", sector: "Sector", pages: "Pages", goals: "Goals", audience: "Audience", style: "Style", experience: "Experiences", motion: "Motion", brandMode: "Brand source", brandFiles: "Brand files", currentSite: "Current website", colours: "Colours", fonts: "Fonts", refs: "References", content: "Content", languages: "Languages", stack: "Platform", domain: "Domain", hosting: "Going live", timeline: "Timing", addons: "Add-ons", integrations: "Integrations", transLangs: "Translate into", notes: "Notes" };
+  const LBL = { name: "Your name", company: "Company or brand", email: "Email for updates", type: "Building", sector: "Sector", pages: "Pages", goals: "Goals", audience: "Audience", style: "Style", experience: "Experiences", motion: "Motion", brandMode: "Brand source", brandFiles: "Brand files", currentSite: "Current website", colours: "Colours", fonts: "Fonts", refs: "References", content: "Content", languages: "Languages", stack: "Platform", domain: "Domain", hosting: "Going live", timeline: "Timing", addons: "Add-ons", integrations: "Integrations", transLangs: "Translate into", notes: "Notes", users: "Who logs in", pfeatures: "Platform features", data: "Data from", residency: "Data residency", template: "Starting template", looks: "Looks you like", work: "NEXA work you like", stackSetup: "Platform set-up" };
   const optVal = o => Array.isArray(o) ? o[0] : o, optLbl = o => Array.isArray(o) ? o[1] : o;
   const live = () => Q.filter(q => !q.cond || q.cond(S.a));
   const nextQ = () => live().find(q => !(q.id in S.a));
   const fmtAns = (q, v) => {
     if (v === null || v === undefined || (Array.isArray(v) && !v.length) || v === "") return "Skipped";
+    if (q.type === "pick") { const o = q.opts.find(x => x[0] === v); return (o && o[3] ? o[3] : v) + (q.id === "stack" && S.a.stackAuto ? " (recommended)" : ""); }
+    if (q.type === "templates") { if (v === "scratch") return "Design from scratch"; const t = LIB().TEMPLATES.find(x => x.id === v); return t ? t.name : v; }
+    if (q.type === "themes") return v.map(id => (LIB().THEMES.find(x => x.id === id) || { name: id }).name).join(", ");
+    if (q.type === "work") return v.map(id => (C.WORK.find(x => x.id === id) || { name: id }).name).join(", ");
     if (q.type === "single") { const o = q.opts.find(x => optVal(x) === v); return o ? optLbl(o) : v; }
     if (Array.isArray(v)) {
       if (q.type === "urls") return v.map(r => r.url + (r.note ? " (" + r.note + ")" : "")).join(", ");
@@ -76,74 +87,101 @@
   };
 
   /* ---------------- plan ---------------- */
-  const TIERS = [
-    { id: "essential", name: "Essential", desc: "Clean, focused sites" },
-    { id: "growth", name: "Growth", desc: "Bigger sites, more features" },
-    { id: "signature", name: "Signature", desc: "Immersive, integrated, bespoke" }
-  ];
+  /* EXAMPLE commercial model, from catalog.js. NEXA leadership sets the real numbers. */
+  const TIERS = C.TIERS, PRICE = C.PRICE, INCL = C.INCL, LIM = C.LIM;
+  /* Plan score. The kind of project (landing page, website, platform) sets the starting plan; size and features move it up. */
   function score(a) {
     const r = [], add = (l, p) => { if (p) r.push([l, p]); };
-    const pg = a.pages || PAGES_DEF[a.type] || 1;
-    add(pg + " pages", pg <= 10 ? 1 : pg <= 20 ? 2.5 : pg <= 30 ? 3 : 4);
-    add({ "Online store": "Online store", "Members portal": "Members area" }[a.type], { "Online store": 2, "Members portal": 3 }[a.type] || 0);
-    const ex = a.experience || [], EXP = { "AI-generated images": 1, "AI-generated video": 2, "3D elements": 3, "Immersive scroll storytelling": 3, "Page transitions": 1, "Micro-animations": .5 };
+    const T = C.TYPE[a.type] || C.TYPE.Website, line = T.line, pg = a.pages || T.pages || 1;
+    add(pg + (pg === 1 ? " page" : " pages"), pg <= 5 ? .5 : pg <= 10 ? 1 : pg <= 20 ? 2.5 : pg <= 30 ? 3 : 4);
+    add(T.label || T.v, T.pts);
+    const ex = a.experience || [], EXP = Object.fromEntries(C.EXPERIENCE.map(x => [x[0], x[3]]));
     ex.forEach(e => add(e, EXP[e]));
-    add("Expressive motion", a.motion === "Expressive" ? 1 : 0);
-    add(a.style + " style", ["Luxury", "Artistic"].includes(a.style) ? .5 : 0);
+    add(a.motion + " motion", { Expressive: 1, Cinematic: 2 }[a.motion] || 0);
+    add(a.style + " style", ["Luxury", "Artistic", "Dark and cinematic"].includes(a.style) ? .5 : 0);
     add(a.stack, { "Custom build (Next.js)": 2, "Shopify": 1 }[a.stack] || 0);
-    (a.integrations || []).forEach(i => add(i, ["Payment gateway", "Booking engine", "Custom API"].includes(i) ? 1.5 : 1));
+    (a.integrations || []).forEach(i => add(i, C.HEAVY_INT.includes(i) ? 1.5 : 1));
+    const PF = Object.fromEntries(C.PFEATURES.map(x => [x[0], x[3]])); (a.pfeatures || []).forEach(f => add(f, PF[f]));
     const langs = (a.languages || []).length;
     add("Extra languages", langs > 1 ? (langs - 1) * ((a.languages || []).includes("Arabic") ? 1.5 : 1) : 0);
     const pts = r.reduce((s, x) => s + x[1], 0);
-    const pgTier = pg <= LIM.pages[0] ? 0 : pg <= LIM.pages[1] ? 1 : 2, ni = (a.integrations || []).length, inTier = ni <= 1 ? 0 : ni <= 3 ? 1 : 2;
-    const big = ex.filter(e => ["AI-generated video", "3D elements", "Immersive scroll storytelling"].includes(e)).length, exTier = big === 0 ? 0 : big === 1 ? 1 : 2;
-    const lgTier = langs <= 1 ? 0 : langs <= 2 ? 1 : 2;
-    return { pts, r, tier: Math.max(pts < 4 ? 0 : pts < 9 ? 1 : 2, pgTier, inTier, exTier, lgTier), pgTier };
+    if (line === "platform") return { pts, r, tier: 4, line };
+    const ni = (a.integrations || []).length, big = ex.filter(e => (C.EXPERIENCE.find(x => x[0] === e) || [])[4]).length;
+    const c = Math.max(pts < 4 ? 0 : pts < 9 ? 1 : 2, pg <= 10 ? 0 : pg <= 25 ? 1 : 2, ni <= 1 ? 0 : ni <= 3 ? 1 : 2, big === 0 ? 0 : big === 1 ? 1 : 2, langs <= 1 ? 0 : langs <= 2 ? 1 : 2);
+    const tier = line === "lp" && c === 0 && pg <= LIM.pages[0] ? 0 : c + 1;
+    return { pts, r, tier: Math.min(3, tier), line };
   }
-  /* EXAMPLE commercial model (AED, monthly, excluding 5% VAT). NEXA leadership sets the real numbers. */
-  const PRICE = { plans: [1490, 2990, 5490], addons: { "SEO setup": 990, "Analytics and tracking": 390, "More motion": 490, "Copywriting": 690, "Translation": 590, "Integrations": 390, "Priority care": 790 },
-    extraRound: 350, extraHour: 250, vat: 0.05, minMonths: 12, annualPaysMonths: 10 };
-  const INCL = [
-    ["Pages", "Up to 10", "Up to 25", "Up to 40"], ["Languages", "1", "2", "Up to 4"], ["Integrations", "1", "Up to 3", "Unlimited"],
-    ["3D, immersive and AI video", "No", "One of them", "All"], ["Change rounds on concepts", "1", "2", "3"], ["Change rounds on staging", "2", "3", "4"],
-    ["Changes after launch", "2 hours a month", "5 hours a month", "10 hours a month"], ["We reply within", "2 working days", "1 working day", "Same working day"],
-    ["Hosting, SSL, backups, uptime checks", "Included", "Included", "Included"], ["Monthly performance report", "No", "Included", "Included"]];
-  const LIM = { pages: [10, 25, 40], hours: [2, 5, 10], concept: [1, 2, 3], inner: [1, 2, 3], staging: [2, 3, 4] };
-  const TERMS = [
-    `Monthly plan with a ${PRICE.minMonths}-month minimum, then month to month. Pay yearly and pay ${PRICE.annualPaysMonths} months for 12.`,
-    "Building starts once the first month is paid and we have your content and access.",
-    "Each approval in this portal is final for that step. Changes after an approval are change requests, quoted before any work starts.",
-    `Your plan includes a set number of change rounds per step. Extra rounds are AED ${PRICE.extraRound} each.`,
-    `Your domain and content are yours from day one. The design and code pass to you once ${PRICE.minMonths} months are paid, or earlier by paying the remaining months.`,
-    "Prices exclude 5% VAT. Monthly invoices are issued on the same date each month."];
+  /* Which plans to offer for this kind of project. */
+  const tierWindow = () => ({ lp: [0, 1, 2], site: [1, 2, 3], platform: [3, 4] })[C.lineOf(S.a.type)] || [1, 2, 3];
+  const MODEL_NAME = Object.fromEntries(C.MODELS.map(m => [m[0], m[1]]));
+  function terms() {
+    const md = S.model || "monthly", L = [];
+    if (md === "monthly") L.push(`Monthly plan with a ${PRICE.minMonths}-month minimum, then month to month. Pay yearly and pay ${PRICE.annualPaysMonths} months for 12. Hosting, maintenance and your monthly change hours are included.`, "Building starts once the first month is paid and we have your content and access.");
+    else L.push(`One-time build: ${Math.round(PRICE.deposit * 100)}% to start, the rest before go-live. Building starts once the deposit is paid and we have your content and access.`,
+      md === "onceCare" ? `Care plan from go-live: hosting, maintenance (updates, security patches, backups, uptime checks) and your monthly change hours. ${PRICE.minMonths}-month minimum, then month to month.` : `No maintenance plan: we fix any defect in our build for ${PRICE.warrantyDays} days after go-live. After that, changes and updates are AED ${PRICE.extraHour} an hour, quoted first. Hosting is yours to arrange, or add a care plan at any time.`);
+    L.push("Each approval in this portal is final for that step. Changes after an approval are change requests, quoted before any work starts.",
+      `Your plan includes a set number of change rounds per step. Extra rounds are AED ${PRICE.extraRound} each.`,
+      md === "monthly" ? `Your domain and content are yours from day one. The design and code pass to you once ${PRICE.minMonths} months are paid, or earlier by paying the remaining months.` : "Your domain and content are yours from day one. The design and code are yours from the final payment.",
+      "Licences for third-party platforms (for example HubSpot, Shopify, Webflow or plugins) are paid to the provider and are not part of our price.",
+      "Prices exclude 5% VAT.");
+    return L;
+  }
   const aed = n => "AED " + Math.round(n).toLocaleString("en-GB");
   const tierOf = () => S.plan == null ? score(S.a).tier : S.plan;
-  function monthly(t) {
-    const a = S.a, ad = (a.addons || []).map(x => {
-      let n = PRICE.addons[x] || 0, l = x;
-      if (x === "Integrations") { const k = Math.max(1, (a.integrations || []).length); n *= k; l = `Integrations (${k})`; }
-      if (x === "Translation") { const k = Math.max(1, String(a.transLangs || "").split(/[,&]| and /).filter(z => z.trim()).length); n *= k; l = `Translation (${k} language${k === 1 ? "" : "s"})`; }
-      return [l, n];
+  function addonLines() {
+    const a = S.a; return (a.addons || []).map(x => {
+      const A = C.ADDON[x] || { m: 0, o: null }; let k = 1, l = x;
+      if (x === "Integrations") { k = Math.max(1, (a.integrations || []).length); l = `Integrations (${k})`; }
+      if (x === "Translation") { k = Math.max(1, String(a.transLangs || "").split(/[,&]| and /).filter(z => z.trim()).length); l = `Translation (${k} language${k === 1 ? "" : "s"})`; }
+      return { l, m: A.m * k, o: A.o == null ? null : A.o * k };
     });
-    const sub = PRICE.plans[t] + ad.reduce((s, x) => s + x[1], 0);
+  }
+  function monthly(t) {
+    const ad = addonLines().map(x => [x.l, x.m]), sub = PRICE.plans[t] + ad.reduce((s, x) => s + x[1], 0);
     return { plan: PRICE.plans[t], ad, sub, vat: sub * PRICE.vat, total: sub * (1 + PRICE.vat) };
   }
+  /* The price in a payment model. up: paid before go-live; rec: each month after go-live; dueNow: today. All include VAT. */
+  function quote(t, md) {
+    md = md || S.model || "monthly"; const v = 1 + PRICE.vat, L = addonLines();
+    if (md === "monthly") { const m = monthly(t); return { md, lines: [[TIERS[t].name + " plan", m.plan], ...m.ad], recLines: [], up: m.total, rec: m.total, dueNow: m.total, vat: m.vat }; }
+    const lines = [[TIERS[t].name + " build", PRICE.once[t]], ...L.filter(x => x.o != null).map(x => [x.l, x.o])];
+    const recLines = [...(md === "onceCare" ? [["Care plan", PRICE.care[t]]] : []), ...L.filter(x => x.o == null).map(x => [x.l, x.m])];
+    const up = lines.reduce((s, x) => s + x[1], 0), rec = recLines.reduce((s, x) => s + x[1], 0);
+    return { md, lines, recLines, up: up * v, rec: rec * v, dueNow: up * v * PRICE.deposit, vat: up * PRICE.vat, recVat: rec * PRICE.vat };
+  }
+  const hoursFor = t => (S.model || "monthly") === "once" ? 0 : LIM.hours[t];
+  function priceLine(t) {
+    const q = quote(t), f = TIERS[t].from ? "from " : "";
+    return q.md === "monthly" ? `${f}${aed(q.rec)} a month including VAT` : `${f}${aed(q.up)} one-time including VAT${q.rec ? `, then ${aed(q.rec)} a month` : ""}`;
+  }
+  function priceBox(t) {
+    const q = quote(t), f = TIERS[t].from ? "From " : "", h = LIM.hours[t], hrsTxt = `${h} change hour${h === 1 ? "" : "s"} a month`;
+    const rows = q.lines.map(([l, n]) => `<div><span>${esc(l)}</span><span>${f}${aed(n)}</span></div>`).join("");
+    if (q.md === "monthly") return `<div class="money">${rows}<div><span>VAT 5%</span><span>${aed(q.vat)}</span></div><div class="tot"><b>Monthly total</b><b>${f}${aed(q.rec)}</b></div></div><p class="pnote">Build, hosting, maintenance and ${hrsTxt} included. ${PRICE.minMonths}-month minimum. Nothing large up front.</p>`;
+    const rec = q.recLines.map(([l, n]) => `<div><span>${esc(l)}</span><span>${aed(n)}</span></div>`).join("");
+    return `<div class="money">${rows}<div><span>VAT 5%</span><span>${aed(q.vat)}</span></div><div class="tot"><b>One-time total</b><b>${f}${aed(q.up)}</b></div>${rec ? `<div class="sub2"><span class="lbl">Then each month</span></div>${rec}<div><span>VAT 5%</span><span>${aed(q.recVat)}</span></div><div class="tot"><b>Monthly total</b><b>${aed(q.rec)}</b></div>` : ""}</div><p class="pnote">${q.md === "onceCare" ? `Care plan: hosting, maintenance and ${hrsTxt}.` : `No maintenance: a ${PRICE.warrantyDays}-day fix guarantee, then ${aed(PRICE.extraHour)} an hour. Hosting is yours to arrange.`} ${Math.round(PRICE.deposit * 100)}% to start, the rest before go-live.</p>`;
+  }
   /* Build time in working hours. A landing page is 2 to 4 hours end to end; pages after the first reuse the same
-     system, so they add far less (about 45 minutes each up to 10 pages, 30 minutes after that). Features add on top. */
+     system, so they add far less (about 45 minutes each up to 10 pages, 30 minutes after that). Features add on top.
+     Platforms carry their own base hours and are shown in weeks for the first release. */
   function est(a) {
-    const pg = Math.max(1, S.sitemap ? S.sitemap.length : (a.pages || PAGES_DEF[a.type] || 1)), r = [], add = (l, h) => { if (h) r.push([l, h]); };
+    const T = C.TYPE[a.type] || C.TYPE.Website, pg = Math.max(1, S.sitemap ? S.sitemap.length : (a.pages || T.pages || 1)), r = [], add = (l, h) => { if (h) r.push([l, h]); };
     add("First page, set-up, checks and go-live", 2.5);
     add(`${pg - 1} more page${pg === 2 ? "" : "s"}`, Math.min(pg - 1, 9) * .75 + Math.max(0, pg - 10) * .5);
-    const EX = { "AI-generated images": 1, "AI-generated video": 3, "3D elements": 6, "Immersive scroll storytelling": 6, "Page transitions": 1, "Micro-animations": .5 };
-    (a.experience || []).forEach(e => add(e, EX[e]));
-    add("Expressive motion", a.motion === "Expressive" ? 2 : 0);
-    add({ "Online store": "Shop and checkout", "Members portal": "Members area and logins" }[a.type], { "Online store": 6, "Members portal": 10 }[a.type] || 0);
+    add(T.label || T.v, T.h);
+    if (a.template && a.template !== "scratch") add("Starting from a proven template", -1);
+    const EX = Object.fromEntries(C.EXPERIENCE.map(x => [x[0], x[2]])); (a.experience || []).forEach(e => add(e, EX[e]));
+    add(a.motion + " motion", C.MOTION_H[a.motion] || 0);
+    const PF = Object.fromEntries(C.PFEATURES.map(x => [x[0], x[2]])); (a.pfeatures || []).forEach(f => add(f, PF[f]));
     add(a.stack, { "Custom build (Next.js)": 4, "Shopify": 2 }[a.stack] || 0);
-    (a.integrations || []).forEach(i => add(i, ["Payment gateway", "Booking engine", "Custom API"].includes(i) ? 4 : 2));
+    (a.integrations || []).forEach(i => add(i, C.HEAVY_INT.includes(i) ? 4 : 2));
     const langs = Math.max(0, (a.languages || []).length - 1); add("Extra languages", langs * pg * .3 + ((a.languages || []).includes("Arabic") ? 2 : 0));
-    const ad = a.addons || []; add("Copywriting", ad.includes("Copywriting") ? pg * .5 : 0); add("SEO setup", ad.includes("SEO setup") ? 2 : 0); add("Analytics and tracking", ad.includes("Analytics and tracking") ? 1.5 : 0); add("More motion", ad.includes("More motion") ? 2 : 0);
-    const lo = r.reduce((s, x) => s + x[1], 0), hi = lo * (lo <= 6 ? 1.5 : 1.3);
-    const text = hi <= 8 ? `${Math.max(2, Math.floor(lo))} to ${Math.max(4, Math.ceil(hi))} hours` : (() => { const d1 = Math.max(1, Math.round(lo / 8)), d2 = Math.max(d1 + 1, Math.ceil(hi / 8)); return `${d1} to ${d2} working days`; })();
+    (a.addons || []).forEach(x => { const A = C.ADDON[x]; if (!A) return; add(x, /copywriting/i.test(x) ? pg * .5 : A.h); });
+    const lo = Math.max(2, r.reduce((s, x) => s + x[1], 0)), hi = lo * (lo <= 6 ? 1.5 : 1.3);
+    let text;
+    if (hi <= 8) text = `${Math.max(2, Math.floor(lo))} to ${Math.max(4, Math.ceil(hi))} hours`;
+    else if (hi <= 80) { const d1 = Math.max(1, Math.round(lo / 8)), d2 = Math.max(d1 + 1, Math.ceil(hi / 8)); text = `${d1} to ${d2} working days`; }
+    else { const w1 = Math.max(2, Math.round(lo / 40)), w2 = Math.max(w1 + 1, Math.ceil(hi / 40)); text = `${w1} to ${w2} weeks for the first release`; }
     return { lo, hi, text, r, pg };
   }
   const roundsLeft = k => LIM[k][tierOf()] - S.rounds[k];
@@ -170,7 +208,7 @@
     const sc = score(S.a), chosen = S.plan == null ? sc.tier : S.plan;
     $("planname").textContent = TIERS[chosen].name + (S.plan == null ? " (recommended)" : "");
     $("pmark").style.left = Math.min(98, Math.max(2, sc.pts / 14 * 100)) + "%";
-    $("tiers").innerHTML = TIERS.map((t, k) => `<button class="tier ${k === sc.tier ? "rec" : ""} ${k === chosen ? "sel" : ""}" type="button" data-tier="${k}" aria-pressed="${k === chosen}">${k === sc.tier ? `<span class="tag">Recommended</span>` : `<span class="tag" style="visibility:hidden">.</span>`}<b>${t.name}</b><small>${t.desc}</small><small><b style="font-size:12px;color:var(--ink)">${aed(PRICE.plans[k])}</b> a month</small></button>`).join("");
+    $("tiers").innerHTML = tierWindow().map(k => [TIERS[k], k]).map(([t, k]) => `<button class="tier ${k === sc.tier ? "rec" : ""} ${k === chosen ? "sel" : ""}" type="button" data-tier="${k}" aria-pressed="${k === chosen}">${k === sc.tier ? `<span class="tag">Recommended</span>` : `<span class="tag" style="visibility:hidden">.</span>`}<b>${t.name}</b><small>${t.desc}</small><small><b style="font-size:12px;color:var(--ink)">${t.from ? "from " : ""}${aed(PRICE.plans[k])}</b> a month</small></button>`).join("");
     const note = $("plnote");
     if (chosen < sc.tier) {
       const top = sc.r.slice().sort((x, y) => y[1] - x[1]).filter(x => !/pages$/.test(x[0])).slice(0, 3).map(x => x[0]);
@@ -187,12 +225,9 @@
     $("side").innerHTML = `
       <section class="card"><h3>Your project</h3><div class="kv">${rows.length ? rows.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("") : `<p style="margin:0;color:var(--muted)">Your answers appear here as you go.</p>`}</div>
         ${a.type ? `<div class="eta" style="margin-top:12px;padding:12px 14px"><div><span class="lbl">Build time</span><br><b style="font-size:18px">${e.text}</b></div><span style="font-size:11.5px;color:var(--ink2);flex:1 1 140px">From when we have your content and access.</span></div>` : ""}</section>
-      <section class="card"><h3>Monthly plan <span class="lbl" style="float:right;color:var(--warn)">Example prices</span></h3><div class="money">
-        <div><b>${TIERS[chosen].name} plan</b><b>${aed(m.plan)}</b></div>
-        ${m.ad.map(([l, n]) => `<div><span>+ ${esc(l)}</span><span>${aed(n)}</span></div>`).join("")}
-        <div><span>VAT 5%</span><span>${aed(m.vat)}</span></div>
-        <div style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><b>Monthly total</b><b>${aed(m.total)}</b></div>
-      </div><p style="font-size:12px;color:var(--muted);margin:10px 0 0">One monthly price covers the build, hosting, security, backups and small changes. ${PRICE.minMonths}-month minimum. No large bill up front.</p></section>
+      <section class="card"><h3>Your price <span class="lbl" style="float:right;color:var(--warn)">Example prices</span></h3>
+        <div class="mtabs">${C.MODELS.map(([k, l]) => `<button type="button" data-model="${k}" aria-pressed="${(S.model || "monthly") === k}">${l}</button>`).join("")}</div>
+        ${priceBox(chosen)}</section>
       <section class="card"><h3>Need a person?</h3><p style="margin:0 0 10px;font-size:13px;color:var(--ink2)">Most things are done right here, but a person is always one click away.</p><div class="row2"><button class="btn" type="button" id="helpcall">Book a 15-minute call</button><button class="skip" type="button" id="helpmsg">Message the team</button></div></section>
       <section class="card"><h3>Approvals</h3>${S.log.length ? `<ul class="log">${S.log.slice().reverse().slice(0, 5).map(l => `<li><div>${esc(l.what)}<small>${when(l.t)}${l.by ? " · " + esc(l.by) : ""}</small></div></li>`).join("")}</ul>${S.log.length > 5 ? `<p class="mut" style="margin:8px 0 0;font-size:12px">And ${S.log.length - 5} earlier, all in your record.</p>` : ""}<div class="row2" style="margin-top:10px"><button class="skip" type="button" id="record">Download my project record</button></div>` : `<p style="margin:0;color:var(--muted);font-size:13px">Every step you approve is recorded here with the time and your name, so we always build exactly what you signed off.</p>`}</section>`;
   }
@@ -215,23 +250,64 @@
       case "colours": { const st = (NC.STYLE[S.a.style] || NC.STYLE.Simple).pal, c = v || [st[1], st[0], st[3]]; return `<div class="sw">${["Main brand colour", "Dark or text colour", "Light background"].map((l, i) => `<label>${l}<input type="color" data-col="${i}" value="${esc(c[i] || "#ffffff")}"></label>`).join("")}</div>`; }
       case "fonts": { const f = v || {}; return `<div class="row2"><input class="in" id="fh" placeholder="Headings font, for example Playfair Display" value="${esc(f.head || "")}" style="flex:1 1 220px"><input class="in" id="fb" placeholder="Body font, for example Inter" value="${esc(f.body || "")}" style="flex:1 1 220px"></div>`; }
       case "files": return `<input type="file" id="qin" multiple><div class="files" id="qfiles">${(v || []).map(esc).join(", ")}</div>`;
+      case "pick": return pickHtml(q, v);
+      case "addons": return addonsHtml(v);
+      case "themes": return themesHtml(v);
+      case "templates": return templatesHtml(v);
+      case "work": return workHtml(v);
       case "urls": { const L = (v && v.length ? v : [{ url: "", note: "" }]); return `<div style="display:flex;flex-direction:column;gap:8px" id="urls">${L.map((r, i) => `<div class="row2"><input class="in" data-url="${i}" placeholder="https://" value="${esc(r.url)}" style="flex:1 1 220px"><input class="in" data-note="${i}" placeholder="What you like about it" value="${esc(r.note)}" style="flex:1 1 220px"></div>`).join("")}</div>${L.length < 5 ? `<button class="skip" type="button" id="addurl" style="align-self:flex-start">+ Add another</button>` : ""}`; }
     }
     return "";
   }
+  /* Rich choice controls: grouped cards, add-ons with prices, the design library, templates and NEXA work. */
+  function pickHtml(q, v) {
+    const gs = [...new Set(q.opts.map(o => o[2] || ""))];
+    return gs.map(g => `${g ? `<span class="lbl gh">${esc(g)}</span>` : ""}<div class="cards">${q.opts.filter(o => (o[2] || "") === g).map(o => `<button class="opt" type="button" data-pick="${esc(o[0])}" aria-pressed="${v === o[0]}"><b>${esc(o[3] || o[0])}</b><span>${esc(o[1])}</span></button>`).join("")}</div>`).join("");
+  }
+  function addonsHtml(v) {
+    const sel = v || [], gs = [...new Set(C.ADDONS.map(x => x[2]))];
+    return gs.map(g => `<span class="lbl gh">${esc(g)}${g === "AI" ? " · from NEXA AI Lab" : ""}</span><div class="cards">${C.ADDONS.filter(x => x[2] === g).map(([n, d, , m, o]) => `<button class="opt" type="button" data-tog="${esc(n)}" aria-pressed="${sel.includes(n)}"><b>${esc(n)}</b><span>${esc(d)}</span><span class="pr">+ ${aed(m)} a month${o != null ? ` · or ${aed(o)} once` : ""}</span></button>`).join("")}</div>`).join("");
+  }
+  function themesHtml(v) {
+    const sel = v || [], T = LIB().THEMES, fams = [...new Set(T.map(t => t.family))], f = draft._fam || C.STYLE_FAMILY[S.a.style] || "all";
+    const list = f === "all" ? T : T.filter(t => t.family === f);
+    return `<div class="chips fam">${["all", ...fams].map(x => `<button class="chip" type="button" data-tfam="${x}" aria-pressed="${x === f}">${x === "all" ? "All " + T.length : x[0].toUpperCase() + x.slice(1)}</button>`).join("")}</div>
+      <div class="gal">${list.map(t => `<button class="gcard" type="button" data-tog="${esc(t.id)}" aria-pressed="${sel.includes(t.id)}"><span class="gimg"><img src="/portal/gal/theme-${esc(t.id)}.jpg" alt="" loading="lazy" onerror="this.remove()"></span><span class="gm"><b>${esc(t.name)}</b><small>${esc(t.sector)}</small><i class="dots">${t.pal.map(c => `<em style="background:${esc(c)}"></em>`).join("")}</i></span><span class="tick" aria-hidden="true">&#10003;</span></button>`).join("")}</div>
+      <p class="mut gsel">${sel.length} of 3 picked${sel.length ? ": " + sel.map(id => esc((T.find(t => t.id === id) || { name: id }).name)).join(", ") : ""}</p>`;
+  }
+  const SECTOR_IND = { "Real estate": ["Real Estate", "Architecture", "Interior Design", "Construction"], "Hospitality": ["Hospitality", "Travel", "Wellness", "F&B"], "Tourism": ["Travel", "Hospitality"], "Events": ["Events"], "Healthcare": ["Healthcare", "Dental", "Wellness", "Beauty"], "Education": ["Education", "Childcare", "Coaching"], "Finance": ["Finance", "Insurance"], "Technology": ["SaaS / Tech"], "Retail": ["E-commerce", "Beauty"], "Food and drink": ["F&B"], "Automotive": ["Automotive"], "Professional services": ["Professional Services", "Legal", "Recruitment", "Coaching"], "Non-profit": ["Non-profit"], "Energy and industry": ["Energy", "Construction"], "Media and entertainment": ["Creative", "Events"] };
+  function templatesHtml(v) {
+    const T = LIB().TEMPLATES, inds = SECTOR_IND[S.a.sector] || [], all = draft._tall || !inds.length || !T.some(t => inds.includes(t.industry));
+    const list = all ? T : T.filter(t => inds.includes(t.industry));
+    return `<div class="gal tpl">${list.map(t => `<div class="gcard${v === t.id ? " on" : ""}"><button type="button" data-pick="${esc(t.id)}" aria-pressed="${v === t.id}"><span class="gimg"><img src="/templates/_thumbs/${esc(t.id)}.jpg" alt="" loading="lazy" onerror="this.remove()"></span><span class="gm"><b>${esc(t.name)}</b><small>${esc(t.industry)} · ${esc(t.goal)}</small></span></button><a class="gprev" href="/templates/${esc(t.id)}.html" target="_blank" rel="noopener">Preview</a></div>`).join("")}
+      <div class="gcard scratch${v === "scratch" ? " on" : ""}"><button type="button" data-pick="scratch" aria-pressed="${v === "scratch"}"><span class="gm"><b>Design from scratch</b><small>A fully custom design, made for your brand.</small></span></button></div></div>${!all ? `<button class="skip" type="button" id="tall">See all ${T.length} templates</button>` : ""}`;
+  }
+  function workHtml(v) {
+    const sel = v || [], likes = draft.workLikes = draft.workLikes || S.a.workLikes || {};
+    return `<div class="gal work">${C.WORK.map(w => `<div class="gcard${sel.includes(w.id) ? " on" : ""}"><button type="button" data-tog="${w.id}" aria-pressed="${sel.includes(w.id)}"><span class="gimg"><img src="/portal/gal/work-${w.id}.jpg" alt="" loading="lazy" onerror="this.remove()"></span><span class="gm"><b>${esc(w.name)}</b><small>${esc(w.what)}</small><span class="tags">${w.tags.map(x => `<i>${esc(x)}</i>`).join("")}</span></span><span class="tick" aria-hidden="true">&#10003;</span></button>${sel.includes(w.id) ? `<div class="likes"><span class="lbl">What do you like about it?</span><div class="chips">${C.LIKES.map(l => `<button class="chip sm" type="button" data-like="${w.id}|${l}" aria-pressed="${(likes[w.id] || []).includes(l)}">${l}</button>`).join("")}</div></div>` : ""}<a class="gprev" href="${esc(w.url)}" target="_blank" rel="noopener">Visit the live site</a></div>`).join("")}</div>`;
+  }
+  function stackInfo(a) {
+    const [st, why] = C.recStack(a);
+    return `<div class="recbox"><span class="lbl p">Our recommendation for you</span><b>${esc(st)}</b><ul>${why.map(w => `<li>${esc(w)}</li>`).join("")}</ul><button class="btn pri" type="button" data-pick="Recommend for me">Use ${esc(st)}</button></div>`;
+  }
+  function setupInfo(a) {
+    const st = C.SETUP[a.stack];
+    return st ? `<div class="infobox"><span class="lbl p">How ${esc(a.stack)} works with us</span><ul>${st.info.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : "";
+  }
+  function redrawBrief() { const y = window.scrollY; drawBrief(true); window.scrollTo(0, y); }
   function readControl(q) {
     const el = $("qin");
     switch (q.type) {
       case "text": case "email": case "url": case "textarea": return (el.value || "").trim() || null;
       case "slider": return +el.value;
-      case "single": case "multi": case "cards": return draft[q.id] == null || (Array.isArray(draft[q.id]) && !draft[q.id].length) ? null : draft[q.id];
+      case "single": case "multi": case "cards": case "pick": case "addons": case "themes": case "templates": case "work": return draft[q.id] == null || (Array.isArray(draft[q.id]) && !draft[q.id].length) ? null : draft[q.id];
       case "colours": return [...document.querySelectorAll("[data-col]")].map(x => x.value);
       case "fonts": { const h = $("fh").value.trim(), b = $("fb").value.trim(); return h || b ? { head: h, body: b } : null; }
       case "files": return draft[q.id] && draft[q.id].length ? draft[q.id] : null;
       case "urls": { const r = [...document.querySelectorAll("[data-url]")].map((x, i) => ({ url: x.value.trim(), note: (document.querySelector(`[data-note="${i}"]`) || {}).value || "" })).filter(x => x.url); return r.length ? r : null; }
     }
   }
-  function drawBrief() {
+  function drawBrief(noScroll) {
     const L = live(), cur = S.editing ? L.find(q => q.id === S.editing) : nextQ();
     let h = `<div class="chat">`;
     const done = []; for (const q of L) { if (cur && q.id === cur.id) break; if (q.id in S.a) done.push(q); }
@@ -240,7 +316,7 @@
     for (const q of recent) h += bot(esc(q.ask(S.a))) + me(esc(fmtAns(q, S.a[q.id])), q.id);
     if (cur) {
       h += bot(esc(cur.ask(S.a)));
-      h += `<div class="ask">${cur.sub ? `<div class="sub" style="margin-top:0">${esc(cur.sub)}</div>` : ""}${control(cur)}<div class="row2"><button class="btn pri" type="button" id="qok">Continue</button><button class="skip" type="button" id="qskip">Skip for now</button>${S.editing ? `<button class="skip" type="button" id="qcancel">Cancel</button>` : ""}</div></div>`;
+      h += `<div class="ask ask-${cur.type}">${cur.sub ? `<div class="sub" style="margin-top:0">${esc(cur.sub)}</div>` : ""}${cur.info ? cur.info(S.a) : ""}${control(cur)}<div class="row2"><button class="btn pri" type="button" id="qok">Continue</button><button class="skip" type="button" id="qskip">Skip for now</button>${S.editing ? `<button class="skip" type="button" id="qcancel">Cancel</button>` : ""}</div></div>`;
     } else {
       h += bot("That's everything I need. Here's your brief. Check it, change anything by clicking it, then build your prompt.");
       h += `<div class="stage"><h2>Your brief</h2><div class="review">${L.map(q => `<div data-edit="${q.id}" style="cursor:pointer"><span>${esc(LBL[q.id] || q.id)}</span><b style="font-weight:500">${esc(fmtAns(q, S.a[q.id]))}</b></div>`).join("")}</div>
@@ -248,7 +324,7 @@
     }
     $("main").innerHTML = h + `</div>`;
     const qi = $("qin"); if (qi && cur && ["text", "email", "url"].includes(cur.type)) qi.focus({ preventScroll: true });
-    const target = document.querySelector(".ask") || document.querySelector(".stage"); if (target && (S.editing || live().some(q => q.id in S.a))) target.scrollIntoView({ block: "center", behavior: "smooth" });
+    const target = document.querySelector(".ask") || document.querySelector(".stage"); if (!noScroll && target && (S.editing || live().some(q => q.id in S.a))) target.scrollIntoView({ block: "center", behavior: "smooth" });
   }
   function answer(skip) {
     const q = S.editing ? live().find(x => x.id === S.editing) : nextQ(); if (!q) return;
@@ -256,6 +332,7 @@
     if (!skip && q.type === "email" && v && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { toast("That email address doesn't look right."); return; }
     if (!skip && q.type === "url" && v && !/^https?:\/\//i.test(v)) v = "https://" + v;
     S.a[q.id] = v; delete draft[q.id];
+    if (q.id === "work") S.a.workLikes = draft.workLikes || {};
     if (q.id === "type" && !("pages" in S.a)) draft.pages = PAGES_DEF[v] || 8;
     S.editing = null; save(); draw();
   }
@@ -269,7 +346,16 @@
     "Retro": { feel: "playful, nostalgic and characterful", type: "a period display face (70s soft serif or 90s grotesque) with a neutral sans for body", colour: "warm vintage tones such as mustard, burnt orange, teal and cream", layout: "framed sections, badges, rounded shapes and visible borders", imagery: "film-grain photography, duotones and illustrated details", tone: "warm, witty and personal" },
     "Artistic": { feel: "expressive, surprising and crafted", type: "an expressive display face used large, with a quiet sans for reading", colour: "a bold, unexpected palette with one signature colour", layout: "broken grids, overlapping layers, oversized type and generous canvas", imagery: "illustration, collage or art-directed photography with a strong point of view", tone: "imaginative and confident" },
     "Editorial": { feel: "intelligent, curated and story-led", type: "a magazine serif for headlines with a crisp sans for body, clear typographic scale, pull quotes", colour: "restrained neutrals with one ink accent", layout: "magazine-style columns, strong typographic hierarchy, mixed image sizes, captions", imagery: "documentary and portrait photography", tone: "thoughtful and articulate, story first" },
-    "Bold": { feel: "energetic, direct and memorable", type: "a heavy condensed or wide display sans in capitals, set very large", colour: "high contrast: a saturated signature colour against black or white", layout: "big blocks of colour, oversized numbers and headlines, strong edges", imagery: "punchy, high-contrast photography and graphic shapes", tone: "short, punchy and confident" }
+    "Bold": { feel: "energetic, direct and memorable", type: "a heavy condensed or wide display sans in capitals, set very large", colour: "high contrast: a saturated signature colour against black or white", layout: "big blocks of colour, oversized numbers and headlines, strong edges", imagery: "punchy, high-contrast photography and graphic shapes", tone: "short, punchy and confident" },
+    "Dark and cinematic": { feel: "moody, dramatic and immersive", type: "a refined high-contrast display serif or condensed sans, set large over imagery, with a quiet sans for body", colour: "near-black and deep tones with one warm metallic or luminous accent", layout: "full-screen scenes, slow reveals, generous negative space, text over imagery with careful contrast", imagery: "cinematic, low-key photography and video with real depth", tone: "evocative and sparse" },
+    "Futuristic": { feel: "precise, advanced and forward-looking", type: "a geometric or technical sans with tight tracking, monospace for small data labels", colour: "deep navy or black with one electric accent, used for lines and highlights", layout: "modular grids, thin rules, data-like details, layered depth", imagery: "product renders, abstract light and clean technical photography", tone: "clear, confident and specific" },
+    "Corporate and trustworthy": { feel: "reassuring, established and competent", type: "a sturdy humanist or grotesque sans across headings and body", colour: "navy or deep blue with white and a single supporting accent", layout: "clear grids, consistent cards, obvious paths to key services", imagery: "authentic people at work, places and results; no staged handshakes", tone: "plain, factual and confident" },
+    "Organic and natural": { feel: "calm, grounded and warm", type: "a soft serif for headings with a rounded sans for body", colour: "earthy greens, sand, clay and off-white", layout: "soft curves, natural textures, relaxed spacing", imagery: "natural light, materials, plants and people outdoors", tone: "warm and sincere" },
+    "Heritage and Arabic-inspired": { feel: "rooted, crafted and proud of place", type: "a classical display face with a refined Arabic pairing; Arabic typography treated as a feature, not an afterthought", colour: "warm sand, deep brown and gold, with indigo or teal accents", layout: "symmetry, arches and geometric pattern used with restraint", imagery: "architecture, craft, landscape and culture of the region", tone: "respectful, warm and confident" },
+    "Playful": { feel: "fun, friendly and full of energy", type: "a rounded, characterful display face with a friendly sans", colour: "bright, happy colours on warm light backgrounds", layout: "rounded shapes, stickers, playful illustrations and lively rhythm", imagery: "joyful people, illustration and colour pops", tone: "light, witty and kind" },
+    "Swiss and structured": { feel: "rational, crisp and timeless", type: "one strong grotesque in a strict typographic scale, flush-left", colour: "black and white with one signal colour", layout: "a visible modular grid, strong alignment, generous margins", imagery: "precise photography cropped to the grid", tone: "direct and economical" },
+    "Glass and gradient": { feel: "soft, modern and luminous", type: "a geometric sans with generous weight contrast", colour: "soft multi-tone gradients with translucent layers, kept subtle and readable", layout: "layered cards with depth, floating elements, clear hierarchy on top", imagery: "abstract gradients, 3D renders and product shots", tone: "friendly and modern" },
+    "Brutalist": { feel: "raw, honest and unforgettable", type: "a monospace or blunt grotesque at extreme sizes", colour: "black, white and one loud primary", layout: "exposed grid, hard borders, deliberate tension, no decoration", imagery: "unretouched photography and stark graphics", tone: "blunt and confident" }
   };
   const GOAL_DIR = {
     "Generate leads": "Primary action: an enquiry form (3 to 5 fields) visible in the first screen on desktop and one tap away on mobile, repeated near the end of the page.",
@@ -278,6 +364,12 @@
     "Build the brand": "Lead with the brand story: a striking hero statement, what makes the brand different, and proof such as awards, press or numbers.",
     "Inform and educate": "Make information easy to find: clear topic entry points, search, and short summaries that link to detail pages.",
     "Recruit": "Show the culture: people, values and open roles, with a clear route to apply.",
+    "Sell tickets or registrations": "Primary action: register or buy tickets. Dates, price and availability are always visible, with a sticky register button.",
+    "Showcase our work": "Lead with the work: large, beautifully cropped projects with filters and short stories, then a clear way to get in touch.",
+    "Share data and insights": "Lead with the headline numbers, then let people explore: filters, comparisons and downloadable reports.",
+    "Serve customers online": "Let customers do things themselves: log in, track, request and pay, with help close at hand.",
+    "Train people": "Make learning easy to start: course catalogue, progress, and a clear enrol or continue action.",
+    "Connect our team": "Bring the team together: news, people, documents and search on one home screen.",
     "Launch a product": "Introduce the product: one clear promise, the key features with visuals, social proof and a launch call to action (register, pre-order or demo)."
   };
   const SECTOR_DIR = {
@@ -299,14 +391,23 @@
     "3D elements": "One interactive 3D object or scene that reinforces the product or place, lightweight and with a static fallback.",
     "Immersive scroll storytelling": "A scroll-driven story section where content and imagery unfold step by step as the visitor scrolls.",
     "Page transitions": "Smooth transitions between pages that keep the visitor oriented.",
-    "Micro-animations": "Small, purposeful animations on buttons, cards, icons and form states."
+    "Micro-animations": "Small, purposeful animations on buttons, cards, icons and form states.",
+    "Interactive maps": "An interactive map to explore locations, projects or branches, with filters and detail cards.",
+    "Virtual tours and 360 views": "A 360 view or virtual tour of the key space, with hotspots.",
+    "Calculators and configurators": "A calculator or configurator (price, payment plan, savings or product options) that gives an instant result and leads into the main action.",
+    "Live data and counters": "Live numbers, counters or a countdown that update on their own.",
+    "Personalisation": "Content that adapts to the visitor's country, language or interests.",
+    "AR product preview": "An augmented-reality preview so visitors can see the product in their own space on mobile.",
+    "Gamified moments": "A short quiz, challenge or reward moment that leads into the main action.",
+    "Video backgrounds": "Short looping video behind key sections, muted, with a poster image.",
+    "Dark and light mode": "A dark and a light theme, both fully designed."
   };
-  const MOTION_DIR = { "Subtle": "Subtle: gentle fades and short slides only, nothing that delays reading.", "Balanced": "Balanced: reveal-on-scroll for sections, hover states on every interactive element, one signature motion moment in the hero.", "Expressive": "Expressive: rich, choreographed motion with parallax and scroll-linked animation, while keeping text readable and respecting reduced-motion settings." };
-  const STACK_DIR = { "HubSpot CMS": "HubSpot CMS: design in reusable, drag-and-drop modules and sections so the client can edit every page without a developer.", "WordPress": "WordPress: design as reusable blocks that map to a block theme.", "Webflow": "Webflow: design with a clear class system and reusable components.", "Shopify": "Shopify: design for an Online Store 2.0 theme with sections and blocks; product, collection and cart templates follow the same system.", "Custom build (Next.js)": "Custom Next.js build: design as a component library with tokens for colour, type and spacing.", "Recommend for me": "Platform to be recommended; design as a modular component system that works on any modern CMS." };
+  const MOTION_DIR = { "Still": "Still: almost no motion; only hover and focus states.", "Cinematic": "Cinematic: film-like, scroll-driven scenes with pinned sections and layered depth, performance-budgeted, with a reduced-motion fallback.", "Subtle": "Subtle: gentle fades and short slides only, nothing that delays reading.", "Balanced": "Balanced: reveal-on-scroll for sections, hover states on every interactive element, one signature motion moment in the hero.", "Expressive": "Expressive: rich, choreographed motion with parallax and scroll-linked animation, while keeping text readable and respecting reduced-motion settings." };
+  const STACK_DIR = { "HubSpot CMS": "HubSpot CMS: design in reusable, drag-and-drop modules and sections so the client can edit every page without a developer.", "WordPress": "WordPress: design as reusable blocks that map to a block theme.", "Webflow": "Webflow: design with a clear class system and reusable components.", "Shopify": "Shopify: design for an Online Store 2.0 theme with sections and blocks; product, collection and cart templates follow the same system.", "Custom build (Next.js)": "Custom Next.js build: design as a component library with tokens for colour, type and spacing.", "NEXA Web Studio": "NEXA Web Studio: design in the Studio's section system so the client can edit text, images and forms after launch, and pages can be exported as HubSpot modules.", "Recommend for me": "Platform to be recommended; design as a modular component system that works on any modern CMS." };
 
   function buildPrompt() {
     const a = S.a, f = id => { const q = Q.find(x => x.id === id); return fmtAns(q, a[id]); }, has = id => a[id] != null && a[id] !== "" && !(Array.isArray(a[id]) && !a[id].length);
-    const csv = t => t.split(/,\s*(?![^(]*\))/), poss = n => n + (/s$/i.test(n) ? "'" : "'s"), type = (a.type || "website").toLowerCase(), pages = a.pages || PAGES_DEF[a.type] || 1, company = a.company || "the client";
+    const type = (a.type || "website").toLowerCase(), pages = a.pages || PAGES_DEF[a.type] || 1, company = a.company || "the client";
     const sd = STYLE_DIR[a.style] || STYLE_DIR.Minimal, sec = SECTOR_DIR[a.sector] || SECTOR_DIR.Other, nav = (SUB[a.sector] || SUB.Other).slice(0, 5);
     const langs = has("languages") ? a.languages : ["English"], ar = langs.includes("Arabic");
     const goals = has("goals") ? a.goals : ["Generate leads"];
@@ -321,11 +422,14 @@
     else brand.push(`Type direction: ${sd.type}. Type scale: display 56 to 72 px, H2 36 to 44 px, body 16 to 18 px with 1.6 line height (desktop).`);
     if (ar) brand.push("Arabic: pair the Latin fonts with a high-quality Arabic typeface of similar weight and character.");
 
+    const lib = window.NexaLibrary || { THEMES: [], TEMPLATES: [] }, platform = C.lineOf(a.type) === "platform";
+    const looks = (a.looks || []).map(id => lib.THEMES.find(t => t.id === id)).filter(Boolean), tpl = a.template && a.template !== "scratch" ? lib.TEMPLATES.find(t => t.id === a.template) : null;
+    const work = (a.work || []).map(id => C.WORK.find(w => w.id === id)).filter(Boolean), likes = a.workLikes || {};
     const sections = [
       `1. Header: logo left, navigation (${nav.join(", ")}, Contact)${langs.length > 1 ? ", language switch" : ""}, primary button "${goals.includes("Bookings") ? "Book now" : goals.includes("Sell online") ? "Shop now" : "Enquire"}" on the right. Sticky and compact on scroll.`,
       `2. Hero: one clear headline that says what ${company} offers and for whom, a one-line supporting sentence, the primary action, and a strong visual${has("experience") && a.experience.includes("AI-generated video") ? " (video loop)" : ""}.${goals.includes("Generate leads") ? " Include the short enquiry form here on desktop." : ""}${goals.includes("Bookings") ? " Include the booking bar here." : ""}`,
-      `3. Proof strip: ${csv(sec.trust).slice(0, 3).join(", ")}.`,
-      `4. What we offer: ${csv(sec.sections).slice(0, 3).join(", ")}, as visual cards linking to their pages.`,
+      `3. Proof strip: ${sec.trust.split(", ").slice(0, 3).join(", ")}.`,
+      `4. What we offer: ${sec.sections.split(", ").slice(0, 3).join(", ")}, as visual cards linking to their pages.`,
       `5. Why ${company}: three or four differentiators with a short line each and simple monoline icons or images.`,
       has("experience") && a.experience.includes("Immersive scroll storytelling") ? "6. Story: the immersive scroll section (see Motion)." : `6. Feature section: a large image and text block that tells the brand or product story.`,
       `7. Social proof: testimonials or reviews with names and photos, plus logos or awards.`,
@@ -335,9 +439,9 @@
 
     const L = [
       "ROLE AND TASK",
-      `You are a senior web designer at a digital growth agency. Design the homepage concept for ${poss(company)} new ${type} as a finished, high-fidelity design (desktop at 1440 px and mobile at 390 px), with real-looking content. It must look ready to build, not like a wireframe.`, "",
+      `You are a senior web designer at a digital growth agency. Design the homepage concept for ${company}'s new ${type} as a finished, high-fidelity design (desktop at 1440 px and mobile at 390 px), with real-looking content. It must look ready to build, not like a wireframe.`, "",
       "THE CLIENT",
-      `${company}${a.sector ? ", " + a.sector.toLowerCase() + " sector" : ""}. Building: ${a.type || "Website"}, about ${pages} page${pages === 1 ? "" : "s"}.${a.currentSite ? " Current website: " + a.currentSite + "." : ""}`, "",
+      `${company}${a.sector ? ", " + a.sector.toLowerCase() + " sector" : ""}. Building: ${(C.TYPE[a.type] || {}).label || a.type || "Website"}, about ${pages} page${pages === 1 ? "" : "s"}.${a.currentSite ? " Current website: " + a.currentSite + "." : ""}`, "",
       "GOALS AND THE MAIN ACTION",
       ...goals.map(g => "- " + (GOAL_DIR[g] || g)), "Every section should move the visitor towards the main action.", "",
       "AUDIENCE",
@@ -349,7 +453,17 @@
       `Style: ${a.style || "Minimal"}. The site should feel ${sd.feel}.`,
       `Colour use: ${sd.colour}.`, `Layout: ${sd.layout}.`, `Imagery: ${sd.imagery}.`,
       has("experience") ? ["Experiences to include:", ...a.experience.map(x => "- " + (EXP_DIR[x] || x))].join("\n") : "", "",
-      "HOMEPAGE STRUCTURE (top to bottom)",
+      looks.length ? "LOOKS THE CLIENT PICKED FROM OUR DESIGN LIBRARY (use as direction, never copy)" : "",
+      ...looks.map(t => `- ${t.name} (${t.family}, ${t.mode}): colours ${t.pal.join(", ")}; type ${t.fonts.join(" with ")}; tags ${t.tags.join(", ")}.`), looks.length ? "" : "",
+      work.length ? "NEXA WORK THE CLIENT LIKED" : "",
+      ...work.map(w => `- ${w.name} (${w.url}): ${w.what}${(likes[w.id] || []).length ? " They like its " + likes[w.id].join(", ").toLowerCase() + "." : ""}`), work.length ? "" : "",
+      tpl ? "STARTING POINT" : "", tpl ? `Start from the proven NEXA Web Studio template "${tpl.name}" (${tpl.industry}, goal: ${tpl.goal}). Keep its conversion structure and form flow; restyle it fully to this brand.` : "", tpl ? "" : "",
+      platform ? "PLATFORM" : "",
+      platform ? `Who logs in: ${(a.users || ["to be confirmed"]).join(", ")}.` : "",
+      platform && (a.pfeatures || []).length ? "Features: " + a.pfeatures.join(", ") + "." : "",
+      platform ? `Data comes from: ${(a.data || ["to be confirmed"]).join(", ")}. Data residency: ${a.residency || "to be confirmed"}.` : "",
+      platform ? "Design the key screens, not only a homepage: the public landing screen, the signed-in dashboard, one detail or record view, and the content or admin workspace. Charts must be readable, filterable and accessible, with a table view for every chart." : "", platform ? "" : "",
+      platform ? "LANDING SCREEN STRUCTURE (top to bottom)" : "HOMEPAGE STRUCTURE (top to bottom)",
       ...sections, "",
       "MOTION AND INTERACTION",
       MOTION_DIR[a.motion] || MOTION_DIR.Balanced, "Every button, link and card has hover, focus and pressed states. Respect the reduced-motion setting.", "",
@@ -361,6 +475,7 @@
       ...(has("refs") ? a.refs.filter(r => r.url).map(r => `- ${r.url}${r.note ? ": " + r.note : ""}`) : []), has("refs") ? "" : "",
       "BUILD AND STANDARDS",
       STACK_DIR[a.stack] || STACK_DIR["Recommend for me"],
+      a.stackSetup && C.SETUP[a.stack] ? "Set-up: " + (C.SETUP[a.stack].opts.find(o => o[0] === a.stackSetup) || ["", ""])[1] + "." : "",
       "Mobile first. Breakpoints at 390, 768, 1024 and 1440 px. Touch targets at least 44 px.",
       "Accessibility: WCAG 2.2 AA, visible focus states, text contrast at least 4.5 to 1, alt text for every image.",
       "Performance: fast first screen (Largest Contentful Paint under 2.5 seconds on mobile), compressed modern image formats, no heavy effects above the fold.",
@@ -370,21 +485,26 @@
       "Generic stock photos (handshakes, people pointing at laptops), cluttered layouts, more than two typefaces, centred body text, walls of text, tiny grey text, carousels that hide key content, and anything that looks AI-generated by default.",
       has("notes") ? "Client notes: " + a.notes : "", "",
       "WHAT TO DELIVER",
-      "Three to four clearly different concept directions for the homepage. For each: a short name, one paragraph on the idea, the colour palette with hex values, the type pairing, the full desktop homepage and the mobile homepage.",
+      platform ? "Three to four clearly different concept directions. For each: a short name, one paragraph on the idea, the colour palette with hex values, the type pairing, and the key screens on desktop and mobile." : "Three to four clearly different concept directions for the homepage. For each: a short name, one paragraph on the idea, the colour palette with hex values, the type pairing, the full desktop homepage and the mobile homepage.",
       `Timing: ${has("timeline") ? f("timeline") : "flexible"}.`
     ];
     return L.filter((x, i, arr) => !(x === "" && arr[i - 1] === "")).join("\n").trim();
   }
   function drawPrompt() {
     if (!S.prompt) { S.prompt = buildPrompt(); save(); }
-    $("main").innerHTML = bot("Here's your design prompt, written from your brief: the full creative direction our designers and AI use to create your concepts. Edit it directly, or tell me what to change. When it reads right, approve it and I'll draft your sitemap.") + `
-      <div class="stage"><h2>Your prompt</h2>
-        <textarea class="in prompt" id="ptext" aria-label="Your prompt">${esc(S.prompt)}</textarea>
+    $("main").innerHTML = bot("Here's your design prompt, written from your brief: the full creative direction our designers and AI use to create your concepts. Read it, edit anything directly, or tell me what to change.") + `
+      <div class="stage pstage" id="pstage"><div class="row2 phead"><h2>Your design prompt</h2><div class="row2"><span class="mut" id="pwords"></span><button class="btn" type="button" id="pfull">Full screen</button></div></div>
+        <textarea class="in prompt" id="ptext" aria-label="Your design prompt" spellcheck="true">${esc(S.prompt)}</textarea>
         <div class="row2"><input class="in" id="pask" placeholder="Tell me what to change, for example: make it feel more premium" style="flex:1 1 280px"><button class="btn" type="button" id="prefine">Refine</button></div>
         <div class="gate"><button class="btn" type="button" data-back="brief">Back to my brief</button><button class="btn pri big" type="button" id="papprove">Approve and generate sitemap</button><span class="note">Approving records the prompt as the basis for your design.</span></div>
       </div>`;
+    fitPrompt();
   }
-
+  function fitPrompt() {
+    const t = $("ptext"); if (!t) return;
+    t.style.height = "auto"; t.style.height = Math.max(Math.round(window.innerHeight * .7), t.scrollHeight + 24) + "px";
+    const w = $("pwords"); if (w) w.textContent = t.value.split(/\s+/).filter(Boolean).length + " words";
+  }
   /* ---------------- sitemap ---------------- */
   const SUB = {
     "Real estate": ["Properties", "Communities", "Off-plan", "Investors", "Area guides"], "Hospitality": ["Rooms and suites", "Dining", "Experiences", "Offers", "Events", "Gallery"],
@@ -394,8 +514,22 @@
     "Professional services": ["Services", "Industries", "Case studies", "Our people", "Insights"], "Government": ["Services", "Initiatives", "News", "Open data", "Help"],
     "Other": ["What we do", "Our work", "How we work"]
   };
+  const TYPE_SITEMAP = {
+    "Booking website": [["Home"], ["About"], ["Rooms, services or experiences"], ["Detail page", 1], ["Book online"], ["Offers"], ["Gallery"], ["Reviews"], ["Location"], ["FAQ"], ["Contact"]],
+    "Event website": [["Home"], ["About the event"], ["Programme"], ["Speakers or line-up"], ["Tickets and registration"], ["Venue and travel"], ["Partners"], ["FAQ"], ["Contact"]],
+    "Portfolio or showcase": [["Home"], ["Work"], ["Project detail", 1], ["About"], ["Services"], ["Press"], ["Contact"]],
+    "Data dashboard platform": [["Home"], ["Overview dashboard"], ["Topic dashboards"], ["Indicator detail", 1], ["Country or region view", 1], ["Reports library"], ["Data explorer"], ["Methodology"], ["About"], ["Content workspace"], ["Users and roles"], ["Sign in"]],
+    "Client or partner portal": [["Home"], ["Sign in"], ["Dashboard"], ["Deals or projects"], ["Record detail", 1], ["Documents"], ["Inventory or availability"], ["Commissions or invoices"], ["Messages"], ["Profile and settings"], ["Admin"]],
+    "Members portal": [["Home"], ["Join"], ["Sign in"], ["Member dashboard"], ["Member content"], ["Events"], ["Renewals and billing"], ["Profile"], ["Help"], ["Admin"]],
+    "Listings and directory": [["Home"], ["Search results"], ["Listing detail", 1], ["Categories"], ["Saved searches and alerts"], ["Add a listing"], ["Agents or sellers"], ["About"], ["Contact"], ["Admin"]],
+    "Learning platform": [["Home"], ["Course catalogue"], ["Course page", 1], ["Lesson player", 1], ["Quizzes"], ["Certificates"], ["My learning"], ["Instructors"], ["Pricing"], ["Help"]],
+    "Intranet and knowledge hub": [["Home feed"], ["News"], ["People directory"], ["Documents and policies"], ["Departments"], ["Events"], ["Search"], ["Help desk"], ["Profile"], ["Admin"]],
+    "Web app": [["Home"], ["Sign up"], ["Sign in"], ["App dashboard"], ["Main workspace"], ["Record detail", 1], ["Settings"], ["Billing"], ["Help centre"]]
+  };
   function genSitemap() {
     const a = S.a, n = Math.max(1, a.pages || PAGES_DEF[a.type] || 8), sub = SUB[a.sector] || SUB.Other;
+    const TS = TYPE_SITEMAP[a.type];
+    if (TS) { let L = TS.map(x => ({ name: x[0], d: x[1] || 0 })); if (L.length > n) L = L.slice(0, n); let k = 1; while (L.length < n) L.push({ name: "Detail page " + k++, d: 1 }); return L; }
     if (a.type === "Landing page" || n === 1) return [{ name: "Home", d: 0 }];
     if (a.type === "Microsite") return ["Home", "About the campaign", "Details", "Register", "Thank you"].slice(0, Math.max(2, n)).map(x => ({ name: x, d: 0 }));
     const out = [{ name: "Home", d: 0 }, { name: "About", d: 0 }];
@@ -518,6 +652,8 @@
     if (a.hosting === "access") L.push(["access", "Accept our access invitation", "Sent to your domain and hosting accounts. Never send passwords."]);
     (a.integrations || []).forEach(i => L.push(["int:" + i, `Access to ${i}`, "Through a user invitation or a key shared in this portal, never by email."]));
     if (ad.includes("Translation") || (a.languages || []).length > 1) L.push(["trans", "A reviewer for each language", "Someone on your side who signs off the translated pages."]);
+    const st = C.SETUP[a.stack]; if (st && a.stackSetup && st.needs[a.stackSetup]) st.needs[a.stackSetup].forEach(n => L.push(n));
+    if (C.lineOf(a.type) === "platform") { L.push(["users-list", "Your user list and roles", "Who needs access, and what each role can see and do."]); if ((a.data || []).some(x => x !== "Not sure yet")) L.push(["data-sample", "Sample data", "A real extract of each data source, so we design around your actual numbers."]); L.push(["it-contact", "An IT or security contact", "For single sign-on, hosting and security sign-off."]); }
     L.push(["legal", "Your privacy policy and terms", "Or approve our standard templates for your lawyer to check."]);
     return L;
   }
@@ -525,39 +661,40 @@
   const hrs = h => h < 1 ? Math.round(h * 60) + " min" : (Math.round(h * 2) / 2) + " h";
   function drawSubmit() {
     const a = S.a, t = tierNow(), e = est(a), m = monthly(t), sc = score(a);
-    $("main").innerHTML = bot("Everything is approved. Check the summary and the terms, then submit. Your first month starts the build.") + `
+    $("main").innerHTML = bot("Everything is approved. Check the summary and the terms, then submit. Your first payment starts the build.") + `
       <div class="stage"><h2>Ready to submit</h2><div class="review">
         <div><span>Building</span><b>${esc(a.type || "Website")} for ${esc(a.company || "your brand")}</b></div>
         <div><span>Pages</span><b>${e.pg}</b></div>
         <div><span>Concept</span><b>${S.concepts.mode === "mix" ? "Your mixed concept" : "Concept " + esc(S.concepts.sel || "A")}</b></div>
-        <div><span>Platform</span><b>${esc(a.stack || "We'll recommend one")}</b></div>
-        <div><span>Plan</span><b>${TIERS[t].name}, ${aed(m.total)} a month including VAT</b></div>
+        <div><span>Platform</span><b>${esc((a.stack || "We'll recommend one") + (a.stackAuto ? " (recommended)" : ""))}</b></div>
+        <div><span>Plan</span><b>${TIERS[t].name}, ${MODEL_NAME[S.model || "monthly"]}: ${priceLine(t)}</b></div>
         <div><span>Going live</span><b>${esc({ nexa: "NEXA hosts it", dns: "You add our DNS records", access: "You give us domain and hosting access", later: "Decide later" }[a.hosting] || "Decide later")}</b></div>
       </div>
       ${t < sc.tier ? `<div class="plnote">Your choices fit ${TIERS[sc.tier].name}. On ${TIERS[t].name}, anything above its limits is quoted as extra work before we start.</div>` : ""}
       <div class="eta"><div><span class="lbl">Build time</span><br><b>${e.text}</b></div><div style="font-size:12.5px;color:var(--ink2);flex:1 1 260px">${e.r.map(x => `${esc(x[0])}: ${hrs(x[1])}`).join(" · ")}<br>The clock starts when we have everything on the list below.</div></div>
       <div><span class="lbl">What we'll need from you</span><ul style="margin:6px 0 0;padding-left:18px;font-size:13px">${needList().map(n => `<li><b style="font-weight:500">${esc(n[1])}</b> <span style="color:var(--muted)">${esc(n[2])}</span></li>`).join("")}</ul></div>
-      <div><span class="lbl">The terms</span><ol style="margin:6px 0 0;padding-left:18px;font-size:13px;color:var(--ink2)">${TERMS.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+      <div><span class="lbl">The terms</span><ol style="margin:6px 0 0;padding-left:18px;font-size:13px;color:var(--ink2)">${terms().map(x => `<li>${esc(x)}</li>`).join("")}</ol>
         <label style="display:flex;gap:10px;align-items:flex-start;margin-top:10px;font-size:13px"><input type="checkbox" id="terms" ${S.terms ? "checked" : ""} style="margin-top:3px;accent-color:var(--purple)"> <span>I agree to these terms on behalf of ${esc(a.company || "my company")}.</span></label></div>
       <div class="gate"><button class="btn" type="button" data-back="inner">Back</button><button class="btn pri big" type="button" id="submit" ${S.terms ? "" : "disabled"}>Submit and start my plan</button></div></div>`;
   }
   function drawPay() {
-    const sc = score(S.a), t = tierNow(), m = monthly(t), yr = S.billing === "yearly";
-    const due = yr ? m.total * PRICE.annualPaysMonths : m.total;
-    $("main").innerHTML = bot("Choose your plan and how you'd like to pay. The build starts as soon as the first payment goes through.") + `
+    const sc = score(S.a), t = tierNow(), md = S.model || "monthly", yr = md === "monthly" && S.billing === "yearly", q = quote(t), W = tierWindow(), f = TIERS[t].from ? "From " : "";
+    const due = md === "monthly" ? (yr ? q.rec * PRICE.annualPaysMonths : q.rec) : q.dueNow;
+    const cell = (r, k) => md === "once" && /^(Changes after launch|Maintenance|Hosting)/.test(r[0]) ? "Not included" : r[k + 1];
+    $("main").innerHTML = bot("Choose how you'd like to pay and your plan. The build starts as soon as the first payment goes through.") + `
       <div class="stage"><h2>Start your plan</h2>
-        <div class="cards">${TIERS.map((x, k) => `<button class="opt" type="button" data-tier="${k}" aria-pressed="${k === t}"><b>${x.name}${k === sc.tier ? " · recommended" : ""}</b><span>${x.desc}</span><span><b style="color:var(--ink)">${aed(PRICE.plans[k])}</b> a month</span></button>`).join("")}</div>
-        <div style="overflow-x:auto"><table class="dns"><thead><tr><th></th>${TIERS.map((x, k) => `<th style="${k === t ? "color:var(--purple)" : ""}">${x.name}</th>`).join("")}</tr></thead><tbody>${INCL.map(r => `<tr><td>${esc(r[0])}</td>${r.slice(1).map((c, k) => `<td style="${k === t ? "font-weight:600" : ""}">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
-        <div class="tabs"><button type="button" data-bill="monthly" aria-selected="${!yr}">Pay monthly</button><button type="button" data-bill="yearly" aria-selected="${yr}">Pay yearly, 2 months free</button></div>
-        <div class="money" style="max-width:460px">
-          <div><span>${TIERS[t].name} plan</span><span>${aed(m.plan)}</span></div>
-          ${m.ad.map(([l, n]) => `<div><span>+ ${esc(l)}</span><span>${aed(n)}</span></div>`).join("")}
-          <div><span>VAT 5%</span><span>${aed(m.vat)}</span></div>
-          <div style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><b>${yr ? `Due today (12 months for the price of ${PRICE.annualPaysMonths})` : "Due today (first month)"}</b><b>${aed(due)}</b></div>
-          <div><span style="color:var(--muted)">${yr ? "Next payment in 12 months" : "Then each month, from the day you go live"}</span><span style="color:var(--muted)">${aed(yr ? due : m.total)}</span></div>
-        </div>
+        <span class="lbl">How would you like to pay?</span>
+        <div class="cards">${C.MODELS.map(([k, l, d]) => `<button class="opt" type="button" data-model="${k}" aria-pressed="${k === md}"><b>${l}</b><span>${d}</span></button>`).join("")}</div>
+        <span class="lbl">Your plan</span>
+        <div class="cards">${W.map(k => { const x = TIERS[k]; return `<button class="opt" type="button" data-tier="${k}" aria-pressed="${k === t}"><b>${x.name}${k === sc.tier ? " · recommended" : ""}</b><span>${x.desc}</span><span class="pr">${x.from ? "From " : ""}${aed(md === "monthly" ? PRICE.plans[k] : PRICE.once[k])} ${md === "monthly" ? "a month" : "one-time"}${md === "onceCare" ? `, then ${aed(PRICE.care[k])} a month care` : ""}</span></button>`; }).join("")}</div>
+        <div style="overflow-x:auto"><table class="dns"><thead><tr><th></th>${W.map(k => `<th style="${k === t ? "color:var(--deep)" : ""}">${TIERS[k].name}</th>`).join("")}</tr></thead><tbody>${INCL.map(r => `<tr><td>${esc(r[0])}</td>${W.map(k => `<td style="${k === t ? "font-weight:600" : ""}">${esc(cell(r, k))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+        ${md === "monthly" ? `<div class="tabs"><button type="button" data-bill="monthly" aria-selected="${!yr}">Pay monthly</button><button type="button" data-bill="yearly" aria-selected="${yr}">Pay yearly, 2 months free</button></div>` : ""}
+        <div style="max-width:540px">${priceBox(t)}
+          <div class="money due"><div class="tot"><b>${md === "monthly" ? (yr ? `Due today (12 months for the price of ${PRICE.annualPaysMonths})` : "Due today (first month)") : `Due today (${Math.round(PRICE.deposit * 100)}% to start)`}</b><b>${f}${aed(due)}</b></div>
+          <div><span class="mut">${md === "monthly" ? (yr ? "Next payment in 12 months" : "Then each month, from the day you go live") : `Then ${f}${aed(q.up - due)} before go-live${q.rec ? `, and ${aed(q.rec)} a month after` : ""}`}</span></div></div></div>
+        ${TIERS[t].from ? `<div class="plnote">Platform prices are a starting point. We confirm the exact scope and price in a workshop with you before anything beyond the deposit is due.</div>` : ""}
         <div class="demo"><span class="lbl">Prototype</span><span style="flex:1 1 200px">Example prices. No card is charged in this prototype.</span></div>
-        <div class="gate"><button class="btn" type="button" data-back="submit">Back</button><button class="btn pri big" type="button" id="pay">Pay ${aed(due)} and start the build</button></div></div>`;
+        <div class="gate"><button class="btn" type="button" data-back="submit">Back</button><button class="btn pri big" type="button" id="pay">${TIERS[t].from ? "Pay the deposit" : "Pay " + aed(due)} and start the build</button></div></div>`;
   }
   const BSTEPS = [["Brief accepted", "Our team has checked your brief and approvals."], ["Building", "Developers are building your pages on your platform."], ["Quality checks", "Mobile, speed, accessibility, forms and links are tested."], ["Staging ready", "Your private preview link is ready to review."]];
   function demo(label, id, off) { return `<div class="demo"><span class="lbl">Prototype</span><span style="flex:1 1 200px">${off ? "Tick off the list above first: the build clock starts when everything is in." : "In the live portal this moves on its own as our team works."}</span><button class="btn" type="button" id="${id}" ${off ? "disabled" : ""}>${label}</button></div>`; }
@@ -581,12 +718,12 @@
   function drawLive() {
     const h = S.a.hosting && S.a.hosting !== "later" ? S.a.hosting : S.hostNow;
     if (S.live) {
-      const t = tierNow(), m = monthly(t), left = Math.max(0, LIM.hours[t] - S.usedHours), nx = new Date(); nx.setMonth(nx.getMonth() + (S.billing === "yearly" ? 12 : 1));
+      const t = tierNow(), m = monthly(t), q = quote(t), md = S.model || "monthly", left = Math.max(0, hoursFor(t) - S.usedHours), nx = new Date(); nx.setMonth(nx.getMonth() + (S.billing === "yearly" ? 12 : 1));
       $("main").innerHTML = bot(`Congratulations${S.a.name ? ", " + esc(S.a.name) : ""}. Your website is live.`) + `<div class="stage"><h2>Your website</h2>
         <div class="review">
-          <div><span>Plan</span><b>${TIERS[t].name}, ${S.billing === "yearly" ? "paid yearly" : aed(m.total) + " a month"}</b></div>
+          <div><span>Plan</span><b>${TIERS[t].name}, ${MODEL_NAME[md].toLowerCase()}${md === "monthly" ? (S.billing === "yearly" ? ", paid yearly" : ", " + aed(m.total) + " a month") : q.rec ? ", " + aed(q.rec) + " a month" : ""}</b></div>
           <div><span>Next invoice</span><b>${nx.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</b></div>
-          <div><span>Change hours left this month</span><b>${left} of ${LIM.hours[t]}</b></div>
+          <div><span>Change hours left this month</span><b>${md === "once" ? "No monthly hours: changes are " + aed(PRICE.extraHour) + " an hour" : left + " of " + hoursFor(t)}</b></div>
           <div><span>Uptime</span><b>Checked every 3 minutes. We're alerted if it goes down.</b></div>
         </div>
         <div><span class="lbl">Ask for a change</span><textarea class="in" id="cr" placeholder="What would you like changed? One request per message works best." style="margin-top:6px"></textarea>
@@ -608,7 +745,7 @@
     const txt = ["NEXA Web Studio project record", `Downloaded ${new Date().toLocaleString("en-GB")}`, line, "BRIEF",
       ...live().map(q => `${LBL[q.id] || q.id}: ${fmtAns(q, a[q.id])}`), line, "PROMPT (as approved)", S.prompt || "(not yet)", line, "SITEMAP",
       ...(S.sitemap || []).map((p, i) => `${String(i + 1).padStart(2, "0")} ${p.d ? "  - " : ""}${p.name}`), line, "PLAN",
-      `${TIERS[t].name}: ${aed(m.plan)} a month; add-ons ${m.ad.map(x => x[0] + " " + aed(x[1])).join(", ") || "none"}; total ${aed(m.total)} including VAT (example prices)`,
+      `${TIERS[t].name}, ${MODEL_NAME[S.model || "monthly"]}: ${priceLine(t)}; add-ons ${(S.a.addons || []).join(", ") || "none"} (example prices)`,
       `Terms accepted: ${S.terms ? "yes" : "not yet"}`, line, "APPROVALS AND REQUESTS", ...S.log.map(l => `${new Date(l.t).toLocaleString("en-GB")}  ${l.by || ""}  ${l.what}`)].join("\n");
     const b = new Blob([txt], { type: "text/plain" }), u = URL.createObjectURL(b), el = document.createElement("a");
     el.href = u; el.download = `${(a.company || "project").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-record.txt`; document.body.appendChild(el); el.click(); el.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000);
@@ -617,7 +754,7 @@
   /* ---------------- draw ---------------- */
   function drawViews() {
     const v = !S.started && !Object.keys(S.a).length ? "welcome" : (S.view || "project");
-    document.body.dataset.view = v;
+    document.body.dataset.view = v; document.body.dataset.stage = S.stage;
     $("views").innerHTML = [["project", "Project"], ["dashboard", "Dashboard"], ["reports", "Reports"], ["billing", "Plan and billing"]].map(([k, l]) => `<button type="button" data-view="${k}" aria-current="${k === v ? "page" : "false"}">${l}</button>`).join("");
     return v;
   }
@@ -629,23 +766,39 @@
     ({ brief: drawBrief, prompt: drawPrompt, sitemap: drawSitemap, concepts: drawConcepts, wireframes: drawWireframes, inner: drawInner, submit: drawSubmit, build: drawBuild, staging: drawStaging, pay: drawPay, live: drawLive }[S.stage] || drawBrief)();
   }
 
-  window.NexaPortal = { S: () => S, tierOf, est, monthly, aed, esc, PRICE, LIM, INCL, TIERS, STAGES, pct, save, log, draw };
+  window.NexaPortal = { S: () => S, tierOf, est, monthly, quote, hoursFor, terms, tierWindow, MODEL_NAME, C, aed, esc, PRICE, LIM, INCL, TIERS, STAGES, pct, save, log, draw };
 
   /* ---------------- events ---------------- */
   document.addEventListener("click", e => {
     const t = e.target.closest("button,[data-edit]"); if (!t) return;
     const d = t.dataset, cur = S.editing ? live().find(x => x.id === S.editing) : nextQ();
+    if (d.tfam != null) { draft._fam = d.tfam; redrawBrief(); return; }
+    if (d.like) { const [id, l] = d.like.split("|"), L = draft.workLikes = draft.workLikes || {}, x = new Set(L[id] || []); x.has(l) ? x.delete(l) : x.add(l); L[id] = [...x]; t.setAttribute("aria-pressed", x.has(l)); return; }
+    if (d.model) { S.model = d.model; save(); draw(); return; }
     if (d.start) { S.started = true; S.view = "project"; save(); draw(); window.scrollTo({ top: 0 }); return; }
     if (d.view) { S.view = d.view; save(); draw(); window.scrollTo({ top: 0 }); return; }
     if (d.addon) { S.a.addons = [...new Set([...(S.a.addons || []), d.addon])]; log(`Added ${d.addon}`); save(); draw(); toast(`${d.addon} added to your plan.`); return; }
     if (d.report != null) { window.NexaDash.reportFile(+d.report); log("Downloaded a monthly report"); save(); return; }
     if (d.tier != null) { const k = +d.tier; if (S.paid && k < tierNow() && !S.live) { toast("Your plan is active. You can move down a plan after go-live, within the terms."); return; } const was = tierNow(); S.plan = k === score(S.a).tier && S.stage !== "pay" ? null : k; if (S.paid && k !== was) log(`Plan changed to ${TIERS[k].name}`); save(); draw(); return; }
     if (d.edit) { if (S.stage !== "brief" && !confirmBack()) return; S.stage = "brief"; S.editing = d.edit; delete draft[d.edit]; save(); draw(); return; }
-    if (d.pick != null && cur) { draft[cur.id] = d.pick; S.a[cur.id] = d.pick; if (cur.id === "type" && !("pages" in S.a)) draft.pages = PAGES_DEF[d.pick] || 8; S.editing = null; save(); draw(); return; }
-    if (d.tog != null && cur) { const v = new Set(draft[cur.id] || []); v.has(d.tog) ? v.delete(d.tog) : v.add(d.tog); draft[cur.id] = [...v]; t.setAttribute("aria-pressed", v.has(d.tog)); return; }
+    if (d.pick != null && cur) {
+      let val = d.pick;
+      if (cur.id === "stack") { S.a.stackAuto = val === "Recommend for me"; if (S.a.stackAuto) { val = C.recStack(S.a)[0]; toast(`We recommend ${val}. You can change it any time.`); } if (S.a.stack !== val) delete S.a.stackSetup; }
+      if (cur.id === "type" && S.a.type && S.a.type !== val) { delete S.a.pages; delete draft.pages; S.plan = null; }
+      draft[cur.id] = val; S.a[cur.id] = val; if (cur.id === "type" && !("pages" in S.a)) draft.pages = PAGES_DEF[val] || 8; S.editing = null; save(); draw(); return;
+    }
+    if (d.tog != null && cur) {
+      const v = new Set(draft[cur.id] || []);
+      if (v.has(d.tog)) v.delete(d.tog); else { if (cur.type === "themes" && v.size >= 3) { toast("Pick up to three looks. Remove one to add another."); return; } v.add(d.tog); }
+      draft[cur.id] = [...v];
+      if (cur.type === "work" || cur.type === "themes") { redrawBrief(); return; }
+      t.setAttribute("aria-pressed", v.has(d.tog)); return;
+    }
     if (d.back) { go(d.back); return; }
     switch (t.id) {
       case "qok": answer(false); return;
+      case "tall": draft._tall = true; redrawBrief(); return;
+      case "pfull": { const st = $("pstage"), on = !st.classList.contains("pfull"); st.classList.toggle("pfull", on); document.body.classList.toggle("noscroll", on); t.textContent = on ? "Close full screen" : "Full screen"; if (!on) fitPrompt(); else $("ptext").focus(); return; }
       case "qskip": answer(true); return;
       case "qcancel": S.editing = null; save(); draw(); return;
       case "addurl": { const q = live().find(x => x.type === "urls"); const L = [...document.querySelectorAll("[data-url]")].map((x, i) => ({ url: x.value, note: (document.querySelector(`[data-note="${i}"]`) || {}).value || "" })); L.push({ url: "", note: "" }); draft[q.id] = L; drawBrief(); return; }
@@ -662,7 +815,7 @@
       case "irefine": { const n = $("inote").value.trim(); if (!n) return; useRound("inner", `Change asked on ${S.wf[S.inner.tab].name}: ${n}`); save(); draw(); toast("Noted and logged."); return; }
       case "iapprove": go("submit", "Inner pages approved"); return;
       case "submit": if (!S.terms) { toast("Please agree to the terms first."); return; } S.submittedAt = now(); S.build = 0; log("Terms accepted"); go("pay", "Submitted to NEXA"); return;
-      case "pay": { const m = monthly(tierNow()), yr = S.billing === "yearly", amt = yr ? m.total * PRICE.annualPaysMonths : m.total; S.paid = true; S.invoices.push({ t: now(), what: `${TIERS[tierNow()].name} plan, ${yr ? "12 months (paid yearly)" : "first month"}`, amt }); go("build", `${TIERS[tierNow()].name} plan started, ${yr ? "yearly" : "monthly"}: ${aed(amt)} paid (prototype, no card charged)`); return; }
+      case "pay": { const t = tierNow(), md = S.model || "monthly", q = quote(t), yr = md === "monthly" && S.billing === "yearly", amt = md === "monthly" ? (yr ? q.rec * PRICE.annualPaysMonths : q.rec) : q.dueNow; S.paid = true; S.invoices.push({ t: now(), what: md === "monthly" ? `${TIERS[t].name} plan, ${yr ? "12 months (paid yearly)" : "first month"}` : `${TIERS[t].name} build, ${Math.round(PRICE.deposit * 100)}% deposit`, amt }); go("build", `${TIERS[t].name} started, ${MODEL_NAME[md].toLowerCase()}: ${aed(amt)} paid (prototype, no card charged)`); return; }
       case "record": record(); return;
       case "helpcall": log("Asked for a call"); save(); drawSide(); toast("In the live portal this opens a booking calendar with your project lead."); return;
       case "helpmsg": log("Asked to message the team"); save(); drawSide(); toast("In the live portal this opens a message thread, kept with your project."); return;
@@ -671,8 +824,8 @@
       case "openstage": { const w = window.open("", "_blank"); if (w) { w.document.write(NC.page(S.a, pickOf())); w.document.close(); } return; }
       case "schanges": { const n = $("snote").value.trim(); if (!n) { toast("List the changes first."); return; } const L = n.split(/\n+/).map(x => x.trim()).filter(Boolean); L.forEach(x => S.changes.push(x)); useRound("staging", `${L.length} change${L.length === 1 ? "" : "s"} requested on staging`); S.build = 1; go("build"); return; }
       case "sapprove": go("live", "Staging approved"); return;
-      case "golive": S.live = true; S.view = "dashboard"; log("Website live"); save(); draw(); window.scrollTo({ top: 0 }); toast("You're live. This is your dashboard."); return;
-      case "newreq": { const n = ($("cr") || {}).value; if (!n || !n.trim()) { toast("Describe the change first."); return; } const t = tierNow(), left = LIM.hours[t] - S.usedHours; S.requests.push({ t: now(), text: n.trim(), status: left > 0 ? "We'll estimate it within " + INCL[7][t + 1].toLowerCase() : "Quote to follow" }); if (left > 0) S.usedHours += 1; log("Change requested: " + n.trim()); save(); draw(); toast("Request sent and logged."); return; }
+      case "golive": if ((S.model || "monthly") !== "monthly") { const q = quote(tierNow()); S.invoices.push({ t: now(), what: `${TIERS[tierNow()].name} build, balance before go-live`, amt: q.up - q.dueNow }); } S.live = true; S.view = "dashboard"; log("Website live"); save(); draw(); window.scrollTo({ top: 0 }); toast("You're live. This is your dashboard."); return;
+      case "newreq": { const n = ($("cr") || {}).value; if (!n || !n.trim()) { toast("Describe the change first."); return; } const t = tierNow(), left = hoursFor(t) - S.usedHours; S.requests.push({ t: now(), text: n.trim(), status: left > 0 ? "We'll estimate it within " + INCL[7][t + 1].toLowerCase() : "Quote to follow" }); if (left > 0) S.usedHours += 1; log("Change requested: " + n.trim()); save(); draw(); toast("Request sent and logged."); return; }
     }
     if (d.smv) { const [i, dir] = d.smv.split("|").map(Number), j = i + dir, L = S.sitemap; if (j < 1 || j >= L.length || i < 1) return; [L[i], L[j]] = [L[j], L[i]]; save(); draw(); return; }
     if (d.smi) { const p = S.sitemap[+d.smi]; p.d = p.d ? 0 : 1; save(); draw(); return; }
@@ -695,6 +848,7 @@
     const t = e.target;
     if (t.id === "qin" && t.type === "range") { $("qout").textContent = t.value; draft.pages = +t.value; }
     if (t.dataset.sm != null) { S.sitemap[+t.dataset.sm].name = t.value; save(); }
+    if (t.id === "ptext") { S.prompt = t.value; save(); if (!$("pstage").classList.contains("pfull")) fitPrompt(); else { const w = $("pwords"); if (w) w.textContent = t.value.split(/\s+/).filter(Boolean).length + " words"; } }
   });
   document.addEventListener("change", e => {
     const t = e.target;
@@ -704,6 +858,7 @@
   });
   document.addEventListener("keydown", e => {
     if (e.key === "Enter" && e.target.id === "qin" && e.target.tagName === "INPUT") { e.preventDefault(); answer(false); }
+    if (e.key === "Escape" && $("pstage") && $("pstage").classList.contains("pfull")) { $("pfull").click(); return; }
     if (e.key === "Enter" && e.target.id === "pask") { e.preventDefault(); $("prefine").click(); }
   });
 

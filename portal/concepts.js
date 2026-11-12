@@ -28,6 +28,8 @@
     "Editorial": { pal: ["#1B1B1B", "#B4532A", "#FAF8F4", "#ECE7DF"], head: "Playfair Display", body: "Source Sans 3", serif: "Playfair Display" },
     "Bold": { pal: ["#0E0E10", "#FF4D2E", "#FFFFFF", "#F1F1F1"], head: "Space Grotesk", body: "Inter", serif: "Space Grotesk" }
   };
+  /* Every style in the portal catalogue, so new styles render in concepts too. */
+  if (window.NexaCatalog) window.NexaCatalog.STYLES.forEach(x => { STYLE[x.v] = { pal: x.pal, head: x.head, body: x.body, serif: x.serif }; });
 
   const DIRECTIONS = [
     { id: "A", name: "Clean grid", note: "Calm, structured, lots of white space. Content leads." },
