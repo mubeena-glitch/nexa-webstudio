@@ -1,29 +1,31 @@
 /* NEXA Web Studio client portal (prototype).
    One client journey: brief chat -> prompt -> sitemap -> concepts (choose or mix) -> wireframes -> inner pages
    -> submit -> build -> staging -> plan and payment -> live. Every gate is an explicit approval, logged with a time.
-   State is kept in this browser only (localStorage). Prices are not set: NEXA confirms them. */
+   State is kept in this browser only (localStorage). Prices and terms below are EXAMPLES for NEXA leadership to set:
+   they all live in PRICE, INCL and TERMS so they can be changed in one place. */
 (function () {
   "use strict";
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const KEY = "nexa-portal-v1";
+  const KEY = "nexa-portal-v2";
   const NC = window.NexaConcepts;
   const now = () => new Date().toISOString();
   const when = s => new Date(s).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
   /* ---------------- state ---------------- */
   const fresh = () => ({ a: {}, stage: "brief", editing: null, prompt: "", promptAsks: [], sitemap: null, concepts: { ready: false, sel: null, mode: "pick", mix: null, notes: {}, view: null },
-    wf: null, inner: { ready: false, tab: 0 }, submittedAt: null, build: 0, changes: [], plan: null, paid: false, hostNow: null, live: false, log: [] });
+    wf: null, inner: { ready: false, tab: 0 }, submittedAt: null, build: 0, changes: [], plan: null, paid: false, hostNow: null, live: false, log: [],
+    rounds: { concept: 0, inner: 0, staging: 0 }, need: {}, terms: false, billing: "monthly", invoices: [], requests: [], usedHours: 0, view: "project" });
   let S;
   try { S = JSON.parse(localStorage.getItem(KEY) || "null") || fresh(); } catch (e) { S = fresh(); }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
-  const log = what => { S.log.push({ t: now(), what }); };
+  const log = what => { S.log.push({ t: now(), what, by: S.a.name || "Client" }); };
   const toast = t => { const el = $("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove("on"), 2600); };
 
   /* ---------------- the brief ---------------- */
   const SECTORS = ["Real estate", "Hospitality", "Healthcare", "Education", "Finance", "Technology", "Retail", "Food and drink", "Professional services", "Government", "Other"];
   const EXPERIENCE = [["AI-generated images", "Original imagery made for your brand"], ["AI-generated video", "Short films for hero sections"], ["3D elements", "Interactive 3D objects or scenes"], ["Immersive scroll storytelling", "The page unfolds as you scroll"], ["Page transitions", "Smooth movement between pages"], ["Micro-animations", "Small touches on buttons and cards"]];
-  const ADDONS = [["SEO setup", "Keywords, meta, schema and a technical check"], ["Analytics and tracking", "GA4, Tag Manager, conversion events"], ["More motion", "Richer animation across the site"], ["Copywriting", "We write the words for every page"], ["Translation", "Your site in more languages"], ["Integrations", "Connect your CRM, bookings, payments and more"], ["Care plan", "Updates, backups, monitoring and small changes"]];
+  const ADDONS = [["SEO setup", "Keywords, meta, schema and a technical check"], ["Analytics and tracking", "GA4, Tag Manager, conversion events"], ["More motion", "Richer animation across the site"], ["Copywriting", "We write the words for every page"], ["Translation", "Your site in more languages"], ["Integrations", "Connect your CRM, bookings, payments and more"], ["Priority care", "Same-day replies and 5 extra change hours a month"]];
   const INTEGRATIONS = ["HubSpot CRM", "Salesforce", "Booking engine", "Payment gateway", "Newsletter", "Live chat or chatbot", "Custom API"];
   const PAGES_DEF = { "Website": 8, "Landing page": 1, "Microsite": 4, "Online store": 12, "Members portal": 10 };
 
@@ -93,12 +95,63 @@
     const langs = (a.languages || []).length;
     add("Extra languages", langs > 1 ? (langs - 1) * ((a.languages || []).includes("Arabic") ? 1.5 : 1) : 0);
     const pts = r.reduce((s, x) => s + x[1], 0);
-    return { pts, r, tier: pts < 4 ? 0 : pts < 9 ? 1 : 2 };
+    const pgTier = pg <= LIM.pages[0] ? 0 : pg <= LIM.pages[1] ? 1 : 2, ni = (a.integrations || []).length, inTier = ni <= 1 ? 0 : ni <= 3 ? 1 : 2;
+    const big = ex.filter(e => ["AI-generated video", "3D elements", "Immersive scroll storytelling"].includes(e)).length, exTier = big === 0 ? 0 : big === 1 ? 1 : 2;
+    const lgTier = langs <= 1 ? 0 : langs <= 2 ? 1 : 2;
+    return { pts, r, tier: Math.max(pts < 4 ? 0 : pts < 9 ? 1 : 2, pgTier, inTier, exTier, lgTier), pgTier };
   }
-  const ETA = ["3 to 5 working days", "7 to 10 working days", "12 to 20 working days"];
+  /* EXAMPLE commercial model (AED, monthly, excluding 5% VAT). NEXA leadership sets the real numbers. */
+  const PRICE = { plans: [1490, 2990, 5490], addons: { "SEO setup": 990, "Analytics and tracking": 390, "More motion": 490, "Copywriting": 690, "Translation": 590, "Integrations": 390, "Priority care": 790 },
+    extraRound: 350, extraHour: 250, vat: 0.05, minMonths: 12, annualPaysMonths: 10 };
+  const INCL = [
+    ["Pages", "Up to 10", "Up to 25", "Up to 40"], ["Languages", "1", "2", "Up to 4"], ["Integrations", "1", "Up to 3", "Unlimited"],
+    ["3D, immersive and AI video", "No", "One of them", "All"], ["Change rounds on concepts", "1", "2", "3"], ["Change rounds on staging", "2", "3", "4"],
+    ["Changes after launch", "2 hours a month", "5 hours a month", "10 hours a month"], ["We reply within", "2 working days", "1 working day", "Same working day"],
+    ["Hosting, SSL, backups, uptime checks", "Included", "Included", "Included"], ["Monthly performance report", "No", "Included", "Included"]];
+  const LIM = { pages: [10, 25, 40], hours: [2, 5, 10], concept: [1, 2, 3], inner: [1, 2, 3], staging: [2, 3, 4] };
+  const TERMS = [
+    `Monthly plan with a ${PRICE.minMonths}-month minimum, then month to month. Pay yearly and pay ${PRICE.annualPaysMonths} months for 12.`,
+    "Building starts once the first month is paid and we have your content and access.",
+    "Each approval in this portal is final for that step. Changes after an approval are change requests, quoted before any work starts.",
+    `Your plan includes a set number of change rounds per step. Extra rounds are AED ${PRICE.extraRound} each.`,
+    `Your domain and content are yours from day one. The design and code pass to you once ${PRICE.minMonths} months are paid, or earlier by paying the remaining months.`,
+    "Prices exclude 5% VAT. Monthly invoices are issued on the same date each month."];
+  const aed = n => "AED " + Math.round(n).toLocaleString("en-GB");
+  const tierOf = () => S.plan == null ? score(S.a).tier : S.plan;
+  function monthly(t) {
+    const a = S.a, ad = (a.addons || []).map(x => {
+      let n = PRICE.addons[x] || 0, l = x;
+      if (x === "Integrations") { const k = Math.max(1, (a.integrations || []).length); n *= k; l = `Integrations (${k})`; }
+      if (x === "Translation") { const k = Math.max(1, String(a.transLangs || "").split(/[,&]| and /).filter(z => z.trim()).length); n *= k; l = `Translation (${k} language${k === 1 ? "" : "s"})`; }
+      return [l, n];
+    });
+    const sub = PRICE.plans[t] + ad.reduce((s, x) => s + x[1], 0);
+    return { plan: PRICE.plans[t], ad, sub, vat: sub * PRICE.vat, total: sub * (1 + PRICE.vat) };
+  }
+  /* Build time in working hours. A landing page is 2 to 4 hours end to end; pages after the first reuse the same
+     system, so they add far less (about 45 minutes each up to 10 pages, 30 minutes after that). Features add on top. */
+  function est(a) {
+    const pg = Math.max(1, S.sitemap ? S.sitemap.length : (a.pages || PAGES_DEF[a.type] || 1)), r = [], add = (l, h) => { if (h) r.push([l, h]); };
+    add("First page, set-up, checks and go-live", 2.5);
+    add(`${pg - 1} more page${pg === 2 ? "" : "s"}`, Math.min(pg - 1, 9) * .75 + Math.max(0, pg - 10) * .5);
+    const EX = { "AI-generated images": 1, "AI-generated video": 3, "3D elements": 6, "Immersive scroll storytelling": 6, "Page transitions": 1, "Micro-animations": .5 };
+    (a.experience || []).forEach(e => add(e, EX[e]));
+    add("Expressive motion", a.motion === "Expressive" ? 2 : 0);
+    add({ "Online store": "Shop and checkout", "Members portal": "Members area and logins" }[a.type], { "Online store": 6, "Members portal": 10 }[a.type] || 0);
+    add(a.stack, { "Custom build (Next.js)": 4, "Shopify": 2 }[a.stack] || 0);
+    (a.integrations || []).forEach(i => add(i, ["Payment gateway", "Booking engine", "Custom API"].includes(i) ? 4 : 2));
+    const langs = Math.max(0, (a.languages || []).length - 1); add("Extra languages", langs * pg * .3 + ((a.languages || []).includes("Arabic") ? 2 : 0));
+    const ad = a.addons || []; add("Copywriting", ad.includes("Copywriting") ? pg * .5 : 0); add("SEO setup", ad.includes("SEO setup") ? 2 : 0); add("Analytics and tracking", ad.includes("Analytics and tracking") ? 1.5 : 0); add("More motion", ad.includes("More motion") ? 2 : 0);
+    const lo = r.reduce((s, x) => s + x[1], 0), hi = lo * (lo <= 6 ? 1.5 : 1.3);
+    const text = hi <= 8 ? `${Math.max(2, Math.floor(lo))} to ${Math.max(4, Math.ceil(hi))} hours` : (() => { const d1 = Math.max(1, Math.round(lo / 8)), d2 = Math.max(d1 + 1, Math.ceil(hi / 8)); return `${d1} to ${d2} working days`; })();
+    return { lo, hi, text, r, pg };
+  }
+  const roundsLeft = k => LIM[k][tierOf()] - S.rounds[k];
+  function roundNote(k) { const L = LIM[k][tierOf()], u = S.rounds[k]; return u < L ? `Change round ${u + 1} of ${L} included in your plan.` : `You've used the ${L} included round${L === 1 ? "" : "s"}. More rounds are ${aed(PRICE.extraRound)} each, added to your next invoice.`; }
+  function useRound(k, what) { const extra = roundsLeft(k) <= 0; S.rounds[k]++; log(what + (extra ? ` (extra round, ${aed(PRICE.extraRound)})` : ` (round ${S.rounds[k]} of ${LIM[k][tierOf()]})`)); }
 
   /* ---------------- stages and progress ---------------- */
-  const STAGES = [["brief", "Brief", 15], ["prompt", "Prompt", 5], ["sitemap", "Sitemap", 10], ["concepts", "Concepts", 20], ["wireframes", "Wireframes", 8], ["inner", "Inner pages", 12], ["submit", "Submit", 5], ["build", "Build", 13], ["staging", "Staging", 5], ["pay", "Plan and payment", 4], ["live", "Live", 3]];
+  const STAGES = [["brief", "Brief", 15], ["prompt", "Prompt", 5], ["sitemap", "Sitemap", 10], ["concepts", "Concepts", 20], ["wireframes", "Wireframes", 8], ["inner", "Inner pages", 12], ["submit", "Submit", 5], ["pay", "Start plan", 4], ["build", "Build", 13], ["staging", "Staging", 5], ["live", "Live", 3]];
   const sIdx = k => STAGES.findIndex(s => s[0] === k);
   function pct() {
     const i = sIdx(S.stage); let p = STAGES.slice(0, i).reduce((s, x) => s + x[2], 0);
@@ -117,7 +170,7 @@
     const sc = score(S.a), chosen = S.plan == null ? sc.tier : S.plan;
     $("planname").textContent = TIERS[chosen].name + (S.plan == null ? " (recommended)" : "");
     $("pmark").style.left = Math.min(98, Math.max(2, sc.pts / 14 * 100)) + "%";
-    $("tiers").innerHTML = TIERS.map((t, k) => `<button class="tier ${k === sc.tier ? "rec" : ""} ${k === chosen ? "sel" : ""}" type="button" data-tier="${k}" aria-pressed="${k === chosen}">${k === sc.tier ? `<span class="tag">Recommended</span>` : `<span class="tag" style="visibility:hidden">.</span>`}<b>${t.name}</b><small>${t.desc}</small><small>Monthly price: to be confirmed</small></button>`).join("");
+    $("tiers").innerHTML = TIERS.map((t, k) => `<button class="tier ${k === sc.tier ? "rec" : ""} ${k === chosen ? "sel" : ""}" type="button" data-tier="${k}" aria-pressed="${k === chosen}">${k === sc.tier ? `<span class="tag">Recommended</span>` : `<span class="tag" style="visibility:hidden">.</span>`}<b>${t.name}</b><small>${t.desc}</small><small><b style="font-size:12px;color:var(--ink)">${aed(PRICE.plans[k])}</b> a month</small></button>`).join("");
     const note = $("plnote");
     if (chosen < sc.tier) {
       const top = sc.r.slice().sort((x, y) => y[1] - x[1]).filter(x => !/pages$/.test(x[0])).slice(0, 3).map(x => x[0]);
@@ -128,18 +181,20 @@
 
   /* ---------------- side ---------------- */
   function drawSide() {
-    const a = S.a, sc = score(a), chosen = S.plan == null ? sc.tier : S.plan;
+    const a = S.a, chosen = tierOf(), m = monthly(chosen), e = est(a);
     const host = { nexa: "NEXA hosts it", dns: "Client adds DNS records", access: "Access to domain and hosting", later: "Decide later" }[a.hosting] || "Not chosen yet";
-    const rows = [["Building", a.type], ["Sector", a.sector], ["Pages", a.pages], ["Style", a.style], ["Platform", a.stack], ["Going live", host]].filter(x => x[1] != null && x[1] !== "");
-    const addons = a.addons || [];
+    const rows = [["Building", a.type], ["Sector", a.sector], ["Pages", S.sitemap ? S.sitemap.length : a.pages], ["Style", a.style], ["Platform", a.stack], ["Going live", host]].filter(x => x[1] != null && x[1] !== "");
     $("side").innerHTML = `
-      <section class="card"><h3>Your project</h3><div class="kv">${rows.length ? rows.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("") : `<p style="margin:0;color:var(--muted)">Your answers appear here as you go.</p>`}</div></section>
-      <section class="card"><h3>Monthly plan</h3><div class="money">
-        <div><b>${TIERS[chosen].name} plan</b><span class="tbc">To be confirmed</span></div>
-        ${addons.map(x => `<div><span>+ ${esc(x)}</span><span class="tbc">To be confirmed</span></div>`).join("")}
-        <div style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><b>Monthly total</b><span class="tbc">NEXA confirms before you pay</span></div>
-      </div><p style="font-size:12px;color:var(--muted);margin:10px 0 0">You pay monthly for your website, not one large bill up front.</p></section>
-      <section class="card"><h3>Approvals</h3>${S.log.length ? `<ul class="log">${S.log.slice().reverse().map(l => `<li><div>${esc(l.what)}<small>${when(l.t)}</small></div></li>`).join("")}</ul>` : `<p style="margin:0;color:var(--muted);font-size:13px">Every step you approve is recorded here with the time, so we always build exactly what you signed off.</p>`}</section>`;
+      <section class="card"><h3>Your project</h3><div class="kv">${rows.length ? rows.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("") : `<p style="margin:0;color:var(--muted)">Your answers appear here as you go.</p>`}</div>
+        ${a.type ? `<div class="eta" style="margin-top:12px;padding:12px 14px"><div><span class="lbl">Build time</span><br><b style="font-size:18px">${e.text}</b></div><span style="font-size:11.5px;color:var(--ink2);flex:1 1 140px">From when we have your content and access.</span></div>` : ""}</section>
+      <section class="card"><h3>Monthly plan <span class="lbl" style="float:right;color:var(--warn)">Example prices</span></h3><div class="money">
+        <div><b>${TIERS[chosen].name} plan</b><b>${aed(m.plan)}</b></div>
+        ${m.ad.map(([l, n]) => `<div><span>+ ${esc(l)}</span><span>${aed(n)}</span></div>`).join("")}
+        <div><span>VAT 5%</span><span>${aed(m.vat)}</span></div>
+        <div style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><b>Monthly total</b><b>${aed(m.total)}</b></div>
+      </div><p style="font-size:12px;color:var(--muted);margin:10px 0 0">One monthly price covers the build, hosting, security, backups and small changes. ${PRICE.minMonths}-month minimum. No large bill up front.</p></section>
+      <section class="card"><h3>Need a person?</h3><p style="margin:0 0 10px;font-size:13px;color:var(--ink2)">Most things are done right here, but a person is always one click away.</p><div class="row2"><button class="btn" type="button" id="helpcall">Book a 15-minute call</button><button class="skip" type="button" id="helpmsg">Message the team</button></div></section>
+      <section class="card"><h3>Approvals</h3>${S.log.length ? `<ul class="log">${S.log.slice().reverse().slice(0, 5).map(l => `<li><div>${esc(l.what)}<small>${when(l.t)}${l.by ? " · " + esc(l.by) : ""}</small></div></li>`).join("")}</ul>${S.log.length > 5 ? `<p class="mut" style="margin:8px 0 0;font-size:12px">And ${S.log.length - 5} earlier, all in your record.</p>` : ""}<div class="row2" style="margin-top:10px"><button class="skip" type="button" id="record">Download my project record</button></div>` : `<p style="margin:0;color:var(--muted);font-size:13px">Every step you approve is recorded here with the time and your name, so we always build exactly what you signed off.</p>`}</section>`;
   }
 
   /* ---------------- brief view ---------------- */
@@ -179,11 +234,10 @@
   function drawBrief() {
     const L = live(), cur = S.editing ? L.find(q => q.id === S.editing) : nextQ();
     let h = `<div class="chat">`;
-    for (const q of L) {
-      if (cur && q.id === cur.id) break;
-      if (!(q.id in S.a)) continue;
-      h += bot(esc(q.ask(S.a))) + me(esc(fmtAns(q, S.a[q.id])), q.id);
-    }
+    const done = []; for (const q of L) { if (cur && q.id === cur.id) break; if (q.id in S.a) done.push(q); }
+    const older = cur ? done.slice(0, Math.max(0, done.length - 2)) : [], recent = cur ? done.slice(older.length) : [];
+    if (older.length) h += `<div class="sofar"><div class="sh"><span class="lbl p">Your answers so far</span><span class="mut">${older.length + recent.length} of ${L.length} · click any answer to change it</span></div><div class="sg">${older.map(q => `<button type="button" data-edit="${q.id}"><span>${esc(LBL[q.id] || q.id)}</span><b>${esc(fmtAns(q, S.a[q.id]))}</b></button>`).join("")}</div></div>`;
+    for (const q of recent) h += bot(esc(q.ask(S.a))) + me(esc(fmtAns(q, S.a[q.id])), q.id);
     if (cur) {
       h += bot(esc(cur.ask(S.a)));
       h += `<div class="ask">${cur.sub ? `<div class="sub" style="margin-top:0">${esc(cur.sub)}</div>` : ""}${control(cur)}<div class="row2"><button class="btn pri" type="button" id="qok">Continue</button><button class="skip" type="button" id="qskip">Skip for now</button>${S.editing ? `<button class="skip" type="button" id="qcancel">Cancel</button>` : ""}</div></div>`;
@@ -288,7 +342,7 @@
         <div class="meta"><b>Concept ${d.id}: ${esc(d.name)}</b><span>${esc(d.note)}</span>
         <div class="row2"><button class="btn ${C.sel === d.id ? "pri" : ""}" type="button" data-csel="${d.id}">${C.sel === d.id ? "Chosen" : "Choose this"}</button><button class="skip" type="button" data-cview="${d.id}">View full size</button></div></div></article>`).join("")}</div>`;
       if (C.view) h += `<div><div class="row2" style="justify-content:space-between;margin-bottom:8px"><b>Concept ${C.view} full size</b><button class="skip" type="button" data-cview="">Close</button></div><div class="frame tall live" data-frame="view"><iframe title="Full size concept" data-src="view"></iframe></div></div>`;
-      if (C.sel) h += `<div class="row2"><input class="in" id="cnote" placeholder="Changes to concept ${C.sel}, for example: warmer colours, larger photos" value="${esc(C.notes[C.sel] || "")}" style="flex:1 1 280px"><button class="btn" type="button" id="crefine">Ask for changes</button></div>`;
+      if (C.sel) h += `<div class="row2"><input class="in" id="cnote" placeholder="Changes to concept ${C.sel}, for example: warmer colours, larger photos" value="${esc(C.notes[C.sel] || "")}" style="flex:1 1 280px"><button class="btn" type="button" id="crefine">Ask for changes</button></div><p style="margin:0;font-size:12px;color:var(--muted)">${roundNote("concept")}</p>`;
     } else {
       h += `<div class="mix"><span></span>${D.map(d => `<span class="hd">${d.id}<span class="nm">: ${esc(d.name)}</span></span>`).join("")}${NC.SECTIONS.map(([k, l]) => `<span>${esc(l)}</span>${D.map(d => `<button type="button" data-mix="${k}|${d.id}" aria-pressed="${C.mix[k] === d.id}" aria-label="${esc(l)} from concept ${d.id}">${d.id}</button>`).join("")}`).join("")}</div>
         <div class="frame tall live" data-frame="mix"><iframe title="Your mixed concept" data-src="mix"></iframe></div>`;
@@ -350,56 +404,98 @@
     $("main").innerHTML = bot("Your inner pages are ready. Click through them, ask for changes on any page, then approve.") + `
       <div class="stage"><h2>Your inner pages</h2><div class="tabs">${S.wf.map((w, i) => `<button type="button" data-itab="${i}" aria-selected="${i === t}">${esc(w.name)}</button>`).join("")}</div>
         <div class="frame tall live"><iframe title="${esc(S.wf[t].name)} page" data-src="inner:${t}"></iframe></div>
-        <div class="row2"><input class="in" id="inote" placeholder="Changes to the ${esc(S.wf[t].name)} page" style="flex:1 1 280px"><button class="btn" type="button" id="irefine">Ask for changes</button></div>
+        <div class="row2"><input class="in" id="inote" placeholder="Changes to the ${esc(S.wf[t].name)} page" style="flex:1 1 280px"><button class="btn" type="button" id="irefine">Ask for changes</button></div><p style="margin:0;font-size:12px;color:var(--muted)">${roundNote("inner")} Put every change for this round in before you send it.</p>
         <div class="gate"><button class="btn" type="button" data-back="wireframes">Back to wireframes</button><button class="btn pri big" type="button" id="iapprove">Approve all pages</button></div></div>`;
     fillFrames();
   }
 
   /* ---------------- submit, build, staging, pay, live ---------------- */
-  const tierNow = () => S.plan == null ? score(S.a).tier : S.plan;
+  const tierNow = tierOf;
+  function needList() {
+    const a = S.a, ad = a.addons || [], L = [];
+    if (!(a.brandFiles || []).length) L.push(["logo", "Your logo and any brand files", "Vector or high-resolution files."]);
+    if (a.content !== "Copy and images are ready") L.push(ad.includes("Copywriting") ? ["brieffacts", "Key facts for our copywriter", "A short form: services, proof points, anything you must say."] : ["copy", "The words for every page", "Or add Copywriting and we write them."]);
+    if (a.content !== "Copy and images are ready" && !(a.experience || []).includes("AI-generated images")) L.push(["images", "Photos and images", "Or we use licensed stock or AI images you approve."]);
+    if (a.hosting === "dns") L.push(["dns", "Someone who can edit your DNS", "Only needed at go-live, for about 10 minutes."]);
+    if (a.hosting === "access") L.push(["access", "Accept our access invitation", "Sent to your domain and hosting accounts. Never send passwords."]);
+    (a.integrations || []).forEach(i => L.push(["int:" + i, `Access to ${i}`, "Through a user invitation or a key shared in this portal, never by email."]));
+    if (ad.includes("Translation") || (a.languages || []).length > 1) L.push(["trans", "A reviewer for each language", "Someone on your side who signs off the translated pages."]);
+    L.push(["legal", "Your privacy policy and terms", "Or approve our standard templates for your lawyer to check."]);
+    return L;
+  }
+  const needDone = () => needList().every(n => S.need[n[0]]);
+  const hrs = h => h < 1 ? Math.round(h * 60) + " min" : (Math.round(h * 2) / 2) + " h";
   function drawSubmit() {
-    const a = S.a, t = tierNow();
-    $("main").innerHTML = bot("Everything is approved. Submit your project and our team starts building.") + `
+    const a = S.a, t = tierNow(), e = est(a), m = monthly(t), sc = score(a);
+    $("main").innerHTML = bot("Everything is approved. Check the summary and the terms, then submit. Your first month starts the build.") + `
       <div class="stage"><h2>Ready to submit</h2><div class="review">
         <div><span>Building</span><b>${esc(a.type || "Website")} for ${esc(a.company || "your brand")}</b></div>
-        <div><span>Pages</span><b>${S.sitemap ? S.sitemap.length : 1}</b></div>
+        <div><span>Pages</span><b>${e.pg}</b></div>
         <div><span>Concept</span><b>${S.concepts.mode === "mix" ? "Your mixed concept" : "Concept " + esc(S.concepts.sel || "A")}</b></div>
         <div><span>Platform</span><b>${esc(a.stack || "We'll recommend one")}</b></div>
-        <div><span>Plan</span><b>${TIERS[t].name}</b></div>
+        <div><span>Plan</span><b>${TIERS[t].name}, ${aed(m.total)} a month including VAT</b></div>
         <div><span>Going live</span><b>${esc({ nexa: "NEXA hosts it", dns: "You add our DNS records", access: "You give us domain and hosting access", later: "Decide later" }[a.hosting] || "Decide later")}</b></div>
       </div>
-      <div class="eta"><div><span class="lbl">Estimated build time</span><br><b>${ETA[t]}</b></div><span style="font-size:13px;color:var(--ink2);flex:1 1 240px">Your estimate is confirmed by NEXA when we accept the brief. You'll see every step here.</span></div>
-      <div class="gate"><button class="btn" type="button" data-back="inner">Back</button><button class="btn pri big" type="button" id="submit">Submit to NEXA</button></div></div>`;
+      ${t < sc.tier ? `<div class="plnote">Your choices fit ${TIERS[sc.tier].name}. On ${TIERS[t].name}, anything above its limits is quoted as extra work before we start.</div>` : ""}
+      <div class="eta"><div><span class="lbl">Build time</span><br><b>${e.text}</b></div><div style="font-size:12.5px;color:var(--ink2);flex:1 1 260px">${e.r.map(x => `${esc(x[0])}: ${hrs(x[1])}`).join(" · ")}<br>The clock starts when we have everything on the list below.</div></div>
+      <div><span class="lbl">What we'll need from you</span><ul style="margin:6px 0 0;padding-left:18px;font-size:13px">${needList().map(n => `<li><b style="font-weight:500">${esc(n[1])}</b> <span style="color:var(--muted)">${esc(n[2])}</span></li>`).join("")}</ul></div>
+      <div><span class="lbl">The terms</span><ol style="margin:6px 0 0;padding-left:18px;font-size:13px;color:var(--ink2)">${TERMS.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+        <label style="display:flex;gap:10px;align-items:flex-start;margin-top:10px;font-size:13px"><input type="checkbox" id="terms" ${S.terms ? "checked" : ""} style="margin-top:3px;accent-color:var(--purple)"> <span>I agree to these terms on behalf of ${esc(a.company || "my company")}.</span></label></div>
+      <div class="gate"><button class="btn" type="button" data-back="inner">Back</button><button class="btn pri big" type="button" id="submit" ${S.terms ? "" : "disabled"}>Submit and start my plan</button></div></div>`;
+  }
+  function drawPay() {
+    const sc = score(S.a), t = tierNow(), m = monthly(t), yr = S.billing === "yearly";
+    const due = yr ? m.total * PRICE.annualPaysMonths : m.total;
+    $("main").innerHTML = bot("Choose your plan and how you'd like to pay. The build starts as soon as the first payment goes through.") + `
+      <div class="stage"><h2>Start your plan</h2>
+        <div class="cards">${TIERS.map((x, k) => `<button class="opt" type="button" data-tier="${k}" aria-pressed="${k === t}"><b>${x.name}${k === sc.tier ? " · recommended" : ""}</b><span>${x.desc}</span><span><b style="color:var(--ink)">${aed(PRICE.plans[k])}</b> a month</span></button>`).join("")}</div>
+        <div style="overflow-x:auto"><table class="dns"><thead><tr><th></th>${TIERS.map((x, k) => `<th style="${k === t ? "color:var(--purple)" : ""}">${x.name}</th>`).join("")}</tr></thead><tbody>${INCL.map(r => `<tr><td>${esc(r[0])}</td>${r.slice(1).map((c, k) => `<td style="${k === t ? "font-weight:600" : ""}">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+        <div class="tabs"><button type="button" data-bill="monthly" aria-selected="${!yr}">Pay monthly</button><button type="button" data-bill="yearly" aria-selected="${yr}">Pay yearly, 2 months free</button></div>
+        <div class="money" style="max-width:460px">
+          <div><span>${TIERS[t].name} plan</span><span>${aed(m.plan)}</span></div>
+          ${m.ad.map(([l, n]) => `<div><span>+ ${esc(l)}</span><span>${aed(n)}</span></div>`).join("")}
+          <div><span>VAT 5%</span><span>${aed(m.vat)}</span></div>
+          <div style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><b>${yr ? `Due today (12 months for the price of ${PRICE.annualPaysMonths})` : "Due today (first month)"}</b><b>${aed(due)}</b></div>
+          <div><span style="color:var(--muted)">${yr ? "Next payment in 12 months" : "Then each month, from the day you go live"}</span><span style="color:var(--muted)">${aed(yr ? due : m.total)}</span></div>
+        </div>
+        <div class="demo"><span class="lbl">Prototype</span><span style="flex:1 1 200px">Example prices. No card is charged in this prototype.</span></div>
+        <div class="gate"><button class="btn" type="button" data-back="submit">Back</button><button class="btn pri big" type="button" id="pay">Pay ${aed(due)} and start the build</button></div></div>`;
   }
   const BSTEPS = [["Brief accepted", "Our team has checked your brief and approvals."], ["Building", "Developers are building your pages on your platform."], ["Quality checks", "Mobile, speed, accessibility, forms and links are tested."], ["Staging ready", "Your private preview link is ready to review."]];
-  function demo(label, id) { return `<div class="demo"><span class="lbl">Prototype</span><span style="flex:1 1 200px">In the live portal this moves on its own as our team works.</span><button class="btn" type="button" id="${id}">${label}</button></div>`; }
+  function demo(label, id, off) { return `<div class="demo"><span class="lbl">Prototype</span><span style="flex:1 1 200px">${off ? "Tick off the list above first: the build clock starts when everything is in." : "In the live portal this moves on its own as our team works."}</span><button class="btn" type="button" id="${id}" ${off ? "disabled" : ""}>${label}</button></div>`; }
   function drawBuild() {
-    const t = tierNow();
-    $("main").innerHTML = bot(S.build >= 4 ? "Your staging site is ready." : `Your website is being built. Estimated time: ${ETA[t]}. You can close this page; we'll email ${esc(S.a.email || "you")} when it's ready.`) + `
-      <div class="stage"><h2>Build progress</h2><div class="track">${BSTEPS.map((b, i) => `<div class="tstep ${i < S.build ? "done" : i === S.build ? "cur" : ""}"><i>${i < S.build ? "&#10003;" : i + 1}</i><div><b>${b[0]}</b><span>${b[1]}</span></div></div>`).join("")}</div>
+    const e = est(S.a), L = needList(), done = needDone();
+    const ask = L.length && S.build === 0 ? `<div><span class="lbl">What we need from you</span><div class="track" style="margin-top:8px">${L.map(n => `<div class="tstep ${S.need[n[0]] ? "done" : ""}"><i>${S.need[n[0]] ? "&#10003;" : "&middot;"}</i><div style="flex:1"><b>${esc(n[1])}</b><span>${esc(n[2])}</span></div><button class="${S.need[n[0]] ? "skip" : "btn"}" type="button" data-need="${esc(n[0])}">${S.need[n[0]] ? "Undo" : "Done"}</button></div>`).join("")}</div></div>` : "";
+    const msg = S.build >= 4 ? "Your staging site is ready." : !done && S.build === 0 ? `Thanks, your plan is active. Send us the items below and the build starts straight away. Estimated build time: ${e.text}.` : `Your website is being built. Estimated build time: ${e.text}. You can close this page; we'll email ${esc(S.a.email || "you")} at each step.`;
+    $("main").innerHTML = bot(msg) + `
+      <div class="stage"><h2>Build progress</h2>${ask}<div class="track">${BSTEPS.map((b, i) => `<div class="tstep ${i < S.build ? "done" : i === S.build ? "cur" : ""}"><i>${i < S.build ? "&#10003;" : i + 1}</i><div><b>${b[0]}</b><span>${b[1]}</span></div></div>`).join("")}</div>
       ${S.changes.length ? `<div><span class="lbl">Changes you asked for</span><ul style="margin:6px 0 0;padding-left:18px">${S.changes.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
-      ${S.build < 4 ? demo("Show the next step", "bnext") : `<div class="gate"><button class="btn pri big" type="button" id="tostaging">Review my staging site</button></div>`}</div>`;
+      ${S.build < 4 ? demo("Show the next step", "bnext", !done) : `<div class="gate"><button class="btn pri big" type="button" id="tostaging">Review my staging site</button></div>`}</div>`;
   }
   function drawStaging() {
-    $("main").innerHTML = bot("Here's your staging site: the real build, on a private link. Click through every page. Approve it, or tell us what to change.") + `
+    $("main").innerHTML = bot("Here's your staging site: the real build, on a private link. Click through every page. Approve it, or list everything you'd like changed in one go.") + `
       <div class="stage"><h2>Review your staging site</h2>
         <div class="row2"><span class="lbl">Staging link</span><span style="color:var(--muted)">Appears here when your build is ready.</span><button class="btn" type="button" id="openstage">Open the preview</button></div>
         <textarea class="in" id="snote" placeholder="Anything to change? List it here, one change per line."></textarea>
-        <div class="gate"><button class="btn" type="button" id="schanges">Request changes</button><button class="btn pri big" type="button" id="sapprove">Approve staging</button><span class="note">Approving confirms the site is ready to go live. Changes after this are handled as change requests.</span></div></div>`;
-  }
-  function drawPay() {
-    const sc = score(S.a), t = tierNow();
-    $("main").innerHTML = bot("Your site is approved. Confirm your monthly plan and we'll take it live.") + `
-      <div class="stage"><h2>Your monthly plan</h2>
-        <div class="cards">${TIERS.map((x, k) => `<button class="opt" type="button" data-tier="${k}" aria-pressed="${k === t}"><b>${x.name}${k === sc.tier ? " · recommended" : ""}</b><span>${x.desc}</span><span>Monthly price: to be confirmed</span></button>`).join("")}</div>
-        <div class="money" style="max-width:420px">${(S.a.addons || []).map(x => `<div><span>+ ${esc(x)}</span><span class="tbc">To be confirmed</span></div>`).join("") || `<div><span>No add-ons</span><span></span></div>`}</div>
-        <div class="demo"><span class="lbl">Prototype</span><span style="flex:1 1 200px">Card payment is not switched on in this prototype, and prices are set by NEXA.</span></div>
-        <div class="gate"><button class="btn pri big" type="button" id="pay">Start my monthly plan</button></div></div>`;
+        <p style="margin:0;font-size:12px;color:var(--muted)">${roundNote("staging")}</p>
+        <div class="gate"><button class="btn" type="button" id="schanges">Request changes</button><button class="btn pri big" type="button" id="sapprove">Approve staging</button><span class="note">Approving confirms the site is ready to go live. Changes after this come out of your monthly change hours.</span></div></div>`;
   }
   function drawLive() {
     const h = S.a.hosting && S.a.hosting !== "later" ? S.a.hosting : S.hostNow;
     if (S.live) {
-      $("main").innerHTML = bot(`Congratulations${S.a.name ? ", " + esc(S.a.name) : ""}. Your website is live.`) + `<div class="stage"><h2>You're live</h2><p class="lead">Your site, your plan and every approval stay here. Need a change? Ask from this portal and it's logged like everything else.</p><div class="row2"><button class="btn pri" type="button" id="newreq">Request a change</button></div></div>`;
+      const t = tierNow(), m = monthly(t), left = Math.max(0, LIM.hours[t] - S.usedHours), nx = new Date(); nx.setMonth(nx.getMonth() + (S.billing === "yearly" ? 12 : 1));
+      $("main").innerHTML = bot(`Congratulations${S.a.name ? ", " + esc(S.a.name) : ""}. Your website is live.`) + `<div class="stage"><h2>Your website</h2>
+        <div class="review">
+          <div><span>Plan</span><b>${TIERS[t].name}, ${S.billing === "yearly" ? "paid yearly" : aed(m.total) + " a month"}</b></div>
+          <div><span>Next invoice</span><b>${nx.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</b></div>
+          <div><span>Change hours left this month</span><b>${left} of ${LIM.hours[t]}</b></div>
+          <div><span>Uptime</span><b>Checked every 3 minutes. We're alerted if it goes down.</b></div>
+        </div>
+        <div><span class="lbl">Ask for a change</span><textarea class="in" id="cr" placeholder="What would you like changed? One request per message works best." style="margin-top:6px"></textarea>
+          <div class="row2" style="margin-top:8px"><button class="btn pri" type="button" id="newreq">Send request</button><span style="font-size:12px;color:var(--muted)">${left ? "We estimate each request before starting. Small ones come out of your monthly hours." : `Your monthly hours are used. Extra changes are ${aed(PRICE.extraHour)} an hour, quoted before we start.`}</span></div></div>
+        ${S.requests.length ? `<div><span class="lbl">Your requests</span><ul style="margin:6px 0 0;padding-left:18px;font-size:13px">${S.requests.slice().reverse().map(r => `<li>${esc(r.text)} <span style="color:var(--muted)">· ${when(r.t)} · ${esc(r.status)}</span></li>`).join("")}</ul></div>` : ""}
+        <div><span class="lbl">Invoices</span><table class="dns" style="margin-top:6px"><tbody>${S.invoices.map(i => `<tr><td>${when(i.t)}</td><td>${esc(i.what)}</td><td style="text-align:right">${aed(i.amt)}</td></tr>`).join("")}</tbody></table></div>
+        <p style="margin:0;font-size:12px;color:var(--muted)">Upgrade any time from the plan bar above. Your plan runs for at least ${PRICE.minMonths} months, then month to month.</p></div>`;
       return;
     }
     let body;
@@ -407,20 +503,43 @@
     else if (h === "dns") body = `<p class="lead">Add these records at your domain provider. The values are issued when your site is ready to go live, and we check them for you.</p><table class="dns"><thead><tr><th>Type</th><th>Name</th><th>Value</th></tr></thead><tbody><tr><td>A</td><td>@</td><td style="color:var(--muted)">Issued at go-live</td></tr><tr><td>CNAME</td><td>www</td><td style="color:var(--muted)">Issued at go-live</td></tr><tr><td>TXT</td><td>@</td><td style="color:var(--muted)">Verification code, issued at go-live</td></tr></tbody></table>`;
     else if (h === "access") body = `<p class="lead">We'll send a secure invitation to your domain and hosting accounts. Never send passwords by email or chat; the invitation keeps your account in your control.</p>`;
     else body = `<p class="lead">We host it for you: secure certificate, backups and monitoring included. Point your domain to us and we do the rest.</p>`;
-    $("main").innerHTML = bot("Last step: going live.") + `<div class="stage"><h2>Going live</h2>${body}${h ? `<div class="gate"><button class="btn pri big" type="button" id="golive">Confirm and go live</button></div>` : ""}</div>`;
+    $("main").innerHTML = bot("Last step: going live.") + `<div class="stage"><h2>Going live</h2>${body}${h ? `<div class="gate"><button class="btn pri big" type="button" id="golive">Confirm and go live</button><span class="note">Your monthly billing date is set from today.</span></div>` : ""}</div>`;
+  }
+  function record() {
+    const a = S.a, t = tierNow(), m = monthly(t), line = "-".repeat(60);
+    const txt = ["NEXA Web Studio project record", `Downloaded ${new Date().toLocaleString("en-GB")}`, line, "BRIEF",
+      ...live().map(q => `${LBL[q.id] || q.id}: ${fmtAns(q, a[q.id])}`), line, "PROMPT (as approved)", S.prompt || "(not yet)", line, "SITEMAP",
+      ...(S.sitemap || []).map((p, i) => `${String(i + 1).padStart(2, "0")} ${p.d ? "  - " : ""}${p.name}`), line, "PLAN",
+      `${TIERS[t].name}: ${aed(m.plan)} a month; add-ons ${m.ad.map(x => x[0] + " " + aed(x[1])).join(", ") || "none"}; total ${aed(m.total)} including VAT (example prices)`,
+      `Terms accepted: ${S.terms ? "yes" : "not yet"}`, line, "APPROVALS AND REQUESTS", ...S.log.map(l => `${new Date(l.t).toLocaleString("en-GB")}  ${l.by || ""}  ${l.what}`)].join("\n");
+    const b = new Blob([txt], { type: "text/plain" }), u = URL.createObjectURL(b), el = document.createElement("a");
+    el.href = u; el.download = `${(a.company || "project").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-record.txt`; document.body.appendChild(el); el.click(); el.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000);
   }
 
   /* ---------------- draw ---------------- */
+  function drawViews() {
+    const v = S.view || "project";
+    document.body.dataset.view = v;
+    $("views").innerHTML = [["project", "Project"], ["dashboard", "Dashboard"], ["reports", "Reports"], ["billing", "Plan and billing"]].map(([k, l]) => `<button type="button" data-view="${k}" aria-current="${k === v ? "page" : "false"}">${l}</button>`).join("");
+    return v;
+  }
   function draw() {
+    const v = drawViews();
+    if (v !== "project" && window.NexaDash) { drawBand(); $("main").innerHTML = window.NexaDash[v](); return; }
     drawBand(); drawSide();
     ({ brief: drawBrief, prompt: drawPrompt, sitemap: drawSitemap, concepts: drawConcepts, wireframes: drawWireframes, inner: drawInner, submit: drawSubmit, build: drawBuild, staging: drawStaging, pay: drawPay, live: drawLive }[S.stage] || drawBrief)();
   }
+
+  window.NexaPortal = { S: () => S, tierOf, est, monthly, aed, esc, PRICE, LIM, INCL, TIERS, STAGES, pct, save, log, draw };
 
   /* ---------------- events ---------------- */
   document.addEventListener("click", e => {
     const t = e.target.closest("button,[data-edit]"); if (!t) return;
     const d = t.dataset, cur = S.editing ? live().find(x => x.id === S.editing) : nextQ();
-    if (d.tier != null) { const k = +d.tier; S.plan = k === score(S.a).tier && S.stage !== "pay" ? null : k; save(); draw(); return; }
+    if (d.view) { S.view = d.view; save(); draw(); window.scrollTo({ top: 0 }); return; }
+    if (d.addon) { S.a.addons = [...new Set([...(S.a.addons || []), d.addon])]; log(`Added ${d.addon}`); save(); draw(); toast(`${d.addon} added to your plan.`); return; }
+    if (d.report != null) { window.NexaDash.reportFile(+d.report); log("Downloaded a monthly report"); save(); return; }
+    if (d.tier != null) { const k = +d.tier; if (S.paid && k < tierNow() && !S.live) { toast("Your plan is active. You can move down a plan after go-live, within the terms."); return; } const was = tierNow(); S.plan = k === score(S.a).tier && S.stage !== "pay" ? null : k; if (S.paid && k !== was) log(`Plan changed to ${TIERS[k].name}`); save(); draw(); return; }
     if (d.edit) { if (S.stage !== "brief" && !confirmBack()) return; S.stage = "brief"; S.editing = d.edit; delete draft[d.edit]; save(); draw(); return; }
     if (d.pick != null && cur) { draft[cur.id] = d.pick; S.a[cur.id] = d.pick; if (cur.id === "type" && !("pages" in S.a)) draft.pages = PAGES_DEF[d.pick] || 8; S.editing = null; save(); draw(); return; }
     if (d.tog != null && cur) { const v = new Set(draft[cur.id] || []); v.has(d.tog) ? v.delete(d.tog) : v.add(d.tog); draft[cur.id] = [...v]; t.setAttribute("aria-pressed", v.has(d.tog)); return; }
@@ -436,21 +555,24 @@
       case "papprove": S.prompt = $("ptext").value; S.sitemap = null; go("sitemap", "Prompt approved"); return;
       case "smadd": S.sitemap.push({ name: "New page", d: 0 }); S.a.pages = S.sitemap.length; save(); draw(); return;
       case "smapprove": S.a.pages = S.sitemap.length; S.concepts = { ready: false, sel: null, mode: "pick", mix: null, notes: {}, view: null }; S.wf = null; S.inner = { ready: false, tab: 0 }; go("concepts", `Sitemap approved: ${S.sitemap.length} page${S.sitemap.length === 1 ? "" : "s"}`); return;
-      case "crefine": { const n = $("cnote").value.trim(); if (!n) return; S.concepts.notes[S.concepts.sel] = n; save(); toast("Noted. In the live studio your concept is redesigned with these changes."); return; }
+      case "crefine": { const n = $("cnote").value.trim(); if (!n) return; S.concepts.notes[S.concepts.sel] = n; useRound("concept", `Changes asked on concept ${S.concepts.sel}: ${n}`); save(); draw(); toast("Noted. In the live studio your concept is redesigned with these changes."); return; }
       case "capprove": { const C = S.concepts; S.wf = null; S.inner = { ready: false, tab: 0 }; go("wireframes", C.mode === "mix" ? "Mixed concept approved: " + NC.SECTIONS.map(([k, l]) => l + " " + C.mix[k]).join(", ") : `Concept ${C.sel} approved: ${NC.DIRECTIONS.find(x => x.id === C.sel).name}${C.notes[C.sel] ? " (changes: " + C.notes[C.sel] + ")" : ""}`); return; }
       case "wapprove": S.inner = { ready: false, tab: 0 }; go("inner", `Wireframes approved for ${S.wf.length} page${S.wf.length === 1 ? "" : "s"}`); return;
       case "icreate": { const g = $("igen"); g.innerHTML = `<div class="bar"><i id="ibar" style="width:0"></i></div><span>Creating your pages…</span>`; let p = 0; const iv = setInterval(() => { p += 10; const b = $("ibar"); if (b) b.style.width = p + "%"; if (p >= 100) { clearInterval(iv); S.inner.ready = true; save(); draw(); } }, 120); return; }
-      case "irefine": { const n = $("inote").value.trim(); if (!n) return; log(`Change asked on ${S.wf[S.inner.tab].name}: ${n}`); save(); drawSide(); toast("Noted and logged."); $("inote").value = ""; return; }
+      case "irefine": { const n = $("inote").value.trim(); if (!n) return; useRound("inner", `Change asked on ${S.wf[S.inner.tab].name}: ${n}`); save(); draw(); toast("Noted and logged."); return; }
       case "iapprove": go("submit", "Inner pages approved"); return;
-      case "submit": S.submittedAt = now(); S.build = 0; go("build", "Submitted to NEXA for build"); return;
+      case "submit": if (!S.terms) { toast("Please agree to the terms first."); return; } S.submittedAt = now(); S.build = 0; log("Terms accepted"); go("pay", "Submitted to NEXA"); return;
+      case "pay": { const m = monthly(tierNow()), yr = S.billing === "yearly", amt = yr ? m.total * PRICE.annualPaysMonths : m.total; S.paid = true; S.invoices.push({ t: now(), what: `${TIERS[tierNow()].name} plan, ${yr ? "12 months (paid yearly)" : "first month"}`, amt }); go("build", `${TIERS[tierNow()].name} plan started, ${yr ? "yearly" : "monthly"}: ${aed(amt)} paid (prototype, no card charged)`); return; }
+      case "record": record(); return;
+      case "helpcall": log("Asked for a call"); save(); drawSide(); toast("In the live portal this opens a booking calendar with your project lead."); return;
+      case "helpmsg": log("Asked to message the team"); save(); drawSide(); toast("In the live portal this opens a message thread, kept with your project."); return;
       case "bnext": S.build = Math.min(4, S.build + 1); log(BSTEPS[S.build - 1][0]); save(); draw(); return;
       case "tostaging": go("staging"); return;
       case "openstage": { const w = window.open("", "_blank"); if (w) { w.document.write(NC.page(S.a, pickOf())); w.document.close(); } return; }
-      case "schanges": { const n = $("snote").value.trim(); if (!n) { toast("List the changes first."); return; } n.split(/\n+/).forEach(x => x.trim() && S.changes.push(x.trim())); S.build = 1; go("build", "Changes requested on staging"); return; }
-      case "sapprove": go("pay", "Staging approved"); return;
-      case "pay": S.paid = true; go("live", `${TIERS[tierNow()].name} plan confirmed (payment not live in prototype)`); return;
-      case "golive": S.live = true; log("Website live"); save(); draw(); return;
-      case "newreq": toast("Change requests open here in the live portal."); return;
+      case "schanges": { const n = $("snote").value.trim(); if (!n) { toast("List the changes first."); return; } const L = n.split(/\n+/).map(x => x.trim()).filter(Boolean); L.forEach(x => S.changes.push(x)); useRound("staging", `${L.length} change${L.length === 1 ? "" : "s"} requested on staging`); S.build = 1; go("build"); return; }
+      case "sapprove": go("live", "Staging approved"); return;
+      case "golive": S.live = true; S.view = "dashboard"; log("Website live"); save(); draw(); window.scrollTo({ top: 0 }); toast("You're live. This is your dashboard."); return;
+      case "newreq": { const n = ($("cr") || {}).value; if (!n || !n.trim()) { toast("Describe the change first."); return; } const t = tierNow(), left = LIM.hours[t] - S.usedHours; S.requests.push({ t: now(), text: n.trim(), status: left > 0 ? "We'll estimate it within " + INCL[7][t + 1].toLowerCase() : "Quote to follow" }); if (left > 0) S.usedHours += 1; log("Change requested: " + n.trim()); save(); draw(); toast("Request sent and logged."); return; }
     }
     if (d.smv) { const [i, dir] = d.smv.split("|").map(Number), j = i + dir, L = S.sitemap; if (j < 1 || j >= L.length || i < 1) return; [L[i], L[j]] = [L[j], L[i]]; save(); draw(); return; }
     if (d.smi) { const p = S.sitemap[+d.smi]; p.d = p.d ? 0 : 1; save(); draw(); return; }
@@ -463,6 +585,8 @@
     if (d.wup) { const [i, j] = d.wup.split("|").map(Number), B = S.wf[i].blocks; [B[j - 1], B[j]] = [B[j], B[j - 1]]; save(); draw(); return; }
     if (d.itab) { S.inner.tab = +d.itab; save(); draw(); return; }
     if (d.host) { S.hostNow = d.host; S.a.hosting = d.host; save(); draw(); return; }
+    if (d.need) { const k = d.need, it = needList().find(n => n[0] === k); S.need[k] = !S.need[k]; if (S.need[k] && it) log("Provided: " + it[1]); save(); draw(); return; }
+    if (d.bill) { S.billing = d.bill; save(); draw(); return; }
   });
   let armed = 0, backArmed = 0;
   function confirmBack() { if (Date.now() - backArmed < 4000) return true; backArmed = Date.now(); toast("Changing your brief after this point means re-approving the next steps. Click again to change it."); return false; }
@@ -474,6 +598,7 @@
   });
   document.addEventListener("change", e => {
     const t = e.target;
+    if (t.id === "terms") { S.terms = t.checked; save(); const b = $("submit"); if (b) b.disabled = !t.checked; }
     if (t.id === "qin" && t.type === "file") { const q = live().find(x => x.type === "files"); draft[q.id] = [...t.files].map(f => f.name); $("qfiles").textContent = draft[q.id].join(", "); }
     if (t.dataset.wadd != null && t.value) { S.wf[+t.dataset.wadd].blocks.push(t.value); save(); draw(); }
   });
