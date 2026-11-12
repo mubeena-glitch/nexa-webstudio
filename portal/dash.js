@@ -1,12 +1,12 @@
 /* NEXA Web Studio client portal: Dashboard, Reports and Plan and billing views.
    Charts are plain inline SVG. Until a site is live (and in this prototype), figures are SAMPLE data, labelled as such.
    Chart colours: NEXA Purple for single series; categorical slots validated for colour-blind separation:
-   #9354FF purple, #1A9E70 green, #E0602C orange, #2A78D6 blue (in that fixed order). */
+   #6E72F2 indigo, #22A574 green, #D66F38 orange, #3C8FD9 blue (dark surface #23232F) (in that fixed order). */
 (function () {
   "use strict";
   const P = () => window.NexaPortal;
-  const CAT = ["#9354FF", "#1A9E70", "#E0602C", "#2A78D6"];
-  const OK = "#1F8F5F", WARN = "#A86A0E";
+  const CAT = ["#6E72F2", "#22A574", "#D66F38", "#3C8FD9"];
+  const OK = "#3CCB8B", WARN = "#F0B04A";
 
   /* ---------- seeded sample data ---------- */
   function rng(seed) { let h = 2166136261; for (const c of String(seed)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -38,7 +38,7 @@
   /* ---------- chart pieces ---------- */
   function spark(vals, w = 120, h = 34) {
     const mx = Math.max(...vals), mn = Math.min(...vals), x = i => i / (vals.length - 1) * (w - 4) + 2, y = v => h - 3 - (v - mn) / ((mx - mn) || 1) * (h - 8);
-    return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><path d="${vals.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join("")}" fill="none" stroke="#9354FF" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${x(vals.length - 1)}" cy="${y(vals[vals.length - 1])}" r="3" fill="#9354FF" stroke="#fff" stroke-width="2"/></svg>`;
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><path d="${vals.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join("")}" fill="none" stroke="#6E72F2" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${x(vals.length - 1)}" cy="${y(vals[vals.length - 1])}" r="3" fill="#6E72F2" stroke="#22222E" stroke-width="2"/></svg>`;
   }
   function delta(now, before, goodUp = true) {
     const ch = (now - before) / (before || 1) * 100, up = ch >= 0, good = up === goodUp;
@@ -52,7 +52,7 @@
     const grid = [0, 0.5, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${y(mx * f)}" y2="${y(mx * f)}" class="gl"/><text x="${L - 8}" y="${y(mx * f) + 4}" text-anchor="end" class="ax">${fmt(mx * f)}</text>`).join("");
     const xl = [0, 7, 14, 21, 29].map(i => `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" class="ax">${day(days[i].d)}</text>`).join("");
     const hits = days.map((d, i) => `<g class="hit" data-tip="<b>${fmt(d.v)}</b> visitors<br>${d.d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}"><rect x="${x(i) - st / 2}" y="${T}" width="${st}" height="${H - T - B}" fill="transparent"/><line x1="${x(i)}" x2="${x(i)}" y1="${T}" y2="${H - B}" class="xh"/><circle cx="${x(i)}" cy="${y(d.v)}" r="5" class="pt"/></g>`).join("");
-    return `<svg viewBox="0 0 ${W} ${H}" class="chart" role="img" aria-label="Visitors per day for the last 30 days"><defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9354FF" stop-opacity=".22"/><stop offset="1" stop-color="#9354FF" stop-opacity="0"/></linearGradient></defs>${grid}<path d="${line}L${x(days.length - 1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="url(#ag)"/><path d="${line}" fill="none" stroke="#9354FF" stroke-width="2" stroke-linejoin="round"/>${xl}${hits}</svg>`;
+    return `<svg viewBox="0 0 ${W} ${H}" class="chart" role="img" aria-label="Visitors per day for the last 30 days"><defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E72F2" stop-opacity=".22"/><stop offset="1" stop-color="#6E72F2" stop-opacity="0"/></linearGradient></defs>${grid}<path d="${line}L${x(days.length - 1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="url(#ag)"/><path d="${line}" fill="none" stroke="#6E72F2" stroke-width="2" stroke-linejoin="round"/>${xl}${hits}</svg>`;
   }
   function bars(items, label, unit) {
     const W = 480, H = 220, L = 30, B = 26, T = 18, mx = Math.max(...items.map(i => i.v)) * 1.2 || 1, bw = (W - L - 10) / items.length, y = v => T + (1 - v / mx) * (H - T - B);
@@ -65,7 +65,7 @@
   }
   function hbars(rows, unit) { const mx = Math.max(...rows.map(r => r[1])) || 1; return `<div class="hb">${rows.map(([k, v]) => `<div class="hit" data-tip="<b>${fmt(v)}</b> ${unit}<br>${P().esc(k)}"><span class="k">${P().esc(k)}</span><span class="t"><i style="width:${v / mx * 100}%"></i></span><b>${fmt(v)}</b></div>`).join("")}</div>`; }
   function funnel(f) { const mx = f[0][1]; return `<div class="fn">${f.map(([k, v], i) => `<div class="hit" data-tip="<b>${fmt(v)}</b> ${k.toLowerCase()}${i ? `<br>${(v / f[i - 1][1] * 100).toFixed(0)}% of the step before` : ""}"><span class="k">${k}</span><span class="t"><i style="width:${Math.max(2, v / mx * 100)}%"></i></span><b>${fmt(v)}</b>${i ? `<small>${(v / f[i - 1][1] * 100).toFixed(0)}%</small>` : "<small></small>"}</div>`).join("")}</div>`; }
-  function ring(v, label, colour = "#9354FF", unit = "", show) { const r = 42, c = 2 * Math.PI * r; return `<svg viewBox="0 0 110 110" class="ring" role="img" aria-label="${label}: ${v} out of 100"><circle cx="55" cy="55" r="${r}" fill="none" stroke="#ECEBEF" stroke-width="10"/><circle cx="55" cy="55" r="${r}" fill="none" stroke="${colour}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c * v / 100} ${c}" transform="rotate(-90 55 55)"/><text x="55" y="62" text-anchor="middle" class="rv">${show != null ? show : v}${unit ? `<tspan font-size="14">${unit}</tspan>` : ""}</text></svg>`; }
+  function ring(v, label, colour = "#6E72F2", unit = "", show) { const r = 42, c = 2 * Math.PI * r; return `<svg viewBox="0 0 110 110" class="ring" role="img" aria-label="${label}: ${v} out of 100"><circle cx="55" cy="55" r="${r}" fill="none" stroke="#33334A" stroke-width="10"/><circle cx="55" cy="55" r="${r}" fill="none" stroke="${colour}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c * v / 100} ${c}" transform="rotate(-90 55 55)"/><text x="55" y="62" text-anchor="middle" class="rv">${show != null ? show : v}${unit ? `<tspan font-size="14">${unit}</tspan>` : ""}</text></svg>`; }
   const tbl = (head, rows) => `<details class="nums"><summary>Show the numbers</summary><table class="dns"><thead><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></details>`;
   const ICON = { ok: `<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 8.2l2 2 4-4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>` };
 
@@ -79,7 +79,7 @@
     const N = P(), e = N.est(S.a), pct = N.pct(), st = N.STAGES, i = st.findIndex(s => s[0] === S.stage), done = S.log.length;
     return `<section class="dcard hero"><div class="hl"><span class="lbl p">${S.live ? "Your website is live" : "Your project"}</span><h2>${S.live ? "Everything about your site, in one place." : `Step ${i + 1} of ${st.length}: ${st[i][1]}`}</h2><p>${S.live ? `Live since ${new Date((S.log.find(l => l.what === "Website live") || {}).t || Date.now()).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}. Ask for changes, read your reports and manage your plan from here.` : `Estimated build time once we have your content: <b>${e.text}</b>.`}</p>
       <div class="tl">${st.map((s, k) => `<span class="${S.live || k < i ? "d" : k === i ? "c" : ""}" title="${s[1]}"></span>`).join("")}</div></div>
-      <div class="hr">${ring(pct, "Project progress", "#9354FF", "%")}<span class="lbl">Progress</span></div></section>
+      <div class="hr">${ring(pct, "Project progress", "#6E72F2", "%")}<span class="lbl">Progress</span></div></section>
       <div class="kps">${kpi("Approvals recorded", done, `<small class="mut">Every one timed and named</small>`)}${kpi("Pages", e.pg, `<small class="mut">${S.wf ? S.wf.length + " inner pages wireframed" : "Firm once the sitemap is approved"}</small>`)}${kpi("Change rounds used", S.rounds.concept + S.rounds.inner + S.rounds.staging, `<small class="mut">Across concepts, pages and staging</small>`)}${kpi("Build time", e.text, `<small class="mut">From when we have your content</small>`)}</div>`;
   }
   function performance(S) {
@@ -124,7 +124,7 @@
   }
   function billing() {
     const N = P(), S = N.S(), t = N.tierOf(), m = N.monthly(t), used = S.usedHours || 0, lim = N.LIM.hours[t];
-    return `<div class="dash"><section class="dcard hero"><div class="hl"><span class="lbl p">Plan and billing</span><h2>${N.TIERS[t].name} plan</h2><p><b>${N.aed(m.total)}</b> a month including VAT${S.billing === "yearly" ? ", paid yearly" : ""}. ${N.PRICE.minMonths}-month minimum, then month to month.</p></div><div class="hr">${ring(Math.round(Math.max(0, lim - used) / lim * 100), "Change hours left", "#9354FF", "h", Math.max(0, lim - used))}<span class="lbl">${Math.max(0, lim - used)} of ${lim} change hours left</span></div></section>
+    return `<div class="dash"><section class="dcard hero"><div class="hl"><span class="lbl p">Plan and billing</span><h2>${N.TIERS[t].name} plan</h2><p><b>${N.aed(m.total)}</b> a month including VAT${S.billing === "yearly" ? ", paid yearly" : ""}. ${N.PRICE.minMonths}-month minimum, then month to month.</p></div><div class="hr">${ring(Math.round(Math.max(0, lim - used) / lim * 100), "Change hours left", "#6E72F2", "h", Math.max(0, lim - used))}<span class="lbl">${Math.max(0, lim - used)} of ${lim} change hours left</span></div></section>
       <div class="smp"><span class="lbl">Example prices</span><span>Prototype: these prices and terms are examples for NEXA to set. No card is charged.</span></div>
       <section class="dcard"><div class="dh"><h3>This month</h3></div><div class="money" style="max-width:520px"><div><span>${N.TIERS[t].name} plan</span><span>${N.aed(m.plan)}</span></div>${m.ad.map(([l, n]) => `<div><span>+ ${N.esc(l)}</span><span>${N.aed(n)}</span></div>`).join("")}<div><span>VAT 5%</span><span>${N.aed(m.vat)}</span></div><div style="border-top:1px solid var(--line);padding-top:8px"><b>Total</b><b>${N.aed(m.total)}</b></div></div></section>
       <section class="dcard"><div class="dh"><h3>Compare plans</h3></div><div style="overflow-x:auto"><table class="dns"><thead><tr><th></th>${N.TIERS.map((x, k) => `<th style="${k === t ? "color:var(--purple)" : ""}">${x.name}<br><span style="text-transform:none;letter-spacing:0;font-family:var(--display);font-size:12px;color:var(--ink)">${N.aed(N.PRICE.plans[k])} a month</span></th>`).join("")}</tr></thead><tbody>${N.INCL.map(r => `<tr><td>${N.esc(r[0])}</td>${r.slice(1).map((c, k) => `<td style="${k === t ? "font-weight:600" : ""}">${N.esc(c)}</td>`).join("")}</tr>`).join("")}<tr><td></td>${N.TIERS.map((x, k) => `<td>${k === t ? `<span class="mut">Your plan</span>` : `<button class="btn" type="button" data-tier="${k}">${k > t ? "Upgrade" : "Move down"}</button>`}</td>`).join("")}</tr></tbody></table></div></section>
@@ -133,8 +133,8 @@
 
   /* ---------- tooltip ---------- */
   let tip;
-  document.addEventListener("mouseover", e => { const h = e.target.closest("[data-tip]"); if (!tip) { tip = document.createElement("div"); tip.className = "vtip"; document.body.appendChild(tip); } if (!h) { tip.style.opacity = 0; return; } tip.innerHTML = h.dataset.tip; tip.style.opacity = 1; });
-  document.addEventListener("mousemove", e => { if (!tip || tip.style.opacity === "0") return; const w = tip.offsetWidth; tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + "px"; tip.style.top = (e.clientY - tip.offsetHeight - 12) + "px"; });
+  document.addEventListener("mouseover", e => { const h = e.target.closest("[data-tip]"); if (!tip) { tip = document.createElement("div"); tip.className = "vtip"; document.body.appendChild(tip); } if (!h) { tip.style.opacity = 0; return; } tip.innerHTML = h.dataset.tip; tip.style.opacity = 1; tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.clientX + 14) + "px"; tip.style.top = Math.max(8, e.clientY - tip.offsetHeight - 12) + "px"; });
+  document.addEventListener("mousemove", e => { if (!tip || tip.style.opacity === "0") return; const w = tip.offsetWidth; tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + "px"; tip.style.top = Math.max(8, e.clientY - tip.offsetHeight - 12) + "px"; });
 
   window.NexaDash = { dashboard, reports, billing, reportFile };
 })();

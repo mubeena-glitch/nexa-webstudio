@@ -261,25 +261,123 @@
   }
 
   /* ---------------- prompt ---------------- */
+  /* The design prompt: everything a designer (or a design model) needs to produce a finished-looking homepage concept. */
+  const STYLE_DIR = {
+    "Minimal": { feel: "calm, precise and confident", type: "a clean grotesque sans for everything, large headings with tight leading, very few weights", colour: "mostly white or off-white with one strong accent used sparingly", layout: "generous white space, a strict 12-column grid, few elements per screen, hairline dividers", imagery: "quiet, well-lit photography with plenty of negative space", tone: "short, plain sentences; say less, mean more" },
+    "Luxury": { feel: "exclusive, unhurried and assured", type: "an elegant high-contrast serif for display headings paired with a refined sans for body text, wide letter-spacing on small uppercase labels", colour: "deep, rich base tones (charcoal, ink, sand or emerald) with a single metallic or warm accent", layout: "full-bleed imagery, asymmetric compositions, large margins, slow reveal of content", imagery: "editorial, art-directed photography with natural light, texture and detail close-ups", tone: "understated and evocative; never salesy" },
+    "Simple": { feel: "friendly, clear and easy", type: "one rounded or humanist sans in two or three weights", colour: "a bright, approachable primary colour on white, soft tinted backgrounds for sections", layout: "obvious hierarchy, card-based sections, clear buttons, nothing hidden", imagery: "real people and real places, warm and honest", tone: "conversational and helpful" },
+    "Retro": { feel: "playful, nostalgic and characterful", type: "a period display face (70s soft serif or 90s grotesque) with a neutral sans for body", colour: "warm vintage tones such as mustard, burnt orange, teal and cream", layout: "framed sections, badges, rounded shapes and visible borders", imagery: "film-grain photography, duotones and illustrated details", tone: "warm, witty and personal" },
+    "Artistic": { feel: "expressive, surprising and crafted", type: "an expressive display face used large, with a quiet sans for reading", colour: "a bold, unexpected palette with one signature colour", layout: "broken grids, overlapping layers, oversized type and generous canvas", imagery: "illustration, collage or art-directed photography with a strong point of view", tone: "imaginative and confident" },
+    "Editorial": { feel: "intelligent, curated and story-led", type: "a magazine serif for headlines with a crisp sans for body, clear typographic scale, pull quotes", colour: "restrained neutrals with one ink accent", layout: "magazine-style columns, strong typographic hierarchy, mixed image sizes, captions", imagery: "documentary and portrait photography", tone: "thoughtful and articulate, story first" },
+    "Bold": { feel: "energetic, direct and memorable", type: "a heavy condensed or wide display sans in capitals, set very large", colour: "high contrast: a saturated signature colour against black or white", layout: "big blocks of colour, oversized numbers and headlines, strong edges", imagery: "punchy, high-contrast photography and graphic shapes", tone: "short, punchy and confident" }
+  };
+  const GOAL_DIR = {
+    "Generate leads": "Primary action: an enquiry form (3 to 5 fields) visible in the first screen on desktop and one tap away on mobile, repeated near the end of the page.",
+    "Sell online": "Primary action: shop the range. Featured products with price and quick add to basket, clear delivery and returns reassurance.",
+    "Bookings": "Primary action: book. A booking bar (date, guests or service) in the hero and a sticky Book now button on mobile.",
+    "Build the brand": "Lead with the brand story: a striking hero statement, what makes the brand different, and proof such as awards, press or numbers.",
+    "Inform and educate": "Make information easy to find: clear topic entry points, search, and short summaries that link to detail pages.",
+    "Recruit": "Show the culture: people, values and open roles, with a clear route to apply.",
+    "Launch a product": "Introduce the product: one clear promise, the key features with visuals, social proof and a launch call to action (register, pre-order or demo)."
+  };
+  const SECTOR_DIR = {
+    "Real estate": { trust: "developer credentials, completed projects, RERA or regulator details, payment plans, location maps", sections: "featured communities or properties with price from, key facts (bedrooms, size, handover), location and lifestyle, payment plan, register interest" },
+    "Hospitality": { trust: "guest reviews and ratings, awards, real photography of rooms and venues", sections: "rooms and suites, dining, experiences, offers, location, booking" },
+    "Healthcare": { trust: "doctor profiles and qualifications, accreditations, patient reviews, clear pricing or insurance information", sections: "treatments, doctors, patient journey, results or outcomes, insurance, book an appointment" },
+    "Education": { trust: "accreditation, outcomes, rankings, faculty, student stories", sections: "programmes, admissions steps and dates, campus life, outcomes, enquire or apply" },
+    "Finance": { trust: "regulation and licences, security, transparent fees, client logos", sections: "products, how it works, rates and fees, security, support" },
+    "Technology": { trust: "client logos, case studies, integrations, security and compliance badges", sections: "product overview, key features with interface visuals, integrations, customers, pricing, demo" },
+    "Retail": { trust: "reviews, delivery and returns promise, secure checkout", sections: "new in, collections, best sellers, gift guide, stores, delivery and returns" },
+    "Food and drink": { trust: "reviews, press, chef or founder story, hygiene and sourcing", sections: "menu highlights, locations and hours, order online, private dining, story" },
+    "Professional services": { trust: "credentials, case studies, client logos, team expertise", sections: "services, industries, case studies, people, insights, contact" },
+    "Government": { trust: "official identity, accessibility, clear ownership and contact routes", sections: "most-used services first, initiatives, news, open data, help and contact" },
+    "Other": { trust: "client logos, testimonials, numbers that matter", sections: "what we do, how it works, our work, about, contact" }
+  };
+  const EXP_DIR = {
+    "AI-generated images": "Original AI-generated imagery made for the brand (no stock look): give art direction for each hero and section image.",
+    "AI-generated video": "A short AI-generated film loop (6 to 10 seconds, no text in frame) behind the hero, with a still poster image for slow connections.",
+    "3D elements": "One interactive 3D object or scene that reinforces the product or place, lightweight and with a static fallback.",
+    "Immersive scroll storytelling": "A scroll-driven story section where content and imagery unfold step by step as the visitor scrolls.",
+    "Page transitions": "Smooth transitions between pages that keep the visitor oriented.",
+    "Micro-animations": "Small, purposeful animations on buttons, cards, icons and form states."
+  };
+  const MOTION_DIR = { "Subtle": "Subtle: gentle fades and short slides only, nothing that delays reading.", "Balanced": "Balanced: reveal-on-scroll for sections, hover states on every interactive element, one signature motion moment in the hero.", "Expressive": "Expressive: rich, choreographed motion with parallax and scroll-linked animation, while keeping text readable and respecting reduced-motion settings." };
+  const STACK_DIR = { "HubSpot CMS": "HubSpot CMS: design in reusable, drag-and-drop modules and sections so the client can edit every page without a developer.", "WordPress": "WordPress: design as reusable blocks that map to a block theme.", "Webflow": "Webflow: design with a clear class system and reusable components.", "Shopify": "Shopify: design for an Online Store 2.0 theme with sections and blocks; product, collection and cart templates follow the same system.", "Custom build (Next.js)": "Custom Next.js build: design as a component library with tokens for colour, type and spacing.", "Recommend for me": "Platform to be recommended; design as a modular component system that works on any modern CMS." };
+
   function buildPrompt() {
-    const a = S.a, f = (id) => { const q = Q.find(x => x.id === id); return fmtAns(q, a[id]); }, has = id => a[id] != null && !(Array.isArray(a[id]) && !a[id].length);
-    const brand = a.brandMode === "upload" ? `Use the brand files supplied: ${f("brandFiles")}.` : a.brandMode === "site" ? `Take the colours, type and logo from the current website ${a.currentSite || "(address to follow)"}, and modernise them.` : a.brandMode === "manual" ? `Colours: ${f("colours")}. Fonts: ${f("fonts")}.` : `No brand yet: suggest a palette and type pairing that suit a ${a.style || "clean"} style in ${a.sector || "this"} sector.`;
+    const a = S.a, f = id => { const q = Q.find(x => x.id === id); return fmtAns(q, a[id]); }, has = id => a[id] != null && a[id] !== "" && !(Array.isArray(a[id]) && !a[id].length);
+    const csv = t => t.split(/,\s*(?![^(]*\))/), poss = n => n + (/s$/i.test(n) ? "'" : "'s"), type = (a.type || "website").toLowerCase(), pages = a.pages || PAGES_DEF[a.type] || 1, company = a.company || "the client";
+    const sd = STYLE_DIR[a.style] || STYLE_DIR.Minimal, sec = SECTOR_DIR[a.sector] || SECTOR_DIR.Other, nav = (SUB[a.sector] || SUB.Other).slice(0, 5);
+    const langs = has("languages") ? a.languages : ["English"], ar = langs.includes("Arabic");
+    const goals = has("goals") ? a.goals : ["Generate leads"];
+    let brand;
+    if (a.brandMode === "manual" && has("colours")) {
+      const c = a.colours, roles = ["primary (about 10 percent of the page: buttons, key words, active states)", "secondary (about 30 percent: section backgrounds, cards)", "accent (small highlights only)", "supporting", "supporting"];
+      brand = ["Colours (use exactly these):", ...c.map((x, i) => `  ${x}: ${roles[i]}`), "  Neutrals: build a tint and shade scale from the primary for backgrounds, borders and text. Body text must meet WCAG AA contrast."];
+    } else if (a.brandMode === "upload") brand = [`Use the supplied brand files (${f("brandFiles")}) as the source of truth for logo, colours and type. Do not redraw or recolour the logo.`];
+    else if (a.brandMode === "site") brand = [`Take the logo, colours and type from the current website ${a.currentSite || "(address to follow)"}, keep what is recognisable and modernise the rest.`];
+    else brand = [`No brand system yet. Propose a palette (primary, secondary, accent and neutrals, with hex values) and a type pairing that express a ${(a.style || "clean").toLowerCase()} style for a ${(a.sector || "modern").toLowerCase()} brand.`];
+    if (a.brandMode === "manual" && a.fonts && (a.fonts.head || a.fonts.body)) brand.push(`Fonts: headings in ${a.fonts.head || "a matching display face"}, body in ${a.fonts.body || "a readable sans"}. Type scale: display 56 to 72 px, H2 36 to 44 px, body 16 to 18 px with 1.6 line height (desktop).`);
+    else brand.push(`Type direction: ${sd.type}. Type scale: display 56 to 72 px, H2 36 to 44 px, body 16 to 18 px with 1.6 line height (desktop).`);
+    if (ar) brand.push("Arabic: pair the Latin fonts with a high-quality Arabic typeface of similar weight and character.");
+
+    const sections = [
+      `1. Header: logo left, navigation (${nav.join(", ")}, Contact)${langs.length > 1 ? ", language switch" : ""}, primary button "${goals.includes("Bookings") ? "Book now" : goals.includes("Sell online") ? "Shop now" : "Enquire"}" on the right. Sticky and compact on scroll.`,
+      `2. Hero: one clear headline that says what ${company} offers and for whom, a one-line supporting sentence, the primary action, and a strong visual${has("experience") && a.experience.includes("AI-generated video") ? " (video loop)" : ""}.${goals.includes("Generate leads") ? " Include the short enquiry form here on desktop." : ""}${goals.includes("Bookings") ? " Include the booking bar here." : ""}`,
+      `3. Proof strip: ${csv(sec.trust).slice(0, 3).join(", ")}.`,
+      `4. What we offer: ${csv(sec.sections).slice(0, 3).join(", ")}, as visual cards linking to their pages.`,
+      `5. Why ${company}: three or four differentiators with a short line each and simple monoline icons or images.`,
+      has("experience") && a.experience.includes("Immersive scroll storytelling") ? "6. Story: the immersive scroll section (see Motion)." : `6. Feature section: a large image and text block that tells the brand or product story.`,
+      `7. Social proof: testimonials or reviews with names and photos, plus logos or awards.`,
+      `8. Closing call to action: a full-width band that repeats the primary action${goals.includes("Generate leads") ? " with the form" : ""}.`,
+      `9. Footer: navigation, contact details, social links, legal links (privacy, terms, cookies)${langs.length > 1 ? ", language switch" : ""}.`
+    ];
+
     const L = [
-      "PROJECT", `Design and build a ${(a.type || "website").toLowerCase()} for ${a.company || "the client"}${a.sector ? ", in the " + a.sector.toLowerCase() + " sector" : ""}.`,
-      has("goals") ? `Goals: ${f("goals")}.` : "", has("audience") ? `Audience: ${a.audience}.` : "", `Size: about ${a.pages || PAGES_DEF[a.type] || 1} page${(a.pages || 1) === 1 ? "" : "s"}. The sitemap is agreed in the next step.`, "",
-      "LOOK AND FEEL", `Style: ${a.style || "to be suggested"}. Motion: ${a.motion || "balanced"}.`, has("experience") ? `Experiences: ${f("experience")}.` : "", brand,
-      has("refs") ? `References: ${f("refs")}.` : "", "",
-      "CONTENT", `Content: ${has("content") ? f("content") : "to be confirmed"}.`, `Languages: ${has("languages") ? f("languages") : "English"}${(a.languages || []).includes("Arabic") ? " (Arabic pages right to left)" : ""}.`, "",
-      "TECHNOLOGY", `Platform: ${a.stack || "recommend one"}.`, `Domain: ${has("domain") ? f("domain") : "to be confirmed"}. Going live: ${has("hosting") ? f("hosting") : "to be decided"}.`, "",
-      has("addons") ? "ADD-ONS" : "", has("addons") ? f("addons") + "." : "", has("integrations") ? `Integrations: ${f("integrations")}.` : "", has("transLangs") ? `Translate into: ${a.transLangs}.` : "", has("addons") ? "" : "",
-      "DELIVERY", `Timing: ${has("timeline") ? f("timeline") : "flexible"}.`, "Standards: mobile first, accessible, fast to load, search-ready titles and descriptions on every page, consent-ready tracking.", "",
-      has("notes") ? "NOTES" : "", has("notes") ? a.notes : ""
+      "ROLE AND TASK",
+      `You are a senior web designer at a digital growth agency. Design the homepage concept for ${poss(company)} new ${type} as a finished, high-fidelity design (desktop at 1440 px and mobile at 390 px), with real-looking content. It must look ready to build, not like a wireframe.`, "",
+      "THE CLIENT",
+      `${company}${a.sector ? ", " + a.sector.toLowerCase() + " sector" : ""}. Building: ${a.type || "Website"}, about ${pages} page${pages === 1 ? "" : "s"}.${a.currentSite ? " Current website: " + a.currentSite + "." : ""}`, "",
+      "GOALS AND THE MAIN ACTION",
+      ...goals.map(g => "- " + (GOAL_DIR[g] || g)), "Every section should move the visitor towards the main action.", "",
+      "AUDIENCE",
+      has("audience") ? a.audience : `Decision-makers and customers in the ${(a.sector || "client's").toLowerCase()} market.`,
+      `What builds their trust here: ${sec.trust}.`, "",
+      "BRAND",
+      ...brand, "",
+      "ART DIRECTION",
+      `Style: ${a.style || "Minimal"}. The site should feel ${sd.feel}.`,
+      `Colour use: ${sd.colour}.`, `Layout: ${sd.layout}.`, `Imagery: ${sd.imagery}.`,
+      has("experience") ? ["Experiences to include:", ...a.experience.map(x => "- " + (EXP_DIR[x] || x))].join("\n") : "", "",
+      "HOMEPAGE STRUCTURE (top to bottom)",
+      ...sections, "",
+      "MOTION AND INTERACTION",
+      MOTION_DIR[a.motion] || MOTION_DIR.Balanced, "Every button, link and card has hover, focus and pressed states. Respect the reduced-motion setting.", "",
+      "COPY",
+      `Tone: ${sd.tone}. Write real headlines and body copy for ${company}${a.sector ? " in " + a.sector.toLowerCase() : ""}; no lorem ipsum and no placeholder text.`,
+      `Content status: ${has("content") ? f("content") : "to be confirmed"}. Where copy is missing, write a strong first draft.`,
+      `Languages: ${langs.join(", ")}.${ar ? " Arabic pages mirror the layout right to left (navigation, icons with direction, forms and carousels)." : ""}`, "",
+      has("refs") ? "REFERENCES (take the idea, never copy the design)" : "",
+      ...(has("refs") ? a.refs.filter(r => r.url).map(r => `- ${r.url}${r.note ? ": " + r.note : ""}`) : []), has("refs") ? "" : "",
+      "BUILD AND STANDARDS",
+      STACK_DIR[a.stack] || STACK_DIR["Recommend for me"],
+      "Mobile first. Breakpoints at 390, 768, 1024 and 1440 px. Touch targets at least 44 px.",
+      "Accessibility: WCAG 2.2 AA, visible focus states, text contrast at least 4.5 to 1, alt text for every image.",
+      "Performance: fast first screen (Largest Contentful Paint under 2.5 seconds on mobile), compressed modern image formats, no heavy effects above the fold.",
+      "Search: one H1 per page, logical heading order, a title and meta description for every page, clean URLs.",
+      has("addons") ? `Add-ons in scope: ${f("addons")}${has("integrations") ? "; integrations: " + f("integrations") : ""}${has("transLangs") ? "; translate into " + a.transLangs : ""}.` : "", "",
+      "AVOID",
+      "Generic stock photos (handshakes, people pointing at laptops), cluttered layouts, more than two typefaces, centred body text, walls of text, tiny grey text, carousels that hide key content, and anything that looks AI-generated by default.",
+      has("notes") ? "Client notes: " + a.notes : "", "",
+      "WHAT TO DELIVER",
+      "Three to four clearly different concept directions for the homepage. For each: a short name, one paragraph on the idea, the colour palette with hex values, the type pairing, the full desktop homepage and the mobile homepage.",
+      `Timing: ${has("timeline") ? f("timeline") : "flexible"}.`
     ];
     return L.filter((x, i, arr) => !(x === "" && arr[i - 1] === "")).join("\n").trim();
   }
   function drawPrompt() {
     if (!S.prompt) { S.prompt = buildPrompt(); save(); }
-    $("main").innerHTML = bot("Here's your prompt, written from your brief. Edit it directly, or tell me what to change. When it reads right, approve it and I'll draft your sitemap.") + `
+    $("main").innerHTML = bot("Here's your design prompt, written from your brief: the full creative direction our designers and AI use to create your concepts. Edit it directly, or tell me what to change. When it reads right, approve it and I'll draft your sitemap.") + `
       <div class="stage"><h2>Your prompt</h2>
         <textarea class="in prompt" id="ptext" aria-label="Your prompt">${esc(S.prompt)}</textarea>
         <div class="row2"><input class="in" id="pask" placeholder="Tell me what to change, for example: make it feel more premium" style="flex:1 1 280px"><button class="btn" type="button" id="prefine">Refine</button></div>
@@ -518,13 +616,14 @@
 
   /* ---------------- draw ---------------- */
   function drawViews() {
-    const v = S.view || "project";
+    const v = !S.started && !Object.keys(S.a).length ? "welcome" : (S.view || "project");
     document.body.dataset.view = v;
     $("views").innerHTML = [["project", "Project"], ["dashboard", "Dashboard"], ["reports", "Reports"], ["billing", "Plan and billing"]].map(([k, l]) => `<button type="button" data-view="${k}" aria-current="${k === v ? "page" : "false"}">${l}</button>`).join("");
     return v;
   }
   function draw() {
     const v = drawViews();
+    if (v === "welcome" && window.NexaLanding) { $("main").innerHTML = window.NexaLanding(); return; }
     if (v !== "project" && window.NexaDash) { drawBand(); $("main").innerHTML = window.NexaDash[v](); return; }
     drawBand(); drawSide();
     ({ brief: drawBrief, prompt: drawPrompt, sitemap: drawSitemap, concepts: drawConcepts, wireframes: drawWireframes, inner: drawInner, submit: drawSubmit, build: drawBuild, staging: drawStaging, pay: drawPay, live: drawLive }[S.stage] || drawBrief)();
@@ -536,6 +635,7 @@
   document.addEventListener("click", e => {
     const t = e.target.closest("button,[data-edit]"); if (!t) return;
     const d = t.dataset, cur = S.editing ? live().find(x => x.id === S.editing) : nextQ();
+    if (d.start) { S.started = true; S.view = "project"; save(); draw(); window.scrollTo({ top: 0 }); return; }
     if (d.view) { S.view = d.view; save(); draw(); window.scrollTo({ top: 0 }); return; }
     if (d.addon) { S.a.addons = [...new Set([...(S.a.addons || []), d.addon])]; log(`Added ${d.addon}`); save(); draw(); toast(`${d.addon} added to your plan.`); return; }
     if (d.report != null) { window.NexaDash.reportFile(+d.report); log("Downloaded a monthly report"); save(); return; }
