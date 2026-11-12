@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Velvet — NEXA Theme Preview (Nightclub &amp; Lounge)</title>
+<title>Velvet: NEXA Theme Preview (Nightclub &amp; Lounge)</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
      VELVET — design tokens (mirror of theme.json -> CSS vars)
@@ -23,7 +24,7 @@
     --color-accent: 236 64 168;
     --color-accent2: 150 92 255;     /* violet */
 
-    --font-display: "Clash Display", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;
     --font-body: "Satoshi", ui-sans-serif, system-ui, sans-serif;
 
     --maxw: 1280px;
@@ -82,7 +83,7 @@
   .hero .tonight .pulse { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--color-primary)); box-shadow: 0 0 12px rgb(var(--color-primary)); animation: pulse 1.6s var(--ease) infinite; }
   @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(.7);} }
   .hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(52px, 11vw, 168px); line-height: 0.9; letter-spacing: -0.03em; margin-top: 26px; max-width: 13ch; }
-  .hero h1 .g { background: linear-gradient(100deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero h1 .g { color: rgb(var(--color-primary)); }
   .hero .row { display:flex; justify-content: space-between; align-items: flex-end; gap: 30px; margin-top: 38px; flex-wrap:wrap; }
   .hero .desc { max-width: 40ch; color: rgb(var(--color-ink) / .86); font-size: 16px; }
   .hero .ctrow { display:flex; gap: 14px; flex-wrap:wrap; }
@@ -165,7 +166,7 @@
   .rsvp .veil { position:absolute; inset:0; z-index:1; background: linear-gradient(180deg, rgb(16 8 28 / .85), rgb(16 8 28 / .7)); }
   .rsvp .inner { position: relative; z-index: 2; text-align:center; padding-block: clamp(80px, 14vh, 180px); padding-inline: var(--gutter); }
   .rsvp h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(34px, 6vw, 84px); line-height: 1.0; letter-spacing: -0.02em; }
-  .rsvp h2 .g { background: linear-gradient(100deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); -webkit-background-clip:text; background-clip:text; color: transparent; }
+  .rsvp h2 .g { color: rgb(var(--color-primary)); }
   .rsvp p { color: rgb(var(--color-ink) / .86); margin: 18px auto 0; max-width: 46ch; }
   .rsvp form { display:flex; gap: 10px; max-width: 480px; margin: 34px auto 0; flex-wrap:wrap; justify-content:center; }
   .rsvp input { flex:1; min-width: 240px; background: rgb(var(--color-surface) / .8); border: 1px solid rgb(var(--color-line)); color: rgb(var(--color-ink)); padding: 15px 18px; font-size: 15px; font-family: var(--font-body); border-radius: 14px; outline:none; }
@@ -180,7 +181,7 @@
   .foot h4 { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 16px; }
   .foot a { display:block; font-size: 14px; color: rgb(var(--color-muted)); padding: 6px 0; transition: color var(--dur) var(--ease); }
   .foot a:hover { color: rgb(var(--color-primary)); }
-  .bigmark { font-family: var(--font-display); font-weight: 700; font-size: clamp(56px, 17vw, 240px); letter-spacing: -0.03em; line-height: 1; text-align:center; padding-top: 60px; background: linear-gradient(180deg, rgb(var(--color-ink)), rgb(var(--color-primary)/.4)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .bigmark { font-family: var(--font-display); font-weight: 700; font-size: clamp(56px, 17vw, 240px); letter-spacing: -0.03em; line-height: 1; text-align:center; padding-top: 60px; color: rgb(var(--color-ink) / .14); }
   .legal { display:flex; justify-content:space-between; padding-top: 28px; margin-top: 30px; border-top: 1px solid rgb(var(--color-line)); font-size: 12.5px; color: rgb(var(--color-muted)); flex-wrap:wrap; gap: 12px; }
 
   .ribbon { position: fixed; bottom: 0; right: 0; z-index: 95; background: rgb(var(--color-primary)); color: #fff; font-family: var(--font-body); font-weight:700; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 14px; }
@@ -213,7 +214,7 @@
 
   <!-- HERO -->
   <section class="hero" aria-label="Velvet, after dark">
-    <div class="bg"><img id="heroImg" src="https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?w=1900&q=80&auto=format&fit=crop" alt="A crowded nightclub bathed in magenta and violet light" /></div>
+    <div class="bg"><img id="heroImg" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1900&q=80&auto=format&fit=crop" alt="A packed crowd under green and blue lasers" /></div>
     <div class="veil"></div>
     <div class="glow a"></div>
     <div class="glow b"></div>
@@ -271,7 +272,7 @@
         <figure class="g-a" data-tile><img src="https://images.unsplash.com/photo-1545128485-c400e7702796?w=1100&q=80&auto=format&fit=crop" alt="The main room packed under a wash of pink light" loading="lazy"></figure>
         <figure class="g-b" data-tile><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80&auto=format&fit=crop" alt="A singer on stage with a microphone" loading="lazy"></figure>
         <figure class="g-c" data-tile><img src="https://images.unsplash.com/photo-1438557068880-c5f474830377?w=700&q=80&auto=format&fit=crop" alt="Hands raised on the dance floor" loading="lazy"></figure>
-        <figure class="g-d" data-tile><img src="https://images.unsplash.com/photo-1551370863-f9c1ba7e3a30?w=700&q=80&auto=format&fit=crop" alt="A bartender mixing cocktails in neon light" loading="lazy"></figure>
+        <figure class="g-d" data-tile><img src="https://images.unsplash.com/photo-1545128485-c400e7702796?w=700&q=80&auto=format&fit=crop" alt="A crowd at the bar under red light" loading="lazy"></figure>
         <figure class="g-e" data-tile><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=700&q=80&auto=format&fit=crop" alt="A close view of stage lighting rigs" loading="lazy"></figure>
         <figure class="g-f" data-tile><img src="https://images.unsplash.com/photo-1598387993441-a364f854c3e1?w=700&q=80&auto=format&fit=crop" alt="A lounge booth lit in violet" loading="lazy"></figure>
       </div>

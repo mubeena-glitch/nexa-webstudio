@@ -7,7 +7,8 @@
     "brutalist",
     "raw",
     "high-contrast",
-    "mono"
+    "mono",
+    "portfolio"
   ],
   "mode": "light",
   "tokens": {
@@ -23,60 +24,61 @@
       "accent2": "255 92 0"
     },
     "type": {
-      "display": "'Space Grotesk', serif",
-      "body": "'Space Mono', sans-serif",
-      "scaleRatio": 1.28,
+      "display": "'Archivo Black', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Space Mono', ui-monospace, 'SFMono-Regular', monospace",
+      "scaleRatio": 1.5,
       "weights": {
-        "display": 700,
-        "displayBold": 700,
+        "display": 400,
+        "displayBold": 400,
         "body": 400,
-        "label": 500,
-        "bold": 600
+        "label": 700,
+        "bold": 700
       },
-      "displayCase": "none",
-      "displayTracking": "-0.01em"
+      "displayCase": "upper",
+      "displayTracking": "-0.03em"
     },
     "space": {
       "base": 8,
-      "section": "clamp(72px,9vw,120px)",
-      "gutter": "clamp(20px,5vw,48px)",
-      "density": "balanced"
+      "section": "clamp(64px, 8vw, 112px)",
+      "gutter": "clamp(14px, 3vw, 40px)",
+      "density": "dense"
     },
     "radius": {
       "card": "0px",
       "button": "0px",
       "input": "0px",
-      "pill": "999px"
+      "pill": "0px"
     },
     "shadow": {
-      "card": "6px 6px 0 var(--ink)",
-      "elevated": "6px 6px 0 var(--ink)",
-      "philosophy": "soft"
+      "card": "6px 6px 0 rgb(10 10 10)",
+      "elevated": "6px 6px 0 rgb(10 10 10)",
+      "philosophy": "dramatic"
     },
     "motion": {
-      "ease": "cubic-bezier(0.22,1,0.36,1)",
-      "duration": "500ms",
-      "character": "smooth"
+      "ease": "steps(4, end)",
+      "duration": "120ms",
+      "character": "snappy"
     },
     "imagery": {
-      "treatment": "full-bleed",
-      "ratio": "4:3",
+      "treatment": "framed",
+      "ratio": "1:1",
       "filter": "none"
     }
   },
   "recipes": {
-    "button": "solid",
-    "card": "bordered",
-    "nav": "split"
+    "button": "solid-offset",
+    "card": "bordered-offset",
+    "nav": "boxed-links"
   },
   "preferredLayouts": {
-    "hero": "split-visual",
-    "trusted": "logo-strip",
-    "features": "card-grid",
-    "stats": "band",
-    "cta": "gradient-band"
+    "hero": "giant-type-with-facts",
+    "work": "index-table",
+    "features": "project-grid",
+    "stats": "bordered-facts",
+    "pricing": "published-rates",
+    "cta": "colour-contact-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap"
+    "https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
   ]
 }

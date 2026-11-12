@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Horizon — Travel &amp; Adventure</title>
+<title>Horizon: Travel &amp; Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
 <style>
 /* ============ TOKENS — mirror theme.json 1:1 ============ */
 :root{
@@ -362,6 +363,12 @@ input{ font-family: inherit; }
   .hero-bg img{ height: 100%; }
   html{ scroll-behavior: auto; }
 }
+
+  /* announcement line: plain text, no pill */
+  .hero-badge { background: none !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+
+  /* 390px overflow fix */
+  @media (max-width: 560px) { .footer-top { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -514,7 +521,7 @@ input{ font-family: inherit; }
     <div data-reveal>
       <span class="eyebrow">Featured journey</span>
       <h2 style="margin-top:14px">7 days in the Norwegian fjords</h2>
-      <p class="lead">A sample itinerary crafted by our local experts — fully customizable, fully guided, and unforgettable from the first sunrise.</p>
+      <p class="lead">A sample itinerary crafted by our local experts, fully customisable, fully guided, and unforgettable from the first sunrise.</p>
       <div class="steps">
         <div class="step">
           <span class="step-day">01</span>

@@ -4,79 +4,84 @@
   "family": "vibrant",
   "sector": "Gaming / nightlife",
   "tags": [
-    "neon",
-    "glow",
     "dark",
-    "gaming"
+    "nightlife",
+    "gaming",
+    "events",
+    "coral",
+    "high-energy",
+    "uppercase"
   ],
   "mode": "dark",
   "tokens": {
     "color": {
-      "bg": "8 7 15",
-      "surface": "20 16 31",
-      "ink": "240 233 255",
-      "muted": "154 143 192",
-      "line": "42 36 64",
-      "primary": "192 38 255",
-      "onPrimary": "10 6 18",
-      "accent": "46 230 255",
-      "accent2": "46 230 255"
+      "bg": "13 11 16",
+      "surface": "24 20 29",
+      "ink": "244 238 246",
+      "muted": "165 152 176",
+      "line": "48 40 58",
+      "primary": "255 77 109",
+      "onPrimary": "20 6 10",
+      "accent": "255 196 61",
+      "accent2": "255 196 61"
     },
     "type": {
-      "display": "'Space Grotesk', serif",
-      "body": "'Inter', sans-serif",
-      "scaleRatio": 1.28,
+      "display": "'Unbounded', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Manrope', ui-sans-serif, system-ui, sans-serif",
+      "scaleRatio": 1.4,
       "weights": {
         "display": 700,
-        "displayBold": 700,
+        "displayBold": 800,
         "body": 400,
-        "label": 500,
-        "bold": 600
+        "label": 800,
+        "bold": 700
       },
-      "displayCase": "none",
-      "displayTracking": "-0.01em"
+      "displayCase": "upper",
+      "displayTracking": "-0.03em"
     },
     "space": {
       "base": 8,
-      "section": "clamp(72px,9vw,120px)",
-      "gutter": "clamp(20px,5vw,48px)",
-      "density": "balanced"
+      "section": "clamp(72px, 9vw, 128px)",
+      "gutter": "clamp(16px, 4.5vw, 48px)",
+      "density": "dense"
     },
     "radius": {
-      "card": "14px",
-      "button": "10px",
-      "input": "10px",
-      "pill": "999px"
+      "card": "6px",
+      "button": "4px",
+      "input": "4px",
+      "pill": "4px"
     },
     "shadow": {
-      "card": "0 0 28px -6px rgba(192,38,255,.5)",
-      "elevated": "0 0 28px -6px rgba(192,38,255,.5)",
-      "philosophy": "glow"
+      "card": "none",
+      "elevated": "0 20px 40px -24px rgb(0 0 0 / 0.8)",
+      "philosophy": "none"
     },
     "motion": {
-      "ease": "cubic-bezier(0.22,1,0.36,1)",
-      "duration": "500ms",
-      "character": "smooth"
+      "ease": "cubic-bezier(0.2, 0.9, 0.3, 1)",
+      "duration": "180ms",
+      "character": "snappy"
     },
     "imagery": {
       "treatment": "full-bleed",
-      "ratio": "4:3",
+      "ratio": "3:2",
       "filter": "none"
     }
   },
   "recipes": {
-    "button": "solid",
+    "button": "solid-uppercase",
     "card": "bordered",
     "nav": "split"
   },
   "preferredLayouts": {
-    "hero": "split-visual",
-    "trusted": "logo-strip",
-    "features": "card-grid",
-    "stats": "band",
-    "cta": "gradient-band"
+    "hero": "image-with-running-order",
+    "trusted": "genre-ticker",
+    "listings": "event-rows",
+    "features": "image-split-list",
+    "stats": "colour-band-facts",
+    "pricing": "membership-tiers",
+    "cta": "visit-info"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap"
+    "https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
   ]
 }

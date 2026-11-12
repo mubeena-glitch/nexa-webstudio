@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Quanta — NEXA Theme Preview (Crypto / Web3)</title>
+<title>Quanta: NEXA Theme Preview (Crypto / Web3)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
   :root{
     --bg:7 8 15; --surface:11 14 26; --surface-2:17 21 38;
     --ink:233 236 248; --muted:143 150 178; --line:38 44 72;
-    --primary:124 92 255; --on-primary:247 248 255; --accent:35 224 200; --accent2:255 92 158;
+    --primary:255 138 76; --on-primary:26 12 4; --accent:255 138 76; --accent2:35 224 200;
     --f-display:'Sora',ui-sans-serif,system-ui,sans-serif;
     --f-body:'Geist',ui-sans-serif,system-ui,sans-serif;
     --f-mono:'JetBrains Mono',ui-monospace,monospace;
@@ -46,7 +46,7 @@
   .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter)}
   .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
   .disp{font-family:var(--f-display);font-weight:700;letter-spacing:-.025em;line-height:1.04}
-  .grad-text{background:linear-gradient(100deg,#fff 0%,rgb(var(--accent)) 45%,rgb(var(--primary)) 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .grad-text{color:rgb(var(--primary))}
   .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--accent));padding:7px 14px;border:1px solid rgb(var(--accent)/.3);border-radius:var(--r-pill);background:rgb(var(--accent)/.06)}
   .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:rgb(var(--accent));box-shadow:0 0 10px rgb(var(--accent))}
 
@@ -55,7 +55,7 @@
 
   /* buttons */
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-family:var(--f-body);font-weight:600;font-size:15px;padding:14px 26px;border-radius:var(--r-btn);border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:transform .4s var(--ease),box-shadow .4s var(--ease),background .4s var(--ease),border-color .4s var(--ease)}
-  .btn-primary{background:linear-gradient(120deg,rgb(var(--primary)),rgb(var(--accent2)));color:#fff}
+  .btn-primary{background:rgb(var(--primary));color:rgb(var(--on-primary))}
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px -10px rgb(var(--primary)/.7)}
   .btn-glass{background:rgb(255 255 255/.04);border-color:rgb(255 255 255/.14);color:rgb(var(--ink))}
   .btn-glass:hover{border-color:rgb(var(--accent)/.6);transform:translateY(-2px)}
@@ -220,7 +220,7 @@
   .qa{border:1px solid rgb(var(--line)/.7);border-radius:14px;margin-bottom:12px;overflow:hidden;background:rgb(var(--surface)/.4)}
   .qa button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:18px;background:none;border:none;color:inherit;cursor:pointer;text-align:left;padding:20px 22px;font-family:var(--f-display);font-weight:600;font-size:17px}
   .qa .ic{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid rgb(var(--line));display:grid;place-items:center;transition:transform .4s var(--ease),background .4s,color .4s}
-  .qa.open .ic{transform:rotate(45deg);background:rgb(var(--primary));color:#fff;border-color:transparent}
+  .qa.open .ic{transform:rotate(45deg);background:rgb(var(--primary));color:rgb(var(--on-primary));border-color:transparent}
   .qa .ans{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
   .qa .ans p{padding:0 22px 22px;color:rgb(var(--muted));font-size:15px}
 
@@ -241,12 +241,19 @@
   .foot .blurb{font-size:14px;color:rgb(var(--muted));max-width:30ch;margin-top:14px}
   .legal{display:flex;justify-content:space-between;margin-top:46px;padding-top:24px;border-top:1px solid rgb(var(--line)/.7);font-size:13px;color:rgb(var(--muted));flex-wrap:wrap;gap:12px;font-family:var(--f-mono)}
 
-  .ribbon{position:fixed;bottom:0;right:0;z-index:95;background:linear-gradient(120deg,rgb(var(--primary)),rgb(var(--accent)));color:#fff;font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-top-left-radius:12px}
+  .ribbon{position:fixed;bottom:0;right:0;z-index:95;background:rgb(var(--primary));color:rgb(var(--on-primary));font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-top-left-radius:12px}
 
   @media(prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important}
     html{scroll-behavior:auto}
   }
+
+  /* announcement line: plain text, no pill */
+  .hero .eyebrow { border: 0 !important; padding: 0 !important; border-radius: 0 !important; background: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .hero .eyebrow .dot { display: none !important; }
+
+  /* 390px overflow fix */
+  @media (max-width: 560px) { .nav-cta .btn-primary { display: none; } }
 </style>
 </head>
 <body>
@@ -266,7 +273,7 @@
   <section class="hero"><div class="wrap">
     <span class="eyebrow" data-hero><span class="dot"></span>Now live on 9 chains</span>
     <h1 data-hero><span class="grad-text">Liquidity</span> without limits.</h1>
-    <p class="lede" data-hero>Swap, stake, bridge and govern across every major chain from one self-custodial protocol — secured by audited smart contracts and sub-second settlement.</p>
+    <p class="lede" data-hero>Swap, stake, bridge and govern across every major chain from one self-custodial protocol, secured by audited smart contracts and sub-second settlement.</p>
     <div class="hero-actions" data-hero>
       <a href="#" class="btn btn-primary">Launch app <span class="arrow">→</span></a>
       <a href="#" class="btn btn-glass">Read the docs</a>
@@ -317,7 +324,7 @@
 
   <!-- FEATURE BENTO -->
   <section class="block" id="features"><div class="wrap">
-    <div class="shead" data-rv><span class="eyebrow">The protocol</span><h2>One protocol. <span class="grad-text">Every primitive.</span></h2><p>Everything DeFi needs — swaps, yield, bridging and governance — unified behind one self-custodial interface.</p></div>
+    <div class="shead" data-rv><span class="eyebrow">The protocol</span><h2>One protocol. <span class="grad-text">Every primitive.</span></h2><p>Everything DeFi needs (swaps, yield, bridging and governance) unified behind one self-custodial interface.</p></div>
     <div class="bento">
       <div class="cell glass c-wide" data-rv data-spot>
         <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 10l-4 4 4 4"/><path d="M3 14h13a4 4 0 0 0 4-4V6"/></svg></div>
@@ -345,7 +352,7 @@
       <div class="cell glass c-third" data-rv data-spot>
         <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <h3>Self-custodial &amp; audited</h3>
-        <p>Your keys, your coins — audited by three firms with a live $2M bug bounty.</p>
+        <p>Your keys, your coins, audited by three firms with a live $2M bug bounty.</p>
       </div>
     </div>
   </div></section>
@@ -357,12 +364,12 @@
         <div class="intro">
           <span class="eyebrow">Product tour</span>
           <h2 style="margin-top:16px">Four moves.<br>One wallet.</h2>
-          <p>Scroll to walk through the core flow — from your first swap to earning yield and shaping the protocol.</p>
+          <p>Scroll to walk through the core flow, from your first swap to earning yield and shaping the protocol.</p>
         </div>
         <div class="step"><span class="no">1</span><div><h3>Swap</h3><p>Best-price routing across every connected chain, with gas abstracted away.</p><div class="scr"><span class="scrtop">Swap · ETH → SOL</span><div class="barrow"><i style="height:40%"></i><i style="height:65%"></i><i style="height:50%"></i><i style="height:80%"></i><i style="height:95%"></i><i style="height:70%"></i></div></div></div></div>
         <div class="step"><span class="no">2</span><div><h3>Stake</h3><p>Stake into liquid vaults and keep a tradeable receipt token earning 7.4% APY.</p><div class="scr"><span class="scrtop">Stake · Vault</span><div class="barrow"><i style="height:30%"></i><i style="height:48%"></i><i style="height:62%"></i><i style="height:74%"></i><i style="height:88%"></i><i style="height:100%"></i></div></div></div></div>
         <div class="step"><span class="no">3</span><div><h3>Bridge</h3><p>Move liquidity across chains in a single signed transaction, settled in seconds.</p><div class="scr"><span class="scrtop">Bridge · Arbitrum</span><div class="barrow"><i style="height:60%"></i><i style="height:40%"></i><i style="height:72%"></i><i style="height:55%"></i><i style="height:84%"></i><i style="height:66%"></i></div></div></div></div>
-        <div class="step"><span class="no">4</span><div><h3>Govern</h3><p>Propose and vote on protocol upgrades — every QNT is one on-chain vote.</p><div class="scr"><span class="scrtop">Govern · Proposal 47</span><div class="barrow"><i style="height:90%"></i><i style="height:30%"></i><i style="height:70%"></i><i style="height:45%"></i><i style="height:60%"></i><i style="height:80%"></i></div></div></div></div>
+        <div class="step"><span class="no">4</span><div><h3>Govern</h3><p>Propose and vote on protocol upgrades: every QNT is one on-chain vote.</p><div class="scr"><span class="scrtop">Govern · Proposal 47</span><div class="barrow"><i style="height:90%"></i><i style="height:30%"></i><i style="height:70%"></i><i style="height:45%"></i><i style="height:60%"></i><i style="height:80%"></i></div></div></div></div>
       </div>
     </div>
   </section>
@@ -427,7 +434,7 @@
   <section class="block" style="padding-top:0"><div class="wrap">
     <div class="shead" data-rv><span class="eyebrow">FAQ</span><h2>Questions, answered.</h2></div>
     <div class="faq">
-      <div class="qa" data-rv><button>Is Quanta self-custodial? <span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Yes. You always hold your own keys — Quanta never takes custody of your assets. Every action is a transaction you sign from your own wallet.</p></div></div>
+      <div class="qa" data-rv><button>Is Quanta self-custodial? <span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Yes. You always hold your own keys. Quanta never takes custody of your assets. Every action is a transaction you sign from your own wallet.</p></div></div>
       <div class="qa" data-rv><button>Which chains are supported? <span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Quanta is live on 9 chains including Ethereum, Solana, Arbitrum, Base and Optimism, with more added through governance.</p></div></div>
       <div class="qa" data-rv><button>How is the protocol secured? <span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Contracts are audited by Halborn, Spearbit and Trail of Bits, with a permanent $2M bug bounty and time-locked upgrades.</p></div></div>
     </div>

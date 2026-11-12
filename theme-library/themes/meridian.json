@@ -80,7 +80,8 @@
     "cta": "glow-band"
   },
   "fontLinks": [
-    "https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap",
     "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
   ]
 }

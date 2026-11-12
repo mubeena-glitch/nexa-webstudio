@@ -38,14 +38,14 @@
         "label": 600,
         "bold": 700
       },
-      "displayCase": "uppercase",
+      "displayCase": "upper",
       "displayTracking": "0.01em"
     },
     "space": {
       "base": 8,
       "section": "clamp(88px, 11vw, 156px)",
       "gutter": "clamp(20px, 5vw, 68px)",
-      "density": "generous"
+      "density": "airy"
     },
     "radius": {
       "card": "6px",
@@ -56,12 +56,12 @@
     "shadow": {
       "card": "0 1px 2px rgb(0 0 0 / 0.5), 0 14px 34px -18px rgb(0 0 0 / 0.7)",
       "elevated": "0 2px 6px rgb(0 0 0 / 0.55), 0 34px 64px -22px rgb(0 0 0 / 0.8)",
-      "philosophy": "rugged"
+      "philosophy": "dramatic"
     },
     "motion": {
       "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
       "duration": "560ms",
-      "character": "smoky"
+      "character": "calm"
     },
     "imagery": {
       "treatment": "full-bleed",

@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nimbus — NEXA Theme Preview (Cloud Hosting / DevOps Platform)</title>
+<title>Nimbus: NEXA Theme Preview (Cloud Hosting / DevOps Platform)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
      NIMBUS — design tokens (1:1 mirror of theme.json -> CSS vars)
@@ -24,8 +24,8 @@
     --color-accent: 56 167 255;
     --color-accent2: 52 226 196;     /* teal */
 
-    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, monospace;
     --display-tracking: -0.02em;
 
@@ -311,6 +311,11 @@
     .glow { animation: none !important; }
     *, *::before, *::after { animation-duration: .001ms !important; }
   }
+
+  /* announcement line: plain text, no pill */
+  .hero-pill { background: none !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .hero-pill .tag { background: none !important; padding: 0 6px 0 0 !important; border: 0 !important; border-radius: 0 !important; font-weight: 700; }
+  .hero-pill .dot, .hero-pill::before { display: none !important; }
 </style>
 </head>
 <body>
@@ -365,7 +370,7 @@
       <div class="term" data-spot>
         <div class="term-chrome">
           <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="term-title">~/projects/atlas-api — nimbus deploy</span>
+          <span class="term-title">~/projects/atlas-api · nimbus deploy</span>
         </div>
         <div class="term-body" aria-label="Terminal showing a Nimbus deployment">
           <span class="ln"><span class="p">~/atlas-api $</span> <span class="c">nimbus deploy --prod</span></span>

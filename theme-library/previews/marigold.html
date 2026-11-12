@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Marigold — NEXA Theme Preview (Bakery / Cafe)</title>
+<title>Marigold: NEXA Theme Preview (Bakery / Cafe)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
@@ -303,6 +303,11 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
   }
+
+  /* announcement line: plain text, no pill */
+  .hero-pill { background: none !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .hero-pill .tag { background: none !important; padding: 0 6px 0 0 !important; border: 0 !important; border-radius: 0 !important; font-weight: 700; }
+  .hero-pill .dot, .hero-pill::before { display: none !important; }
 </style>
 </head>
 <body>

@@ -1,118 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Book an Appointment — Specialist Clinic</title>
-<meta name="description" content="Specialist consultations across cardiology, dermatology, paediatrics and women's health. Same-week appointments. Insurance-direct."/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Orthopaedic and sports injury clinic, Dubai | Talus</title>
+<meta name="description" content="See a consultant orthopaedic surgeon or sports physician in Umm Suqeim within 3 working days. MRI on site. Direct billing with 14 insurers."/>
+<meta property="og:title" content="Orthopaedic and sports injury clinic, Dubai | Talus"/>
+<meta property="og:description" content="See a consultant orthopaedic surgeon or sports physician in Umm Suqeim within 3 working days. MRI on site. Direct billing with 14 insurers."/>
+<meta property="og:type" content="website"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;600;700&family=Red+Hat+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./_shared/kit.css">
+<style id="nx-skin">
+:root{
+  --font-display:'Red Hat Display',system-ui,sans-serif;
+  --font-body:'Red Hat Text',system-ui,sans-serif;
+  --skin-display-weight:600;
+  --display-tracking:-0.025em;
+  --skin-bg:#ffffff;
+  --skin-bg-2:#eef4f3;
+  --skin-ink:#10201f;
+  --skin-mute:#52615f;
+  --skin-primary:#1e5e5a;
+  --skin-on-primary:#ffffff;
+  --skin-radius:6px;
+  --skin-card-radius:10px;
+  --skin-hero-bg:#eef4f3;
+}
+</style>
 </head>
-<body data-theme="minimal">
+<body data-theme="editorial">
 
 <nav class="nx-nav" data-edit="brand">
   <div class="container">
-    <a href="/" class="nx-logo">The Clinic</a>
+    <a href="#" class="nx-logo">Talus Orthopaedic Clinic</a>
     <div class="nx-nav-links">
-      <a href="#specialties">Specialties</a>
-      <a href="#doctors">Doctors</a>
+      <a href="#consultants">Consultants</a>
+      <a href="#conditions">Conditions</a>
       <a href="#insurance">Insurance</a>
     </div>
-    <a href="#form" class="nx-nav-cta">Book appointment</a>
+    <a href="#form" class="nx-nav-cta">Request an appointment</a>
   </div>
 </nav>
 
 <section class="nx-hero" data-hero="form-right">
   <div class="container">
     <div data-edit="hero-copy">
-      <span class="nx-eyebrow" data-field="eyebrow">Same-week appointments · 12 insurers direct</span>
-      <h1 data-field="headline">Specialist care, without the wait.</h1>
-      <p class="sub" data-field="subhead">Cardiology, dermatology, paediatrics, and women's health under one roof. Twenty-two specialists, twelve insurers billed direct, same-week appointments for new patients.</p>
+      <span class="nx-eyebrow" data-field="eyebrow">Orthopaedics and sports medicine, Umm Suqeim</span>
+      <h1 data-field="headline">See a consultant about your knee this week</h1>
+      <p class="sub" data-field="subhead">Knee, shoulder, hip, spine and sports injuries. New patients see a consultant within three working days, with X-ray and MRI in the same building.</p>
       <div class="ctas">
-        <a href="#form" class="nx-btn nx-btn-primary" data-field="cta">Book appointment</a>
+        <a href="#form" class="nx-btn nx-btn-primary" data-field="cta">Request an appointment</a>
+        <a href="#consultants" class="nx-link">Meet the consultants <svg class="nx-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
+      <p class="nx-hero-note">4.8 on Google from 563 reviews</p>
     </div>
     <div class="nx-form" id="form" data-edit="form"></div>
+    <div class="nx-hero-media" data-edit="hero-media"></div>
   </div>
 </section>
 
 <div class="nx-trust">
   <div class="container">
-    <div class="nx-trust-label">Insurance accepted, billed direct</div>
-    <div style="width:120px;height:32px;background:var(--ink);opacity:.15;border-radius:4px"></div>
-    <div style="width:120px;height:32px;background:var(--ink);opacity:.15;border-radius:4px"></div>
-    <div style="width:120px;height:32px;background:var(--ink);opacity:.15;border-radius:4px"></div>
-    <div style="width:120px;height:32px;background:var(--ink);opacity:.15;border-radius:4px"></div>
-    <div style="width:120px;height:32px;background:var(--ink);opacity:.15;border-radius:4px"></div>
+    <div class="nx-trust-label">Direct billing with</div>
+    <div class="nx-trust-items"><span class="nx-trust-item">Sahara Health</span><span class="nx-trust-item">Northgate Health</span><span class="nx-trust-item">Crestline</span><span class="nx-trust-item">Keystone Care</span><span class="nx-trust-item">Harbourline</span><span class="nx-trust-item">Lifespring</span></div>
   </div>
 </div>
 
-<section class="nx-section" id="specialties">
+<section class="nx-section" id="consultants">
   <div class="container">
-    <div class="nx-section-head"><span class="nx-eyebrow">Why patients choose us</span><h2>Three things that matter when you are unwell</h2><p class="lede">Healthcare brochures all say "patient-centred". What that looks like in practice is below.</p></div>
-    <div class="nx-benefits" data-edit="benefits">
-      <div class="nx-benefit"><div class="nx-benefit-icon">+</div><h4>30-minute consultations</h4><p>Not seven. Your doctor has time to read your history, examine you properly, and answer questions.</p></div>
-      <div class="nx-benefit"><div class="nx-benefit-icon">✓</div><h4>Same-day diagnostics</h4><p>Blood work, ultrasound, ECG, X-ray on site. Results discussed the same visit where clinically possible.</p></div>
-      <div class="nx-benefit"><div class="nx-benefit-icon">●</div><h4>One file, every specialist</h4><p>Your record follows you between specialties. No re-telling your story three times.</p></div>
+    <div class="nx-section-head"><h2>Your consultants</h2><p class="lede">Every new patient is seen by a consultant, never a junior doctor.</p></div>
+    <div class="nx-people">
+      <div class="nx-person">
+        <div class="nx-person-img"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=800&q=78" alt="Portrait of Dr Rohan Mehra" loading="lazy"></div>
+        <h4>Dr Rohan Mehra</h4>
+        <div class="nx-person-role">Consultant orthopaedic surgeon, knee and hip</div>
+        <p>Fellowship trained in Leeds. Performs around 210 ACL and knee replacement procedures a year.</p>
+      </div>
+      <div class="nx-person">
+        <div class="nx-person-mono" aria-hidden="true">DC</div>
+        <h4>Dr Claire Donnelly</h4>
+        <div class="nx-person-role">Consultant orthopaedic surgeon, shoulder and elbow</div>
+        <p>Former shoulder fellow at Wrightington Hospital. Treats frozen shoulder, rotator cuff tears and dislocations.</p>
+      </div>
+      <div class="nx-person">
+        <div class="nx-person-img"><img src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=800&q=78" alt="Dr Yasmin Haddadin with a patient" loading="lazy"></div>
+        <h4>Dr Yasmin Haddadin</h4>
+        <div class="nx-person-role">Consultant in sport and exercise medicine</div>
+        <p>Team doctor for two UAE Pro League clubs. Focuses on non-surgical treatment, injections and return to sport.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="nx-section alt">
   <div class="container">
-    <div class="nx-stats">
-      <div class="nx-stat"><div class="val">22</div><div class="lbl">Consultants</div></div>
-      <div class="nx-stat"><div class="val">12</div><div class="lbl">Insurers, direct</div></div>
-      <div class="nx-stat"><div class="val">30 min</div><div class="lbl">Standard consultation</div></div>
-      <div class="nx-stat"><div class="val">4.9</div><div class="lbl">Patient rating</div></div>
+    <div class="nx-section-head"><h2>Your first appointment</h2></div>
+    <div class="nx-steps">
+      <div class="nx-step"><div class="nx-step-num">01</div><h4>We call you back</h4><p>A patient coordinator calls within two working hours to book you in and check your insurance cover.</p></div>
+      <div class="nx-step"><div class="nx-step-num">02</div><h4>A 40-minute consultation</h4><p>History, examination and a clear explanation of what is wrong. Bring any previous scans.</p></div>
+      <div class="nx-step"><div class="nx-step-num">03</div><h4>Imaging the same day</h4><p>X-ray and 1.5T MRI on the ground floor. Most MRI reports are back within 24 hours.</p></div>
+      <div class="nx-step"><div class="nx-step-num">04</div><h4>A written plan</h4><p>Physiotherapy, injection or surgery, with costs and what your insurer will cover, in writing before you decide.</p></div>
     </div>
   </div>
 </section>
 
-<section class="nx-section" id="doctors">
+<section class="nx-section" id="conditions">
   <div class="container">
-    <div class="nx-section-head"><span class="nx-eyebrow">From patients</span><h2>What people say after their first visit</h2></div>
-    <div class="nx-testimonials">
-      <div class="nx-test"><div class="nx-test-stars">★★★★★</div><p class="nx-test-quote">"First doctor in three years who actually examined my child instead of looking at the screen."</p><div class="nx-test-author"><div class="nx-test-avatar">MM</div><div><div class="nx-test-name">Maryam M.</div><div class="nx-test-role">Paediatric patient parent</div></div></div></div>
-      <div class="nx-test"><div class="nx-test-stars">★★★★★</div><p class="nx-test-quote">"Got the ECG, the blood test, and the consultant opinion in one visit. Other clinics would have taken a week."</p><div class="nx-test-author"><div class="nx-test-avatar">AT</div><div><div class="nx-test-name">Adel T.</div><div class="nx-test-role">Cardiology patient</div></div></div></div>
-      <div class="nx-test"><div class="nx-test-stars">★★★★★</div><p class="nx-test-quote">"Insurance handled at the desk. Walked in, walked out, nothing to chase later."</p><div class="nx-test-author"><div class="nx-test-avatar">NF</div><div><div class="nx-test-name">Nina F.</div><div class="nx-test-role">Dermatology patient</div></div></div></div>
+    <div class="nx-section-head"><h2>What we treat most</h2></div>
+    <div class="nx-benefits is-grid is-3" data-edit="benefits">
+      <div class="nx-benefit">
+        <div class="nx-benefit-icon"><svg class="nx-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></div>
+        <h4>ACL and meniscus tears</h4>
+        <p>From diagnosis to keyhole repair and a 9-month return-to-sport plan.</p>
+      </div>
+      <div class="nx-benefit">
+        <div class="nx-benefit-icon"><svg class="nx-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12.5V5.5a1.5 1.5 0 0 1 3 0V11M11 10V4.5a1.5 1.5 0 0 1 3 0V11M14 10.5V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 6.5-6 6.5-2.5 0-4-1-5.5-3.5L3.5 13a1.5 1.5 0 0 1 2.5-1.5L8 14"/></svg></div>
+        <h4>Shoulder pain</h4>
+        <p>Rotator cuff, frozen shoulder, impingement and recurrent dislocation.</p>
+      </div>
+      <div class="nx-benefit">
+        <div class="nx-benefit-icon"><svg class="nx-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></div>
+        <h4>Hip and knee arthritis</h4>
+        <p>Injections, weight-bearing plans and joint replacement when it is time.</p>
+      </div>
+      <div class="nx-benefit">
+        <div class="nx-benefit-icon"><svg class="nx-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/></svg></div>
+        <h4>Back and neck pain</h4>
+        <p>Disc and nerve pain assessed with MRI and treated without surgery where possible.</p>
+      </div>
+      <div class="nx-benefit">
+        <div class="nx-benefit-icon"><svg class="nx-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="18" r="2.3"/><circle cx="18" cy="6" r="2.3"/><path d="M8.3 18H16a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h7.7"/></svg></div>
+        <h4>Running injuries</h4>
+        <p>Shin splints, Achilles and plantar fascia problems, with gait analysis.</p>
+      </div>
+      <div class="nx-benefit">
+        <div class="nx-benefit-icon"><svg class="nx-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7v10M17 7v10M4 9.5v5M20 9.5v5M7 12h10"/></svg></div>
+        <h4>Tennis and padel elbow</h4>
+        <p>Shockwave therapy and guided injections for stubborn tendon pain.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="nx-section alt" id="insurance">
+<section class="nx-section alt">
+  <div class="container nx-aside">
+    
+    <div>
+    <div class="nx-stats is-ruled">
+      <div class="nx-stat"><div class="val">2.6 days</div><div class="lbl">average wait for a new patient consultant appointment in 2025</div></div>
+      <div class="nx-stat"><div class="val">4,317</div><div class="lbl">new patients seen in 2025</div></div>
+      <div class="nx-stat"><div class="val">24 hours</div><div class="lbl">typical MRI report turnaround</div></div>
+    </div>
+    <p class="nx-stats-note">From clinic records, January to December 2025.</p>
+    </div>
+  </div>
+</section>
+
+<section class="nx-section" id="insurance">
   <div class="container">
-    <div class="nx-section-head"><span class="nx-eyebrow">FAQ</span><h2>Before your appointment</h2></div>
+    <div class="nx-section-head"><h2>Insurance and self-pay</h2><p class="lede">We bill these insurers directly. You pay only your co-payment at the desk.</p></div>
+    <ul class="nx-checklist"><li>Sahara Health (Enhanced and Premier plans)</li><li>Northgate Health</li><li>Crestline Global</li><li>Keystone Care</li><li>Harbourline Insurance</li><li>Lifespring</li><li>Now Health</li><li>NAS and Neuron network plans</li><li>Self-pay consultation: AED 750, follow-up AED 450</li></ul>
+  </div>
+</section>
+
+<section class="nx-section alt">
+  <div class="container">
+    <div class="nx-section-head"><h2>Before you book</h2></div>
     <div class="nx-faq">
-      <details><summary>How quickly can I be seen?</summary><p>Most specialties offer same-week appointments. Cardiology and dermatology often within 48 hours.</p></details>
-      <details><summary>Which insurers do you bill direct?</summary><p>Daman, Thiqa, Adnic, Bupa, Cigna, Allianz, and six more. Full list at reception.</p></details>
-      <details><summary>What if I do not have insurance?</summary><p>Self-pay rates published transparently on our consultation page. No surprise charges.</p></details>
-      <details><summary>Where are you located?</summary><p>Two locations. Full address shared in the appointment confirmation email.</p></details>
+      <details><summary>Do I need a referral?</summary><p>Not to see us as a self-pay patient. Some insurance plans need a GP referral first, and our coordinator will check yours when we call.</p></details>
+      <details><summary>How much does an MRI cost?</summary><p>A single-joint MRI is AED 1,650 self-pay. With insurance, it usually needs pre-approval, which we request for you on the day.</p></details>
+      <details><summary>Can I choose my consultant?</summary><p>Yes. Pick one in the form, or let us match you based on the problem.</p></details>
+      <details><summary>Is there parking?</summary><p>Free parking in the basement, with lift access to every floor.</p></details>
     </div>
   </div>
 </section>
+
 
 <section class="nx-final-cta">
   <div class="container">
-    <h2>Same-week slots are filling.</h2>
-    <p class="lede">Book the consultation today, see a specialist within the week.</p>
-    <a href="#form" class="nx-btn nx-btn-primary">Book appointment</a>
+    <div>
+      <h2>Do not wait for it to settle on its own</h2>
+      <p class="lede">Appointments this week with all three consultants.</p>
+    </div>
+    <a href="#form" class="nx-btn nx-btn-primary">Request an appointment</a>
   </div>
 </section>
 
 <footer class="nx-footer" data-edit="footer">
   <div class="container">
     <div class="nx-footer-grid">
-      <div class="nx-footer-brand"><div class="nx-logo">The Clinic</div><p>A specialist outpatient clinic. Same-week appointments. Insurance direct.</p></div>
-      <div class="nx-footer-col"><h5>Specialties</h5><a href="#">Cardiology</a><a href="#">Dermatology</a><a href="#">Paediatrics</a></div>
-      <div class="nx-footer-col"><h5>Contact</h5><a data-field="email" href="mailto:appointments@theclinic.ae">appointments@theclinic.ae</a><a data-field="phone" href="tel:+97140000000">+971 4 000 0000</a><a data-field="address">Jumeirah · DHCC, Dubai</a></div>
-      <div class="nx-footer-col"><h5>Patient</h5><a href="#">Insurance</a><a href="#">Records</a><a href="#">Policies</a></div>
+      <div class="nx-footer-brand">
+        <div class="nx-logo">Talus Orthopaedic Clinic</div>
+        <p>Orthopaedic surgery and sports medicine in Umm Suqeim, Dubai.</p>
+      </div>
+      <div class="nx-footer-col"><h5>Visit</h5><span data-field="address">Villa 412, Al Wasl Road, Umm Suqeim 2, Dubai</span><span>Saturday to Thursday, 8am to 8pm</span></div>
+      <div class="nx-footer-col"><h5>Contact</h5><a data-field="email" href="mailto:appointments@talusclinic.ae">appointments@talusclinic.ae</a><a data-field="phone" href="tel:+97143942851">+971 4 394 2851</a></div>
+      <div class="nx-footer-col"><h5>Legal</h5><a href="#">Privacy notice</a><a href="#">Terms of use</a><a href="#">Cookie settings</a></div>
     </div>
-    <div class="nx-footer-foot"><span data-field="legal">© 2026 The Clinic. DHA-licensed.</span><div class="nx-social"><a href="#">in</a><a href="#">ig</a></div></div>
+    <div class="nx-footer-foot">
+      <span data-field="legal">© 2026 Talus Orthopaedic Clinic. DHA facility licence 5823910</span>
+      <div class="nx-social"><a href="#">Instagram</a><a href="#">LinkedIn</a></div>
+    </div>
   </div>
 </footer>
 
 <script src="./_shared/kit.js"></script>
-<script>NEXA.setForm('booking-slot');</script>
+<script>NEXA.renderForm({"title":"Request an appointment","sub":"A patient coordinator calls you within two working hours.","cta":"Request my appointment","foot":"Your information is handled under DHA patient confidentiality rules.","action":"","steps":1,"fields":[{"type":"text","name":"full_name","label":"Full name","required":true},{"type":"tel","name":"mobile","label":"Mobile","required":true},{"type":"email","name":"email","label":"Email","required":false},{"type":"select","name":"concern","label":"What is the problem?","required":true,"options":["Knee","Shoulder or elbow","Hip","Back or neck","Foot or ankle","Sports injury, other","Not sure"]},{"type":"select","name":"insurer","label":"Insurance","required":true,"options":["Sahara Health","Northgate Health","Crestline","Keystone Care","Harbourline","Lifespring","Now Health","Other insurer","Self-pay"]},{"type":"select","name":"consultant","label":"Preferred consultant","required":false,"options":["Dr Rohan Mehra","Dr Claire Donnelly","Dr Yasmin Haddadin","No preference"]}]});</script>
 </body>
 </html>

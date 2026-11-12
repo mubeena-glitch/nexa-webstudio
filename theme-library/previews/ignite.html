@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ignite — NEXA Theme Preview (Growth Marketing Agency)</title>
+<title>Ignite: NEXA Theme Preview (Growth Marketing Agency)</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
@@ -72,7 +73,7 @@
   .eyebrow.center { justify-content: center; }
   .disp { font-family: var(--font-display); font-weight: 600; letter-spacing: var(--display-tracking); line-height: 1.02; }
   .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.45vw, 19px); }
-  .grad-text { background: linear-gradient(96deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .grad-text { color: rgb(var(--color-primary)); }
 
   :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 6px; }
 
@@ -262,7 +263,7 @@
   .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; text-align: center; }
   @media (max-width: 760px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; } }
   .metric .num { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 5vw, 64px); letter-spacing: -0.02em; line-height: 1; }
-  .metric .num .suf { background: linear-gradient(96deg, rgb(var(--color-primary)), rgb(var(--color-accent2))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .metric .num .suf { color: rgb(var(--color-primary)); }
   .metric .lbl { color: rgb(255 255 255 / .6); font-size: 14px; margin-top: 12px; }
 
   /* ============================================================
@@ -349,6 +350,11 @@
     html { scroll-behavior: auto; }
     .flare .b, .marquee-track { animation: none !important; }
   }
+
+  /* announcement line: plain text, no pill */
+  .hero-pill { background: none !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .hero-pill .tag { background: none !important; padding: 0 6px 0 0 !important; border: 0 !important; border-radius: 0 !important; font-weight: 700; }
+  .hero-pill .dot, .hero-pill::before { display: none !important; }
 </style>
 </head>
 <body>

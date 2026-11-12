@@ -62,10 +62,10 @@
     "motion": {
       "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
       "duration": "560ms",
-      "character": "graceful"
+      "character": "fluid"
     },
     "imagery": {
-      "treatment": "soft-arch",
+      "treatment": "masked",
       "ratio": "4:5",
       "filter": "warm"
     }

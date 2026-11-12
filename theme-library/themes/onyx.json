@@ -56,12 +56,12 @@
     "shadow": {
       "card": "0 1px 2px rgb(0 0 0 / 0.5), 0 18px 50px -22px rgb(0 0 0 / 0.8)",
       "elevated": "0 2px 6px rgb(0 0 0 / 0.6), 0 40px 80px -28px rgb(0 0 0 / 0.9)",
-      "philosophy": "deep"
+      "philosophy": "dramatic"
     },
     "motion": {
       "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
       "duration": "640ms",
-      "character": "stately"
+      "character": "calm"
     },
     "imagery": {
       "treatment": "full-bleed",

@@ -27,7 +27,7 @@
       "accent2": "176 142 104"
     },
     "type": {
-      "display": "'Fraunces', ui-serif, Georgia, serif",
+      "display": "'Literata', ui-serif, Georgia, serif",
       "body": "'Mulish', ui-sans-serif, system-ui, sans-serif",
       "mono": "'IBM Plex Mono', ui-monospace, monospace",
       "scaleRatio": 1.24,
@@ -61,10 +61,10 @@
     "motion": {
       "ease": "cubic-bezier(0.33, 1, 0.68, 1)",
       "duration": "640ms",
-      "character": "gentle"
+      "character": "calm"
     },
     "imagery": {
-      "treatment": "soft-organic",
+      "treatment": "rounded",
       "ratio": "4:5",
       "filter": "saturate(0.92) brightness(1.02)"
     }
@@ -88,6 +88,6 @@
     "cta": "soft-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Mulish:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    "https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400;1,7..72,500&family=Mulish:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
   ]
 }

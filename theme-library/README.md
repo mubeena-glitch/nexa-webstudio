@@ -1,11 +1,11 @@
-# NEXA Web Studio — Design Theme Library (v1.0.0)
+# NEXA Web Studio: Design Theme Library (v1.0.0)
 
 A consolidated, integration-ready package of **15 distinct, token-driven website design themes**.
 Each theme is a self-contained design system: a `theme.json` design-token manifest plus a fully
 designed, animated `preview.html` reference page using real imagery.
 
 ## How to view (for review)
-1. Open **`gallery.html`** in a browser — thumbnails of all 15 themes; click any to open its full preview.
+1. Open **`gallery.html`** in a browser to see thumbnails of all 15 themes; click any to open its full preview.
 2. Or open any file in **`previews/<id>.html`** directly.
 
 > Previews load fonts (Google Fonts / Fontshare), photos (Unsplash) and the animation library
@@ -48,6 +48,6 @@ consolidated/
 | `spark` | E-commerce / retail | light | vibrant |
 
 ## What "token-driven" means
-A theme defines only the **skin** — colors, typography, spacing, radii, shadows, motion, imagery
-treatment — as data (`theme.json`). It contains no page structure or content. The same theme can be
+A theme defines only the **skin** (colours, typography, spacing, radii, shadows, motion, imagery
+treatment) as data (`theme.json`). It contains no page structure or content. The same theme can be
 applied to any sitemap/brief. See **INTEGRATION.md** for how the studio consumes these tokens.

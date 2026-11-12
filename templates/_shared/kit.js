@@ -181,7 +181,7 @@
     if(!grid || !Array.isArray(items)) return;
     grid.innerHTML = items.map(b => `
       <div class="nx-benefit">
-        <div class="nx-benefit-icon">${b.icon || '★'}</div>
+        <div class="nx-benefit-icon">${b.icon || ''}</div>
         <h4>${b.title || ''}</h4>
         <p>${b.body || ''}</p>
       </div>
@@ -207,8 +207,8 @@
         {type:'text',  name:'name',    placeholder:'Full name', required:true},
         {type:'email', name:'email',   placeholder:'Email address', required:true},
         {type:'tel',   name:'phone',   placeholder:'Phone number', required:true},
-        {type:'select',name:'budget',  options:['Budget — under AED 25k','AED 25k–75k','AED 75k–250k','AED 250k+'], required:true},
-        {type:'textarea',name:'msg',   placeholder:'Brief about your project', rows:3},
+        {type:'select',name:'budget', placeholder:'Budget', options:['Under AED 25k','AED 25k to 75k','AED 75k to 250k','Over AED 250k'], required:true},
+        {type:'textarea',name:'msg',   placeholder:'A few lines about your project', rows:3},
       ],
       cta: 'Book my free consultation'
     },
@@ -220,7 +220,7 @@
         {type:'email', name:'email', placeholder:'Email address', required:true},
         {type:'tel',   name:'phone', placeholder:'Phone number', required:true},
         {type:'date',  name:'date',  required:true},
-        {type:'select',name:'time',  options:['Morning','Afternoon','Evening'], required:true},
+        {type:'select',name:'time', placeholder:'Preferred time', options:['Morning','Afternoon','Evening'], required:true},
       ],
       cta: 'Confirm booking'
     },
@@ -254,6 +254,8 @@
       inner = `<label class="nx-check"><input type="checkbox" name="${escAttr(name)}"${req}> <span>${esc(label)}</span></label>`;
     } else if(f.type === 'file'){
       inner = `<input class="nx-input" type="file" name="${escAttr(name)}" aria-label="${escAttr(label)}"${f.accept?` accept="${escAttr(f.accept)}"`:''}${req}>`;
+    } else if(f.type === 'date' || f.type === 'time'){
+      inner = `<label class="nx-flabel" for="nxf-${escAttr(name)}">${esc(label)}</label><input class="nx-input" id="nxf-${escAttr(name)}" type="${escAttr(f.type)}" name="${escAttr(name)}"${req}>`;
     } else {
       inner = `<input class="nx-input" type="${escAttr(f.type||'text')}" name="${escAttr(name)}" placeholder="${escAttr(ph)}" aria-label="${escAttr(label)}"${req}>`;
     }
@@ -561,7 +563,7 @@
       f.addEventListener('submit', e => {
         e.preventDefault();
         const box = f.closest('.nx-form'); if(!box) return;
-        box.innerHTML = '<div class="nx-form-success"><div class="nx-form-tick">✓</div><h3>Thank you</h3><p>We have received your details and will be in touch within 2 business hours.</p></div>';
+        box.innerHTML = '<div class="nx-form-success"><div class="nx-form-tick">✓</div><h3>Thank you</h3><p>Your details are with us. Someone from the team will reply within two working hours.</p></div>';
       });
     });
   }

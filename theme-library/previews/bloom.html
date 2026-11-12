@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bloom — NEXA Theme Preview (Skincare / Beauty)</title>
+<title>Bloom: NEXA Theme Preview (Skincare / Beauty)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  html { font-synthesis: none; }
   /* ============================================================
      BLOOM — design tokens (1:1 mirror of theme.json -> CSS vars)
      ============================================================ */
@@ -25,7 +25,7 @@
     --color-accent: 196 110 110;
     --color-accent2: 138 154 122;   /* sage */
 
-    --font-display: "Fraunces", "Times New Roman", Georgia, serif;
+    --font-display: "Italiana", ui-serif, Georgia, serif;
     --font-body: "Outfit", ui-sans-serif, system-ui, sans-serif;
     --display-tracking: -0.015em;
 
@@ -240,6 +240,11 @@
     html { scroll-behavior: auto; }
     .petal { animation: none !important; transform: none !important; }
   }
+
+  /* announcement line: plain text, no pill */
+  .hero-pill { background: none !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .hero-pill .tag { background: none !important; padding: 0 6px 0 0 !important; border: 0 !important; border-radius: 0 !important; font-weight: 700; }
+  .hero-pill .dot, .hero-pill::before { display: none !important; }
 </style>
 </head>
 <body>

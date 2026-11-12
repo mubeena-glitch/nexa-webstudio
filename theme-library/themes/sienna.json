@@ -4,33 +4,35 @@
   "family": "luxury",
   "sector": "Editorial / lifestyle",
   "tags": [
-    "warm",
+    "light",
     "editorial",
+    "magazine",
+    "lifestyle",
     "serif",
-    "lifestyle"
+    "burgundy"
   ],
   "mode": "light",
   "tokens": {
     "color": {
-      "bg": "246 237 225",
-      "surface": "255 250 242",
-      "ink": "42 29 20",
-      "muted": "122 101 82",
-      "line": "227 212 192",
-      "primary": "181 83 42",
+      "bg": "247 245 244",
+      "surface": "255 255 255",
+      "ink": "40 22 26",
+      "muted": "120 100 104",
+      "line": "228 220 220",
+      "primary": "128 32 48",
       "onPrimary": "255 255 255",
       "accent": "31 111 92",
       "accent2": "31 111 92"
     },
     "type": {
-      "display": "'Fraunces', serif",
-      "body": "'Newsreader', sans-serif",
-      "scaleRatio": 1.28,
+      "display": "'Gloock', ui-serif, Georgia, serif",
+      "body": "'Newsreader', ui-serif, Georgia, serif",
+      "scaleRatio": 1.33,
       "weights": {
-        "display": 600,
-        "displayBold": 700,
+        "display": 400,
+        "displayBold": 400,
         "body": 400,
-        "label": 500,
+        "label": 600,
         "bold": 600
       },
       "displayCase": "none",
@@ -38,45 +40,46 @@
     },
     "space": {
       "base": 8,
-      "section": "clamp(72px,9vw,120px)",
-      "gutter": "clamp(20px,5vw,48px)",
+      "section": "clamp(72px, 9vw, 128px)",
+      "gutter": "clamp(16px, 4.5vw, 56px)",
       "density": "balanced"
     },
     "radius": {
-      "card": "14px",
-      "button": "8px",
-      "input": "8px",
-      "pill": "999px"
+      "card": "0px",
+      "button": "2px",
+      "input": "2px",
+      "pill": "2px"
     },
     "shadow": {
-      "card": "0 18px 44px -28px rgba(60,40,20,.4)",
-      "elevated": "0 18px 44px -28px rgba(60,40,20,.4)",
-      "philosophy": "soft"
+      "card": "none",
+      "elevated": "18px 18px 0 rgb(40 22 26 / 0.35)",
+      "philosophy": "none"
     },
     "motion": {
-      "ease": "cubic-bezier(0.22,1,0.36,1)",
-      "duration": "500ms",
-      "character": "smooth"
+      "ease": "cubic-bezier(0.25, 1, 0.5, 1)",
+      "duration": "300ms",
+      "character": "calm"
     },
     "imagery": {
-      "treatment": "full-bleed",
-      "ratio": "4:3",
+      "treatment": "framed",
+      "ratio": "3:2",
       "filter": "none"
     }
   },
   "recipes": {
     "button": "solid",
-    "card": "bordered",
-    "nav": "split"
+    "card": "borderless",
+    "nav": "centered"
   },
   "preferredLayouts": {
-    "hero": "split-visual",
-    "trusted": "logo-strip",
-    "features": "card-grid",
-    "stats": "band",
-    "cta": "gradient-band"
+    "hero": "cover-story-three-column",
+    "features": "story-grid",
+    "feature": "long-read-split",
+    "products": "edit-grid",
+    "stats": "none",
+    "cta": "subscription-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Newsreader:wght@400;500&display=swap"
+    "https://fonts.googleapis.com/css2?family=Gloock&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap"
   ]
 }

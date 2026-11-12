@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Meridian — NEXA Theme Preview (Private Banking / Fintech)</title>
+<title>Meridian: NEXA Theme Preview (Private Banking / Fintech)</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
@@ -109,7 +110,7 @@
   .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--color-primary)); display: inline-flex; align-items: center; gap: 10px; }
   .eyebrow::before { content: ""; width: 26px; height: 1px; background: rgb(var(--color-primary)); }
   .disp { font-family: var(--font-display); font-weight: 600; letter-spacing: var(--display-tracking); line-height: 1.02; }
-  .shimmer { background: linear-gradient(100deg, rgb(var(--color-primary)) 20%, rgb(var(--color-accent2)) 40%, rgb(var(--color-primary)) 60%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shim 5s linear infinite; }
+  .shimmer { color: rgb(var(--color-primary)); }
   @keyframes shim { to { background-position: 200% center; } }
 
   /* ---------- buttons (recipe: pill-solid) ---------- */
@@ -337,6 +338,9 @@
     html { scroll-behavior: auto; }
   }
   @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* 390px overflow fix */
+  *:has(> .hero-mesh) { overflow-x: clip; }
 </style>
 </head>
 <body>
@@ -366,7 +370,7 @@
       <div>
         <div class="badge-row reveal"><span class="badge"><span class="star" aria-hidden="true">★</span> 4.9/5 · 12,000 reviews</span><span class="badge">FCA regulated</span></div>
         <h1 class="disp reveal" style="margin-top:18px;">Private banking for the <span class="shimmer">next</span> generation of wealth.</h1>
-        <p class="lede reveal">Consolidate accounts, automate your strategy, and grow with AI-driven insights, instant transfers, and bank-grade security — in one quiet, exacting platform.</p>
+        <p class="lede reveal">Consolidate accounts, automate your strategy, and grow with AI-driven insights, instant transfers, and bank-grade security, in one quiet, exacting platform.</p>
         <div class="hero-actions reveal">
           <a href="#" class="btn btn-primary magnetic">Open an account <span class="arrow" aria-hidden="true">→</span></a>
           <a href="#" class="btn btn-ghost"><span class="play" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span> Watch demo</a>
@@ -388,7 +392,7 @@
             <div class="ct"><span>Private account</span><span class="brandmark" style="color:rgb(var(--color-primary))">M</span></div>
             <div class="chip"></div>
             <div class="pan">5789 •••• •••• 2847</div>
-            <div class="cb"><div><small>Card holder</small><span>Sandra A.</span></div><div><small>Balance</small><span>$48.20K</span></div></div>
+            <div class="cb"><div><small>Card holder</small><span>Sandra Achebe</span></div><div><small>Balance</small><span>$48.20K</span></div></div>
           </div>
         </div>
         <div class="plx" data-depth="38">
@@ -436,7 +440,7 @@
       <div class="sec-head reveal">
         <span class="eyebrow">One platform</span>
         <h2>Everything your money needs,<br>in one place.</h2>
-        <p>A complete private-banking toolkit — accounts, cards, investing, and automation, beautifully unified.</p>
+        <p>A complete private-banking toolkit: accounts, cards, investing, and automation, beautifully unified.</p>
       </div>
       <div class="bento">
         <!-- Row 1: wide(2) + 1 + 1 = 4 -->
@@ -465,7 +469,7 @@
         <div class="cell c-wide reveal" data-spot data-batch>
           <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           <h3>Bank-grade security</h3>
-          <p>Segregated custody, encryption, and biometric access — assets protected end to end.</p>
+          <p>Segregated custody, encryption, and biometric access: assets protected end to end.</p>
         </div>
         <div class="cell reveal" data-spot data-batch>
           <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
@@ -485,7 +489,7 @@
       </div>
       <div class="steps">
         <div class="connector" id="connector"></div>
-        <div class="step reveal" data-batch><div class="num">1</div><h3>Create your account</h3><p>Sign up in under three minutes — no paperwork, no branch visit.</p></div>
+        <div class="step reveal" data-batch><div class="num">1</div><h3>Create your account</h3><p>Sign up in under three minutes, no paperwork, no branch visit.</p></div>
         <div class="step reveal" data-batch><div class="num">2</div><h3>Fund &amp; connect</h3><p>Link existing accounts and consolidate your whole financial picture.</p></div>
         <div class="step reveal" data-batch><div class="num">3</div><h3>Automate &amp; grow</h3><p>Set rules once and let Meridian save, invest, and rebalance for you.</p></div>
       </div>
@@ -610,7 +614,7 @@
       </div>
       <div class="faq">
         <div class="qa reveal" data-batch><button aria-expanded="false">Is my money protected? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Yes. Deposits are held with tier-one custodians, segregated, and protected up to regulatory limits. All access is biometric and encrypted end to end.</p></div></div>
-        <div class="qa reveal" data-batch><button aria-expanded="false">How long does it take to open an account? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Most members are fully onboarded in under three minutes — no paperwork or branch visit required.</p></div></div>
+        <div class="qa reveal" data-batch><button aria-expanded="false">How long does it take to open an account? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Most members are fully onboarded in under three minutes, no paperwork or branch visit required.</p></div></div>
         <div class="qa reveal" data-batch><button aria-expanded="false">Can I move my existing accounts over? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>Absolutely. Connect external accounts to consolidate your full financial picture, and use our switch service to move direct debits automatically.</p></div></div>
         <div class="qa reveal" data-batch><button aria-expanded="false">What does the APY actually mean? <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="ans"><p>The 3.92% variable APY is paid on eligible cash balances on Private and Family Office tiers, calculated daily and paid monthly.</p></div></div>
       </div>
@@ -624,7 +628,7 @@
         <div class="cglow"></div>
         <span class="eyebrow" style="justify-content:center;position:relative;">Get started</span>
         <h2 style="margin-top:20px;">Hold your whole financial<br>life to one standard.</h2>
-        <p>Open a free account in minutes. No paperwork, no minimum balance — just effortless private banking.</p>
+        <p>Open a free account in minutes. No paperwork, no minimum balance, just effortless private banking.</p>
         <div class="acts">
           <a href="#" class="btn btn-primary magnetic">Open an account <span class="arrow" aria-hidden="true">→</span></a>
           <a href="#" class="btn btn-ghost">Talk to an advisor</a>
@@ -637,7 +641,7 @@
   <footer>
     <div class="wrap">
       <div class="news">
-        <h3 class="reveal">Get the Meridian brief — markets &amp; money, weekly.</h3>
+        <h3 class="reveal">Get the Meridian brief: markets &amp; money, weekly.</h3>
         <form class="reveal" onsubmit="return false">
           <input type="email" placeholder="you@example.com" aria-label="Email address" />
           <button class="btn btn-primary magnetic">Subscribe</button>
