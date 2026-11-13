@@ -27,7 +27,7 @@
       "accent2": "138 154 122"
     },
     "type": {
-      "display": "'Fraunces', 'Times New Roman', Georgia, serif",
+      "display": "'Italiana', ui-serif, Georgia, serif",
       "body": "'Outfit', ui-sans-serif, system-ui, sans-serif",
       "mono": "'Outfit', ui-monospace, monospace",
       "scaleRatio": 1.27,
@@ -61,10 +61,10 @@
     "motion": {
       "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
       "duration": "580ms",
-      "character": "organic"
+      "character": "fluid"
     },
     "imagery": {
-      "treatment": "rounded-organic",
+      "treatment": "rounded",
       "ratio": "4:5",
       "filter": "saturate(1.02) brightness(1.01)"
     }
@@ -87,7 +87,6 @@
     "cta": "soft-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap",
-    "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap"
+    "https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@400;500;600&display=swap"
   ]
 }

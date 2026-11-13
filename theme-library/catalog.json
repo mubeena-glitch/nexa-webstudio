@@ -68,20 +68,22 @@
       "sector": "SaaS / product",
       "mode": "dark",
       "tags": [
-        "glassmorphism",
         "dark",
-        "gradient",
-        "modern"
+        "product",
+        "saas",
+        "calm",
+        "mint",
+        "ui-mock"
       ],
       "palette": {
-        "bg": "rgb(10 14 26)",
-        "ink": "rgb(234 240 255)",
-        "primary": "rgb(109 139 255)",
-        "accent": "rgb(40 224 200)"
+        "bg": "rgb(12 17 20)",
+        "ink": "rgb(232 238 236)",
+        "primary": "rgb(120 220 190)",
+        "accent": "rgb(120 220 190)"
       },
       "fonts": {
-        "display": "Sora",
-        "body": "Inter"
+        "display": "Geist",
+        "body": "Geist"
       },
       "manifest": "themes/aurora.json",
       "preview": "previews/aurora.html",
@@ -101,7 +103,8 @@
         "authoritative",
         "classic",
         "editorial",
-        "navy"
+        "navy",
+        "burgundy"
       ],
       "palette": {
         "bg": "rgb(244 242 236)",
@@ -139,7 +142,7 @@
         "accent": "rgb(196 110 110)"
       },
       "fonts": {
-        "display": "Fraunces",
+        "display": "Italiana",
         "body": "Outfit"
       },
       "manifest": "themes/bloom.json",
@@ -169,7 +172,7 @@
       },
       "fonts": {
         "display": "Fraunces",
-        "body": "Inter"
+        "body": "Karla"
       },
       "manifest": "themes/botanica.json",
       "preview": "previews/botanica.html",
@@ -185,7 +188,8 @@
         "brutalist",
         "raw",
         "high-contrast",
-        "mono"
+        "mono",
+        "portfolio"
       ],
       "palette": {
         "bg": "rgb(251 247 234)",
@@ -194,7 +198,7 @@
         "accent": "rgb(255 92 0)"
       },
       "fonts": {
-        "display": "Space Grotesk",
+        "display": "Archivo Black",
         "body": "Space Mono"
       },
       "manifest": "themes/brutal.json",
@@ -224,8 +228,8 @@
         "accent": "rgb(45 212 191)"
       },
       "fonts": {
-        "display": "Space Grotesk",
-        "body": "Inter"
+        "display": "IBM Plex Mono",
+        "body": "IBM Plex Sans"
       },
       "manifest": "themes/cascade.json",
       "preview": "previews/cascade.html",
@@ -310,8 +314,8 @@
         "accent": "rgb(20 132 233)"
       },
       "fonts": {
-        "display": "Space Grotesk",
-        "body": "Inter"
+        "display": "Red Hat Display",
+        "body": "Red Hat Text"
       },
       "manifest": "themes/cirrus.json",
       "preview": "previews/cirrus.html",
@@ -339,7 +343,7 @@
         "accent": "rgb(187 92 58)"
       },
       "fonts": {
-        "display": "Fraunces",
+        "display": "Young Serif",
         "body": "Hanken Grotesk"
       },
       "manifest": "themes/clay.json",
@@ -455,7 +459,7 @@
       },
       "fonts": {
         "display": "Fraunces",
-        "body": "Inter Tight"
+        "body": "Instrument Sans"
       },
       "manifest": "themes/eclipse.json",
       "preview": "previews/eclipse.html",
@@ -501,18 +505,18 @@
         "analytics",
         "data",
         "navy",
-        "electric-blue",
+        "amber",
         "glassy"
       ],
       "palette": {
         "bg": "rgb(9 13 26)",
         "ink": "rgb(232 238 252)",
-        "primary": "rgb(74 124 255)",
-        "accent": "rgb(74 124 255)"
+        "primary": "rgb(255 176 64)",
+        "accent": "rgb(255 176 64)"
       },
       "fonts": {
-        "display": "Space Grotesk",
-        "body": "Inter"
+        "display": "Instrument Serif",
+        "body": "Geist"
       },
       "manifest": "themes/fathom.json",
       "preview": "previews/fathom.html",
@@ -525,20 +529,23 @@
       "sector": "Gaming / nightlife",
       "mode": "dark",
       "tags": [
-        "neon",
-        "glow",
         "dark",
-        "gaming"
+        "nightlife",
+        "gaming",
+        "events",
+        "coral",
+        "high-energy",
+        "uppercase"
       ],
       "palette": {
-        "bg": "rgb(8 7 15)",
-        "ink": "rgb(240 233 255)",
-        "primary": "rgb(192 38 255)",
-        "accent": "rgb(46 230 255)"
+        "bg": "rgb(13 11 16)",
+        "ink": "rgb(244 238 246)",
+        "primary": "rgb(255 77 109)",
+        "accent": "rgb(255 196 61)"
       },
       "fonts": {
-        "display": "Space Grotesk",
-        "body": "Inter"
+        "display": "Unbounded",
+        "body": "Manrope"
       },
       "manifest": "themes/flux.json",
       "preview": "previews/flux.html",
@@ -596,7 +603,7 @@
       },
       "fonts": {
         "display": "Cabinet Grotesk",
-        "body": "Inter"
+        "body": "Figtree"
       },
       "manifest": "themes/glacier.json",
       "preview": "previews/glacier.html",
@@ -655,8 +662,8 @@
         "accent": "rgb(18 52 110)"
       },
       "fonts": {
-        "display": "Space Grotesk",
-        "body": "Inter"
+        "display": "Barlow Semi Condensed",
+        "body": "Barlow"
       },
       "manifest": "themes/harbor.json",
       "preview": "previews/harbor.html",
@@ -741,8 +748,8 @@
         "accent": "rgb(16 223 138)"
       },
       "fonts": {
-        "display": "Space Grotesk",
-        "body": "Inter"
+        "display": "Azeret Mono",
+        "body": "Rethink Sans"
       },
       "manifest": "themes/ledger.json",
       "preview": "previews/ledger.html",
@@ -771,8 +778,8 @@
         "accent": "rgb(30 79 56)"
       },
       "fonts": {
-        "display": "Fraunces",
-        "body": "Inter"
+        "display": "Spectral",
+        "body": "Public Sans"
       },
       "manifest": "themes/maple.json",
       "preview": "previews/maple.html",
@@ -858,8 +865,8 @@
         "accent": "rgb(56 167 255)"
       },
       "fonts": {
-        "display": "Space Grotesk",
-        "body": "Inter"
+        "display": "Geist",
+        "body": "Geist"
       },
       "manifest": "themes/nimbus.json",
       "preview": "previews/nimbus.html",
@@ -963,7 +970,9 @@
         "retro",
         "print",
         "editorial",
-        "bold-serif"
+        "bold-serif",
+        "listings",
+        "events"
       ],
       "palette": {
         "bg": "rgb(244 239 230)",
@@ -1018,7 +1027,7 @@
         "web3",
         "crypto",
         "defi",
-        "neon",
+        "orange",
         "futuristic",
         "glassmorphism",
         "dark",
@@ -1027,8 +1036,8 @@
       "palette": {
         "bg": "rgb(7 8 15)",
         "ink": "rgb(233 236 248)",
-        "primary": "rgb(124 92 255)",
-        "accent": "rgb(35 224 200)"
+        "primary": "rgb(255 138 76)",
+        "accent": "rgb(255 138 76)"
       },
       "fonts": {
         "display": "Sora",
@@ -1147,7 +1156,7 @@
         "accent": "rgb(106 138 110)"
       },
       "fonts": {
-        "display": "Fraunces",
+        "display": "Literata",
         "body": "Mulish"
       },
       "manifest": "themes/sage.json",
@@ -1161,19 +1170,21 @@
       "sector": "Editorial / lifestyle",
       "mode": "light",
       "tags": [
-        "warm",
+        "light",
         "editorial",
+        "magazine",
+        "lifestyle",
         "serif",
-        "lifestyle"
+        "burgundy"
       ],
       "palette": {
-        "bg": "rgb(246 237 225)",
-        "ink": "rgb(42 29 20)",
-        "primary": "rgb(181 83 42)",
+        "bg": "rgb(247 245 244)",
+        "ink": "rgb(40 22 26)",
+        "primary": "rgb(128 32 48)",
         "accent": "rgb(31 111 92)"
       },
       "fonts": {
-        "display": "Fraunces",
+        "display": "Gloock",
         "body": "Newsreader"
       },
       "manifest": "themes/sienna.json",
@@ -1190,7 +1201,8 @@
         "minimal",
         "monochrome",
         "whitespace",
-        "clean"
+        "studio",
+        "case-studies"
       ],
       "palette": {
         "bg": "rgb(255 255 255)",
@@ -1199,8 +1211,8 @@
         "accent": "rgb(17 17 17)"
       },
       "fonts": {
-        "display": "Inter Tight",
-        "body": "Inter"
+        "display": "Schibsted Grotesk",
+        "body": "Schibsted Grotesk"
       },
       "manifest": "themes/slate.json",
       "preview": "previews/slate.html",
@@ -1257,7 +1269,7 @@
         "accent": "rgb(255 91 71)"
       },
       "fonts": {
-        "display": "Clash Display",
+        "display": "Familjen Grotesk",
         "body": "Satoshi"
       },
       "manifest": "themes/sprint.json",
@@ -1316,7 +1328,7 @@
       },
       "fonts": {
         "display": "Archivo",
-        "body": "Inter"
+        "body": "Work Sans"
       },
       "manifest": "themes/tundra.json",
       "preview": "previews/tundra.html",
@@ -1373,7 +1385,7 @@
         "accent": "rgb(236 64 168)"
       },
       "fonts": {
-        "display": "Clash Display",
+        "display": "Syne",
         "body": "Satoshi"
       },
       "manifest": "themes/velvet.json",

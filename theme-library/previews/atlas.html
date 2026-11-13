@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Atlas — NEXA Theme Preview (SaaS / B2B Analytics Platform)</title>
+<title>Atlas: NEXA Theme Preview (SaaS / B2B Analytics Platform)</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -441,6 +441,11 @@
     html { scroll-behavior: auto; }
     .mesh .blob { animation: none !important; }
   }
+
+  /* announcement line: plain text, no pill */
+  .hero-pill { background: none !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .hero-pill .tag { background: none !important; padding: 0 6px 0 0 !important; border: 0 !important; border-radius: 0 !important; font-weight: 700; }
+  .hero-pill .dot, .hero-pill::before { display: none !important; }
 </style>
 </head>
 <body>
@@ -478,9 +483,9 @@
 
   <div class="wrap hero-grid">
     <div class="hero-text">
-      <span class="hero-pill" data-hero><span class="tag">NEW</span> Atlas 4.0 — real-time cohort analytics</span>
+      <span class="hero-pill" data-hero>Atlas 4.0: real-time cohort analytics</span>
       <h1 class="disp" data-hero>The analytics layer your <span class="accent">whole team</span> can actually use.</h1>
-      <p class="lead" data-hero>Atlas unifies product, revenue, and growth data into one fast workspace — so every team ships from the same numbers without waiting on a query queue.</p>
+      <p class="lead" data-hero>Atlas unifies product, revenue, and growth data into one fast workspace, so every team ships from the same numbers without waiting on a query queue.</p>
       <div class="hero-cta" data-hero>
         <a class="btn btn-primary magnetic" href="#">Start free <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a class="btn btn-ghost" href="#">Book a demo</a>
@@ -576,7 +581,7 @@
     <div class="shot-head" data-reveal>
       <span class="eyebrow center">See Atlas in action</span>
       <h2 class="disp">One workspace for every metric that matters</h2>
-      <p class="lead">Dashboards, funnels, cohorts, and revenue — composed once, shared everywhere, refreshed in real time.</p>
+      <p class="lead">Dashboards, funnels, cohorts, and revenue: composed once, shared everywhere, refreshed in real time.</p>
     </div>
     <div class="shot-frame" data-reveal>
       <div class="frame spot" data-spot>
@@ -648,7 +653,7 @@
       <div class="split-text">
         <span class="eyebrow">Explore</span>
         <h2 class="disp">Answer any question without writing SQL</h2>
-        <p class="lead">Build funnels, retention curves, and segment breakdowns with a point-and-click explorer. Drop to SQL whenever you want — Atlas keeps both in sync.</p>
+        <p class="lead">Build funnels, retention curves, and segment breakdowns with a point-and-click explorer. Drop to SQL whenever you want. Atlas keeps both in sync.</p>
         <ul class="checks">
           <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Visual funnel &amp; cohort builder</li>
           <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Two-way SQL editor with autocomplete</li>
@@ -682,7 +687,7 @@
       <div class="split-text">
         <span class="eyebrow">Automate</span>
         <h2 class="disp">Get pinged the moment a metric moves</h2>
-        <p class="lead">Set thresholds and anomaly detection on any chart. Atlas pushes alerts to Slack, email, or webhook — and sends a digest before your team's stand-up.</p>
+        <p class="lead">Set thresholds and anomaly detection on any chart. Atlas pushes alerts to Slack, email, or webhook, and sends a digest before your team's stand-up.</p>
         <ul class="checks">
           <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Anomaly detection out of the box</li>
           <li><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Slack, email &amp; webhook delivery</li>
@@ -706,7 +711,7 @@
       <div class="cap span2 spot" data-spot>
         <span class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
         <h3>Real-time pipelines</h3>
-        <p>Stream events with sub-second freshness. No nightly batch, no stale dashboards — what happens now shows now.</p>
+        <p>Stream events with sub-second freshness. No nightly batch, no stale dashboards: what happens now shows now.</p>
         <span class="mono-tag">latency &lt; 800ms</span>
       </div>
       <div class="cap spot" data-spot>
@@ -749,7 +754,7 @@
     <div class="integ-head" data-reveal>
       <span class="eyebrow center">Integrations</span>
       <h2 class="disp">Connects to the tools you already run on</h2>
-      <p class="lead">Native connectors sync in minutes — no pipeline engineering required.</p>
+      <p class="lead">Native connectors sync in minutes, no pipeline engineering required.</p>
     </div>
     <div class="integ-grid" data-batch>
       <div class="itile spot" data-spot><span class="g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="8" ry="3" stroke="currentColor" stroke-width="2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6" stroke="currentColor" stroke-width="2"/></svg></span><div><div class="nm">Warehouse</div><div class="ct">Snowflake · BigQuery</div></div></div>
@@ -840,7 +845,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.6-5 4.3 1.5 6.5L12 16l-6 3.4L7.5 13l-5-4.3 6.6-.6z"/></svg>
       </span>
-      <blockquote class="disp">"We replaced three tools and a weekly data pull with Atlas. Now our growth, finance, and product teams open the <span class="hl">same dashboard every morning</span> — and the debates about whose number is right just stopped."</blockquote>
+      <blockquote class="disp">"We replaced three tools and a weekly data pull with Atlas. Now our growth, finance, and product teams open the <span class="hl">same dashboard every morning</span>, and the debates about whose number is right just stopped."</blockquote>
       <div class="by">
         <div class="n">Maya Okonkwo</div>
         <div class="r">VP of Growth, Northwind</div>

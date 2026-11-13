@@ -1,77 +1,290 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Brutal — NEXA Theme Preview</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brutal: NEXA Theme Preview (Portfolio / Studio)</title>
+<meta name="description" content="Brutal theme preview: the portfolio of Noor Haddad, still-life photographer and art director.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fbf7ea;--surface:#ffffff;--ink:#0a0a0a;--muted:#555555;--line:#0a0a0a;--primary:#1f44ff;--on-primary:#ffffff;--accent:#ff5c00;--radius:0px;--btn-radius:0px;--card-border:2px solid var(--ink);--card-shadow:6px 6px 0 var(--ink);--fd:'Space Grotesk',serif;--fb:'Space Mono',sans-serif;--dw:700}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
-h1,h2,h3,.logo{font-family:var(--fd);font-weight:var(--dw);line-height:1.08;letter-spacing:-.01em}
-.btn{display:inline-block;padding:13px 26px;border-radius:var(--btn-radius);font-family:var(--fb);font-weight:600;font-size:14px;cursor:pointer;border:none}
-.btn-p{background:var(--primary);color:var(--on-primary)}
-.btn-g{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
-nav{border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:20px 32px}
-.logo{font-size:21px}
-.nav-links{display:flex;gap:26px;font-size:14px;color:var(--muted)}
-.hero{background:var(--bg);padding:84px 0 76px}
-.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-.eyebrow{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:16px}
-.hero h1{font-size:54px;margin-bottom:18px}
-.hero p{font-size:18px;color:var(--muted);max-width:30ch;margin-bottom:26px}
-.hero .cta{display:flex;gap:12px}
-.visual{aspect-ratio:4/3;border-radius:var(--radius);border:var(--card-border);box-shadow:var(--card-shadow);background:linear-gradient(135deg,var(--primary),var(--accent));position:relative;overflow:hidden}
-.visual::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 20%,rgba(255,255,255,.25),transparent 50%)}
-.logos{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0}
-.logos .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px}
-.logos .lg{height:26px;flex:1;max-width:120px;background:var(--ink);opacity:.13;border-radius:4px}
-section.block{padding:78px 0}
-.head{text-align:center;max-width:600px;margin:0 auto 44px}
-.head h2{font-size:34px;margin-bottom:10px}
-.head p{color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.card{background:var(--surface);border:var(--card-border);box-shadow:var(--card-shadow);border-radius:var(--radius);padding:28px}
-.card .ic{width:46px;height:46px;border-radius:calc(var(--radius) * .6);background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-bottom:16px}
-.card h3{font-size:19px;margin-bottom:8px}
-.card p{color:var(--muted);font-size:14.5px}
-.stats{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:50px 32px;text-align:center}
-.stat .v{font-family:var(--fd);font-weight:var(--dw);font-size:38px;color:var(--primary);line-height:1}
-.stat .l{font-size:13px;color:var(--muted);margin-top:6px}
-.quote{text-align:center}
-.quote blockquote{font-family:var(--fd);font-weight:var(--dw);font-size:30px;line-height:1.3;max-width:760px;margin:0 auto 20px}
-.quote cite{color:var(--muted);font-style:normal;font-size:14px}
-.ctaband .wrap{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:var(--radius);padding:56px 32px;text-align:center;color:var(--on-primary)}
-.ctaband h2{font-size:32px;margin-bottom:10px}
-.ctaband p{opacity:.85;margin-bottom:22px}
-.ctaband .btn-p{background:var(--on-primary);color:var(--primary)}
-footer{border-top:1px solid var(--line);padding:36px 0;color:var(--muted);font-size:13px}
-footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
-@media(max-width:840px){.hero .wrap{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.stats .wrap{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:40px}}
-</style></head><body>
-<nav><div class="wrap"><div class="logo">Brutal</div><div class="nav-links"><span>Product</span><span>Pricing</span><span>About</span></div><a class="btn btn-p">Get started</a></div></nav>
-<header class="hero"><div class="wrap"><div>
-  <span class="eyebrow">Portfolio / studio</span>
-  <h1>Design that means business.</h1>
-  <p>A complete look and feel, driven entirely by design tokens. Swap the theme, keep the page.</p>
-  <div class="cta"><a class="btn btn-p">Start free</a><a class="btn btn-g">See a demo</a></div>
-</div><div class="visual"></div></div></header>
-<div class="logos"><div class="wrap"><div class="lg"></div><div class="lg"></div><div class="lg"></div><div class="lg"></div><div class="lg"></div></div></div>
-<section class="block"><div class="wrap"><div class="head"><h2>Everything in one system</h2><p>Colour, type, spacing, radius and shadow — all one set of tokens.</p></div>
-<div class="cards">
-<div class="card"><div class="ic">◆</div><h3>Token-driven</h3><p>Every surface reads from the same variables. Change one, change all.</p></div>
-<div class="card"><div class="ic">★</div><h3>Built to convert</h3><p>Clear hierarchy, strong calls to action, and trust where it matters.</p></div>
-<div class="card"><div class="ic">●</div><h3>Responsive by default</h3><p>Looks right from a phone to a wide desktop, with no extra work.</p></div>
-</div></div></section>
-<div class="stats"><div class="wrap">
-<div class="stat"><div class="v">4.9</div><div class="l">Rating</div></div>
-<div class="stat"><div class="v">120+</div><div class="l">Components</div></div>
-<div class="stat"><div class="v">98%</div><div class="l">Satisfaction</div></div>
-<div class="stat"><div class="v">24/7</div><div class="l">Support</div></div>
-</div></div>
-<section class="block quote"><div class="wrap"><blockquote>"The fastest way we have found to ship an on-brand page that actually converts."</blockquote><cite>Alex Rivera, Head of Growth</cite></div></section>
-<section class="block ctaband"><div class="wrap"><h2>Ready to build?</h2><p>Pick this theme and start in seconds.</p><a class="btn btn-p">Use Brutal</a></div></section>
-<footer><div class="wrap"><span>© 2026 Brutal. A NEXA theme.</span><span>Privacy · Terms</span></div></footer>
+  html { font-synthesis: none; }
+  /* BRUTAL: design tokens (mirror of themes/brutal.json) */
+  :root {
+    --color-bg: 251 247 234;
+    --color-surface: 255 255 255;
+    --color-ink: 10 10 10;
+    --color-muted: 85 85 85;
+    --color-line: 10 10 10;
+    --color-primary: 31 68 255;
+    --color-on-primary: 255 255 255;
+    --color-accent: 255 92 0;
+
+    --font-display: "Archivo Black", "Arial Black", ui-sans-serif, sans-serif;
+    --font-body: "Space Mono", ui-monospace, "SFMono-Regular", monospace;
+
+    --maxw: 1360px;
+    --section: clamp(64px, 8vw, 112px);
+    --gutter: clamp(14px, 3vw, 40px);
+    --border: 2px solid rgb(var(--color-line));
+    --shadow: 6px 6px 0 rgb(var(--color-ink));
+    --ease: steps(4, end);
+    --dur: 120ms;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); font-family: var(--font-body); font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; height: auto; }
+  svg { flex-shrink: 0; }
+  :focus-visible { outline: 3px solid rgb(var(--color-accent)); outline-offset: 2px; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; line-height: .92; letter-spacing: -0.02em; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; border: var(--border); padding: 2px 8px; background: rgb(var(--color-surface)); }
+  .tag.o { background: rgb(var(--color-accent)); }
+  .btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body); font-weight: 700; font-size: 14px; text-transform: uppercase; text-decoration: none; padding: 12px 18px; border: var(--border); background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); box-shadow: var(--shadow); transition: transform var(--dur), box-shadow var(--dur); }
+  .btn:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 rgb(var(--color-ink)); }
+  .btn.w { background: rgb(var(--color-surface)); color: rgb(var(--color-ink)); }
+
+  /* header */
+  .bar { border-bottom: var(--border); background: rgb(var(--color-surface)); }
+  .bar .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; height: 60px; }
+  .bar .name { font-family: var(--font-display); font-size: 18px; text-transform: uppercase; text-decoration: none; }
+  .bar nav { display: flex; gap: 0; height: 100%; }
+  .bar nav a { display: flex; align-items: center; padding: 0 18px; border-left: var(--border); text-decoration: none; font-weight: 700; font-size: 13.5px; text-transform: uppercase; }
+  .bar nav a:last-child { border-right: var(--border); }
+  .bar nav a:hover { background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); }
+  .avail { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
+  .avail i { width: 10px; height: 10px; background: rgb(var(--color-accent)); border: 2px solid rgb(var(--color-ink)); }
+
+  /* hero */
+  .hero { border-bottom: var(--border); }
+  .hero .wrap { padding-block: clamp(28px, 4vw, 48px) clamp(28px, 4vw, 48px); }
+  .hero h1 { font-size: clamp(54px, 13.5vw, 220px); letter-spacing: -0.04em; line-height: .84; overflow-wrap: anywhere; }
+  .hero h1 .o { color: rgb(var(--color-accent)); -webkit-text-stroke: 0; }
+  .hero-row { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 0; margin-top: clamp(24px, 3vw, 40px); border: var(--border); background: rgb(var(--color-surface)); }
+  .hero-row > div { padding: 18px; border-right: var(--border); }
+  .hero-row > div:last-child { border-right: 0; }
+  .hero-row b { display: block; font-size: 12px; text-transform: uppercase; margin-bottom: 6px; color: rgb(var(--color-muted)); }
+  .hero-row p { font-size: 15px; }
+  .hero-row .cta { display: flex; align-items: center; }
+
+  /* index */
+  section.sec { padding: var(--section) 0; border-bottom: var(--border); }
+  .sec-h { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+  .sec-h h2 { font-size: clamp(40px, 7vw, 104px); }
+  .sec-h p { max-width: 42ch; }
+  table.index { width: 100%; border-collapse: collapse; border: var(--border); background: rgb(var(--color-surface)); font-size: 14.5px; }
+  .index th { text-align: left; font-size: 12px; text-transform: uppercase; padding: 10px 14px; border-bottom: var(--border); background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); }
+  .index td { padding: 14px; border-bottom: 1px solid rgb(var(--color-line)); vertical-align: middle; }
+  .index tr:last-child td { border-bottom: 0; }
+  .index tbody tr:hover { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .index td.p { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(16px, 1.6vw, 22px); }
+  .index td.n { width: 56px; font-weight: 700; }
+
+  /* projects */
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+  .proj { border: var(--border); background: rgb(var(--color-surface)); box-shadow: var(--shadow); text-decoration: none; display: flex; flex-direction: column; transition: transform var(--dur), box-shadow var(--dur); }
+  .proj:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 rgb(var(--color-ink)); }
+  .proj img { width: 100%; object-fit: cover; border-bottom: var(--border); }
+  .proj .in { padding: 14px 16px 16px; display: grid; gap: 8px; }
+  .proj h3 { font-size: clamp(22px, 2.2vw, 32px); }
+  .proj p { font-size: 14px; }
+  .proj .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .p1 { grid-column: span 4; } .p1 img { aspect-ratio: 16/10; }
+  .p2 { grid-column: span 2; } .p2 img { aspect-ratio: 4/5; }
+  .p3 { grid-column: span 2; } .p3 img { aspect-ratio: 1/1; }
+  .p4 { grid-column: span 2; } .p4 img { aspect-ratio: 1/1; }
+  .p5 { grid-column: span 2; } .p5 img { aspect-ratio: 1/1; }
+
+  /* about */
+  .about { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .about img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border: var(--border); box-shadow: var(--shadow); filter: grayscale(1) contrast(1.15); }
+  .about h2 { font-size: clamp(36px, 5vw, 72px); margin-bottom: 20px; }
+  .about p { font-size: 16px; margin-bottom: 14px; max-width: 60ch; }
+  .about p strong { background: rgb(var(--color-accent)); padding: 0 4px; font-weight: 700; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); border: var(--border); margin-top: 26px; background: rgb(var(--color-surface)); }
+  .facts div { padding: 14px; border-right: var(--border); }
+  .facts div:last-child { border-right: 0; }
+  .facts b { display: block; font-family: var(--font-display); font-size: clamp(26px, 3vw, 40px); line-height: 1; }
+  .facts span { font-size: 12.5px; text-transform: uppercase; }
+
+  /* rates */
+  .rates { display: grid; grid-template-columns: repeat(3, 1fr); border: var(--border); background: rgb(var(--color-surface)); }
+  .rate { padding: 24px; border-right: var(--border); display: flex; flex-direction: column; gap: 12px; }
+  .rate:last-child { border-right: 0; }
+  .rate svg { width: 34px; height: 34px; }
+  .rate h3 { font-size: 26px; }
+  .rate .pr { font-family: var(--font-display); font-size: 40px; line-height: 1; }
+  .rate .pr small { font-family: var(--font-body); font-size: 13px; text-transform: none; }
+  .rate ul { list-style: none; display: grid; gap: 6px; font-size: 14px; }
+  .rate li::before { content: "+ "; font-weight: 700; color: rgb(var(--color-primary)); }
+  .rate.hl { background: rgb(var(--color-accent)); }
+  .rate.hl li::before { color: rgb(var(--color-ink)); }
+  .note { margin-top: 16px; font-size: 13.5px; }
+
+  /* clients marquee-free list */
+  .clients { display: flex; flex-wrap: wrap; gap: 10px; }
+  .clients span { border: var(--border); padding: 10px 14px; font-family: var(--font-display); text-transform: uppercase; font-size: clamp(16px, 1.8vw, 24px); background: rgb(var(--color-surface)); }
+  .clients span:nth-child(3n) { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+
+  /* contact */
+  .contact { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); border-bottom: var(--border); }
+  .contact .wrap { padding-block: clamp(56px, 8vw, 112px); }
+  .contact h2 { font-size: clamp(44px, 9vw, 150px); }
+  .contact a.mail { display: inline-block; margin-top: 22px; font-family: var(--font-display); font-size: clamp(20px, 3.6vw, 52px); text-transform: lowercase; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; overflow-wrap: anywhere; }
+  .contact a.mail:hover { color: rgb(var(--color-accent)); }
+  .contact .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; border-top: 2px solid rgb(var(--color-on-primary)); padding-top: 18px; font-size: 14px; }
+  .contact .cols b { display: block; text-transform: uppercase; font-size: 12px; }
+  .contact :focus-visible { outline-color: rgb(var(--color-accent)); }
+
+  footer { padding: 22px 0 96px; font-size: 13px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+
+  @media (max-width: 960px) {
+    .bar nav { display: none; }
+    .hero-row { grid-template-columns: 1fr; }
+    .hero-row > div { border-right: 0; border-bottom: var(--border); }
+    .hero-row > div:last-child { border-bottom: 0; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .p1 { grid-column: span 2; } .p2, .p3, .p4, .p5 { grid-column: span 1; }
+    .about { grid-template-columns: 1fr; }
+    .about img { max-width: 420px; }
+    .rates { grid-template-columns: 1fr; }
+    .rate { border-right: 0; border-bottom: var(--border); }
+    .rate:last-child { border-bottom: 0; }
+    .contact .cols { grid-template-columns: 1fr; }
+    .index .hide-m { display: none; }
+  }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    .p1, .p2, .p3, .p4, .p5 { grid-column: span 1; }
+    .facts { grid-template-columns: 1fr; }
+    .facts div { border-right: 0; border-bottom: var(--border); }
+    .facts div:last-child { border-bottom: 0; }
+    .index .hide-s { display: none; }
+    .avail span { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="name" href="#top">Noor Haddad</a>
+    <nav aria-label="Primary"><a href="#index">Index</a><a href="#work">Work</a><a href="#about">About</a><a href="#rates">Rates</a><a href="#contact">Contact</a></nav>
+    <div class="avail"><i aria-hidden="true"></i><span>Free from 12 Jan</span></div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <h1>Still life<br>for things<br>that <span class="o">sell.</span></h1>
+      <div class="hero-row">
+        <div><b>Who</b><p>Noor Haddad. Photographer and art director for ceramics, homeware and food brands.</p></div>
+        <div><b>Where</b><p>Studio 6, Hope Mill, Ancoats, Manchester. Shooting across the UK.</p></div>
+        <div class="cta"><a class="btn" href="#contact">Book a shoot <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="index">
+    <div class="wrap">
+      <div class="sec-h"><h2>Index</h2><p>Every commission since 2021. No NDAs were harmed in the making of this list.</p></div>
+      <table class="index">
+        <thead><tr><th>No.</th><th>Project</th><th class="hide-s">Client</th><th class="hide-m">Type</th><th>Year</th></tr></thead>
+        <tbody>
+          <tr><td class="n">027</td><td class="p">Winter glazes</td><td class="hide-s">Hart Ceramics</td><td class="hide-m">Campaign</td><td>2026</td></tr>
+          <tr><td class="n">026</td><td class="p">The everyday set</td><td class="hide-s">Fenn &amp; Co</td><td class="hide-m">E-commerce, 140 SKUs</td><td>2026</td></tr>
+          <tr><td class="n">025</td><td class="p">Sofa, orange</td><td class="hide-s">Loll Furniture</td><td class="hide-m">Launch</td><td>2025</td></tr>
+          <tr><td class="n">024</td><td class="p">Notes on paper</td><td class="hide-s">Mill Lane Stationers</td><td class="hide-m">Catalogue</td><td>2025</td></tr>
+          <tr><td class="n">023</td><td class="p">Colour cards</td><td class="hide-s">Oakes Paint Co.</td><td class="hide-m">Packaging</td><td>2024</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec" id="work">
+    <div class="wrap">
+      <div class="sec-h"><h2>Selected</h2><a class="btn w" href="#index">Full index</a></div>
+      <div class="grid">
+        <a class="proj p1" href="#"><img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=1300&h=812&q=80&auto=format&fit=crop" alt="An orange sofa with a cushion and throw" width="1300" height="812"><div class="in"><div class="row"><span class="tag o">025</span><span class="tag">Launch</span></div><h3>Sofa, orange</h3><p>Loll's first sofa, shot as a portrait rather than a product. Sold out in 9 days.</p></div></a>
+        <a class="proj p2" href="#"><img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=700&h=875&q=80&auto=format&fit=crop" alt="Grey stoneware vases on a dark plinth" loading="lazy" width="700" height="875"><div class="in"><div class="row"><span class="tag o">027</span><span class="tag">Campaign</span></div><h3>Winter glazes</h3><p>Twelve vases, one light, no retouching of the glaze.</p></div></a>
+        <a class="proj p3" href="#"><img src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=700&h=700&q=80&auto=format&fit=crop" alt="Stacked grey plates on a wooden board" loading="lazy" width="700" height="700"><div class="in"><div class="row"><span class="tag o">026</span></div><h3>Everyday set</h3><p>140 product shots in four days.</p></div></a>
+        <a class="proj p4" href="#"><img src="https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=700&h=700&q=80&auto=format&fit=crop" alt="A blank notebook and pen on white" loading="lazy" width="700" height="700"><div class="in"><div class="row"><span class="tag o">024</span></div><h3>Notes on paper</h3><p>A 64-page catalogue, all shot flat.</p></div></a>
+        <a class="proj p5" href="#"><img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=700&h=700&q=80&auto=format&fit=crop" alt="Paint colour swatches fanned on a desk" loading="lazy" width="700" height="700"><div class="in"><div class="row"><span class="tag o">023</span></div><h3>Colour cards</h3><p>48 colours, 48 tins, one very long week.</p></div></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="about">
+    <div class="wrap about">
+      <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&h=1000&q=80&auto=format&fit=crop" alt="Portrait of Noor Haddad" loading="lazy" width="800" height="1000">
+      <div>
+        <h2>Plain light. Real objects. No fuss.</h2>
+        <p>I spent six years assisting food photographers in London before opening my own studio in Manchester in 2021. I now shoot for about twenty brands a year, most of them small and all of them making something by hand.</p>
+        <p>I work with <strong>one light and real props</strong> wherever possible, because the photo should look like the thing you will unpack. I art direct my own shoots, so there is one person to brief and one person to blame.</p>
+        <div class="facts">
+          <div><b>27</b><span>commissions</span></div>
+          <div><b>3,860</b><span>images delivered</span></div>
+          <div><b>11</b><span>repeat clients</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="rates">
+    <div class="wrap">
+      <div class="sec-h"><h2>Rates</h2><p>Published so we can skip the awkward email. Prices exclude VAT and props.</p></div>
+      <div class="rates">
+        <div class="rate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><rect x="3" y="7" width="18" height="13"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+          <h3>Half day</h3><div class="pr">£380 <small>4 hours</small></div>
+          <ul><li>Up to 12 final images</li><li>One background</li><li>Web-ready files in 3 days</li></ul>
+        </div>
+        <div class="rate hl">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><rect x="3" y="4" width="18" height="16"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="8.5" r="1.5"/></svg>
+          <h3>Full day</h3><div class="pr">£650 <small>8 hours</small></div>
+          <ul><li>Up to 30 final images</li><li>Art direction and styling</li><li>Two rounds of edits</li></ul>
+        </div>
+        <div class="rate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg>
+          <h3>Catalogue</h3><div class="pr">£24 <small>per SKU</small></div>
+          <ul><li>Minimum 40 products</li><li>White or colour background</li><li>Consistent angles across ranges</li></ul>
+        </div>
+      </div>
+      <p class="note">Usage: unlimited online use for 2 years is included. Print and out-of-home are quoted per job.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-h"><h2>Clients</h2></div>
+      <div class="clients">
+        <span>Hart Ceramics</span><span>Fenn &amp; Co</span><span>Loll Furniture</span><span>Mill Lane</span><span>Oakes Paint Co.</span><span>Ostler Gin</span><span>Marlow Coffee</span><span>Kettle &amp; Pike</span><span>Northfold</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <h2>Got a product? Let's shoot it.</h2>
+      <a class="mail" href="#">studio@noorhaddad.co.uk</a>
+      <div class="cols">
+        <div><b>Phone</b>0161 496 0518</div>
+        <div><b>Studio</b>Hope Mill, Pollard Street, Manchester M4 7JA</div>
+        <div><b>Next opening</b>Monday 12 January 2027</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>&copy; 2026 Noor Haddad Studio</span><nav aria-label="Footer"><a href="#">Instagram</a><a href="#">Are.na</a><a href="#">Privacy</a></nav></div>
+</footer>
+
 <a id="nexa-use-theme-btn" href="../../editor.html?theme=brutal&name=Brutal" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
-</body></html>
+</body>
+</html>

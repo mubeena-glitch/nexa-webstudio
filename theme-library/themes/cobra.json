@@ -38,7 +38,7 @@
         "label": 600,
         "bold": 700
       },
-      "displayCase": "uppercase",
+      "displayCase": "upper",
       "displayTracking": "-0.01em"
     },
     "space": {
@@ -56,12 +56,12 @@
     "shadow": {
       "card": "0 1px 2px rgb(0 0 0 / 0.5), 0 12px 28px -14px rgb(0 0 0 / 0.7)",
       "elevated": "0 2px 4px rgb(0 0 0 / 0.6), 0 28px 56px -18px rgb(0 0 0 / 0.85)",
-      "philosophy": "hard"
+      "philosophy": "dramatic"
     },
     "motion": {
       "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
       "duration": "380ms",
-      "character": "aggressive"
+      "character": "energetic"
     },
     "imagery": {
       "treatment": "full-bleed",

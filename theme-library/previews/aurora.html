@@ -1,77 +1,528 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aurora — NEXA Theme Preview</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora: NEXA Theme Preview (SaaS / Product)</title>
+<meta name="description" content="Aurora theme preview: Halden, release management for mobile teams.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0e1a;--surface:#141a2e;--ink:#eaf0ff;--muted:#93a0c0;--line:#283048;--primary:#6d8bff;--on-primary:#08101f;--accent:#28e0c8;--radius:18px;--btn-radius:12px;--card-border:1px solid rgba(255,255,255,.12);--card-shadow:0 24px 60px -30px rgba(0,0,0,.8);--fd:'Sora',serif;--fb:'Inter',sans-serif;--dw:700}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
-h1,h2,h3,.logo{font-family:var(--fd);font-weight:var(--dw);line-height:1.08;letter-spacing:-.01em}
-.btn{display:inline-block;padding:13px 26px;border-radius:var(--btn-radius);font-family:var(--fb);font-weight:600;font-size:14px;cursor:pointer;border:none}
-.btn-p{background:var(--primary);color:var(--on-primary)}
-.btn-g{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
-nav{border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:20px 32px}
-.logo{font-size:21px}
-.nav-links{display:flex;gap:26px;font-size:14px;color:var(--muted)}
-.hero{background:radial-gradient(circle at 25% 15%,rgba(109,139,255,.30),transparent 45%),radial-gradient(circle at 80% 30%,rgba(40,224,200,.20),transparent 45%),#0a0e1a;padding:84px 0 76px}
-.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-.eyebrow{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:16px}
-.hero h1{font-size:54px;margin-bottom:18px}
-.hero p{font-size:18px;color:var(--muted);max-width:30ch;margin-bottom:26px}
-.hero .cta{display:flex;gap:12px}
-.visual{aspect-ratio:4/3;border-radius:var(--radius);border:var(--card-border);box-shadow:var(--card-shadow);background:linear-gradient(135deg,var(--primary),var(--accent));position:relative;overflow:hidden}
-.visual::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 20%,rgba(255,255,255,.25),transparent 50%)}
-.logos{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0}
-.logos .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px}
-.logos .lg{height:26px;flex:1;max-width:120px;background:var(--ink);opacity:.13;border-radius:4px}
-section.block{padding:78px 0}
-.head{text-align:center;max-width:600px;margin:0 auto 44px}
-.head h2{font-size:34px;margin-bottom:10px}
-.head p{color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.card{backdrop-filter:blur(14px);background:rgba(255,255,255,.06);background:var(--surface);border:var(--card-border);box-shadow:var(--card-shadow);border-radius:var(--radius);padding:28px}
-.card .ic{width:46px;height:46px;border-radius:calc(var(--radius) * .6);background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-bottom:16px}
-.card h3{font-size:19px;margin-bottom:8px}
-.card p{color:var(--muted);font-size:14.5px}
-.stats{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:50px 32px;text-align:center}
-.stat .v{font-family:var(--fd);font-weight:var(--dw);font-size:38px;color:var(--primary);line-height:1}
-.stat .l{font-size:13px;color:var(--muted);margin-top:6px}
-.quote{text-align:center}
-.quote blockquote{font-family:var(--fd);font-weight:var(--dw);font-size:30px;line-height:1.3;max-width:760px;margin:0 auto 20px}
-.quote cite{color:var(--muted);font-style:normal;font-size:14px}
-.ctaband .wrap{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:var(--radius);padding:56px 32px;text-align:center;color:var(--on-primary)}
-.ctaband h2{font-size:32px;margin-bottom:10px}
-.ctaband p{opacity:.85;margin-bottom:22px}
-.ctaband .btn-p{background:var(--on-primary);color:var(--primary)}
-footer{border-top:1px solid var(--line);padding:36px 0;color:var(--muted);font-size:13px}
-footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
-@media(max-width:840px){.hero .wrap{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.stats .wrap{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:40px}}
-</style></head><body>
-<nav><div class="wrap"><div class="logo">Aurora</div><div class="nav-links"><span>Product</span><span>Pricing</span><span>About</span></div><a class="btn btn-p">Get started</a></div></nav>
-<header class="hero"><div class="wrap"><div>
-  <span class="eyebrow">SaaS / product</span>
-  <h1>Design that means business.</h1>
-  <p>A complete look and feel, driven entirely by design tokens. Swap the theme, keep the page.</p>
-  <div class="cta"><a class="btn btn-p">Start free</a><a class="btn btn-g">See a demo</a></div>
-</div><div class="visual"></div></div></header>
-<div class="logos"><div class="wrap"><div class="lg"></div><div class="lg"></div><div class="lg"></div><div class="lg"></div><div class="lg"></div></div></div>
-<section class="block"><div class="wrap"><div class="head"><h2>Everything in one system</h2><p>Colour, type, spacing, radius and shadow — all one set of tokens.</p></div>
-<div class="cards">
-<div class="card"><div class="ic">◆</div><h3>Token-driven</h3><p>Every surface reads from the same variables. Change one, change all.</p></div>
-<div class="card"><div class="ic">★</div><h3>Built to convert</h3><p>Clear hierarchy, strong calls to action, and trust where it matters.</p></div>
-<div class="card"><div class="ic">●</div><h3>Responsive by default</h3><p>Looks right from a phone to a wide desktop, with no extra work.</p></div>
-</div></div></section>
-<div class="stats"><div class="wrap">
-<div class="stat"><div class="v">4.9</div><div class="l">Rating</div></div>
-<div class="stat"><div class="v">120+</div><div class="l">Components</div></div>
-<div class="stat"><div class="v">98%</div><div class="l">Satisfaction</div></div>
-<div class="stat"><div class="v">24/7</div><div class="l">Support</div></div>
-</div></div>
-<section class="block quote"><div class="wrap"><blockquote>"The fastest way we have found to ship an on-brand page that actually converts."</blockquote><cite>Alex Rivera, Head of Growth</cite></div></section>
-<section class="block ctaband"><div class="wrap"><h2>Ready to build?</h2><p>Pick this theme and start in seconds.</p><a class="btn btn-p">Use Aurora</a></div></section>
-<footer><div class="wrap"><span>© 2026 Aurora. A NEXA theme.</span><span>Privacy · Terms</span></div></footer>
+  /* AURORA: design tokens (mirror of themes/aurora.json) */
+  :root {
+    --color-bg: 12 17 20;
+    --color-surface: 20 27 31;
+    --color-surface-2: 27 36 41;
+    --color-ink: 232 238 236;
+    --color-muted: 150 165 162;
+    --color-line: 38 48 52;
+    --color-primary: 120 220 190;
+    --color-on-primary: 10 20 18;
+    --color-accent: 120 220 190;
+    --color-warn: 240 190 110;
+
+    --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+
+    --maxw: 1180px;
+    --section: clamp(80px, 10vw, 136px);
+    --gutter: clamp(16px, 5vw, 48px);
+    --radius-card: 14px;
+    --radius-button: 9px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 220ms;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); font-family: var(--font-body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; height: auto; }
+  svg { flex-shrink: 0; }
+  :focus-visible { outline: 2px solid rgb(var(--color-primary)); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.025em; line-height: 1.08; }
+  .kicker { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--color-primary)); }
+  .lead { color: rgb(var(--color-muted)); font-size: clamp(16px, 1.4vw, 18.5px); line-height: 1.65; }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-body); font-weight: 500; font-size: 15px; padding: 12px 20px; border-radius: var(--radius-button); border: 1px solid transparent; cursor: pointer; transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease); white-space: nowrap; }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-primary:hover { background: rgb(var(--color-ink)); }
+  .btn-quiet { border-color: rgb(var(--color-line)); color: rgb(var(--color-ink)); }
+  .btn-quiet:hover { border-color: rgb(var(--color-muted)); }
+
+  /* nav */
+  .nav { position: sticky; top: 0; z-index: 50; background: rgb(var(--color-bg)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 20px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
+  .brand svg { color: rgb(var(--color-primary)); }
+  .nav-links { display: flex; gap: 28px; font-size: 14.5px; color: rgb(var(--color-muted)); }
+  .nav-links a:hover { color: rgb(var(--color-ink)); }
+  .nav-right { display: flex; align-items: center; gap: 18px; font-size: 14.5px; }
+  .nav-right .signin { color: rgb(var(--color-muted)); }
+  .nav-right .btn { padding: 9px 16px; font-size: 14px; }
+
+  /* hero */
+  .hero { padding: clamp(56px, 8vw, 104px) 0 0; }
+  .hero-top { max-width: 760px; }
+  .hero-note { font-size: 14px; color: rgb(var(--color-muted)); margin-bottom: 22px; }
+  .hero-note a { color: rgb(var(--color-primary)); border-bottom: 1px solid rgb(var(--color-primary) / .4); }
+  .hero h1 { font-size: clamp(40px, 6.2vw, 76px); margin-bottom: 22px; }
+  .hero h1 span { color: rgb(var(--color-primary)); }
+  .hero .lead { max-width: 560px; margin-bottom: 32px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .hero-actions .fine { font-size: 13.5px; color: rgb(var(--color-muted)); margin-left: 6px; }
+
+  /* product mock */
+  .app { margin-top: clamp(48px, 7vw, 80px); border: 1px solid rgb(var(--color-line)); border-radius: 16px 16px 0 0; border-bottom: 0; background: rgb(var(--color-surface)); overflow: hidden; }
+  .app-bar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid rgb(var(--color-line)); font-size: 13px; color: rgb(var(--color-muted)); }
+  .app-bar .dots { display: flex; gap: 6px; }
+  .app-bar .dots i { width: 10px; height: 10px; border-radius: 50%; background: rgb(var(--color-line)); }
+  .app-bar .crumb { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .app-bar .crumb b { color: rgb(var(--color-ink)); font-weight: 500; }
+  .app-bar .env { margin-left: auto; font-family: var(--font-mono); font-size: 12px; padding: 3px 9px; border: 1px solid rgb(var(--color-line)); border-radius: 6px; }
+  .app-body { display: grid; grid-template-columns: 210px 1fr; min-height: 420px; }
+  .app-side { border-right: 1px solid rgb(var(--color-line)); padding: 16px 12px; font-size: 13.5px; }
+  .app-side .grp { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: rgb(var(--color-muted)); padding: 10px 10px 6px; }
+  .app-side a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; color: rgb(var(--color-muted)); }
+  .app-side a.on { background: rgb(var(--color-surface-2)); color: rgb(var(--color-ink)); }
+  .app-side a .n { margin-left: auto; font-family: var(--font-mono); font-size: 11.5px; }
+  .app-main { padding: 22px 24px; min-width: 0; }
+  .rel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .rel-head h3 { font-size: 20px; letter-spacing: -0.02em; }
+  .rel-head .sub { font-size: 13px; color: rgb(var(--color-muted)); margin-top: 4px; }
+  .status { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; padding: 5px 10px; border-radius: 6px; background: rgb(var(--color-primary) / .12); color: rgb(var(--color-primary)); }
+  .status i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  .kpi { border: 1px solid rgb(var(--color-line)); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+  .kpi .l { font-size: 12px; color: rgb(var(--color-muted)); }
+  .kpi .v { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .kpi .d { font-family: var(--font-mono); font-size: 11.5px; color: rgb(var(--color-primary)); }
+  .kpi .d.w { color: rgb(var(--color-warn)); }
+  .rollout { border: 1px solid rgb(var(--color-line)); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .rollout .top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 10px; gap: 12px; }
+  .rollout .top span:last-child { color: rgb(var(--color-muted)); }
+  .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .steps div { height: 8px; border-radius: 3px; background: rgb(var(--color-line)); }
+  .steps div.done { background: rgb(var(--color-primary)); }
+  .steps div.now { background: linear-gradient(90deg, rgb(var(--color-primary)) 60%, rgb(var(--color-line)) 60%); }
+  .steps-l { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 7px; font-family: var(--font-mono); font-size: 11px; color: rgb(var(--color-muted)); }
+  table.builds { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.builds th { text-align: left; font-weight: 500; font-size: 12px; color: rgb(var(--color-muted)); padding: 8px 10px; border-bottom: 1px solid rgb(var(--color-line)); }
+  table.builds td { padding: 10px; border-bottom: 1px solid rgb(var(--color-line) / .6); white-space: nowrap; }
+  table.builds td.m { font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-muted)); }
+  .tag { font-size: 11.5px; padding: 2px 8px; border-radius: 5px; border: 1px solid rgb(var(--color-line)); color: rgb(var(--color-muted)); }
+  .tag.ok { color: rgb(var(--color-primary)); border-color: rgb(var(--color-primary) / .35); }
+  .tag.hold { color: rgb(var(--color-warn)); border-color: rgb(var(--color-warn) / .35); }
+  .tbl-scroll { overflow-x: auto; }
+
+  /* logos */
+  .logos { border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); padding: 30px 0; }
+  .logos .wrap { display: flex; align-items: center; gap: 20px 44px; flex-wrap: wrap; justify-content: space-between; }
+  .logos p { font-size: 13.5px; color: rgb(var(--color-muted)); max-width: 220px; }
+  .logos .row { display: flex; gap: 20px 40px; flex-wrap: wrap; align-items: center; color: rgb(var(--color-muted)); }
+  .wm { font-size: 19px; letter-spacing: -0.02em; font-weight: 600; opacity: .85; }
+  .wm.a { font-family: var(--font-mono); font-weight: 500; font-size: 16px; letter-spacing: .02em; }
+  .wm.b { font-style: italic; font-weight: 500; }
+  .wm.c { text-transform: uppercase; letter-spacing: .14em; font-size: 14px; }
+  .wm.d { font-weight: 700; letter-spacing: -0.04em; }
+
+  section.sec { padding: var(--section) 0; }
+  .sec-head { max-width: 620px; margin-bottom: clamp(36px, 5vw, 56px); }
+  .sec-head h2 { font-size: clamp(30px, 4vw, 46px); margin: 14px 0 14px; }
+
+  /* features */
+  .feats { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); overflow: hidden; }
+  .feat { padding: 30px 28px; border-right: 1px solid rgb(var(--color-line)); }
+  .feat:last-child { border-right: 0; }
+  .feat svg { color: rgb(var(--color-primary)); margin-bottom: 20px; }
+  .feat h3 { font-size: 19px; margin-bottom: 10px; letter-spacing: -0.015em; }
+  .feat p { color: rgb(var(--color-muted)); font-size: 15px; }
+
+  /* split */
+  .split { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .split h2 { font-size: clamp(28px, 3.6vw, 42px); margin: 14px 0 16px; }
+  .checks { list-style: none; margin-top: 26px; display: grid; gap: 14px; }
+  .checks li { display: flex; gap: 12px; font-size: 15.5px; }
+  .checks svg { color: rgb(var(--color-primary)); margin-top: 3px; }
+  .panel { background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); padding: 22px; min-width: 0; }
+  .panel-h { display: flex; justify-content: space-between; font-size: 13.5px; color: rgb(var(--color-muted)); margin-bottom: 16px; gap: 12px; }
+  .panel-h b { color: rgb(var(--color-ink)); font-weight: 500; }
+  .chart { display: flex; align-items: flex-end; gap: 6px; height: 160px; border-bottom: 1px solid rgb(var(--color-line)); padding-bottom: 2px; }
+  .chart i { flex: 1; background: rgb(var(--color-primary) / .22); border-radius: 3px 3px 0 0; }
+  .chart i.hi { background: rgb(var(--color-primary)); }
+  .chart-l { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: rgb(var(--color-muted)); margin-top: 8px; }
+  .gate { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid rgb(var(--color-line)); font-size: 14px; }
+  .gate:first-of-type { margin-top: 18px; }
+  .gate .m { font-family: var(--font-mono); font-size: 12.5px; color: rgb(var(--color-muted)); text-align: right; }
+
+  /* steps */
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+  .flow li { list-style: none; border-top: 1px solid rgb(var(--color-line)); padding-top: 20px; }
+  .flow .n { font-family: var(--font-mono); font-size: 12px; color: rgb(var(--color-primary)); }
+  .flow h3 { font-size: 18px; margin: 10px 0 8px; letter-spacing: -0.015em; }
+  .flow p { color: rgb(var(--color-muted)); font-size: 14.5px; }
+
+  /* numbers */
+  .numbers { background: rgb(var(--color-surface)); border-top: 1px solid rgb(var(--color-line)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .numbers .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-block: clamp(44px, 6vw, 64px); }
+  .num .v { font-size: clamp(32px, 4vw, 46px); font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .num .l { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 4px; max-width: 22ch; }
+
+  /* testimonial */
+  .quote { display: grid; grid-template-columns: 300px 1fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+  .quote img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: var(--radius-card); filter: saturate(.85); }
+  .quote blockquote { font-size: clamp(22px, 2.6vw, 31px); line-height: 1.35; letter-spacing: -0.02em; font-weight: 500; }
+  .quote .who { margin-top: 24px; font-size: 15px; }
+  .quote .who span { color: rgb(var(--color-muted)); display: block; font-size: 14px; }
+
+  /* pricing */
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tier { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); padding: 28px; display: flex; flex-direction: column; }
+  .tier.pick { border-color: rgb(var(--color-primary) / .6); background: rgb(var(--color-surface)); }
+  .tier .nm { font-weight: 600; font-size: 17px; display: flex; justify-content: space-between; align-items: center; }
+  .tier .nm small { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: rgb(var(--color-primary)); }
+  .tier .pr { font-size: 40px; font-weight: 600; letter-spacing: -0.03em; margin: 16px 0 4px; }
+  .tier .pr span { font-size: 14px; color: rgb(var(--color-muted)); font-weight: 400; letter-spacing: 0; }
+  .tier .ds { color: rgb(var(--color-muted)); font-size: 14.5px; margin-bottom: 20px; }
+  .tier ul { list-style: none; display: grid; gap: 10px; font-size: 14.5px; margin-bottom: 26px; }
+  .tier li { display: flex; gap: 10px; }
+  .tier li svg { color: rgb(var(--color-primary)); margin-top: 4px; }
+  .tier .btn { margin-top: auto; justify-content: center; }
+
+  /* faq */
+  .faq { display: grid; grid-template-columns: 1fr 1.6fr; gap: clamp(28px, 6vw, 80px); }
+  .faq h2 { font-size: clamp(28px, 3.4vw, 40px); margin-top: 14px; }
+  details { border-top: 1px solid rgb(var(--color-line)); padding: 18px 0; }
+  details:last-child { border-bottom: 1px solid rgb(var(--color-line)); }
+  summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; font-weight: 500; font-size: 16.5px; }
+  summary::-webkit-details-marker { display: none; }
+  summary svg { color: rgb(var(--color-muted)); transition: transform var(--dur) var(--ease); margin-top: 4px; }
+  details[open] summary svg { transform: rotate(45deg); }
+  details p { color: rgb(var(--color-muted)); margin-top: 10px; font-size: 15px; max-width: 60ch; }
+
+  /* cta */
+  .cta { border: 1px solid rgb(var(--color-line)); border-radius: 18px; padding: clamp(28px, 6vw, 64px); display: flex; justify-content: space-between; align-items: center; gap: 28px; flex-wrap: wrap; background: rgb(var(--color-surface)); }
+  .cta h2 { font-size: clamp(28px, 3.6vw, 42px); max-width: 16ch; }
+  .cta p { color: rgb(var(--color-muted)); margin-top: 10px; }
+
+  footer { border-top: 1px solid rgb(var(--color-line)); padding: 56px 0 96px; margin-top: var(--section); }
+  .foot { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; }
+  .foot p { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 12px; max-width: 30ch; }
+  .foot h4 { font-size: 13px; font-weight: 500; color: rgb(var(--color-muted)); margin-bottom: 14px; }
+  .foot ul { list-style: none; display: grid; gap: 9px; font-size: 14.5px; }
+  .foot ul a:hover { color: rgb(var(--color-primary)); }
+  .legal { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 48px; padding-top: 22px; border-top: 1px solid rgb(var(--color-line)); font-size: 13px; color: rgb(var(--color-muted)); }
+
+  @media (max-width: 980px) {
+    .app-body { grid-template-columns: 1fr; }
+    .app-side { display: none; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .feats { grid-template-columns: 1fr; }
+    .feat { border-right: 0; border-bottom: 1px solid rgb(var(--color-line)); }
+    .feat:last-child { border-bottom: 0; }
+    .split, .faq { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: repeat(2, 1fr); }
+    .numbers .wrap { grid-template-columns: repeat(2, 1fr); }
+    .tiers { grid-template-columns: 1fr; }
+    .quote { grid-template-columns: 1fr; }
+    .quote img { max-width: 260px; }
+    .foot { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    .nav-links, .nav-right .signin { display: none; }
+    .flow { grid-template-columns: 1fr; }
+    .app-main { padding: 16px; }
+    .hide-s { display: none; }
+    .kpi .v { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Halden home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M20 20V4"/><path d="M4 12h16"/><path d="M12 12v8"/></svg>
+      Halden
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#product">Product</a>
+      <a href="#rollouts">Rollouts</a>
+      <a href="#customers">Customers</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">Docs</a>
+    </nav>
+    <div class="nav-right">
+      <a class="signin" href="#">Sign in</a>
+      <a class="btn btn-primary" href="#start">Start free</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-top">
+        <p class="hero-note">Halden 3.2 adds rollback by device model. <a href="#rollouts">Read the release notes</a></p>
+        <h1>Ship mobile releases <span>without the 2am rollback.</span></h1>
+        <p class="lead">Halden plans, stages and watches every iOS and Android release, so your team sees a crash spike at 1% of users, not 100%.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#start">Start a 21-day trial</a>
+          <a class="btn btn-quiet" href="#product">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z"/></svg>
+            Watch the 4-minute tour
+          </a>
+          <span class="fine">No card needed</span>
+        </div>
+      </div>
+
+      <div class="app" id="product" role="img" aria-label="Halden release dashboard showing version 8.14.0 rolling out to 25 percent of users">
+        <div class="app-bar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="crumb">Fernway Bank / iOS / <b>Release 8.14.0</b></div>
+          <div class="env">production</div>
+        </div>
+        <div class="app-body">
+          <aside class="app-side">
+            <div class="grp">Workspace</div>
+            <a class="on" href="#"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Releases<span class="n">3</span></a>
+            <a href="#"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 19l5-6 4 3 7-9"/></svg>Health<span class="n">2</span></a>
+            <a href="#"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>Calendar</a>
+            <a href="#"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg>Feature flags<span class="n">41</span></a>
+            <div class="grp">Apps</div>
+            <a href="#"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/></svg>Fernway iOS</a>
+            <a href="#"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/></svg>Fernway Android</a>
+            <a href="#"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>Fernway Business</a>
+          </aside>
+          <div class="app-main">
+            <div class="rel-head">
+              <div>
+                <h3>8.14.0 (build 2291)</h3>
+                <div class="sub">Started Tue 11 Nov, 09:40 by Priya Raman</div>
+              </div>
+              <span class="status"><i></i>Rolling out, healthy</span>
+            </div>
+            <div class="kpis">
+              <div class="kpi"><div class="l">Crash-free sessions</div><div class="v">99.87%</div><div class="d">+0.06 vs 8.13.2</div></div>
+              <div class="kpi"><div class="l">Users on release</div><div class="v">184,312</div><div class="d">25% of base</div></div>
+              <div class="kpi"><div class="l">ANR rate</div><div class="v">0.11%</div><div class="d">within budget</div></div>
+              <div class="kpi"><div class="l">Store rating, 24h</div><div class="v">4.6</div><div class="d w">2 reviews flagged</div></div>
+            </div>
+            <div class="rollout">
+              <div class="top"><span>Staged rollout</span><span class="mono">next step in 5h 12m</span></div>
+              <div class="steps"><div class="done"></div><div class="done"></div><div class="now"></div><div></div><div></div></div>
+              <div class="steps-l"><span>1%</span><span>5%</span><span>25%</span><span>50%</span><span>100%</span></div>
+            </div>
+            <div class="tbl-scroll">
+              <table class="builds">
+                <thead><tr><th>Check</th><th>Owner</th><th class="hide-s">Window</th><th>Result</th></tr></thead>
+                <tbody>
+                  <tr><td>Crash rate under 0.2%</td><td>Halden</td><td class="m hide-s">last 6h</td><td><span class="tag ok">Passed</span></td></tr>
+                  <tr><td>Login funnel holds</td><td>Tom Okafor</td><td class="m hide-s">last 6h</td><td><span class="tag ok">Passed</span></td></tr>
+                  <tr><td>iPhone XR cold start</td><td>Halden</td><td class="m hide-s">last 2h</td><td><span class="tag hold">Watching</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="logos" id="customers">
+    <div class="wrap">
+      <p>Release teams at 312 companies ship with Halden every week.</p>
+      <div class="row">
+        <span class="wm">Fernway</span>
+        <span class="wm a">tallow/</span>
+        <span class="wm b">Brightside</span>
+        <span class="wm c">Orrin Health</span>
+        <span class="wm d">kitepay</span>
+        <span class="wm">Moorgate</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">Why teams switch</span>
+        <h2>One calm place for everything between merge and the App Store.</h2>
+        <p class="lead">Most release pain is coordination, not code. Halden replaces the spreadsheet, the Slack thread and the person who remembers the checklist.</p>
+      </div>
+      <div class="feats">
+        <div class="feat">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7.5 14h3M7.5 17.5h6"/></svg>
+          <h3>Release trains</h3>
+          <p>Set a cadence once. Halden cuts the branch, freezes scope on Thursday and tells the right people what is still open.</p>
+        </div>
+        <div class="feat">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/></svg>
+          <h3>Health gates</h3>
+          <p>Each rollout step waits for crash, ANR and funnel checks to pass. If they fail, the rollout pauses itself and pages the owner.</p>
+        </div>
+        <div class="feat">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14l-5-5 5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg>
+          <h3>Targeted rollback</h3>
+          <p>Pull a release from one device model, OS version or country while everyone else keeps the update. No emergency rebuild.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="rollouts" style="padding-top:0">
+    <div class="wrap split">
+      <div>
+        <span class="kicker">Staged rollouts</span>
+        <h2>Know a release is safe before most people ever see it.</h2>
+        <p class="lead">Halden reads crash and performance data from the stores and your observability tools, then compares each cohort with the last stable build.</p>
+        <ul class="checks">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Works with App Store Connect, Google Play, Firebase and Sentry</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Budgets per app, so a banking app and a game can hold different bars</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>A plain-English summary posted to your release channel at every step</li>
+        </ul>
+      </div>
+      <div class="panel" aria-label="Crash-free sessions by hour">
+        <div class="panel-h"><span><b>Crash-free sessions</b>, 8.14.0 vs 8.13.2</span><span class="mono">48h</span></div>
+        <div class="chart" aria-hidden="true">
+          <i style="height:62%"></i><i style="height:66%"></i><i style="height:64%"></i><i style="height:71%"></i><i style="height:69%"></i><i style="height:74%"></i><i style="height:72%"></i><i style="height:78%"></i><i style="height:76%"></i><i style="height:81%"></i><i style="height:79%"></i><i style="height:83%"></i><i class="hi" style="height:86%"></i><i class="hi" style="height:84%"></i><i class="hi" style="height:88%"></i><i class="hi" style="height:91%"></i>
+        </div>
+        <div class="chart-l"><span>Mon 10 Nov</span><span>Tue 11 Nov</span><span>Now</span></div>
+        <div class="gate"><span>Gate: 1% to 5%</span><span class="m">passed after 6h</span></div>
+        <div class="gate"><span>Gate: 5% to 25%</span><span class="m">passed after 12h</span></div>
+        <div class="gate"><span>Gate: 25% to 50%</span><span class="m">opens Thu 13 Nov, 14:52</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">How it works</span>
+        <h2>Set up in an afternoon, not a quarter.</h2>
+      </div>
+      <ol class="flow">
+        <li><span class="n">01</span><h3>Connect your stores</h3><p>Sign in with App Store Connect and Google Play. Halden imports the last 20 releases to learn your normal.</p></li>
+        <li><span class="n">02</span><h3>Pick your gates</h3><p>Start with our defaults for crash rate, ANRs and reviews, then add your own funnel checks.</p></li>
+        <li><span class="n">03</span><h3>Invite the people</h3><p>Engineering, QA and product each get the view they need, and nobody has to chase a status update.</p></li>
+        <li><span class="n">04</span><h3>Ship the next one</h3><p>Your first managed rollout usually goes out within the week. Most teams never go back.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="numbers">
+    <div class="wrap">
+      <div class="num"><div class="v">41,806</div><div class="l">releases shipped through Halden this year</div></div>
+      <div class="num"><div class="v">73%</div><div class="l">fewer full rollbacks in a team's first six months</div></div>
+      <div class="num"><div class="v">6.4h</div><div class="l">median time saved per release by release managers</div></div>
+      <div class="num"><div class="v">SOC 2</div><div class="l">Type II audited, with EU data residency</div></div>
+    </div>
+  </div>
+
+  <section class="sec">
+    <div class="wrap quote">
+      <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=700&h=875&q=80&auto=format&fit=crop" alt="Portrait of Dana Whitfield" loading="lazy" width="300" height="375">
+      <div>
+        <blockquote>"We used to hold our breath every Thursday. Now the 1% cohort tells us what is wrong before support does, and we roll back one phone model instead of the whole app."</blockquote>
+        <div class="who">Dana Whitfield<span>Director of Mobile Engineering, Fernway Bank</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="pricing" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">Pricing</span>
+        <h2>Priced per app, not per seat.</h2>
+        <p class="lead">Invite your whole team. You only pay for the apps you ship.</p>
+      </div>
+      <div class="tiers">
+        <div class="tier">
+          <div class="nm">Starter</div>
+          <div class="pr">£0<span> per app</span></div>
+          <p class="ds">For one app and a small team getting organised.</p>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Release calendar and checklists</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Manual staged rollouts</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Slack updates</li>
+          </ul>
+          <a class="btn btn-quiet" href="#start">Start free</a>
+        </div>
+        <div class="tier pick">
+          <div class="nm">Team <small>Most teams</small></div>
+          <div class="pr">£340<span> per app, monthly</span></div>
+          <p class="ds">Automated gates for apps with real users and real stakes.</p>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Health gates and auto-pause</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Targeted rollback by device or region</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sentry, Firebase and Datadog</li>
+          </ul>
+          <a class="btn btn-primary" href="#start">Start a 21-day trial</a>
+        </div>
+        <div class="tier">
+          <div class="nm">Enterprise</div>
+          <div class="pr">Custom</div>
+          <p class="ds">For regulated industries and portfolios of 10 or more apps.</p>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>SSO, audit log and approvals</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>EU or UK data residency</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Named release engineer</li>
+          </ul>
+          <a class="btn btn-quiet" href="#start">Talk to sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="faq" style="padding-top:0">
+    <div class="wrap faq">
+      <div>
+        <span class="kicker">Questions</span>
+        <h2>The things release managers ask first.</h2>
+      </div>
+      <div>
+        <details open><summary>Does Halden need access to our source code?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>No. Halden works from store metadata, build artefacts and the monitoring tools you connect. It never reads your repository.</p></details>
+        <details><summary>What happens if a health gate fails at night?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>The rollout pauses at its current percentage and the on-call owner is paged through PagerDuty or Opsgenie. Nothing expands until a person says so.</p></details>
+        <details><summary>Can we use it for React Native and Flutter apps?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Yes. Halden manages releases at the store level, so any framework that ships to the App Store or Google Play is supported.</p></details>
+        <details><summary>How long does migration from a spreadsheet take?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Most teams import their checklist and calendar in under an hour. We will do it for you on the Team plan.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="wrap">
+      <div class="cta">
+        <div>
+          <h2>Make next Thursday a quiet one.</h2>
+          <p>21 days free on the Team plan. Set-up help included.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#">Start your trial</a>
+          <a class="btn btn-quiet" href="#">Book a 30-minute demo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#top"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 20V4"/><path d="M20 20V4"/><path d="M4 12h16"/><path d="M12 12v8"/></svg>Halden</a>
+        <p>Release management for mobile teams. Built in Leeds and Lisbon.</p>
+      </div>
+      <div><h4>Product</h4><ul><li><a href="#">Release trains</a></li><li><a href="#">Health gates</a></li><li><a href="#">Rollback</a></li><li><a href="#">Changelog</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Careers</a></li><li><a href="#">Security</a></li><li><a href="#">Contact</a></li></ul></div>
+      <div><h4>Resources</h4><ul><li><a href="#">Docs</a></li><li><a href="#">API reference</a></li><li><a href="#">Status</a></li><li><a href="#">Release guide</a></li></ul></div>
+    </div>
+    <div class="legal"><span>&copy; 2026 Halden Software Ltd. Registered in England, no. 13940217.</span><span><a href="#">Privacy</a> &middot; <a href="#">Terms</a> &middot; <a href="#">Cookies</a></span></div>
+  </div>
+</footer>
+
 <a id="nexa-use-theme-btn" href="../../editor.html?theme=aurora&name=Aurora" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
-</body></html>
+</body>
+</html>

@@ -1,77 +1,461 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Flux — NEXA Theme Preview</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flux: NEXA Theme Preview (Gaming / Nightlife)</title>
+<meta name="description" content="Flux theme preview: Pressure Room, a gaming lounge and late-night venue in Manchester.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#08070f;--surface:#14101f;--ink:#f0e9ff;--muted:#9a8fc0;--line:#2a2440;--primary:#c026ff;--on-primary:#0a0612;--accent:#2ee6ff;--radius:14px;--btn-radius:10px;--card-border:1px solid var(--line);--card-shadow:0 0 28px -6px rgba(192,38,255,.5);--fd:'Space Grotesk',serif;--fb:'Inter',sans-serif;--dw:700}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
-h1,h2,h3,.logo{font-family:var(--fd);font-weight:var(--dw);line-height:1.08;letter-spacing:-.01em}
-.btn{display:inline-block;padding:13px 26px;border-radius:var(--btn-radius);font-family:var(--fb);font-weight:600;font-size:14px;cursor:pointer;border:none}
-.btn-p{background:var(--primary);color:var(--on-primary)}
-.btn-g{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
-nav{border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:20px 32px}
-.logo{font-size:21px}
-.nav-links{display:flex;gap:26px;font-size:14px;color:var(--muted)}
-.hero{background:radial-gradient(circle at 20% 10%,rgba(192,38,255,.28),transparent 45%),radial-gradient(circle at 85% 25%,rgba(46,230,255,.18),transparent 45%),#08070f;padding:84px 0 76px}
-.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-.eyebrow{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:16px}
-.hero h1{font-size:54px;margin-bottom:18px}
-.hero p{font-size:18px;color:var(--muted);max-width:30ch;margin-bottom:26px}
-.hero .cta{display:flex;gap:12px}
-.visual{aspect-ratio:4/3;border-radius:var(--radius);border:var(--card-border);box-shadow:var(--card-shadow);background:linear-gradient(135deg,var(--primary),var(--accent));position:relative;overflow:hidden}
-.visual::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 20%,rgba(255,255,255,.25),transparent 50%)}
-.logos{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0}
-.logos .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px}
-.logos .lg{height:26px;flex:1;max-width:120px;background:var(--ink);opacity:.13;border-radius:4px}
-section.block{padding:78px 0}
-.head{text-align:center;max-width:600px;margin:0 auto 44px}
-.head h2{font-size:34px;margin-bottom:10px}
-.head p{color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.card{background:var(--surface);border:var(--card-border);box-shadow:var(--card-shadow);border-radius:var(--radius);padding:28px}
-.card .ic{width:46px;height:46px;border-radius:calc(var(--radius) * .6);background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-bottom:16px}
-.card h3{font-size:19px;margin-bottom:8px}
-.card p{color:var(--muted);font-size:14.5px}
-.stats{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:50px 32px;text-align:center}
-.stat .v{font-family:var(--fd);font-weight:var(--dw);font-size:38px;color:var(--primary);line-height:1}
-.stat .l{font-size:13px;color:var(--muted);margin-top:6px}
-.quote{text-align:center}
-.quote blockquote{font-family:var(--fd);font-weight:var(--dw);font-size:30px;line-height:1.3;max-width:760px;margin:0 auto 20px}
-.quote cite{color:var(--muted);font-style:normal;font-size:14px}
-.ctaband .wrap{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:var(--radius);padding:56px 32px;text-align:center;color:var(--on-primary)}
-.ctaband h2{font-size:32px;margin-bottom:10px}
-.ctaband p{opacity:.85;margin-bottom:22px}
-.ctaband .btn-p{background:var(--on-primary);color:var(--primary)}
-footer{border-top:1px solid var(--line);padding:36px 0;color:var(--muted);font-size:13px}
-footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
-@media(max-width:840px){.hero .wrap{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.stats .wrap{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:40px}}
-</style></head><body>
-<nav><div class="wrap"><div class="logo">Flux</div><div class="nav-links"><span>Product</span><span>Pricing</span><span>About</span></div><a class="btn btn-p">Get started</a></div></nav>
-<header class="hero"><div class="wrap"><div>
-  <span class="eyebrow">Gaming / nightlife</span>
-  <h1>Design that means business.</h1>
-  <p>A complete look and feel, driven entirely by design tokens. Swap the theme, keep the page.</p>
-  <div class="cta"><a class="btn btn-p">Start free</a><a class="btn btn-g">See a demo</a></div>
-</div><div class="visual"></div></div></header>
-<div class="logos"><div class="wrap"><div class="lg"></div><div class="lg"></div><div class="lg"></div><div class="lg"></div><div class="lg"></div></div></div>
-<section class="block"><div class="wrap"><div class="head"><h2>Everything in one system</h2><p>Colour, type, spacing, radius and shadow — all one set of tokens.</p></div>
-<div class="cards">
-<div class="card"><div class="ic">◆</div><h3>Token-driven</h3><p>Every surface reads from the same variables. Change one, change all.</p></div>
-<div class="card"><div class="ic">★</div><h3>Built to convert</h3><p>Clear hierarchy, strong calls to action, and trust where it matters.</p></div>
-<div class="card"><div class="ic">●</div><h3>Responsive by default</h3><p>Looks right from a phone to a wide desktop, with no extra work.</p></div>
-</div></div></section>
-<div class="stats"><div class="wrap">
-<div class="stat"><div class="v">4.9</div><div class="l">Rating</div></div>
-<div class="stat"><div class="v">120+</div><div class="l">Components</div></div>
-<div class="stat"><div class="v">98%</div><div class="l">Satisfaction</div></div>
-<div class="stat"><div class="v">24/7</div><div class="l">Support</div></div>
-</div></div>
-<section class="block quote"><div class="wrap"><blockquote>"The fastest way we have found to ship an on-brand page that actually converts."</blockquote><cite>Alex Rivera, Head of Growth</cite></div></section>
-<section class="block ctaband"><div class="wrap"><h2>Ready to build?</h2><p>Pick this theme and start in seconds.</p><a class="btn btn-p">Use Flux</a></div></section>
-<footer><div class="wrap"><span>© 2026 Flux. A NEXA theme.</span><span>Privacy · Terms</span></div></footer>
+  /* FLUX: design tokens (mirror of themes/flux.json) */
+  :root {
+    --color-bg: 13 11 16;
+    --color-surface: 24 20 29;
+    --color-surface-2: 33 28 40;
+    --color-ink: 244 238 246;
+    --color-muted: 165 152 176;
+    --color-line: 48 40 58;
+    --color-primary: 255 77 109;
+    --color-on-primary: 20 6 10;
+    --color-accent: 255 196 61;
+
+    --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+    --maxw: 1240px;
+    --section: clamp(72px, 9vw, 128px);
+    --gutter: clamp(16px, 4.5vw, 48px);
+    --radius-card: 6px;
+    --radius-button: 4px;
+    --ease: cubic-bezier(0.2, 0.9, 0.3, 1);
+    --dur: 180ms;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: rgb(var(--color-bg)); color: rgb(var(--color-ink)); font-family: var(--font-body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; height: auto; }
+  svg { flex-shrink: 0; }
+  :focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 3px; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+  .label { font-family: var(--font-body); font-weight: 800; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--color-accent)); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 800; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; padding: 14px 22px; border-radius: var(--radius-button); border: 2px solid transparent; cursor: pointer; transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease); white-space: nowrap; }
+  .btn-primary { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .btn-primary:hover { background: rgb(var(--color-accent)); transform: translateY(-2px); }
+  .btn-line { border-color: rgb(var(--color-ink)); color: rgb(var(--color-ink)); }
+  .btn-line:hover { background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); }
+  .btn-sm { padding: 9px 14px; font-size: 12px; }
+
+  /* top strip */
+  .strip { background: rgb(var(--color-accent)); color: rgb(var(--color-on-primary)); font-weight: 700; font-size: 13px; }
+  .strip .wrap { display: flex; justify-content: space-between; gap: 16px; padding-block: 8px; flex-wrap: wrap; }
+
+  /* nav */
+  .nav { position: sticky; top: 0; z-index: 50; background: rgb(var(--color-bg)); border-bottom: 1px solid rgb(var(--color-line)); }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 20px; }
+  .logo { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -0.03em; text-transform: uppercase; line-height: .95; }
+  .logo span { color: rgb(var(--color-primary)); }
+  .nav-links { display: flex; gap: 30px; font-weight: 700; font-size: 14px; }
+  .nav-links a { padding-block: 6px; border-bottom: 2px solid transparent; }
+  .nav-links a:hover { border-color: rgb(var(--color-primary)); }
+
+  /* hero */
+  .hero { position: relative; border-bottom: 1px solid rgb(var(--color-line)); }
+  .hero-grid { display: grid; grid-template-columns: 1.25fr .75fr; min-height: 640px; }
+  .hero-media { position: relative; overflow: hidden; }
+  .hero-media img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(var(--color-bg) / .94) 0%, rgb(var(--color-bg) / .6) 45%, rgb(var(--color-bg) / .1) 100%); }
+  .hero-copy { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 clamp(16px, 4.5vw, 48px) clamp(32px, 5vw, 56px); }
+  .hero h1 { font-size: clamp(40px, 7vw, 104px); text-transform: uppercase; letter-spacing: -0.035em; margin: 14px 0 20px; }
+  .hero h1 em { font-style: normal; color: rgb(var(--color-primary)); }
+  .hero-copy p { font-size: clamp(16px, 1.4vw, 19px); max-width: 520px; color: rgb(var(--color-ink) / .86); margin-bottom: 26px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .tonight { background: rgb(var(--color-surface)); border-left: 1px solid rgb(var(--color-line)); padding: clamp(24px, 3vw, 36px); display: flex; flex-direction: column; }
+  .tonight h2 { font-size: 22px; text-transform: uppercase; margin: 8px 0 22px; }
+  .slot { display: grid; grid-template-columns: 64px 1fr; gap: 14px; padding: 16px 0; border-top: 1px solid rgb(var(--color-line)); }
+  .slot .t { font-family: var(--font-display); font-weight: 600; font-size: 15px; color: rgb(var(--color-accent)); }
+  .slot b { display: block; font-size: 16px; font-weight: 800; }
+  .slot span { font-size: 14px; color: rgb(var(--color-muted)); }
+  .cap { margin-top: auto; padding-top: 20px; border-top: 1px solid rgb(var(--color-line)); font-size: 14px; }
+  .meter { height: 6px; background: rgb(var(--color-line)); border-radius: 3px; margin: 10px 0 6px; overflow: hidden; }
+  .meter i { display: block; height: 100%; width: 78%; background: rgb(var(--color-primary)); }
+  .cap small { color: rgb(var(--color-muted)); font-size: 13px; }
+
+  /* marquee-ish ticker (static) */
+  .ticker { border-bottom: 1px solid rgb(var(--color-line)); overflow: hidden; }
+  .ticker .row { display: flex; gap: 40px; padding: 18px 0; white-space: nowrap; font-family: var(--font-display); font-weight: 700; font-size: 18px; text-transform: uppercase; color: rgb(var(--color-muted)); width: max-content; animation: tick 40s linear infinite; }
+  .ticker .row span::after { content: "/"; margin-left: 40px; color: rgb(var(--color-primary)); }
+  @keyframes tick { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ticker .row { animation: none; } }
+
+  section.sec { padding: var(--section) 0; }
+  .sec-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 36px; }
+  .sec-head h2 { font-size: clamp(30px, 4.6vw, 60px); text-transform: uppercase; margin-top: 12px; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filters button { font: 700 13px var(--font-body); color: rgb(var(--color-muted)); background: none; border: 1px solid rgb(var(--color-line)); padding: 8px 14px; border-radius: var(--radius-button); cursor: pointer; }
+  .filters button.on { background: rgb(var(--color-ink)); color: rgb(var(--color-bg)); border-color: rgb(var(--color-ink)); }
+
+  /* listings */
+  .listings { border-top: 2px solid rgb(var(--color-ink)); }
+  .ev { display: grid; grid-template-columns: 110px 120px 1fr 150px 130px; gap: 24px; align-items: center; padding: 20px 0; border-bottom: 1px solid rgb(var(--color-line)); transition: background var(--dur) var(--ease); }
+  .ev:hover { background: rgb(var(--color-surface)); }
+  .ev .date { font-family: var(--font-display); line-height: 1; }
+  .ev .date b { display: block; font-size: 34px; font-weight: 700; }
+  .ev .date span { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: rgb(var(--color-muted)); font-family: var(--font-body); font-weight: 700; }
+  .ev img { width: 120px; height: 80px; object-fit: cover; border-radius: var(--radius-card); }
+  .ev h3 { font-size: 20px; text-transform: uppercase; letter-spacing: -0.01em; }
+  .ev p { font-size: 14px; color: rgb(var(--color-muted)); margin-top: 4px; }
+  .ev .genre { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: rgb(var(--color-accent)); margin-bottom: 6px; }
+  .ev .price { font-weight: 800; font-size: 15px; }
+  .ev .price small { display: block; font-weight: 600; font-size: 12.5px; color: rgb(var(--color-muted)); }
+  .ev .price .low { color: rgb(var(--color-primary)); }
+
+  /* lounge */
+  .lounge { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
+  .lounge-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lounge-imgs img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: var(--radius-card); }
+  .lounge-imgs img:first-child { grid-column: span 2; aspect-ratio: 16/9; }
+  .lounge h2 { font-size: clamp(30px, 4.2vw, 54px); text-transform: uppercase; margin: 12px 0 18px; }
+  .lounge > div > p { color: rgb(var(--color-muted)); font-size: 17px; max-width: 46ch; }
+  .bays { margin-top: 28px; border-top: 1px solid rgb(var(--color-line)); }
+  .bay { display: flex; gap: 16px; align-items: flex-start; padding: 18px 0; border-bottom: 1px solid rgb(var(--color-line)); }
+  .bay svg { color: rgb(var(--color-primary)); margin-top: 2px; }
+  .bay b { display: block; font-size: 16px; }
+  .bay span { font-size: 14.5px; color: rgb(var(--color-muted)); }
+  .bay .pr { margin-left: auto; font-weight: 800; white-space: nowrap; }
+
+  /* tournament */
+  .cup { background: rgb(var(--color-primary)); color: rgb(var(--color-on-primary)); }
+  .cup .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(28px, 5vw, 64px); padding-block: clamp(56px, 8vw, 104px); }
+  .cup .label { color: rgb(var(--color-on-primary)); }
+  .cup h2 { font-size: clamp(34px, 5.6vw, 78px); text-transform: uppercase; margin: 14px 0 18px; letter-spacing: -0.035em; }
+  .cup p { font-size: 17px; max-width: 46ch; margin-bottom: 26px; font-weight: 500; }
+  .cup .btn-dark { background: rgb(var(--color-on-primary)); color: rgb(var(--color-ink)); }
+  .cup .btn-dark:hover { background: rgb(var(--color-accent)); color: rgb(var(--color-on-primary)); }
+  .facts { display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid rgb(var(--color-on-primary)); }
+  .fact { padding: 20px 0; border-bottom: 1px solid rgb(var(--color-on-primary) / .3); }
+  .fact:nth-child(odd) { padding-right: 16px; }
+  .fact b { display: block; font-family: var(--font-display); font-size: clamp(26px, 3vw, 38px); font-weight: 700; letter-spacing: -0.03em; }
+  .fact span { font-size: 14px; font-weight: 600; }
+
+  /* spaces */
+  .spaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .space { background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); overflow: hidden; display: flex; flex-direction: column; }
+  .space img { width: 100%; aspect-ratio: 3/2; object-fit: cover; }
+  .space .in { padding: 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .space h3 { font-size: 19px; text-transform: uppercase; }
+  .space p { color: rgb(var(--color-muted)); font-size: 14.5px; }
+  .space .meta { display: flex; gap: 18px; font-size: 13px; font-weight: 700; margin-top: auto; padding-top: 12px; }
+  .space .meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* membership */
+  .members { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tier { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); padding: 28px; display: flex; flex-direction: column; }
+  .tier.hot { border: 2px solid rgb(var(--color-accent)); }
+  .tier .nm { font-family: var(--font-display); font-weight: 700; font-size: 20px; text-transform: uppercase; }
+  .tier .pr { font-family: var(--font-display); font-size: 42px; font-weight: 700; letter-spacing: -0.04em; margin: 14px 0 2px; }
+  .tier .pr small { font-family: var(--font-body); font-size: 14px; font-weight: 600; color: rgb(var(--color-muted)); letter-spacing: 0; }
+  .tier ul { list-style: none; margin: 18px 0 26px; display: grid; gap: 10px; font-size: 14.5px; }
+  .tier li { display: flex; gap: 10px; }
+  .tier li svg { color: rgb(var(--color-accent)); margin-top: 4px; }
+  .tier .btn { margin-top: auto; }
+
+  /* visit */
+  .visit { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .vbox { border: 1px solid rgb(var(--color-line)); border-radius: var(--radius-card); padding: clamp(22px, 3vw, 36px); }
+  .vbox h3 { font-size: 22px; text-transform: uppercase; margin-bottom: 18px; }
+  .hours { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .hours td { padding: 10px 0; border-bottom: 1px solid rgb(var(--color-line)); }
+  .hours td:last-child { text-align: right; font-weight: 700; }
+  .addr { display: grid; gap: 14px; font-size: 15px; }
+  .addr div { display: flex; gap: 12px; }
+  .addr svg { color: rgb(var(--color-primary)); margin-top: 3px; }
+  .addr span { color: rgb(var(--color-muted)); }
+  .notice { margin-top: 22px; font-size: 13.5px; color: rgb(var(--color-muted)); border-left: 2px solid rgb(var(--color-accent)); padding-left: 12px; }
+
+  footer { border-top: 1px solid rgb(var(--color-line)); padding: 56px 0 100px; }
+  .foot { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 32px; }
+  .foot .logo { font-size: 28px; }
+  .foot p { color: rgb(var(--color-muted)); font-size: 14px; margin-top: 14px; max-width: 32ch; }
+  .foot h4 { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--color-muted)); margin-bottom: 14px; }
+  .foot ul { list-style: none; display: grid; gap: 9px; font-size: 15px; font-weight: 600; }
+  .foot ul a:hover { color: rgb(var(--color-primary)); }
+  .signup { display: flex; gap: 8px; margin-top: 18px; max-width: 360px; }
+  .signup input { flex: 1; min-width: 0; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-line)); color: rgb(var(--color-ink)); padding: 11px 12px; border-radius: var(--radius-button); font: 500 14px var(--font-body); }
+  .signup input:focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 1px; }
+  .legal { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 44px; padding-top: 20px; border-top: 1px solid rgb(var(--color-line)); font-size: 13px; color: rgb(var(--color-muted)); }
+
+  @media (max-width: 1020px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-media { min-height: 560px; }
+    .tonight { border-left: 0; border-top: 1px solid rgb(var(--color-line)); }
+    .ev { grid-template-columns: 90px 1fr 120px; }
+    .ev img, .ev .price { display: none; }
+    .lounge, .cup .wrap, .visit { grid-template-columns: 1fr; }
+    .spaces, .members { grid-template-columns: 1fr; }
+    .foot { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    .nav-links { display: none; }
+    .strip .hide-s { display: none; }
+    .ev { grid-template-columns: 64px 1fr; gap: 16px; }
+    .ev .date b { font-size: 26px; }
+    .ev .act { grid-column: 2; }
+    .bay { flex-wrap: wrap; }
+    .bay .pr { margin-left: 40px; }
+    .foot { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="strip"><div class="wrap"><span>Friday 14 Nov: Kessler All Night Long is down to the last 61 tickets</span><span class="hide-s">Open till 4am, Thursday to Saturday</span></div></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Pressure Room home">Pressure<br><span>Room</span></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#listings">What's on</a>
+      <a href="#lounge">Gaming lounge</a>
+      <a href="#cup">Tournaments</a>
+      <a href="#hire">Private hire</a>
+      <a href="#visit">Visit</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#listings">Get tickets</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-media">
+        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&h=1100&q=80&auto=format&fit=crop" alt="Crowd under stage lights on the Pressure Room main floor" width="1600" height="1100">
+        <div class="hero-copy">
+          <span class="label">Deansgate, Manchester</span>
+          <h1>Play late.<br>Dance <em>later.</em></h1>
+          <p>A 48-bay gaming lounge by day and a 900-capacity club by night, under the railway arches off Deansgate.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#listings">See this week</a>
+            <a class="btn btn-line" href="#lounge">Book a gaming bay</a>
+          </div>
+        </div>
+      </div>
+      <aside class="tonight" aria-labelledby="tonight-h">
+        <span class="label">Tonight, Thu 13 Nov</span>
+        <h2 id="tonight-h">Running order</h2>
+        <div class="slot"><span class="t">17:00</span><div><b>Lounge open</b><span>Walk-in bays from £9 an hour</span></div></div>
+        <div class="slot"><span class="t">19:30</span><div><b>Street Fighter 6 weekly</b><span>32 players, £6 entry, cash pot</span></div></div>
+        <div class="slot"><span class="t">22:00</span><div><b>Halfstep: garage and bassline</b><span>Room 1, doors 22:00</span></div></div>
+        <div class="slot"><span class="t">01:00</span><div><b>Lyla Brennan, closing set</b><span>Room 1 until 04:00</span></div></div>
+        <div class="cap">
+          Room 1 capacity tonight
+          <div class="meter"><i></i></div>
+          <small>702 of 900 tickets sold</small>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="row">
+      <span>Garage</span><span>Bassline</span><span>Fighting games</span><span>Techno</span><span>Mario Kart Mondays</span><span>Disco edits</span><span>Rocket League</span><span>Jungle</span>
+      <span>Garage</span><span>Bassline</span><span>Fighting games</span><span>Techno</span><span>Mario Kart Mondays</span><span>Disco edits</span><span>Rocket League</span><span>Jungle</span>
+    </div>
+  </div>
+
+  <section class="sec" id="listings">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="label">Listings</span><h2>This week</h2></div>
+        <div class="filters" role="group" aria-label="Filter listings">
+          <button class="on" type="button">All</button><button type="button">Club nights</button><button type="button">Gaming</button><button type="button">Live</button>
+        </div>
+      </div>
+      <div class="listings">
+        <article class="ev">
+          <div class="date"><b>14</b><span>Fri Nov</span></div>
+          <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=200&q=75&auto=format&fit=crop" alt="DJ at the decks" loading="lazy" width="120" height="80">
+          <div><span class="genre">Techno</span><h3>Kessler all night long</h3><p>Room 1, 22:00 to 04:00. Eight hours, one booth, no support.</p></div>
+          <div class="price"><span class="low">61 left</span><small>from £18.50</small></div>
+          <div class="act"><a class="btn btn-primary btn-sm" href="#">Tickets</a></div>
+        </article>
+        <article class="ev">
+          <div class="date"><b>15</b><span>Sat Nov</span></div>
+          <img src="https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=300&h=200&q=75&auto=format&fit=crop" alt="Dancers in a dark club" loading="lazy" width="120" height="80">
+          <div><span class="genre">Disco and house</span><h3>Second Hand Sound</h3><p>Both rooms, 21:00 to 04:00. Record-bag selectors and a horn section at midnight.</p></div>
+          <div class="price">On sale<small>from £14</small></div>
+          <div class="act"><a class="btn btn-primary btn-sm" href="#">Tickets</a></div>
+        </article>
+        <article class="ev">
+          <div class="date"><b>17</b><span>Mon Nov</span></div>
+          <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=300&h=200&q=75&auto=format&fit=crop" alt="Two players holding game controllers" loading="lazy" width="120" height="80">
+          <div><span class="genre">Gaming</span><h3>Mario Kart Mondays</h3><p>Lounge, 19:00. Teams of four, 150cc, loser buys the next round.</p></div>
+          <div class="price">Free entry<small>bay booking advised</small></div>
+          <div class="act"><a class="btn btn-line btn-sm" href="#">Book a bay</a></div>
+        </article>
+        <article class="ev">
+          <div class="date"><b>19</b><span>Wed Nov</span></div>
+          <img src="https://images.unsplash.com/photo-1598387993441-a364f854c3e1?w=300&h=200&q=75&auto=format&fit=crop" alt="Guitarist performing on stage" loading="lazy" width="120" height="80">
+          <div><span class="genre">Live</span><h3>Tin Fortune + Ostro</h3><p>Room 2, doors 19:30. Two Salford bands, one very loud evening.</p></div>
+          <div class="price">On sale<small>£12 advance</small></div>
+          <div class="act"><a class="btn btn-primary btn-sm" href="#">Tickets</a></div>
+        </article>
+        <article class="ev">
+          <div class="date"><b>21</b><span>Fri Nov</span></div>
+          <img src="https://images.unsplash.com/photo-1545128485-c400e7702796?w=300&h=200&q=75&auto=format&fit=crop" alt="Crowd under red light" loading="lazy" width="120" height="80">
+          <div><span class="genre">Jungle</span><h3>Rinse Out: 30 years of 140</h3><p>Room 1, 22:00 to 04:00. Five selectors, all vinyl, all night.</p></div>
+          <div class="price"><span class="low">Final release</span><small>£22</small></div>
+          <div class="act"><a class="btn btn-primary btn-sm" href="#">Tickets</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="lounge" style="padding-top:0">
+    <div class="wrap lounge">
+      <div class="lounge-imgs">
+        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1200&h=675&q=80&auto=format&fit=crop" alt="Row of gaming screens in the lounge" loading="lazy" width="1200" height="675">
+        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=750&q=80&auto=format&fit=crop" alt="Player at a PC gaming station" loading="lazy" width="600" height="750">
+        <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&h=750&q=80&auto=format&fit=crop" alt="Backlit mechanical keyboard" loading="lazy" width="600" height="750">
+      </div>
+      <div>
+        <span class="label">The lounge</span>
+        <h2>48 bays. Proper chairs. Food to your screen.</h2>
+        <p>Book a bay for an hour or block out the night. Every bay has a 240Hz screen, wired internet and a menu QR code, so the pizza finds you.</p>
+        <div class="bays">
+          <div class="bay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg><div><b>PC bays</b><span>RTX 4080, 32 installed titles</span></div><span class="pr">£11/hr</span></div>
+          <div class="bay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9h12a3 3 0 013 3v2a3 3 0 01-5.2 2L14 14h-4l-1.8 2A3 3 0 013 14v-2a3 3 0 013-3z"/><path d="M8 11v2M7 12h2M15.5 12h.01M17.5 12h.01"/></svg><div><b>Console sofas</b><span>PS5, Switch and Xbox, seats four</span></div><span class="pr">£9/hr</span></div>
+          <div class="bay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg><div><b>The Booth</b><span>Private room, 8 seats, own bar</span></div><span class="pr">£95/2hr</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cup" id="cup">
+    <div class="wrap">
+      <div>
+        <span class="label">Pressure Cup, season 4</span>
+        <h2>Winter Major. Saturday 6 December.</h2>
+        <p>Street Fighter 6 and Tekken 8, double elimination, top 8 on the big screen in Room 1 with commentary from the Arches Fight Club crew.</p>
+        <a class="btn btn-dark" href="#">Register to compete</a>
+      </div>
+      <div class="facts">
+        <div class="fact"><b>£2,750</b><span>prize pool, paid to top 8</span></div>
+        <div class="fact"><b>128</b><span>player cap per game</span></div>
+        <div class="fact"><b>£15</b><span>entry, spectators £5</span></div>
+        <div class="fact"><b>11:00</b><span>check-in closes</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="hire">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="label">Private hire</span><h2>Take over a room</h2></div>
+        <a class="btn btn-line btn-sm" href="#">Download the hire pack</a>
+      </div>
+      <div class="spaces">
+        <article class="space">
+          <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800&h=533&q=80&auto=format&fit=crop" alt="Room 1 with stage lighting" loading="lazy" width="800" height="533">
+          <div class="in"><h3>Room 1</h3><p>The main arch. Funktion-One rig, LED wall and a stage that takes a five-piece band.</p><div class="meta"><span>900 standing</span><span>from £3,400</span></div></div>
+        </article>
+        <article class="space">
+          <img src="https://images.unsplash.com/photo-1438557068880-c5f474830377?w=800&h=533&q=80&auto=format&fit=crop" alt="Friends raising glasses at the bar" loading="lazy" width="800" height="533">
+          <div class="in"><h3>The Long Bar</h3><p>Forty metres of zinc and a cocktail list built around Manchester distillers.</p><div class="meta"><span>220 standing</span><span>from £1,150</span></div></div>
+        </article>
+        <article class="space">
+          <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=533&q=80&auto=format&fit=crop" alt="Players in the gaming lounge" loading="lazy" width="800" height="533">
+          <div class="in"><h3>Lounge buyout</h3><p>All 48 bays for team socials, launches and leagues, with a host to run the brackets.</p><div class="meta"><span>96 seated</span><span>from £1,890</span></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><div><span class="label">Membership</span><h2>Skip the queue</h2></div></div>
+      <div class="members">
+        <div class="tier">
+          <div class="nm">Regular</div>
+          <div class="pr">£0<small> forever</small></div>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Presale access 24 hours early</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Bay booking up to 7 days ahead</li>
+          </ul>
+          <a class="btn btn-line" href="#">Join free</a>
+        </div>
+        <div class="tier hot">
+          <div class="nm">Player</div>
+          <div class="pr">£12<small> a month</small></div>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>10 lounge hours every month</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Free entry to weekly tournaments</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Fast lane before midnight</li>
+          </ul>
+          <a class="btn btn-primary" href="#">Become a Player</a>
+        </div>
+        <div class="tier">
+          <div class="nm">Night Owl</div>
+          <div class="pr">£29<small> a month</small></div>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Two club entries a month</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Plus-one on members' nights</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Everything in Player</li>
+          </ul>
+          <a class="btn btn-line" href="#">Go Night Owl</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="visit" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><div><span class="label">Visit</span><h2>Find the arches</h2></div></div>
+      <div class="visit">
+        <div class="vbox">
+          <h3>Opening hours</h3>
+          <table class="hours">
+            <tr><td>Monday to Wednesday</td><td>16:00 to 00:00</td></tr>
+            <tr><td>Thursday</td><td>16:00 to 04:00</td></tr>
+            <tr><td>Friday and Saturday</td><td>12:00 to 04:00</td></tr>
+            <tr><td>Sunday</td><td>12:00 to 22:00</td></tr>
+          </table>
+          <p class="notice">Over 18s after 20:00. Bring photo ID, every time.</p>
+        </div>
+        <div class="vbox">
+          <h3>Getting here</h3>
+          <div class="addr">
+            <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><p>Arches 14 to 17, Whitworth Street West<br><span>Manchester M1 5WW</span></p></div>
+            <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M8 21l2-4M16 21l-2-4"/></svg><p>Deansgate station, 3 minutes<br><span>Metrolink and rail</span></p></div>
+            <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><p>Step-free access to both rooms<br><span>Access line: 0161 496 0732</span></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="#top">Pressure<br><span>Room</span></a>
+        <p>Get the weekly listings and presale codes on a Monday.</p>
+        <form class="signup" onsubmit="return false"><label for="em" class="sr" style="position:absolute;left:-9999px">Email address</label><input id="em" type="email" placeholder="you@email.com"><button class="btn btn-primary btn-sm" type="submit">Sign up</button></form>
+      </div>
+      <div><h4>Go out</h4><ul><li><a href="#listings">What's on</a></li><li><a href="#cup">Tournaments</a></li><li><a href="#">Gift cards</a></li></ul></div>
+      <div><h4>Plan</h4><ul><li><a href="#hire">Private hire</a></li><li><a href="#visit">Access</a></li><li><a href="#">Safer spaces</a></li></ul></div>
+      <div><h4>Follow</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">Twitch</a></li><li><a href="#">Resident Advisor</a></li></ul></div>
+    </div>
+    <div class="legal"><span>&copy; 2026 Pressure Room Ltd. Premises licence MCC/PL/04418.</span><span><a href="#">Privacy</a> &middot; <a href="#">Terms</a></span></div>
+  </div>
+</footer>
+
 <a id="nexa-use-theme-btn" href="../../editor.html?theme=flux&name=Flux" style="position:fixed;left:20px;bottom:20px;z-index:2147483647;display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:999px;background:#9354FF;color:#fff;font:600 14px/1 system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:none;box-shadow:0 10px 30px -8px rgba(147,84,255,.65);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Use this theme &#8594;</a><script>if(window.self!==window.top){var _b=document.getElementById('nexa-use-theme-btn');if(_b)_b.remove();}</script>
-</body></html>
+</body>
+</html>

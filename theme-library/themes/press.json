@@ -7,7 +7,9 @@
     "retro",
     "print",
     "editorial",
-    "bold-serif"
+    "bold-serif",
+    "listings",
+    "events"
   ],
   "mode": "light",
   "tokens": {
@@ -23,60 +25,61 @@
       "accent2": "43 95 163"
     },
     "type": {
-      "display": "'DM Serif Display', serif",
-      "body": "'Space Mono', sans-serif",
-      "scaleRatio": 1.28,
+      "display": "'DM Serif Display', ui-serif, Georgia, serif",
+      "body": "'Space Mono', ui-monospace, 'SFMono-Regular', monospace",
+      "scaleRatio": 1.414,
       "weights": {
         "display": 400,
-        "displayBold": 700,
+        "displayBold": 400,
         "body": 400,
-        "label": 500,
-        "bold": 600
+        "label": 700,
+        "bold": 700
       },
       "displayCase": "none",
       "displayTracking": "-0.01em"
     },
     "space": {
       "base": 8,
-      "section": "clamp(72px,9vw,120px)",
-      "gutter": "clamp(20px,5vw,48px)",
-      "density": "balanced"
+      "section": "clamp(64px, 8vw, 112px)",
+      "gutter": "clamp(16px, 4vw, 48px)",
+      "density": "dense"
     },
     "radius": {
       "card": "4px",
       "button": "2px",
       "input": "2px",
-      "pill": "999px"
+      "pill": "2px"
     },
     "shadow": {
-      "card": "4px 4px 0 var(--accent)",
-      "elevated": "4px 4px 0 var(--accent)",
-      "philosophy": "soft"
+      "card": "4px 4px 0 rgb(43 95 163)",
+      "elevated": "6px 6px 0 rgb(26 26 26)",
+      "philosophy": "dramatic"
     },
     "motion": {
-      "ease": "cubic-bezier(0.22,1,0.36,1)",
-      "duration": "500ms",
-      "character": "smooth"
+      "ease": "cubic-bezier(0.3, 1, 0.4, 1)",
+      "duration": "160ms",
+      "character": "snappy"
     },
     "imagery": {
-      "treatment": "full-bleed",
+      "treatment": "framed",
       "ratio": "4:3",
-      "filter": "none"
+      "filter": "grayscale for portraits"
     }
   },
   "recipes": {
-    "button": "solid",
-    "card": "bordered",
-    "nav": "split"
+    "button": "solid-offset",
+    "card": "bordered-offset",
+    "nav": "masthead"
   },
   "preferredLayouts": {
-    "hero": "split-visual",
-    "trusted": "logo-strip",
-    "features": "card-grid",
-    "stats": "band",
-    "cta": "gradient-band"
+    "hero": "cover-story-split",
+    "listings": "day-columns",
+    "features": "ticketed-cards",
+    "picks": "lead-plus-list",
+    "stats": "none",
+    "cta": "subscription-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap"
+    "https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
   ]
 }

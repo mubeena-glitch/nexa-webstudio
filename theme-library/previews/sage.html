@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sage — NEXA Theme Preview (Therapy &amp; Mental Wellness)</title>
+<title>Sage: NEXA Theme Preview (Therapy &amp; Mental Wellness)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Mulish:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400;1,7..72,500&family=Mulish:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
      SAGE — design tokens (1:1 mirror of theme.json -> CSS vars)
@@ -24,7 +24,7 @@
     --color-accent: 106 138 110;
     --color-accent2: 176 142 104;
 
-    --font-display: "Fraunces", ui-serif, Georgia, serif;
+    --font-display: "Literata", ui-serif, Georgia, serif;
     --font-body: "Mulish", ui-sans-serif, system-ui, sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, monospace;
     --display-tracking: -0.01em;
@@ -293,6 +293,11 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
   }
+
+  /* announcement line: plain text, no pill */
+  .hero-pill { background: none !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .hero-pill .tag { background: none !important; padding: 0 6px 0 0 !important; border: 0 !important; border-radius: 0 !important; font-weight: 700; }
+  .hero-pill .dot, .hero-pill::before { display: none !important; }
 </style>
 </head>
 <body>

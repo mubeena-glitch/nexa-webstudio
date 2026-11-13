@@ -38,7 +38,7 @@
         "label": 600,
         "bold": 700
       },
-      "displayCase": "uppercase",
+      "displayCase": "upper",
       "displayTracking": "-0.01em"
     },
     "space": {
@@ -56,12 +56,12 @@
     "shadow": {
       "card": "0 1px 2px rgb(0 0 0 / 0.5), 0 12px 30px -16px rgb(0 0 0 / 0.65)",
       "elevated": "0 2px 6px rgb(0 0 0 / 0.55), 0 30px 60px -22px rgb(0 0 0 / 0.78)",
-      "philosophy": "hard"
+      "philosophy": "dramatic"
     },
     "motion": {
       "ease": "cubic-bezier(0.65, 0, 0.35, 1)",
       "duration": "400ms",
-      "character": "mechanical"
+      "character": "snappy"
     },
     "imagery": {
       "treatment": "framed",

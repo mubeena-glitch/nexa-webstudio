@@ -4,79 +4,85 @@
   "family": "modern",
   "sector": "SaaS / product",
   "tags": [
-    "glassmorphism",
     "dark",
-    "gradient",
-    "modern"
+    "product",
+    "saas",
+    "calm",
+    "mint",
+    "ui-mock"
   ],
   "mode": "dark",
   "tokens": {
     "color": {
-      "bg": "10 14 26",
-      "surface": "20 26 46",
-      "ink": "234 240 255",
-      "muted": "147 160 192",
-      "line": "40 48 72",
-      "primary": "109 139 255",
-      "onPrimary": "8 16 31",
-      "accent": "40 224 200",
-      "accent2": "40 224 200"
+      "bg": "12 17 20",
+      "surface": "20 27 31",
+      "ink": "232 238 236",
+      "muted": "150 165 162",
+      "line": "38 48 52",
+      "primary": "120 220 190",
+      "onPrimary": "10 20 18",
+      "accent": "120 220 190",
+      "accent2": "240 190 110"
     },
     "type": {
-      "display": "'Sora', serif",
-      "body": "'Inter', sans-serif",
-      "scaleRatio": 1.28,
+      "display": "'Geist', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Geist', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Geist Mono', ui-monospace, 'SFMono-Regular', monospace",
+      "scaleRatio": 1.25,
       "weights": {
-        "display": 700,
+        "display": 600,
         "displayBold": 700,
         "body": 400,
         "label": 500,
         "bold": 600
       },
       "displayCase": "none",
-      "displayTracking": "-0.01em"
+      "displayTracking": "-0.025em"
     },
     "space": {
       "base": 8,
-      "section": "clamp(72px,9vw,120px)",
-      "gutter": "clamp(20px,5vw,48px)",
+      "section": "clamp(80px, 10vw, 136px)",
+      "gutter": "clamp(16px, 5vw, 48px)",
       "density": "balanced"
     },
     "radius": {
-      "card": "18px",
-      "button": "12px",
-      "input": "12px",
+      "card": "14px",
+      "button": "9px",
+      "input": "9px",
       "pill": "999px"
     },
     "shadow": {
-      "card": "0 24px 60px -30px rgba(0,0,0,.8)",
-      "elevated": "0 24px 60px -30px rgba(0,0,0,.8)",
-      "philosophy": "glow"
+      "card": "0 0 0 1px rgb(38 48 52)",
+      "elevated": "0 24px 48px -32px rgb(0 0 0 / 0.7)",
+      "philosophy": "hairline"
     },
     "motion": {
-      "ease": "cubic-bezier(0.22,1,0.36,1)",
-      "duration": "500ms",
-      "character": "smooth"
+      "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration": "220ms",
+      "character": "calm"
     },
     "imagery": {
-      "treatment": "full-bleed",
-      "ratio": "4:3",
-      "filter": "none"
+      "treatment": "rounded",
+      "ratio": "4:5",
+      "filter": "saturate(0.85)"
     }
   },
   "recipes": {
     "button": "solid",
-    "card": "bordered",
+    "card": "hairline",
     "nav": "split"
   },
   "preferredLayouts": {
-    "hero": "split-visual",
-    "trusted": "logo-strip",
-    "features": "card-grid",
+    "hero": "statement-with-product-ui",
+    "trusted": "wordmark-row",
+    "features": "divided-trio",
     "stats": "band",
-    "cta": "gradient-band"
+    "testimonial": "portrait-quote",
+    "pricing": "three-tier",
+    "faq": "accordion-split",
+    "cta": "boxed-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Inter:wght@400;500;600&display=swap"
+    "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
   ]
 }

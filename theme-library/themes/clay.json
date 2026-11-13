@@ -27,7 +27,7 @@
       "accent2": "124 132 96"
     },
     "type": {
-      "display": "'Fraunces', ui-serif, Georgia, serif",
+      "display": "'Young Serif', ui-serif, Georgia, serif",
       "body": "'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif",
       "mono": "'Spline Sans Mono', ui-monospace, monospace",
       "scaleRatio": 1.26,
@@ -61,10 +61,10 @@
     "motion": {
       "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
       "duration": "520ms",
-      "character": "gentle"
+      "character": "calm"
     },
     "imagery": {
-      "treatment": "framed-warm",
+      "treatment": "framed",
       "ratio": "4:5",
       "filter": "warm"
     }
@@ -88,6 +88,6 @@
     "cta": "soft-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap"
+    "https://fonts.googleapis.com/css2?family=Young+Serif&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap"
   ]
 }

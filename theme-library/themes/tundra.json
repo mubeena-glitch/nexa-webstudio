@@ -28,7 +28,7 @@
     },
     "type": {
       "display": "'Archivo', ui-sans-serif, system-ui, sans-serif",
-      "body": "'Inter', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Work Sans', ui-sans-serif, system-ui, sans-serif",
       "mono": "'Spline Sans Mono', ui-monospace, monospace",
       "scaleRatio": 1.28,
       "weights": {
@@ -56,7 +56,7 @@
     "shadow": {
       "card": "0 1px 2px rgb(28 33 33 / 0.05), 0 10px 26px -14px rgb(28 33 33 / 0.2)",
       "elevated": "0 2px 5px rgb(28 33 33 / 0.06), 0 26px 52px -18px rgb(28 33 33 / 0.3)",
-      "philosophy": "crisp"
+      "philosophy": "hairline"
     },
     "motion": {
       "ease": "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -88,6 +88,6 @@
     "cta": "expedition-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap"
+    "https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Archivo:wght@500;600;700;800&family=Spline+Sans+Mono:wght@400;500&display=swap"
   ]
 }

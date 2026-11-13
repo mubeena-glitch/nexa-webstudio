@@ -85,6 +85,7 @@
     "footer": "multi-column-newsletter"
   },
   "fontLinks": [
-    "https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&f[]=general-sans@400,500,600&display=swap"
+    "https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&display=swap",
+    "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
   ]
 }

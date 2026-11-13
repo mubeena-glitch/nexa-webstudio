@@ -27,9 +27,9 @@
       "accent2": "120 118 112"
     },
     "type": {
-      "display": "'Fraunces', 'Times New Roman', Georgia, serif",
-      "body": "'Inter Tight', ui-sans-serif, system-ui, sans-serif",
-      "mono": "'Inter Tight', ui-sans-serif, system-ui, sans-serif",
+      "display": "'Fraunces', ui-sans-serif, system-ui, sans-serif",
+      "body": "'Instrument Sans', ui-sans-serif, system-ui, sans-serif",
+      "mono": "'Instrument Sans', ui-sans-serif, system-ui, sans-serif",
       "scaleRatio": 1.33,
       "weights": {
         "display": 400,
@@ -56,12 +56,12 @@
     "shadow": {
       "card": "0 1px 2px rgb(0 0 0 / 0.4), 0 18px 48px -24px rgb(0 0 0 / 0.7)",
       "elevated": "0 2px 4px rgb(0 0 0 / 0.5), 0 36px 80px -28px rgb(0 0 0 / 0.85)",
-      "philosophy": "deep"
+      "philosophy": "dramatic"
     },
     "motion": {
       "ease": "cubic-bezier(0.16, 1, 0.3, 1)",
       "duration": "640ms",
-      "character": "editorial"
+      "character": "calm"
     },
     "imagery": {
       "treatment": "full-bleed",
@@ -87,7 +87,6 @@
     "cta": "full-bleed-image-band"
   },
   "fontLinks": [
-    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap",
-    "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap"
+    "https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap"
   ]
 }

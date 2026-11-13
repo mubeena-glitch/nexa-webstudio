@@ -56,15 +56,15 @@
     "shadow": {
       "card": "0 1px 2px rgb(29 28 26 / 0.04), 0 12px 32px -18px rgb(29 28 26 / 0.18)",
       "elevated": "0 2px 5px rgb(29 28 26 / 0.06), 0 30px 60px -24px rgb(29 28 26 / 0.28)",
-      "philosophy": "subtle"
+      "philosophy": "soft"
     },
     "motion": {
       "ease": "cubic-bezier(0.19, 1, 0.22, 1)",
       "duration": "580ms",
-      "character": "precise"
+      "character": "snappy"
     },
     "imagery": {
-      "treatment": "edge-to-edge",
+      "treatment": "full-bleed",
       "ratio": "4:5",
       "filter": "neutral"
     }
