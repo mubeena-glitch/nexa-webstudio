@@ -174,14 +174,17 @@
     add(a.motion + " motion", C.MOTION_H[a.motion] || 0);
     const PF = Object.fromEntries(C.PFEATURES.map(x => [x[0], x[2]])); (a.pfeatures || []).forEach(f => add(f, PF[f]));
     add(a.stack, { "Custom build (Next.js)": 4, "Shopify": 2 }[a.stack] || 0);
-    (a.integrations || []).forEach(i => add(i, C.HEAVY_INT.includes(i) ? 4 : 2));
-    const langs = Math.max(0, (a.languages || []).length - 1); add("Extra languages", langs * pg * .3 + ((a.languages || []).includes("Arabic") ? 2 : 0));
+    const lp = T.line === "lp", plat = T.line === "platform";
+    (a.integrations || []).forEach(i => add(i, C.HEAVY_INT.includes(i) ? (lp ? 2 : 4) : (lp ? 1 : 2)));
+    const langs = Math.max(0, (a.languages || []).length - 1); add("Extra languages", langs * pg * .3 + ((a.languages || []).includes("Arabic") ? (lp ? 1 : 2) : 0));
     (a.addons || []).forEach(x => { const A = C.ADDON[x]; if (!A) return; add(x, /copywriting/i.test(x) ? pg * .5 : A.h); });
-    const lo = Math.max(2, r.reduce((s, x) => s + x[1], 0)), hi = lo * (lo <= 6 ? 1.5 : 1.3);
+    if (plat) add("Security review, testing and acceptance", Math.max(16, r.reduce((s, x) => s + x[1], 0) * .2));
+    const lo = Math.max(2, r.reduce((s, x) => s + x[1], 0)), hi = lo * (lo <= 6 ? 1.5 : plat ? 1.4 : 1.3);
     let text;
     if (hi <= 8) text = `${Math.max(2, Math.floor(lo))} to ${Math.max(4, Math.ceil(hi))} hours`;
-    else if (hi <= 80) { const d1 = Math.max(1, Math.round(lo / 8)), d2 = Math.max(d1 + 1, Math.ceil(hi / 8)); text = `${d1} to ${d2} working days`; }
-    else { const w1 = Math.max(2, Math.round(lo / 40)), w2 = Math.max(w1 + 1, Math.ceil(hi / 40)); text = `${w1} to ${w2} weeks for the first release`; }
+    else if (hi <= 10 && !plat) text = "About one working day";
+    else if (hi <= 80 && !plat) { const d1 = Math.max(1, Math.round(lo / 8)), d2 = Math.max(d1 + 1, Math.ceil(hi / 8)); text = `${d1} to ${d2} working days`; }
+    else { const w1 = Math.max(plat ? 3 : 2, Math.round(lo / 40)), w2 = Math.max(w1 + 1, Math.ceil(hi / 40)); text = `${w1} to ${w2} weeks for the first release`; }
     return { lo, hi, text, r, pg };
   }
   const roundsLeft = k => LIM[k][tierOf()] - S.rounds[k];
@@ -204,11 +207,14 @@
   function drawBand() {
     const p = pct(), i = sIdx(S.stage);
     $("pct").textContent = p + "%"; $("pbar").style.width = p + "%";
-    $("steps").innerHTML = STAGES.map((s, k) => `<span class="${S.live || k < i ? "done" : k === i ? "cur" : ""}">${s[1]}</span>`).join("");
+    $("steps").innerHTML = S.live ? `<span class="now">All steps done. You're live.</span>` : `<span class="now">Step ${i + 1} of ${STAGES.length}: <b>${STAGES[i][1]}</b>${STAGES[i + 1] ? ` <em>· Next: ${STAGES[i + 1][1]}</em>` : ""}</span>`;
     const sc = score(S.a), chosen = S.plan == null ? sc.tier : S.plan;
-    $("planname").textContent = TIERS[chosen].name + (S.plan == null ? " (recommended)" : "");
+    $("planname").textContent = S.plan == null ? "Matched to your choices" : "Chosen by you";
+    const q = quote(chosen), f = TIERS[chosen].from ? "from " : "", pp = q.md === "monthly" ? `${f}${aed(q.rec)} a month` : `${f}${aed(q.up)} once`;
+    document.querySelectorAll(".plbtn .pln").forEach(x => x.textContent = TIERS[chosen].name);
+    document.querySelectorAll(".plbtn .plp").forEach(x => x.textContent = pp);
     $("pmark").style.left = Math.min(98, Math.max(2, sc.pts / 14 * 100)) + "%";
-    $("tiers").innerHTML = tierWindow().map(k => [TIERS[k], k]).map(([t, k]) => `<button class="tier ${k === sc.tier ? "rec" : ""} ${k === chosen ? "sel" : ""}" type="button" data-tier="${k}" aria-pressed="${k === chosen}">${k === sc.tier ? `<span class="tag">Recommended</span>` : `<span class="tag" style="visibility:hidden">.</span>`}<b>${t.name}</b><small>${t.desc}</small><small><b style="font-size:12px;color:var(--ink)">${t.from ? "from " : ""}${aed(PRICE.plans[k])}</b> a month</small></button>`).join("");
+    $("tiers").innerHTML = tierWindow().map(k => [TIERS[k], k]).map(([t, k]) => `<button class="tier ${k === sc.tier ? "rec" : ""} ${k === chosen ? "sel" : ""}" type="button" data-tier="${k}" aria-pressed="${k === chosen}">${k === sc.tier ? `<span class="tag">Recommended</span>` : `<span class="tag" style="visibility:hidden">.</span>`}<b>${t.name}</b><small>${t.desc}</small><small>${(() => { const qk = quote(k); return qk.md === "monthly" ? `<b style="font-size:12px;color:var(--ink)">${t.from ? "from " : ""}${aed(qk.rec)}</b> a month` : `<b style="font-size:12px;color:var(--ink)">${t.from ? "from " : ""}${aed(qk.up)}</b> once`; })()}</small></button>`).join("");
     const note = $("plnote");
     if (chosen < sc.tier) {
       const top = sc.r.slice().sort((x, y) => y[1] - x[1]).filter(x => !/pages$/.test(x[0])).slice(0, 3).map(x => x[0]);
@@ -219,6 +225,8 @@
 
   /* ---------------- side ---------------- */
   function drawSide() {
+    const wasOpen = !!document.querySelector(".side details.card[open]"), wasBrk = !!document.querySelector(".side .brk[open]");
+    queueMicrotask(() => { const d = document.querySelector(".side details.card"); if (d && wasOpen) d.open = true; const b = document.querySelector(".side .brk"); if (b && wasBrk) b.open = true; });
     const a = S.a, chosen = tierOf(), m = monthly(chosen), e = est(a);
     const host = { nexa: "NEXA hosts it", dns: "Client adds DNS records", access: "Access to domain and hosting", later: "Decide later" }[a.hosting] || "Not chosen yet";
     const rows = [["Building", a.type], ["Sector", a.sector], ["Pages", S.sitemap ? S.sitemap.length : a.pages], ["Style", a.style], ["Platform", a.stack], ["Going live", host]].filter(x => x[1] != null && x[1] !== "");
@@ -227,9 +235,10 @@
         ${a.type ? `<div class="eta" style="margin-top:12px;padding:12px 14px"><div><span class="lbl">Build time</span><br><b style="font-size:18px">${e.text}</b></div><span style="font-size:11.5px;color:var(--ink2);flex:1 1 140px">From when we have your content and access.</span></div>` : ""}</section>
       <section class="card"><h3>Your price <span class="lbl" style="float:right;color:var(--warn)">Example prices</span></h3>
         <div class="mtabs">${C.MODELS.map(([k, l]) => `<button type="button" data-model="${k}" aria-pressed="${(S.model || "monthly") === k}">${l}</button>`).join("")}</div>
-        ${priceBox(chosen)}</section>
-      <section class="card"><h3>Need a person?</h3><p style="margin:0 0 10px;font-size:13px;color:var(--ink2)">Most things are done right here, but a person is always one click away.</p><div class="row2"><button class="btn" type="button" id="helpcall">Book a 15-minute call</button><button class="skip" type="button" id="helpmsg">Message the team</button></div></section>
-      <section class="card"><h3>Approvals</h3>${S.log.length ? `<ul class="log">${S.log.slice().reverse().slice(0, 5).map(l => `<li><div>${esc(l.what)}<small>${when(l.t)}${l.by ? " · " + esc(l.by) : ""}</small></div></li>`).join("")}</ul>${S.log.length > 5 ? `<p class="mut" style="margin:8px 0 0;font-size:12px">And ${S.log.length - 5} earlier, all in your record.</p>` : ""}<div class="row2" style="margin-top:10px"><button class="skip" type="button" id="record">Download my project record</button></div>` : `<p style="margin:0;color:var(--muted);font-size:13px">Every step you approve is recorded here with the time and your name, so we always build exactly what you signed off.</p>`}</section>`;
+        ${(() => { const q = quote(chosen), f = TIERS[chosen].from ? "from " : ""; return q.md === "monthly" ? `<div class="ptot"><b>${f}${aed(q.rec)}</b><span>a month, VAT included</span></div>` : `<div class="ptot"><b>${f}${aed(q.up)}</b><span>one-time, VAT included</span></div>${q.rec ? `<div class="ptot" style="margin-top:4px"><span>then ${aed(q.rec)} a month care</span></div>` : ""}`; })()}
+        <details class="brk"><summary>See what's included</summary>${priceBox(chosen)}</details></section>
+      <details class="card"><summary>Approvals${S.log.length ? `<span class="cnt">${S.log.length} recorded</span>` : ""}</summary>${S.log.length ? `<ul class="log">${S.log.slice().reverse().slice(0, 5).map(l => `<li><div>${esc(l.what)}<small>${when(l.t)}${l.by ? " · " + esc(l.by) : ""}</small></div></li>`).join("")}</ul>${S.log.length > 5 ? `<p class="mut" style="margin:8px 0 0;font-size:12px">And ${S.log.length - 5} earlier, all in your record.</p>` : ""}<div class="row2" style="margin-top:10px"><button class="skip" type="button" id="record">Download my project record</button></div>` : `<p style="margin:0;color:var(--muted);font-size:13px">Every step you approve is recorded here with the time and your name, so we always build exactly what you signed off.</p>`}</details>
+      <div class="help"><span>Need a person?</span><button class="skip" type="button" id="helpcall">Book a 15-minute call</button><button class="skip" type="button" id="helpmsg">Message the team</button></div>`;
   }
 
   /* ---------------- brief view ---------------- */
@@ -768,9 +777,24 @@
 
   window.NexaPortal = { S: () => S, tierOf, est, monthly, quote, hoursFor, terms, tierWindow, MODEL_NAME, C, aed, esc, PRICE, LIM, INCL, TIERS, STAGES, pct, save, log, draw };
 
+  /* ---------------- plan panel ---------------- */
+  function planPop(btn) {
+    const pop = $("plpop"), open = btn && pop.hidden;
+    document.querySelectorAll(".plbtn").forEach(b => b.setAttribute("aria-expanded", "false"));
+    if (!open) { pop.hidden = true; return; }
+    const r = btn.getBoundingClientRect(); pop.hidden = false; btn.setAttribute("aria-expanded", "true");
+    pop.style.top = Math.round(r.bottom + 8) + "px"; pop.style.right = Math.max(16, Math.round(innerWidth - r.right)) + "px";
+  }
+  document.addEventListener("pointerdown", e => { if (!$("plpop").hidden && !e.target.closest("#plpop,.plbtn")) planPop(null); });
+  addEventListener("resize", () => planPop(null));
+  addEventListener("scroll", () => { const b = document.querySelector('.plbtn[aria-expanded="true"]'); if (b) { const r = b.getBoundingClientRect(); $("plpop").style.top = Math.round(r.bottom + 8) + "px"; } }, { passive: true });
+  if (window.ResizeObserver) new ResizeObserver(() => document.documentElement.style.setProperty("--toph", document.querySelector(".top").offsetHeight + "px")).observe(document.querySelector(".top"));
+
   /* ---------------- events ---------------- */
   document.addEventListener("click", e => {
     const t = e.target.closest("button,[data-edit]"); if (!t) return;
+    if (t.matches(".plbtn")) { planPop(t); return; }
+    if (t.dataset.view && !$("plpop").hidden) planPop(null);
     const d = t.dataset, cur = S.editing ? live().find(x => x.id === S.editing) : nextQ();
     if (d.tfam != null) { draft._fam = d.tfam; redrawBrief(); return; }
     if (d.like) { const [id, l] = d.like.split("|"), L = draft.workLikes = draft.workLikes || {}, x = new Set(L[id] || []); x.has(l) ? x.delete(l) : x.add(l); L[id] = [...x]; t.setAttribute("aria-pressed", x.has(l)); return; }
@@ -857,6 +881,7 @@
     if (t.dataset.wadd != null && t.value) { S.wf[+t.dataset.wadd].blocks.push(t.value); save(); draw(); }
   });
   document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !$("plpop").hidden) { const b = document.querySelector('.plbtn[aria-expanded="true"]'); planPop(null); if (b) b.focus(); return; }
     if (e.key === "Enter" && e.target.id === "qin" && e.target.tagName === "INPUT") { e.preventDefault(); answer(false); }
     if (e.key === "Escape" && $("pstage") && $("pstage").classList.contains("pfull")) { $("pfull").click(); return; }
     if (e.key === "Enter" && e.target.id === "pask") { e.preventDefault(); $("prefine").click(); }
