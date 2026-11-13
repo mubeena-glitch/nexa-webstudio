@@ -154,6 +154,8 @@ footer{padding:36px 64px;display:flex;gap:24px;justify-content:space-between;ali
     return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${fontsLink(c)}<style>${css(c)}</style></head><body>${body}</body></html>`;
   }
   const allOf = id => Object.fromEntries(SECTIONS.map(([k]) => [k, id]));
+  /* One section on its own, for side-by-side comparison of the four concepts */
+  const section = (a, k, id) => page(a, {}, c => R[k][id](c));
 
   /* Inner pages: wireframe blocks rendered in the chosen concept's look */
   const BLOCK_TO = { "Page header": "hero", "Introduction": "about", "Story": "about", "Feature grid": "services", "Services list": "services", "Numbers": "stats", "Gallery": "showcase", "Testimonial": "quote", "Call to action": "cta" };
@@ -177,5 +179,5 @@ footer{padding:36px 64px;display:flex;gap:24px;justify-content:space-between;ali
     });
   }
 
-  window.NexaConcepts = { DIRECTIONS, SECTIONS, page, allOf, inner, STYLE, SECTOR };
+  window.NexaConcepts = { DIRECTIONS, SECTIONS, page, allOf, section, inner, STYLE, SECTOR };
 })();

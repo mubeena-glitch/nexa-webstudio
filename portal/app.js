@@ -9,16 +9,19 @@
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const KEY = "nexa-portal-v2";
   const NC = window.NexaConcepts;
-  const now = () => new Date().toISOString();
+  let simDays = 0;
+  const nowMs = () => Date.now() + simDays * 864e5;
+  const now = () => new Date(nowMs()).toISOString();
   const when = s => new Date(s).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
   /* ---------------- state ---------------- */
   const fresh = () => ({ a: {}, stage: "brief", editing: null, prompt: "", promptAsks: [], sitemap: null, concepts: { ready: false, sel: null, mode: "pick", mix: null, notes: {}, view: null },
     wf: null, inner: { ready: false, tab: 0 }, submittedAt: null, build: 0, changes: [], plan: null, paid: false, hostNow: null, live: false, log: [],
-    rounds: { concept: 0, inner: 0, staging: 0 }, need: {}, terms: false, billing: "monthly", invoices: [], requests: [], usedHours: 0, view: "project", model: "monthly" });
+    rounds: { concept: 0, inner: 0, staging: 0 }, need: {}, terms: false, billing: "monthly", invoices: [], requests: [], usedHours: 0, view: "project", model: "monthly", at: {}, files: {}, contacts: {}, simDays: 0 });
   let S;
   try { S = JSON.parse(localStorage.getItem(KEY) || "null") || fresh(); } catch (e) { S = fresh(); }
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  S.at = S.at || {}; simDays = S.simDays || 0;
+  const save = () => { simDays = S.simDays || 0; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
   const log = what => { S.log.push({ t: now(), what, by: S.a.name || "Client" }); };
   const toast = t => { const el = $("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove("on"), 2600); };
 
@@ -201,7 +204,7 @@
     if (S.live) p = 100;
     return Math.round(p);
   }
-  function go(stage, what) { if (what) log(what); S.stage = stage; S.editing = null; save(); draw(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function go(stage, what) { if (what) log(what); S.at = S.at || {}; if (!S.at[stage]) S.at[stage] = now(); S.stage = stage; S.editing = null; save(); draw(); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
   /* ---------------- band ---------------- */
   function drawBand() {
@@ -574,40 +577,60 @@
       if (!genTimer) { let t = 0; const D = NC.DIRECTIONS; genTimer = setInterval(() => { t++; const p = Math.min(100, t * 5); const g = $("gbar"); if (g) g.style.width = p + "%"; const m = $("gmsg"); if (m) m.textContent = p < 100 ? `Designing concept ${Math.min(4, Math.floor(p / 25) + 1)} of 4: ${D[Math.min(3, Math.floor(p / 25))].name}` : "Done"; if (p >= 100) { clearInterval(genTimer); genTimer = null; C.ready = true; save(); draw(); } }, 160); }
       return;
     }
-    const D = NC.DIRECTIONS, mixing = C.mode === "mix";
-    if (!C.mix) C.mix = NC.allOf(C.sel || "A");
-    let h = bot(mixing ? "Mix and match: choose which concept each section comes from. The preview updates as you go." : "Your four concepts are ready. Open any of them full size, choose one, ask for changes, or mix sections from different concepts.");
-    h += `<div class="stage"><div class="row2" style="justify-content:space-between"><h2>${mixing ? "Mix your concept" : "Choose your concept"}</h2><div class="tabs"><button type="button" data-cmode="pick" aria-selected="${!mixing}">Choose one</button><button type="button" data-cmode="mix" aria-selected="${mixing}">Mix and match</button></div></div>`;
-    if (!mixing) {
-      h += `<div class="cgrid">${D.map(d => `<article class="concept ${C.sel === d.id ? "sel" : ""}"><div class="frame" data-frame="${d.id}"><iframe title="Concept ${d.id}" loading="lazy" tabindex="-1" data-src="${d.id}"></iframe></div>
+    const D = NC.DIRECTIONS, base = C.sel;
+    if (base && !C.mix) C.mix = NC.allOf(base);
+    const borrowed = base ? NC.SECTIONS.filter(([k]) => C.mix[k] !== base) : [];
+    let h = bot(!base ? "Your four concepts are ready. Open any of them full size and choose the one whose overall flow you like best. Next, you can borrow sections you liked from the others."
+      : `Concept ${base} is your base. Liked a section in another concept? Take it: pick a section below, compare it across all four concepts, and choose the one you want.`);
+    h += `<div class="stage"><h2>${base ? "1. Your base concept" : "Choose your base concept"}</h2>`;
+    h += `<div class="cgrid">${D.map(d => `<article class="concept ${base === d.id ? "sel" : ""}"><div class="frame" data-frame="${d.id}"><iframe title="Concept ${d.id}" loading="lazy" tabindex="-1" data-src="${d.id}"></iframe></div>
         <div class="meta"><b>Concept ${d.id}: ${esc(d.name)}</b><span>${esc(d.note)}</span>
-        <div class="row2"><button class="btn ${C.sel === d.id ? "pri" : ""}" type="button" data-csel="${d.id}">${C.sel === d.id ? "Chosen" : "Choose this"}</button><button class="skip" type="button" data-cview="${d.id}">View full size</button></div></div></article>`).join("")}</div>`;
-      if (C.view) h += `<div><div class="row2" style="justify-content:space-between;margin-bottom:8px"><b>Concept ${C.view} full size</b><button class="skip" type="button" data-cview="">Close</button></div><div class="frame tall live" data-frame="view"><iframe title="Full size concept" data-src="view"></iframe></div></div>`;
-      if (C.sel) h += `<div class="row2"><input class="in" id="cnote" placeholder="Changes to concept ${C.sel}, for example: warmer colours, larger photos" value="${esc(C.notes[C.sel] || "")}" style="flex:1 1 280px"><button class="btn" type="button" id="crefine">Ask for changes</button></div><p style="margin:0;font-size:12px;color:var(--muted)">${roundNote("concept")}</p>`;
-    } else {
-      h += `<div class="mix"><span></span>${D.map(d => `<span class="hd">${d.id}<span class="nm">: ${esc(d.name)}</span></span>`).join("")}${NC.SECTIONS.map(([k, l]) => `<span>${esc(l)}</span>${D.map(d => `<button type="button" data-mix="${k}|${d.id}" aria-pressed="${C.mix[k] === d.id}" aria-label="${esc(l)} from concept ${d.id}">${d.id}</button>`).join("")}`).join("")}</div>
-        <div class="frame tall live" data-frame="mix"><iframe title="Your mixed concept" data-src="mix"></iframe></div>`;
+        <div class="row2"><button class="btn ${base === d.id ? "pri" : ""}" type="button" data-csel="${d.id}">${base === d.id ? "Your base" : base ? "Use as base instead" : "Choose as base"}</button><button class="skip" type="button" data-cview="${d.id}">View full size</button></div></div></article>`).join("")}</div>`;
+    if (C.view) h += `<div><div class="row2" style="justify-content:space-between;margin-bottom:8px"><b>Concept ${C.view} full size</b><button class="skip" type="button" data-cview="">Close</button></div><div class="frame tall live" data-frame="view"><iframe title="Full size concept" data-src="view"></iframe></div></div>`;
+    if (base) {
+      const open = C.secOpen || "nav", ol = (NC.SECTIONS.find(x => x[0] === open) || [, ""])[1];
+      h += `<h2 style="margin-top:8px">2. Borrow sections from other concepts</h2>
+        <p class="mut" style="margin:-6px 0 0">Every section starts from concept ${base}. Choose a section to compare it across the four concepts.</p>
+        <div class="borrow">
+          <div class="secs" role="list">${NC.SECTIONS.map(([k, l]) => `<button type="button" class="sec ${k === open ? "on" : ""}" data-sec="${k}" aria-pressed="${k === open}"><span>${esc(l)}</span><b class="${C.mix[k] !== base ? "bor" : ""}">${C.mix[k] === base ? `Concept ${base}` : `From ${C.mix[k]}`}</b></button>`).join("")}</div>
+          <div class="vars"><div class="row2" style="justify-content:space-between"><b>${esc(ol)}: pick the version you like</b>${C.mix[open] !== base ? `<button class="skip" type="button" data-mix="${open}|${base}">Back to concept ${base}</button>` : ""}</div>
+            <div class="vgrid">${D.map(d => `<button type="button" class="var ${C.mix[open] === d.id ? "on" : ""}" data-mix="${open}|${d.id}" aria-pressed="${C.mix[open] === d.id}"><span class="frame sec-${open}" data-vw="1000" data-auto="1"><iframe title="${esc(ol)} from concept ${d.id}" tabindex="-1" data-src="sec:${open}|${d.id}"></iframe></span><span class="vl"><b>Concept ${d.id}</b>${d.id === base ? " · your base" : ""}${C.mix[open] === d.id ? '<i class="tick" aria-hidden="true">&#10003;</i>' : ""}</span></button>`).join("")}</div></div>
+        </div>
+        <div class="mixsum"><span class="lbl">Your concept</span><p>${esc(mixText())}</p>${borrowed.length ? `<button class="skip" type="button" id="mixreset">Use concept ${base} as it is</button>` : ""}</div>
+        <h2 style="margin-top:8px">3. Check it all together</h2>
+        <div class="frame tall live" data-frame="mix"><iframe title="Your concept, put together" data-src="mix"></iframe></div>
+        <div class="row2"><input class="in" id="cnote" placeholder="Anything else to change? For example: warmer colours, larger photos" value="${esc(C.notes[base] || "")}" style="flex:1 1 280px"><button class="btn" type="button" id="crefine">Ask for changes</button></div><p style="margin:0;font-size:12px;color:var(--muted)">${roundNote("concept")} Your section choices go with your request.</p>`;
     }
-    const canGo = mixing || C.sel;
-    h += `<div class="gate"><button class="btn" type="button" data-back="sitemap">Back to sitemap</button><button class="btn pri big" type="button" id="capprove" ${canGo ? "" : "disabled"}>${mixing ? "Approve my mixed concept" : C.sel ? `Approve concept ${C.sel}` : "Choose a concept to continue"}</button><span class="note">Your approved concept sets the look for every inner page.</span></div></div>`;
+    h += `<div class="gate"><button class="btn" type="button" data-back="sitemap">Back to sitemap</button><button class="btn pri big" type="button" id="capprove" ${base ? "" : "disabled"}>${base ? (borrowed.length ? "Approve my concept" : `Approve concept ${base}`) : "Choose a base concept to continue"}</button><span class="note">Your approved concept sets the look for every inner page.</span></div></div>`;
     $("main").innerHTML = h;
     fillFrames();
   }
-  const pickOf = () => S.concepts.mode === "mix" ? S.concepts.mix : NC.allOf(S.concepts.sel || "A");
+  const pickOf = () => S.concepts.mix || NC.allOf(S.concepts.sel || "A");
+  /* "Concept D, with the navigation from C, the testimonial from A and the footer from B." */
+  function mixText() {
+    const C = S.concepts, b = C.sel; if (!b) return "";
+    const L = NC.SECTIONS.filter(([k]) => C.mix && C.mix[k] !== b).map(([k, l]) => `the ${l.toLowerCase()} from ${C.mix[k]}`);
+    const nm = (NC.DIRECTIONS.find(x => x.id === b) || {}).name;
+    return `Concept ${b} (${nm})` + (L.length ? `, with ${L.length > 1 ? L.slice(0, -1).join(", ") + " and " + L[L.length - 1] : L[0]}.` : ", as designed.");
+  }
   function fillFrames() {
     document.querySelectorAll("iframe[data-src]").forEach(f => {
       const k = f.dataset.src, C = S.concepts;
       let html;
       if (k === "view") html = NC.page(S.a, NC.allOf(C.view));
-      else if (k === "mix") html = NC.page(S.a, C.mix);
+      else if (k === "mix") html = NC.page(S.a, pickOf());
+      else if (k.startsWith("sec:")) { const [sk, id] = k.slice(4).split("|"); html = NC.section(S.a, sk, id); }
       else if (k.startsWith("inner:")) { const w = S.wf[+k.slice(6)]; html = NC.inner(S.a, pickOf(), w.name, w.blocks); }
       else html = NC.page(S.a, NC.allOf(k));
+      if (k.startsWith("sec:")) f.addEventListener("load", fit, { once: true });
       f.srcdoc = html;
     });
     fit();
   }
   function fit() {
-    document.querySelectorAll(".frame").forEach(fr => { const f = fr.querySelector("iframe"); if (!f) return; const w = fr.clientWidth || 600, s = Math.min(1, w / 1280); f.style.transform = `scale(${s})`; f.style.width = 1280 + "px"; f.style.height = (fr.clientHeight / s) + "px"; });
+    document.querySelectorAll(".frame").forEach(fr => { const f = fr.querySelector("iframe"); if (!f) return; const vw = +fr.dataset.vw || 1280, w = fr.clientWidth || 600, s = Math.min(1, w / vw);
+      if (fr.dataset.auto) { try { const h = f.contentDocument && f.contentDocument.body ? f.contentDocument.body.scrollHeight : 0; if (h) fr.style.height = Math.round(Math.min(260, Math.max(56, h * s))) + "px"; } catch (e) {} }
+      f.style.transform = `scale(${s})`; f.style.width = vw + "px"; f.style.height = (fr.clientHeight / s) + "px"; });
   }
   window.addEventListener("resize", () => { clearTimeout(fit.h); fit.h = setTimeout(fit, 120); });
 
@@ -654,7 +677,7 @@
   const tierNow = tierOf;
   function needList() {
     const a = S.a, ad = a.addons || [], L = [];
-    if (!(a.brandFiles || []).length) L.push(["logo", "Your logo and any brand files", "Vector or high-resolution files."]);
+    if (!(a.brandFiles || []).length) L.push(["logo", "Brand guidelines, logo and fonts", "Vector or high-resolution logo, plus guidelines and font files if you have them."]);
     if (a.content !== "Copy and images are ready") L.push(ad.includes("Copywriting") ? ["brieffacts", "Key facts for our copywriter", "A short form: services, proof points, anything you must say."] : ["copy", "The words for every page", "Or add Copywriting and we write them."]);
     if (a.content !== "Copy and images are ready" && !(a.experience || []).includes("AI-generated images")) L.push(["images", "Photos and images", "Or we use licensed stock or AI images you approve."]);
     if (a.hosting === "dns") L.push(["dns", "Someone who can edit your DNS", "Only needed at go-live, for about 10 minutes."]);
@@ -662,6 +685,7 @@
     (a.integrations || []).forEach(i => L.push(["int:" + i, `Access to ${i}`, "Through a user invitation or a key shared in this portal, never by email."]));
     if (ad.includes("Translation") || (a.languages || []).length > 1) L.push(["trans", "A reviewer for each language", "Someone on your side who signs off the translated pages."]);
     const st = C.SETUP[a.stack]; if (st && a.stackSetup && st.needs[a.stackSetup]) st.needs[a.stackSetup].forEach(n => L.push(n));
+    if (C.lineOf(a.type) === "platform" || (a.integrations || []).length) L.push(["creds:demo", "Test or demo logins", "For the systems we connect to, so we can build and test without touching live data."]);
     if (C.lineOf(a.type) === "platform") { L.push(["users-list", "Your user list and roles", "Who needs access, and what each role can see and do."]); if ((a.data || []).some(x => x !== "Not sure yet")) L.push(["data-sample", "Sample data", "A real extract of each data source, so we design around your actual numbers."]); L.push(["it-contact", "An IT or security contact", "For single sign-on, hosting and security sign-off."]); }
     L.push(["legal", "Your privacy policy and terms", "Or approve our standard templates for your lawyer to check."]);
     return L;
@@ -674,7 +698,7 @@
       <div class="stage"><h2>Ready to submit</h2><div class="review">
         <div><span>Building</span><b>${esc(a.type || "Website")} for ${esc(a.company || "your brand")}</b></div>
         <div><span>Pages</span><b>${e.pg}</b></div>
-        <div><span>Concept</span><b>${S.concepts.mode === "mix" ? "Your mixed concept" : "Concept " + esc(S.concepts.sel || "A")}</b></div>
+        <div><span>Concept</span><b>${esc(mixText())}</b></div>
         <div><span>Platform</span><b>${esc((a.stack || "We'll recommend one") + (a.stackAuto ? " (recommended)" : ""))}</b></div>
         <div><span>Plan</span><b>${TIERS[t].name}, ${MODEL_NAME[S.model || "monthly"]}: ${priceLine(t)}</b></div>
         <div><span>Going live</span><b>${esc({ nexa: "NEXA hosts it", dns: "You add our DNS records", access: "You give us domain and hosting access", later: "Decide later" }[a.hosting] || "Decide later")}</b></div>
@@ -709,7 +733,9 @@
   function demo(label, id, off) { return `<div class="demo"><span class="lbl">Prototype</span><span style="flex:1 1 200px">${off ? "Tick off the list above first: the build clock starts when everything is in." : "In the live portal this moves on its own as our team works."}</span><button class="btn" type="button" id="${id}" ${off ? "disabled" : ""}>${label}</button></div>`; }
   function drawBuild() {
     const e = est(S.a), L = needList(), done = needDone();
-    const ask = L.length && S.build === 0 ? `<div><span class="lbl">What we need from you</span><div class="track" style="margin-top:8px">${L.map(n => `<div class="tstep ${S.need[n[0]] ? "done" : ""}"><i>${S.need[n[0]] ? "&#10003;" : "&middot;"}</i><div style="flex:1"><b>${esc(n[1])}</b><span>${esc(n[2])}</span></div><button class="${S.need[n[0]] ? "skip" : "btn"}" type="button" data-need="${esc(n[0])}">${S.need[n[0]] ? "Undo" : "Done"}</button></div>`).join("")}</div></div>` : "";
+    const got = L.filter(n => S.need[n[0]]).length;
+    const ask = L.length && S.build === 0 ? `<div class="needbox"><div class="fh"><div><b>${got} of ${L.length} items in</b><span>The build starts as soon as everything is in. Upload files, share access and add contacts in Files and access.</span></div><button class="btn pri" type="button" data-view="files">Open Files and access</button></div>
+      <ul class="needl">${L.map(n => `<li class="${S.need[n[0]] ? "ok" : ""}"><span class="gs ${S.need[n[0]] ? "ok" : "warn"}">${S.need[n[0]] ? "&#10003; In" : "Needed"}</span>${esc(n[1])}</li>`).join("")}</ul></div>` : "";
     const msg = S.build >= 4 ? "Your staging site is ready." : !done && S.build === 0 ? `Thanks, your plan is active. Send us the items below and the build starts straight away. Estimated build time: ${e.text}.` : `Your website is being built. Estimated build time: ${e.text}. You can close this page; we'll email ${esc(S.a.email || "you")} at each step.`;
     $("main").innerHTML = bot(msg) + `
       <div class="stage"><h2>Build progress</h2>${ask}<div class="track">${BSTEPS.map((b, i) => `<div class="tstep ${i < S.build ? "done" : i === S.build ? "cur" : ""}"><i>${i < S.build ? "&#10003;" : i + 1}</i><div><b>${b[0]}</b><span>${b[1]}</span></div></div>`).join("")}</div>
@@ -719,7 +745,7 @@
   function drawStaging() {
     $("main").innerHTML = bot("Here's your staging site: the real build, on a private link. Click through every page. Approve it, or list everything you'd like changed in one go.") + `
       <div class="stage"><h2>Review your staging site</h2>
-        <div class="row2"><span class="lbl">Staging link</span><span style="color:var(--muted)">Appears here when your build is ready.</span><button class="btn" type="button" id="openstage">Open the preview</button></div>
+        <div class="slink"><span class="lbl">Your private preview link</span><code>https://staging.nexa.studio/${esc(String(S.a.company || "your-site").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""))}</code><button class="btn pri" type="button" id="openstage">Open the preview</button><span class="mut">Only people with this link can see it. It also went to ${esc(S.a.email || "your email")}.</span></div>
         <textarea class="in" id="snote" placeholder="Anything to change? List it here, one change per line."></textarea>
         <p style="margin:0;font-size:12px;color:var(--muted)">${roundNote("staging")}</p>
         <div class="gate"><button class="btn" type="button" id="schanges">Request changes</button><button class="btn pri big" type="button" id="sapprove">Approve staging</button><span class="note">Approving confirms the site is ready to go live. Changes after this come out of your monthly change hours.</span></div></div>`;
@@ -764,18 +790,23 @@
   function drawViews() {
     const v = !S.started && !Object.keys(S.a).length ? "welcome" : (S.view || "project");
     document.body.dataset.view = v; document.body.dataset.stage = S.stage;
-    $("views").innerHTML = [["project", "Project"], ["dashboard", "Dashboard"], ["reports", "Reports"], ["billing", "Plan and billing"]].map(([k, l]) => `<button type="button" data-view="${k}" aria-current="${k === v ? "page" : "false"}">${l}</button>`).join("");
+    const B = v !== "welcome" && window.NexaTrack ? window.NexaTrack.badges() : {};
+    $("views").innerHTML = [["project", "Project"], ["timeline", "Timeline"], ["files", "Files"], ["dashboard", "Dashboard"], ["reports", "Reports"], ["billing", "Billing"]].map(([k, l]) => `<button type="button" data-view="${k}" aria-current="${k === v ? "page" : "false"}">${l}${B[k] ? `<i class="badge ${k === "timeline" ? "w" : ""}" aria-label="${B[k]} open">${B[k]}</i>` : ""}</button>`).join("");
     return v;
   }
   function draw() {
     const v = drawViews();
     if (v === "welcome" && window.NexaLanding) { $("main").innerHTML = window.NexaLanding(); return; }
+    if (S.paid && !S.at.work && needDone()) { S.at.work = now(); log("Everything is in: the build clock has started"); save(); }
+    if ((v === "timeline" || v === "files") && window.NexaTrack) { drawBand(); $("main").innerHTML = window.NexaTrack[v](); return; }
     if (v !== "project" && window.NexaDash) { drawBand(); $("main").innerHTML = window.NexaDash[v](); return; }
     drawBand(); drawSide();
     ({ brief: drawBrief, prompt: drawPrompt, sitemap: drawSitemap, concepts: drawConcepts, wireframes: drawWireframes, inner: drawInner, submit: drawSubmit, build: drawBuild, staging: drawStaging, pay: drawPay, live: drawLive }[S.stage] || drawBrief)();
+    if (window.NexaTrack) { const b = window.NexaTrack.banner(); if (b) $("main").insertAdjacentHTML("afterbegin", b); }
   }
 
-  window.NexaPortal = { S: () => S, tierOf, est, monthly, quote, hoursFor, terms, tierWindow, MODEL_NAME, C, aed, esc, PRICE, LIM, INCL, TIERS, STAGES, pct, save, log, draw };
+  const skipped = () => live().filter(q => q.id in S.a && S.a[q.id] == null && !/^(notes|name|company|email)$/.test(q.id)).map(q => ({ id: q.id, label: LBL[q.id] || q.id }));
+  window.NexaPortal = { S: () => S, needList, needDone, skipped, nowMs, toast, when, tierOf, est, monthly, quote, hoursFor, terms, tierWindow, MODEL_NAME, C, aed, esc, PRICE, LIM, INCL, TIERS, STAGES, pct, save, log, draw };
 
   /* ---------------- plan panel ---------------- */
   function planPop(btn) {
@@ -799,7 +830,7 @@
     if (d.tfam != null) { draft._fam = d.tfam; redrawBrief(); return; }
     if (d.like) { const [id, l] = d.like.split("|"), L = draft.workLikes = draft.workLikes || {}, x = new Set(L[id] || []); x.has(l) ? x.delete(l) : x.add(l); L[id] = [...x]; t.setAttribute("aria-pressed", x.has(l)); return; }
     if (d.model) { S.model = d.model; save(); draw(); return; }
-    if (d.start) { S.started = true; S.view = "project"; save(); draw(); window.scrollTo({ top: 0 }); return; }
+    if (d.start) { S.at = S.at || {}; if (!S.at.start) S.at.start = now(); S.started = true; S.view = "project"; save(); draw(); window.scrollTo({ top: 0 }); return; }
     if (d.view) { S.view = d.view; save(); draw(); window.scrollTo({ top: 0 }); return; }
     if (d.addon) { S.a.addons = [...new Set([...(S.a.addons || []), d.addon])]; log(`Added ${d.addon}`); save(); draw(); toast(`${d.addon} added to your plan.`); return; }
     if (d.report != null) { window.NexaDash.reportFile(+d.report); log("Downloaded a monthly report"); save(); return; }
@@ -832,8 +863,9 @@
       case "papprove": S.prompt = $("ptext").value; S.sitemap = null; go("sitemap", "Prompt approved"); return;
       case "smadd": S.sitemap.push({ name: "New page", d: 0 }); S.a.pages = S.sitemap.length; save(); draw(); return;
       case "smapprove": S.a.pages = S.sitemap.length; S.concepts = { ready: false, sel: null, mode: "pick", mix: null, notes: {}, view: null }; S.wf = null; S.inner = { ready: false, tab: 0 }; go("concepts", `Sitemap approved: ${S.sitemap.length} page${S.sitemap.length === 1 ? "" : "s"}`); return;
-      case "crefine": { const n = $("cnote").value.trim(); if (!n) return; S.concepts.notes[S.concepts.sel] = n; useRound("concept", `Changes asked on concept ${S.concepts.sel}: ${n}`); save(); draw(); toast("Noted. In the live studio your concept is redesigned with these changes."); return; }
-      case "capprove": { const C = S.concepts; S.wf = null; S.inner = { ready: false, tab: 0 }; go("wireframes", C.mode === "mix" ? "Mixed concept approved: " + NC.SECTIONS.map(([k, l]) => l + " " + C.mix[k]).join(", ") : `Concept ${C.sel} approved: ${NC.DIRECTIONS.find(x => x.id === C.sel).name}${C.notes[C.sel] ? " (changes: " + C.notes[C.sel] + ")" : ""}`); return; }
+      case "crefine": { const n = $("cnote").value.trim(); if (!n) return; S.concepts.notes[S.concepts.sel] = n; useRound("concept", `Changes asked: ${n}. Working from ${mixText()}`); save(); draw(); toast("Noted. In the live studio your concept is redesigned with these changes."); return; }
+      case "capprove": { const C = S.concepts, t = mixText(); S.wf = null; S.inner = { ready: false, tab: 0 }; S.prompt = (S.prompt || "").replace(/\n\nAPPROVED CONCEPT\n[\s\S]*$/, "") + `\n\nAPPROVED CONCEPT\n${t}${C.notes[C.sel] ? `\nChanges asked: ${C.notes[C.sel]}` : ""}\nUse this combination for the homepage and carry the same sections into every inner page.`; go("wireframes", "Approved " + t.charAt(0).toLowerCase() + t.slice(1) + (C.notes[C.sel] ? " Changes: " + C.notes[C.sel] : "")); return; }
+      case "mixreset": { const C = S.concepts; C.mix = NC.allOf(C.sel); C.mode = "pick"; save(); draw(); return; }
       case "wapprove": S.inner = { ready: false, tab: 0 }; go("inner", `Wireframes approved for ${S.wf.length} page${S.wf.length === 1 ? "" : "s"}`); return;
       case "icreate": { const g = $("igen"); g.innerHTML = `<div class="bar"><i id="ibar" style="width:0"></i></div><span>Creating your pages…</span>`; let p = 0; const iv = setInterval(() => { p += 10; const b = $("ibar"); if (b) b.style.width = p + "%"; if (p >= 100) { clearInterval(iv); S.inner.ready = true; save(); draw(); } }, 120); return; }
       case "irefine": { const n = $("inote").value.trim(); if (!n) return; useRound("inner", `Change asked on ${S.wf[S.inner.tab].name}: ${n}`); save(); draw(); toast("Noted and logged."); return; }
@@ -848,16 +880,17 @@
       case "openstage": { const w = window.open("", "_blank"); if (w) { w.document.write(NC.page(S.a, pickOf())); w.document.close(); } return; }
       case "schanges": { const n = $("snote").value.trim(); if (!n) { toast("List the changes first."); return; } const L = n.split(/\n+/).map(x => x.trim()).filter(Boolean); L.forEach(x => S.changes.push(x)); useRound("staging", `${L.length} change${L.length === 1 ? "" : "s"} requested on staging`); S.build = 1; go("build"); return; }
       case "sapprove": go("live", "Staging approved"); return;
-      case "golive": if ((S.model || "monthly") !== "monthly") { const q = quote(tierNow()); S.invoices.push({ t: now(), what: `${TIERS[tierNow()].name} build, balance before go-live`, amt: q.up - q.dueNow }); } S.live = true; S.view = "dashboard"; log("Website live"); save(); draw(); window.scrollTo({ top: 0 }); toast("You're live. This is your dashboard."); return;
+      case "golive": if ((S.model || "monthly") !== "monthly") { const q = quote(tierNow()); S.invoices.push({ t: now(), what: `${TIERS[tierNow()].name} build, balance before go-live`, amt: q.up - q.dueNow }); } S.live = true; S.at.golive = now(); S.view = "dashboard"; log("Website live"); save(); draw(); window.scrollTo({ top: 0 }); toast("You're live. This is your dashboard."); return;
       case "newreq": { const n = ($("cr") || {}).value; if (!n || !n.trim()) { toast("Describe the change first."); return; } const t = tierNow(), left = hoursFor(t) - S.usedHours; S.requests.push({ t: now(), text: n.trim(), status: left > 0 ? "We'll estimate it within " + INCL[7][t + 1].toLowerCase() : "Quote to follow" }); if (left > 0) S.usedHours += 1; log("Change requested: " + n.trim()); save(); draw(); toast("Request sent and logged."); return; }
     }
     if (d.smv) { const [i, dir] = d.smv.split("|").map(Number), j = i + dir, L = S.sitemap; if (j < 1 || j >= L.length || i < 1) return; [L[i], L[j]] = [L[j], L[i]]; save(); draw(); return; }
     if (d.smi) { const p = S.sitemap[+d.smi]; p.d = p.d ? 0 : 1; save(); draw(); return; }
     if (d.smx) { S.sitemap.splice(+d.smx, 1); S.a.pages = S.sitemap.length; save(); draw(); return; }
-    if (d.csel) { S.concepts.sel = d.csel; S.concepts.mix = NC.allOf(d.csel); save(); draw(); return; }
+    if (d.csel) { const C = S.concepts, old = C.sel, keep = old && C.mix ? Object.fromEntries(Object.entries(C.mix).filter(([, v]) => v !== old)) : {}; C.sel = d.csel; C.mix = { ...NC.allOf(d.csel), ...keep }; C.mode = Object.keys(keep).length ? "mix" : "pick"; save(); draw(); return; }
+    if (d.sec) { S.concepts.secOpen = d.sec; save(); const y = scrollY; draw(); scrollTo(0, y); return; }
     if (d.cview != null) { S.concepts.view = d.cview || null; save(); draw(); return; }
     if (d.cmode) { S.concepts.mode = d.cmode; if (d.cmode === "mix" && !S.concepts.mix) S.concepts.mix = NC.allOf(S.concepts.sel || "A"); save(); draw(); return; }
-    if (d.mix) { const [k, id] = d.mix.split("|"); S.concepts.mix[k] = id; save(); document.querySelectorAll(`[data-mix^="${k}|"]`).forEach(b => b.setAttribute("aria-pressed", b.dataset.mix === d.mix)); const f = document.querySelector('iframe[data-src="mix"]'); if (f) f.srcdoc = NC.page(S.a, S.concepts.mix); return; }
+    if (d.mix) { const C = S.concepts, [k, id] = d.mix.split("|"); C.mix[k] = id; C.mode = NC.SECTIONS.some(([x]) => C.mix[x] !== C.sel) ? "mix" : "pick"; save(); const y = scrollY; draw(); scrollTo(0, y); return; }
     if (d.wx) { const [i, j] = d.wx.split("|").map(Number); S.wf[i].blocks.splice(j, 1); save(); draw(); return; }
     if (d.wup) { const [i, j] = d.wup.split("|").map(Number), B = S.wf[i].blocks; [B[j - 1], B[j]] = [B[j], B[j - 1]]; save(); draw(); return; }
     if (d.itab) { S.inner.tab = +d.itab; save(); draw(); return; }
