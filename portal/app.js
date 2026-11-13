@@ -116,20 +116,56 @@
   }
   /* Which plans to offer for this kind of project. */
   const tierWindow = () => ({ lp: [0, 1, 2], site: [1, 2, 3], platform: [3, 4] })[C.lineOf(S.a.type)] || [1, 2, 3];
+  /* Plan ladder: a vertical bar that climbs from Launch to Platform as the client's choices grow.
+     level() turns the same rules as score() into a continuous position: whole number = plan, fraction = how close the next plan is. */
+  function level(a) {
+    const sc = score(a), T = C.TYPE[a.type] || C.TYPE.Website, pg = a.pages || T.pages || 1, ex = a.experience || [];
+    if (sc.line === "platform") return { sc, L: 4 + Math.min(.85, sc.pts / 40) };
+    const ni = (a.integrations || []).length, langs = (a.languages || []).length, big = ex.filter(e => (C.EXPERIENCE.find(x => x[0] === e) || [])[4]).length;
+    const step = (v, a1, a2, top) => v < a1 ? v / a1 * .9 : v < a2 ? 1 + (v - a1) / (a2 - a1) * .9 : 2 + Math.min(.9, (v - a2) / top);
+    const c = Math.max(step(sc.pts, 4, 9, 8), pg <= 10 ? pg / 11 * .9 : pg <= 25 ? 1 + (pg - 11) / 15 * .9 : 2 + Math.min(.9, (pg - 26) / 20),
+      ni < 2 ? ni * .45 : ni <= 3 ? 1 + (ni - 2) * .45 : 2 + Math.min(.6, (ni - 4) * .2), big ? Math.min(2.4, big) : 0, langs <= 1 ? 0 : langs === 2 ? 1.3 : 2.3);
+    const L = sc.tier === 0 ? Math.max(c, pg / 6) : sc.tier + (c - Math.floor(c));
+    return { sc, L: Math.min(sc.tier + .95, Math.max(sc.tier, L)) };
+  }
+  const UPS = [[], ["more than 10 pages", "a second language", "2 or more integrations", "a 3D, immersive scroll, AR or AI video experience"], ["more than 25 pages", "3 or more languages", "4 or more integrations", "two big experiences (3D, immersive scroll, AR or AI video)"]];
+  let ladPrev = null, ladMsg = "";
+  function ladderAnswers() { return S.stage === "brief" ? Object.assign({}, S.a, draft) : S.a; }
+  function ladder() {
+    const a = ladderAnswers(), { sc, L } = level(a), chosen = S.plan == null ? sc.tier : S.plan, md = S.model || "monthly", n = TIERS.length;
+    if (ladPrev && ladPrev.tier !== sc.tier) {
+      const had = new Set(ladPrev.r.map(x => x[0])), added = sc.r.filter(x => !had.has(x[0]) && !/pages?$/.test(x[0])).sort((x, y) => y[1] - x[1]).map(x => x[0]);
+      ladMsg = sc.tier > ladPrev.tier ? `Moved up to ${TIERS[sc.tier].name}${added.length ? ": " + added.slice(0, 2).join(" and ") : ""}` : `Back to ${TIERS[sc.tier].name}`;
+    }
+    ladPrev = sc;
+    const h = (L + .5) / n * 100, nx = sc.tier + 1;
+    const next = sc.line === "platform" ? "Platform is scoped with you in a workshop, so the price follows the scope." : sc.tier >= 3 ? "This is our top website plan. Portals, dashboards and web apps move to Platform." :
+      `<span class="lbl">Next: ${TIERS[nx].name}</span>${sc.tier === 0 ? "More than 5 pages moves you to Essential. A second language, 2 or more integrations or a big experience moves you to Growth." : "Any one of these moves you up: " + UPS[sc.tier].join(", ") + "."}`;
+    const rungs = TIERS.map((t, k) => `<li class="rung${k <= sc.tier ? " on" : ""}${k === sc.tier ? " cur" : ""}${k === chosen && chosen !== sc.tier ? " sel" : ""}${sc.line !== "platform" && k === 4 ? " far" : ""}"><b>${t.name}</b><small>${esc(t.desc)}</small><span class="lpp">${t.from ? "from " : ""}${aed(md === "monthly" ? PRICE.plans[k] : PRICE.once[k])}${md === "monthly" ? " a month" : " once"}</span>${k === sc.tier ? `<em class="ltag">Your choices</em>` : k === chosen ? `<em class="ltag pick">Your pick</em>` : ""}</li>`).reverse().join("");
+    const top = sc.r.slice().sort((x, y) => y[1] - x[1]).slice(0, 4);
+    return `<h3>Your plan <span class="lbl" style="float:right;color:var(--muted)">Moves with your choices</span></h3>
+      <div class="ladr" style="--n:${n}" role="img" aria-label="Plan level: ${TIERS[sc.tier].name}${chosen !== sc.tier ? ", you picked " + TIERS[chosen].name : ""}">
+        <div class="ltrack"><i class="lfill" style="height:${h.toFixed(1)}%"></i><b class="ldot" style="bottom:${h.toFixed(1)}%"></b></div>
+        <ol class="lrungs">${rungs}</ol></div>
+      ${ladMsg ? `<p class="lmove">${esc(ladMsg)}</p>` : ""}
+      ${a.type ? `<p class="lnext">${next}</p>` : `<p class="lnext">You start on Launch. As you add pages, languages, integrations and experiences, the bar climbs to the plan that fits.</p>`}
+      ${a.type && top.length ? `<div class="lwhy"><span class="lbl">What sets your level</span>${top.map(x => `<i>${esc(x[0])}</i>`).join("")}</div>` : ""}`;
+  }
+  function drawLadder() { const el = $("lad"); if (el) el.innerHTML = ladder(); }
   const MODEL_NAME = Object.fromEntries(C.MODELS.map(m => [m[0], m[1]]));
   function terms() {
     const md = S.model || "monthly", L = [];
     if (md === "monthly") L.push(`Monthly plan with a ${PRICE.minMonths}-month minimum, then month to month. Pay yearly and pay ${PRICE.annualPaysMonths} months for 12. Hosting, maintenance and your monthly change hours are included.`, "Building starts once the first month is paid and we have your content and access.");
     else L.push(`One-time build: ${Math.round(PRICE.deposit * 100)}% to start, the rest before go-live. Building starts once the deposit is paid and we have your content and access.`,
-      md === "onceCare" ? `Care plan from go-live: hosting, maintenance (updates, security patches, backups, uptime checks) and your monthly change hours. ${PRICE.minMonths}-month minimum, then month to month.` : `No maintenance plan: we fix any defect in our build for ${PRICE.warrantyDays} days after go-live. After that, changes and updates are AED ${PRICE.extraHour} an hour, quoted first. Hosting is yours to arrange, or add a care plan at any time.`);
+      md === "onceCare" ? `Care plan from go-live: hosting, maintenance (updates, security patches, backups, uptime checks) and your monthly change hours. ${PRICE.minMonths}-month minimum, then month to month.` : `No maintenance plan: we fix any defect in our build for ${PRICE.warrantyDays} days after go-live. After that, changes and updates are ${aed(PRICE.extraHour)} an hour, quoted first. Hosting is yours to arrange, or add a care plan at any time.`);
     L.push("Each approval in this portal is final for that step. Changes after an approval are change requests, quoted before any work starts.",
-      `Your plan includes a set number of change rounds per step. Extra rounds are AED ${PRICE.extraRound} each.`,
+      `Your plan includes a set number of change rounds per step. Extra rounds are ${aed(PRICE.extraRound)} each.`,
       md === "monthly" ? `Your domain and content are yours from day one. The design and code pass to you once ${PRICE.minMonths} months are paid, or earlier by paying the remaining months.` : "Your domain and content are yours from day one. The design and code are yours from the final payment.",
       "Licences for third-party platforms (for example HubSpot, Shopify, Webflow or plugins) are paid to the provider and are not part of our price.",
       "Prices exclude 5% VAT.");
     return L;
   }
-  const aed = n => "AED " + Math.round(n).toLocaleString("en-GB");
+  const aed = n => PRICE.tbc ? "AED XXX" : "AED " + Math.round(n).toLocaleString("en-GB");
   const tierOf = () => S.plan == null ? score(S.a).tier : S.plan;
   function addonLines() {
     const a = S.a; return (a.addons || []).map(x => {
@@ -234,6 +270,7 @@
     const host = { nexa: "NEXA hosts it", dns: "Client adds DNS records", access: "Access to domain and hosting", later: "Decide later" }[a.hosting] || "Not chosen yet";
     const rows = [["Building", a.type], ["Sector", a.sector], ["Pages", S.sitemap ? S.sitemap.length : a.pages], ["Style", a.style], ["Platform", a.stack], ["Going live", host]].filter(x => x[1] != null && x[1] !== "");
     $("side").innerHTML = `
+      <section class="card lad" id="lad">${ladder()}</section>
       <section class="card"><h3>Your project</h3><div class="kv">${rows.length ? rows.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("") : `<p style="margin:0;color:var(--muted)">Your answers appear here as you go.</p>`}</div>
         ${a.type ? `<div class="eta" style="margin-top:12px;padding:12px 14px"><div><span class="lbl">Build time</span><br><b style="font-size:18px">${e.text}</b></div><span style="font-size:11.5px;color:var(--ink2);flex:1 1 140px">From when we have your content and access.</span></div>` : ""}</section>
       <section class="card"><h3>Your price <span class="lbl" style="float:right;color:var(--warn)">Example prices</span></h3>
@@ -847,7 +884,7 @@
       if (v.has(d.tog)) v.delete(d.tog); else { if (cur.type === "themes" && v.size >= 3) { toast("Pick up to three looks. Remove one to add another."); return; } v.add(d.tog); }
       draft[cur.id] = [...v];
       if (cur.type === "work" || cur.type === "themes") { redrawBrief(); return; }
-      t.setAttribute("aria-pressed", v.has(d.tog)); return;
+      t.setAttribute("aria-pressed", v.has(d.tog)); drawLadder(); return;
     }
     if (d.back) { go(d.back); return; }
     switch (t.id) {

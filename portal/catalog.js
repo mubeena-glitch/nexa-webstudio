@@ -142,6 +142,7 @@
     once: [2490, 11900, 23900, 43900, 149000],
     care: [190, 490, 790, 1290, 3900],
     addons: Object.fromEntries(ADDONS.map(x => [x[0], x[3]])),
+    tbc: true, /* prices to be confirmed by leadership: every price shows as AED XXX until this is false */
     extraRound: 350, extraHour: 250, vat: 0.05, minMonths: 12, annualPaysMonths: 10, deposit: 0.5, warrantyDays: 30
   };
   const INCL = [
